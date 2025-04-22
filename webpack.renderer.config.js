@@ -2,7 +2,7 @@ const rules = require('./webpack.rules');
 
 rules.push({
   test: /\.css$/,
-  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+  use: ['style-loader', 'css-loader', 'postcss-loader'],
 });
 
 module.exports = {
