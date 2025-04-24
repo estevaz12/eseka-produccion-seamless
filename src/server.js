@@ -1,6 +1,7 @@
 const express = require('express');
 // const sql = require('mssql');
 const cors = require('cors');
+const { default: produccion } = require('./utils/queries/produccion');
 
 const app = express();
 app.use(cors());
@@ -19,32 +20,31 @@ const conifg = {
   },
 };
 
-// sql
-//   .connect(conifg.db)
-//   .then(() => {
-//     console.log('Connected to database');
-//   })
-//   .catch((err) => {
-//     console.log('Error connecting to database:', err);
-//   });
-
-// app.get('/', async (req, res) => {
-//   try {
-//     const result = await sql.query(`
-
-//       `);
-
-//     res.json(result.recordset);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
-app.get('/hello', (req, res) => {
-  console.log('received request');
-  res.json({ data: 'hello' });
-});
+sql
+  .connect(conifg.db)
+  .then(() => {
+    console.log('Connected to database');
+  })
+  .catch((err) => {
+    console.log('Error connecting to database:', err);
+  });
 
 app.listen(conifg.port, () => {
   console.log(`Listening at http://localhost:${conifg.port}`);
+});
+
+app.get('/hello', (req, res) => {
+  console.log('/hello HIT');
+  res.json({ data: 'Hello from server!' });
+});
+
+app.get('/produccion', async (req, res) => {
+  console.log('/produccion HIT');
+  try {
+    const result = await sql.query(produccion);
+
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
