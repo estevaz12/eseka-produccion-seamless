@@ -5,7 +5,9 @@
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "concurrently --kill-others -n SERVER,ELECTRON -c blue,cyan \"npm run start:server\" \"npm run start:electron\"",
+    "start:server": "node ./src/server.js",
+    "start:electron": "electron-forge start",
     "package": "electron-forge package --platform=win32",
     "make": "electron-forge make --platform=win32",
     "publish": "electron-forge publish",
@@ -32,17 +34,22 @@
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
+    "concurrently": "^9.1.2",
     "css-loader": "^6.11.0",
     "electron": "35.2.0",
     "node-loader": "^2.1.0",
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
+    "react-compiler-webpack": "^0.2.0",
     "style-loader": "^3.3.4",
     "tailwindcss": "^4.1.4"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.4",
+    "cors": "^2.8.5",
     "electron-squirrel-startup": "^1.0.1",
+    "express": "^5.1.0",
+    "mssql": "^11.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   }
