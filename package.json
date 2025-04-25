@@ -36,6 +36,7 @@
     "babel-loader": "^10.0.0",
     "concurrently": "^9.1.2",
     "css-loader": "^6.11.0",
+    "dotenv-webpack": "^8.1.0",
     "electron": "35.2.0",
     "node-loader": "^2.1.0",
     "postcss": "^8.5.3",

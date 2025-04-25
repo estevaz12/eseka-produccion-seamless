@@ -4,7 +4,7 @@ export default function Home() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/hello')
+    fetch('http://localhost:3001/produccion')
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.log('[CLIENT] Error fetching data:', err));
