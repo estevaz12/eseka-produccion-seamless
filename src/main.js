@@ -31,6 +31,9 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   serverProcess = utilityProcess.fork(path.join(__dirname, 'server.js'));
+  serverProcess.on('message', (msg) => {
+    console.log(`[SERVER] ${msg}`);
+  });
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
