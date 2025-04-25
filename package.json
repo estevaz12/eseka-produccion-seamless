@@ -5,9 +5,9 @@
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
-    "start": "concurrently --kill-others -n SERVER,ELECTRON -c blue,cyan \"npm run start:server\" \"npm run start:electron\"",
+    "start:conc": "concurrently --kill-others -n SERVER,ELECTRON -c blue,cyan \"npm run start:server\" \"npm run start:electron\"",
     "start:server": "node ./src/server.js",
-    "start:electron": "electron-forge start",
+    "start": "electron-forge start",
     "package": "electron-forge package --platform=win32",
     "make": "electron-forge make --platform=win32",
     "publish": "electron-forge publish",

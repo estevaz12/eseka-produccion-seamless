@@ -4,7 +4,7 @@ export default function Home() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/produccion')
+    fetch('http://localhost:3001/hello')
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.log('[CLIENT] Error fetching data:', err));
@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <div>
-      {data}
+      {JSON.stringify(data)}
       {/* <ul>
         {data.map((item) => (
           <li key={item.StyleCode}>

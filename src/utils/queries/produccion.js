@@ -1,7 +1,7 @@
-const fechaInicio = new Date('2025-04-01T06:00:00.000Z').getTime();
-const fechaFin = new Date().now();
+const fechaInicio = '2025-04-01T06:00:00.000Z';
+const fechaFin = new Date().toISOString();
 
-export default produccion = `
+const produccion = `
 SELECT
     COALESCE(pm.StyleCode, m.StyleCode) AS 'StyleCode',
     COALESCE(SUM(pm.Pieces), 0) + COALESCE(MAX(m.LastpiecesSum), 0) AS 'Unidades',
@@ -38,6 +38,8 @@ WHERE (
 GROUP BY COALESCE(pm.StyleCode, m.StyleCode)
 ORDER BY StyleCode;
 `;
+
+export default produccion;
 
 // let query;
 // if (actual) {
