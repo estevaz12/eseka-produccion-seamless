@@ -1,4 +1,4 @@
-const fechaInicio = '2025-04-01T06:00:00.000Z';
+const fechaInicio = '2025-04-01T06:00:01.000Z';
 const fechaFin = new Date().toISOString();
 
 const produccion = `
@@ -33,7 +33,7 @@ FROM PRODUCTIONS_MONITOR pm
 WHERE (
     (pm.RoomCode = 'SEAMLESS' 
     AND pm.DateRec BETWEEN '${fechaInicio}' AND '${fechaFin}')
-    OR pm.StyleCode IS NULL
+    AND pm.Pieces > 0
 )
 GROUP BY COALESCE(pm.StyleCode, m.StyleCode)
 ORDER BY StyleCode;

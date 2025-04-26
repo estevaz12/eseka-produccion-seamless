@@ -2,7 +2,14 @@ const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
 const { default: produccion } = require('./utils/queries/produccion');
-const { default: serverLog } = require('./utils/serverLog');
+const { default: serverLog } = require('./utils/serverLog.js');
+const { produccionTest } = require('./utils/test-data.js');
+
+// Environment
+let isPackaged;
+process.on('message', (msg) => {
+  isPackaged = msg;
+});
 
 const app = express();
 app.use(cors());
@@ -42,11 +49,16 @@ app.get('/hello', (req, res) => {
 
 app.get('/produccion', async (req, res) => {
   serverLog('/produccion HIT');
-  try {
-    const result = await sql.query(`SELECT TOP 1 * FROM PRODUCTIONS_MONITOR`);
-    res.json(result.recordset);
-  } catch (err) {
-    serverLog(`[ERROR] SQL Error: ${err}`);
-    res.status(500).json({ error: err.message });
+
+  if (isPackaged) {
+    try {
+      const result = await sql.query(produccion);
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] SQL Error: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  } else {
+    res.json(produccionTest);
   }
 });
