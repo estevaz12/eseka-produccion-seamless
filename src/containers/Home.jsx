@@ -11,7 +11,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div className='text-blue-500'>
       {JSON.stringify(data)}
       {/* <ul>
         {data.map((item) => (

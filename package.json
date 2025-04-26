@@ -46,6 +46,8 @@
     "tailwindcss": "^4.1.4"
   },
   "dependencies": {
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.2",
     "@tailwindcss/postcss": "^4.1.4",
     "cors": "^2.8.5",
     "electron-squirrel-startup": "^1.0.1",
