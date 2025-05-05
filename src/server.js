@@ -8,8 +8,8 @@ const { produccionTest } = require('./utils/test-data.js');
 // Environment
 let isPackaged;
 process.once('message', (msg) => {
-  serverLog(`isPackaged = ${msg.message}`);
-  isPackaged = msg.message;
+  isPackaged = msg;
+  serverLog(`isPackaged: ${isPackaged}`);
   startServer();
 });
 
