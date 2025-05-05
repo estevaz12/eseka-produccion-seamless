@@ -7,8 +7,10 @@ const { produccionTest } = require('./utils/test-data.js');
 
 // Environment
 let isPackaged;
-process.on('message', (msg) => {
-  isPackaged = msg;
+process.once('message', (msg) => {
+  serverLog(`isPackaged = ${msg.message}`);
+  isPackaged = msg.message;
+  startServer();
 });
 
 const app = express();
@@ -29,42 +31,44 @@ const config = {
   },
 };
 
-if (isPackaged) {
-  (async () => {
-    try {
-      await sql.connect(config.db);
-      serverLog('Connected to database');
-    } catch (err) {
-      serverLog(`[ERROR] Error connecting to database: ${err}`);
-    }
-  })();
-}
-
-app.listen(config.port, () => {
-  serverLog(`Listening at http://localhost:${config.port}`);
-});
-
-app.get('/hello', (req, res) => {
-  serverLog('/hello HIT');
-  res.json({ data: 'Hello from server!' });
-});
-
-app.get('/produccion', async (req, res) => {
-  serverLog('/produccion HIT');
-  serverLog(JSON.stringify(req.query));
-
+const startServer = () => {
   if (isPackaged) {
-    try {
-      const { room, startDate, endDate, articulo, actual } = req.query;
-      const result = await sql.query(
-        produccion(room, startDate, endDate, articulo, actual)
-      );
-      res.json(result.recordset);
-    } catch (err) {
-      serverLog(`[ERROR] SQL Error: ${err}`);
-      res.status(500).json({ error: err.message });
-    }
-  } else {
-    res.json(produccionTest);
+    (async () => {
+      try {
+        await sql.connect(config.db);
+        serverLog('Connected to database');
+      } catch (err) {
+        serverLog(`[ERROR] Error connecting to database: ${err}`);
+      }
+    })();
   }
-});
+
+  app.listen(config.port, () => {
+    serverLog(`Listening at http://localhost:${config.port}`);
+  });
+
+  app.get('/hello', (req, res) => {
+    serverLog('/hello HIT');
+    res.json({ data: 'Hello from server!' });
+  });
+
+  app.get('/produccion', async (req, res) => {
+    serverLog('/produccion HIT');
+    serverLog(JSON.stringify(req.query));
+
+    if (isPackaged) {
+      try {
+        const { room, startDate, endDate, articulo, actual } = req.query;
+        const result = await sql.query(
+          produccion(room, startDate, endDate, articulo, actual)
+        );
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(`[ERROR] SQL Error: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      res.json(produccionTest);
+    }
+  });
+};

@@ -1,5 +1,5 @@
 const serverLog = (msg) => {
-  process.parentPort.postMessage(msg);
+  process.send(msg);
 };
 
 export default serverLog;
