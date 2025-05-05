@@ -29,14 +29,16 @@ const config = {
   },
 };
 
-(async () => {
-  try {
-    await sql.connect(config.db);
-    serverLog('Connected to database');
-  } catch (err) {
-    serverLog(`[ERROR] Error connecting to database: ${err}`);
-  }
-})();
+if (isPackaged) {
+  (async () => {
+    try {
+      await sql.connect(config.db);
+      serverLog('Connected to database');
+    } catch (err) {
+      serverLog(`[ERROR] Error connecting to database: ${err}`);
+    }
+  })();
+}
 
 app.listen(config.port, () => {
   serverLog(`Listening at http://localhost:${config.port}`);
@@ -49,10 +51,14 @@ app.get('/hello', (req, res) => {
 
 app.get('/produccion', async (req, res) => {
   serverLog('/produccion HIT');
+  serverLog(JSON.stringify(req.query));
 
   if (isPackaged) {
     try {
-      const result = await sql.query(produccion);
+      const { room, startDate, endDate, articulo, actual } = req.query;
+      const result = await sql.query(
+        produccion(room, startDate, endDate, articulo, actual)
+      );
       res.json(result.recordset);
     } catch (err) {
       serverLog(`[ERROR] SQL Error: ${err}`);

@@ -27,10 +27,7 @@
  */
 
 import './styles/global.css';
-
-console.log(
-  '👋 This message is being logged by "renderer.js", included via webpack'
-);
+import '@fontsource/inter';
 
 // Add this to the end of the existing file
 import './App.jsx';
