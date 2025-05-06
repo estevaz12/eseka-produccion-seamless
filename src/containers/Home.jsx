@@ -15,6 +15,8 @@ import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 
+const SQL_DATE_FORMAT = 'DD-MM-YYYY HH:mm:ss';
+
 export default function Home() {
   const { apiUrl } = useConfig();
   const [url, setUrl] = useState();
@@ -29,7 +31,11 @@ export default function Home() {
 
   useEffect(() => {
     if (!url) {
-      const params = new URLSearchParams(formData).toString();
+      const params = new URLSearchParams({
+        ...formData,
+        startDate: formData.startDate.format(SQL_DATE_FORMAT),
+        endDate: formData.endDate.format(SQL_DATE_FORMAT),
+      }).toString();
 
       fetch(`${apiUrl}/produccion?${params}`)
         .then((res) => res.json())
@@ -54,8 +60,12 @@ export default function Home() {
     // update the view
     setFormData(updatedFormData);
     // can't reference state here since it still hasn't updated
-    const params = new URLSearchParams(updatedFormData).toString();
-    console.log(params);
+    const params = new URLSearchParams({
+      ...updatedFormData,
+      startDate: updatedFormData.startDate.format(SQL_DATE_FORMAT),
+      endDate: updatedFormData.endDate.format(SQL_DATE_FORMAT),
+    }).toString();
+
     setUrl(`${apiUrl}/produccion?${params}`);
   };
 

@@ -1,10 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  session,
-  utilityProcess,
-  MessageChannelMain,
-} = require('electron');
+const { app, BrowserWindow, session, utilityProcess } = require('electron');
 const path = require('path');
 
 let serverProcess;
