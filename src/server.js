@@ -7,8 +7,9 @@ const { produccionTest } = require('./utils/test-data.js');
 
 // Environment
 let isPackaged;
-process.once('message', (msg) => {
-  isPackaged = msg;
+// once main sends a message to server
+process.parentPort.once('message', (e) => {
+  isPackaged = e.data;
   serverLog(`isPackaged: ${isPackaged}`);
   startServer();
 });
