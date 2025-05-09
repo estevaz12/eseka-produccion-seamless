@@ -63,6 +63,7 @@ const startServer = () => {
         const result = await sql.query(
           produccion(room, startDate, endDate, articulo, actual)
         );
+
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] SQL Error: ${err}`);

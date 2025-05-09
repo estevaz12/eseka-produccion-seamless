@@ -1,6 +1,6 @@
-const produccion = (room, startDate, endDate, articulo, actual = true) => {
+const produccion = (room, startDate, endDate, articulo, actual) => {
   let query;
-  if (actual) {
+  if (actual === 'true') {
     // JOIN with MACHINES for live data
     query = `
         SELECT COALESCE(pm.StyleCode, m.StyleCode) AS 'StyleCode',
@@ -32,8 +32,8 @@ const produccion = (room, startDate, endDate, articulo, actual = true) => {
         ) m ON pm.StyleCode = m.StyleCode
         WHERE (
             (pm.RoomCode = '${room}' AND pm.DateRec BETWEEN '${startDate}' AND '${endDate}')
-            OR pm.StyleCode IS NULL
-            ${articulo.trim() ? `AND pm.StyleCode LIKE '%${articulo}%'` : ''}
+            AND pm.Pieces > 0
+            ${articulo === '' ? '' : `AND pm.StyleCode LIKE '%${articulo}%'`}
         )
         GROUP BY COALESCE(pm.StyleCode, m.StyleCode)
         ORDER BY StyleCode;
@@ -50,19 +50,22 @@ const produccion = (room, startDate, endDate, articulo, actual = true) => {
                        WHERE m2.StyleCode = pm.StyleCode
                            AND m2.state IN (0, 2, 3, 4, 5, 7)
                    ) THEN 'SI: ' + (
-                       SELECT CONVERT(varchar, m2.MachCode) + '-' AS [text()]
-                       FROM Machines m2
-                       WHERE m2.StyleCode = pm.StyleCode
-                           AND m2.state IN (0, 2, 3, 4, 5, 7)
-                       FOR XML PATH (''), TYPE
-                   ).value('text()[1]', 'nvarchar(max)')
+                       SELECT STUFF((
+                           SELECT DISTINCT '-' + CONVERT(VARCHAR, m2.MachCode)
+                           FROM Machines m2
+                           WHERE m2.StyleCode = pm.StyleCode
+                               AND m2.state IN (0, 2, 3, 4, 5, 7)
+                           FOR XML PATH(''), TYPE
+                       ).value('.', 'NVARCHAR(MAX)'), 1, 1, '')
+                   )
                    ELSE 'NO'
                END
         FROM PRODUCTIONS_MONITOR pm
         LEFT JOIN MACHINES m ON pm.StyleCode = m.StyleCode AND pm.MachCode = m.MachCode
         WHERE pm.RoomCode = '${room}'
             AND DateRec BETWEEN '${startDate}' AND '${endDate}'
-            ${articulo.trim() ? `AND pm.StyleCode LIKE '%${articulo}%'` : ''}
+            AND pm.Pieces > 0
+            ${articulo === '' ? '' : `AND pm.StyleCode LIKE '%${articulo}%'`}
         GROUP BY pm.StyleCode
         ORDER BY pm.StyleCode;
     `;

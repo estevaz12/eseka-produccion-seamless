@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 
-const SQL_DATE_FORMAT = 'DD-MM-YYYY HH:mm:ss';
+const SQL_DATE_FORMAT = 'MM-DD-YYYY HH:mm:ss';
 
 export default function Home() {
   const { apiUrl } = useConfig();
@@ -174,7 +174,7 @@ export default function Home() {
             <FormLabel>Artículo</FormLabel>
             <Input
               onChange={(e) =>
-                setFormData({ ...formData, articulo: e.target.value })
+                setFormData({ ...formData, articulo: e.target.value.trim() })
               }
               placeholder='Buscar artículo...'
             />
