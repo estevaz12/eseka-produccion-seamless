@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import Home from './containers/Home.jsx';
 import { StyledEngineProvider } from '@mui/material';
 import {
   createTheme,
@@ -13,6 +12,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
 import { ConfigProvider } from './ConfigContext.jsx';
+import Produccion from './containers/Produccion.jsx';
+import Programada from './containers/Programada.jsx';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
@@ -54,10 +55,14 @@ root.render(
         <CssBaseline enableColorScheme />
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
           <ConfigProvider config={config}>
-            <Home />
+            <App />
           </ConfigProvider>
         </LocalizationProvider>
       </JoyCssVarsProvider>
     </ThemeProvider>
   </StyledEngineProvider>
 );
+
+export default function App() {
+  return <Programada />;
+}

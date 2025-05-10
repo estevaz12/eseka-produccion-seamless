@@ -17,7 +17,7 @@ import { useConfig } from '../ConfigContext.jsx';
 
 const SQL_DATE_FORMAT = 'MM-DD-YYYY HH:mm:ss';
 
-export default function Home() {
+export default function Produccion() {
   const { apiUrl } = useConfig();
   const [url, setUrl] = useState();
   const [data, setData] = useState([]);
