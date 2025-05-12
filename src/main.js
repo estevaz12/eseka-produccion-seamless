@@ -1,4 +1,11 @@
-const { app, BrowserWindow, session, utilityProcess } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  session,
+  utilityProcess,
+  dialog,
+  ipcMain,
+} = require('electron');
 const path = require('path');
 
 let serverProcess;
@@ -6,6 +13,13 @@ let serverProcess;
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
+}
+
+async function handleFileOpen() {
+  const { canceled, filePaths } = await dialog.showOpenDialog({});
+  if (!canceled) {
+    return filePaths[0];
+  }
 }
 
 const createWindow = () => {
@@ -55,6 +69,8 @@ app.whenReady().then(() => {
 
   // wait for server to start
   setTimeout(() => {
+    // file uploading
+    ipcMain.handle('dialog:openFile', handleFileOpen);
     createWindow();
   }, 1000);
 
