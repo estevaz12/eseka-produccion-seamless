@@ -16,7 +16,9 @@ if (require('electron-squirrel-startup')) {
 }
 
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({});
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    filters: [{ name: 'PDFs', extensions: ['pdf'] }],
+  });
   if (!canceled) {
     return filePaths[0];
   }

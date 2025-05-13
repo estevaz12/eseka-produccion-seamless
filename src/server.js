@@ -1,6 +1,8 @@
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
+const fs = require('fs');
+const pdf = require('pdf-parse');
 const { default: produccion } = require('./utils/queries/produccion');
 const { default: serverLog } = require('./utils/serverLog.js');
 const { produccionTest } = require('./utils/test-data.js');
@@ -71,6 +73,20 @@ const startServer = () => {
       }
     } else {
       res.json(produccionTest);
+    }
+  });
+
+  app.get('/programada/file', async (req, res) => {
+    serverLog('/programada/file HIT');
+    const { path } = req.query;
+    try {
+      const dataBuffer = fs.readFileSync(path);
+      pdf(dataBuffer).then((data) => {
+        res.json(data);
+      });
+    } catch (err) {
+      serverLog(`[ERROR] PDF Error: ${err}`);
+      res.status(500).json({ error: err.message });
     }
   });
 };

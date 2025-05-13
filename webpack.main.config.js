@@ -19,4 +19,7 @@ module.exports = {
     path: path.join(__dirname, '.webpack/main'),
     filename: '[name].js',
   },
+  externals: {
+    'pdf-parse': 'commonjs pdf-parse',
+  },
 };
