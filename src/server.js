@@ -1,11 +1,10 @@
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
-const fs = require('fs');
-const pdf = require('pdf-parse');
 const { default: produccion } = require('./utils/queries/produccion');
 const { default: serverLog } = require('./utils/serverLog.js');
 const { produccionTest } = require('./utils/test-data.js');
+// const { default: processPDF } = require('./utils/processPDF.js');
 
 // Environment
 let isPackaged;
@@ -80,10 +79,6 @@ const startServer = () => {
     serverLog('/programada/file HIT');
     const { path } = req.query;
     try {
-      const dataBuffer = fs.readFileSync(path);
-      pdf(dataBuffer).then((data) => {
-        res.json(data);
-      });
     } catch (err) {
       serverLog(`[ERROR] PDF Error: ${err}`);
       res.status(500).json({ error: err.message });
