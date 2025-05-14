@@ -45,7 +45,7 @@ const processPDF = async (path) => {
               .map((cell) => cell.text)
               .join('')
               .trim();
-            const producida = row[4]
+            const producido = row[4]
               .map((cell) => cell.text)
               .join('')
               .trim();
@@ -59,7 +59,7 @@ const processPDF = async (path) => {
               // desc,
               talle,
               aProducir,
-              producida,
+              producido,
               falta,
             });
           }

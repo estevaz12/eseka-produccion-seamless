@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/joy';
 import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
+import DataTable from '../components/DataTable.jsx';
 
 export default function Programada() {
   const { apiUrl } = useConfig();
@@ -26,7 +27,21 @@ export default function Programada() {
     <Box>
       <InputFileUpload onClick={handleUpload} />
       <Typography>File path: {filePath}</Typography>
-      <Typography>{JSON.stringify(data)}</Typography>
+
+      <DataTable
+        cols={['Artículo', 'Talle', 'A Producir', 'Producido', 'Falta']}
+      >
+        {data &&
+          data.map((row, i) => (
+            <tr key={i}>
+              <td>{row.articulo}</td>
+              <td>{row.talle}</td>
+              <td>{row.aProducir}</td>
+              <td>{row.producido}</td>
+              <td>{row.falta}</td>
+            </tr>
+          ))}
+      </DataTable>
     </Box>
   );
 }

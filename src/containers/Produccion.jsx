@@ -14,6 +14,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
+import DataTable from '../components/DataTable.jsx';
 
 const SQL_DATE_FORMAT = 'MM-DD-YYYY HH:mm:ss';
 
@@ -186,26 +187,16 @@ export default function Produccion() {
         </form>
       </Box>
 
-      <Table aria-label='simple table' className='**:text-center'>
-        <thead>
-          <tr>
-            <th>Artículo</th>
-            <th>Unidades</th>
-            <th>Docenas</th>
-            <th>En Producción</th>
+      <DataTable cols={['Artículo', 'Unidades', 'Docenas', 'En Producción']}>
+        {data.map((row) => (
+          <tr key={row.StyleCode}>
+            <td>{row.StyleCode}</td>
+            <td>{row.Unidades}</td>
+            <td>{(row.Unidades / 12).toFixed(1)}</td>
+            <td>{row.Produciendo}</td>
           </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
-            <tr key={row.StyleCode}>
-              <td>{row.StyleCode}</td>
-              <td>{row.Unidades}</td>
-              <td>{(row.Unidades / 12).toFixed(1)}</td>
-              <td>{row.Produciendo}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+        ))}
+      </DataTable>
     </Box>
   );
 }
