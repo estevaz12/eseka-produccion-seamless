@@ -20,6 +20,6 @@ module.exports = {
     filename: '[name].js',
   },
   externals: {
-    'pdf-parse': 'commonjs pdf-parse',
+    pdfreader: 'pdfreader',
   },
 };

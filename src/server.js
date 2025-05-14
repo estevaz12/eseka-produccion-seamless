@@ -4,10 +4,10 @@ const cors = require('cors');
 const { default: produccion } = require('./utils/queries/produccion');
 const { default: serverLog } = require('./utils/serverLog.js');
 const { produccionTest } = require('./utils/test-data.js');
-// const { default: processPDF } = require('./utils/processPDF.js');
+const { processPDF } = require('./utils/processPDF.js');
 
 // Environment
-let isPackaged;
+let isPackaged; //= false;
 // once main sends a message to server
 process.parentPort.once('message', (e) => {
   isPackaged = e.data;
@@ -78,10 +78,15 @@ const startServer = () => {
   app.get('/programada/file', async (req, res) => {
     serverLog('/programada/file HIT');
     const { path } = req.query;
+    // const path = './src/assets/programada.pdf';
     try {
+      const data = await processPDF(path);
+      res.json(data);
     } catch (err) {
       serverLog(`[ERROR] PDF Error: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });
 };
+
+// startServer();
