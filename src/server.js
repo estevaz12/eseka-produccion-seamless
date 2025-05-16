@@ -1,10 +1,12 @@
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
-const { default: produccion } = require('./utils/queries/produccion');
 const { default: serverLog } = require('./utils/serverLog.js');
 const { produccionTest } = require('./utils/test-data.js');
 const { processPDF } = require('./utils/processPDF.js');
+const { default: produccion } = require('./utils/queries/produccion');
+const { insertProgramada } = require('./utils/queries/insertProgramada');
+// const { insertDistr } = require('./utils/queries/insertDistr');
 
 // Environment
 let isPackaged; //= false;
@@ -17,6 +19,7 @@ process.parentPort.once('message', (e) => {
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 const config = {
   port: 3001,
@@ -50,12 +53,12 @@ const startServer = () => {
   });
 
   app.get('/hello', (req, res) => {
-    serverLog('/hello HIT');
+    serverLog('GET /hello');
     res.json({ data: 'Hello from server!' });
   });
 
   app.get('/produccion', async (req, res) => {
-    serverLog('/produccion HIT');
+    serverLog('GET /produccion');
     serverLog(JSON.stringify(req.query));
 
     if (isPackaged) {
@@ -76,9 +79,9 @@ const startServer = () => {
   });
 
   app.get('/programada/file', async (req, res) => {
-    serverLog('/programada/file HIT');
+    serverLog('GET /programada/file');
     const { path } = req.query;
-    // const path = './src/assets/programada.pdf';
+
     try {
       const data = await processPDF(path);
       res.json(data);
@@ -88,5 +91,33 @@ const startServer = () => {
     }
   });
 };
+
+app.post('/programada/insertAll', async (req, res) => {
+  serverLog('GET /programada/insertAll');
+  const data = req.body;
+
+  try {
+    const query = insertProgramada(data);
+    const result = await sql.query(query);
+    serverLog(JSON.stringify(result.recordset, null, 2));
+  } catch (err) {
+    serverLog(`[ERROR] SQL Error: ${err}`);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// app.get('/programada/insertDistr', async (req, res) => {
+//   serverLog('GET /programada/insertDistr');
+
+//   try {
+//     const query = insertDistr();
+//     serverLog(query);
+//     const result = await sql.query(query);
+//     serverLog(JSON.stringify(result.recordset, null, 2));
+//   } catch (err) {
+//     serverLog(`[ERROR] SQL Error: ${err}`);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // startServer();

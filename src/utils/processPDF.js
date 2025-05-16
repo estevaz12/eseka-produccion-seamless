@@ -26,12 +26,13 @@ const processPDF = async (path) => {
 
         // Loop through data for json data
         table.getMatrix().forEach((row) => {
-          const articulo =
+          let articulo =
             row[0]
               ?.map((cell) => cell.text)
               .join('')
               .trim() || '';
           if (articulo !== '') {
+            articulo = articulo.replace(',', '.');
             // const desc =
             //   row[1]
             //     .map((cell) => cell.text)
@@ -45,22 +46,22 @@ const processPDF = async (path) => {
               .map((cell) => cell.text)
               .join('')
               .trim();
-            const producido = row[4]
-              .map((cell) => cell.text)
-              .join('')
-              .trim();
-            const falta = row[5]
-              .map((cell) => cell.text)
-              .join('')
-              .trim();
+            // const producido = row[4]
+            //   .map((cell) => cell.text)
+            //   .join('')
+            //   .trim();
+            // const falta = row[5]
+            //   .map((cell) => cell.text)
+            //   .join('')
+            //   .trim();
 
             data.push({
-              articulo,
+              articulo: parseFloat(articulo),
               // desc,
-              talle,
-              aProducir,
-              producido,
-              falta,
+              talle: parseInt(talle),
+              aProducir: parseInt(aProducir),
+              // producido,
+              // falta,
             });
           }
         });
