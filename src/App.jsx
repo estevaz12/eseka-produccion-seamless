@@ -46,6 +46,7 @@ const materialTheme = createTheme({
 
 const config = {
   apiUrl: process.env.EXPRESS_URL,
+  sqlDateFormat: 'MM-DD-YYYY HH:mm:ss',
 };
 
 root.render(

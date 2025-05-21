@@ -3,34 +3,55 @@ import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
+import { DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 export default function Programada() {
-  const { apiUrl } = useConfig();
+  const { apiUrl, sqlDateFormat } = useConfig();
   const [filePath, setFilePath] = useState();
-  const [data, setData] = useState();
+  const [programada, setProgramada] = useState();
+  const [diff, setDiff] = useState();
 
   useEffect(() => {
     if (filePath) {
       const params = new URLSearchParams({ path: filePath }).toString();
       fetch(`${apiUrl}/programada/file?${params}`)
         .then((res) => res.json())
-        .then((data) => setData(data))
+        .then((data) => setProgramada(data))
         .catch((err) => console.log('[CLIENT] Error fetching data:', err));
     }
   }, [filePath]);
 
   function handleInsertAll() {
-    if (data) {
+    if (programada) {
       fetch(`${apiUrl}/programada/insertAll`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(programada),
       })
-        .then((res) =>
-          console.log(`[CLIENT] Response:\n${JSON.stringify(res)}`)
-        )
+        // .then((res) =>
+        //   console.log(`[CLIENT] Response:\n${JSON.stringify(res)}`)
+        // )
+        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+    }
+  }
+
+  function handleCompare() {
+    if (programada) {
+      fetch(`${apiUrl}/programada/compare`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startDate: localStorage.getItem('progStartDate'),
+          new: programada,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => setDiff(data))
         .catch((err) => console.log('[CLIENT] Error fetching data:', err));
     }
   }
@@ -43,12 +64,36 @@ export default function Programada() {
     <Box>
       <InputFileUpload onClick={handleUpload} />
       <Typography>File path: {filePath}</Typography>
-      {data && <Button onClick={handleInsertAll}>Cargar todo</Button>}
-      <DataTable
-        cols={['Artículo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
-      >
-        {data &&
-          data.map((row, i) => (
+
+      <DatePicker
+        label='Fecha de inicio'
+        value={
+          localStorage.getItem('progStartDate')
+            ? dayjs(localStorage.getItem('progStartDate'))
+            : undefined
+        }
+        onChange={(newValue) => {
+          localStorage.setItem('progStartDate', newValue.format(sqlDateFormat));
+        }}
+        disableFuture
+        disabled={localStorage.getItem('progStartDate') !== null}
+      />
+
+      {programada && (
+        <Button
+          onClick={handleInsertAll}
+          disabled={localStorage.getItem('progStartDate') !== null}
+        >
+          Cargar todo
+        </Button>
+      )}
+      {programada && <Button onClick={handleCompare}>Comparar</Button>}
+
+      {programada && (
+        <DataTable
+          cols={['Artículo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
+        >
+          {programada.map((row, i) => (
             <tr key={i}>
               <td>{row.articulo}</td>
               <td>{row.talle}</td>
@@ -57,7 +102,10 @@ export default function Programada() {
               <td>{row.falta}</td> */}
             </tr>
           ))}
-      </DataTable>
+        </DataTable>
+      )}
+
+      {diff && JSON.stringify(diff, null, 2)}
     </Box>
   );
 }

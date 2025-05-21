@@ -16,10 +16,8 @@ import { useState, useEffect } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
 
-const SQL_DATE_FORMAT = 'MM-DD-YYYY HH:mm:ss';
-
 export default function Produccion() {
-  const { apiUrl } = useConfig();
+  const { apiUrl, sqlDateFormat } = useConfig();
   const [url, setUrl] = useState();
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
@@ -34,8 +32,8 @@ export default function Produccion() {
     if (!url) {
       const params = new URLSearchParams({
         ...formData,
-        startDate: formData.startDate.format(SQL_DATE_FORMAT),
-        endDate: formData.endDate.format(SQL_DATE_FORMAT),
+        startDate: formData.startDate.format(sqlDateFormat),
+        endDate: formData.endDate.format(sqlDateFormat),
       }).toString();
 
       fetch(`${apiUrl}/produccion?${params}`)
@@ -63,8 +61,8 @@ export default function Produccion() {
     // can't reference state here since it still hasn't updated
     const params = new URLSearchParams({
       ...updatedFormData,
-      startDate: updatedFormData.startDate.format(SQL_DATE_FORMAT),
-      endDate: updatedFormData.endDate.format(SQL_DATE_FORMAT),
+      startDate: updatedFormData.startDate.format(sqlDateFormat),
+      endDate: updatedFormData.endDate.format(sqlDateFormat),
     }).toString();
 
     setUrl(`${apiUrl}/produccion?${params}`);
@@ -118,7 +116,7 @@ export default function Produccion() {
                 minutes: null,
                 seconds: null,
               }}
-              disableFutur
+              disableFuture
               maxDateTime={formData.endDate}
             />
           </FormControl>
