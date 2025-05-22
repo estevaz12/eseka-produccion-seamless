@@ -1,8 +1,9 @@
+import { data } from 'autoprefixer';
 import { PdfReader, TableParser } from 'pdfreader';
 
 const processPDF = async (path) => {
   return new Promise((resolve, reject) => {
-    const data = [];
+    const data = { total: 0, rows: [] };
     // Create a TableParser instance (to store extracted rows)
     var table = new TableParser();
     // Minimum `y` coordinate for filtering out metadata
@@ -55,7 +56,7 @@ const processPDF = async (path) => {
             //   .join('')
             //   .trim();
 
-            data.push({
+            data.rows.push({
               articulo: parseFloat(articulo),
               // desc,
               talle: parseInt(talle),
@@ -63,6 +64,8 @@ const processPDF = async (path) => {
               // producido,
               // falta,
             });
+
+            data.total += parseInt(aProducir);
           }
         });
 

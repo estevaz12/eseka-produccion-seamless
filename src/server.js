@@ -9,6 +9,7 @@ const { insertProgramada } = require('./utils/queries/insertProgramada');
 const { compareProgramada } = require('./utils/compareProgramada.js');
 const { getProgramada } = require('./utils/queries/getProgramada.js');
 const { updateProgramada } = require('./utils/queries/updateProgramada.js');
+const { getProgramadaTotal } = require('./utils/queries/getProgramadaTotal.js');
 // const { insertDistr } = require('./utils/queries/insertDistr');
 
 // Environment
@@ -95,12 +96,25 @@ const startServer = () => {
   });
 };
 
+app.get('/programada/total', async (req, res) => {
+  serverLog('GET /programada/total');
+  const { startDate } = req.query;
+
+  try {
+    const result = await sql.query(getProgramadaTotal(startDate));
+    res.json(result.recordset);
+  } catch (err) {
+    serverLog(`[ERROR] SQL Error: ${err}`);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/programada/insertAll', async (req, res) => {
   serverLog('POST /programada/insertAll');
   const data = req.body;
 
   try {
-    const query = insertProgramada(data);
+    const query = insertProgramada(data, 'added');
     const result = await sql.query(query);
     serverLog('Inserted');
   } catch (err) {
@@ -130,12 +144,15 @@ app.post('/programada/update', async (req, res) => {
 
   try {
     const query = updateProgramada(data);
+    serverLog(query);
     const result = await sql.query(query);
+    serverLog('Updated');
   } catch (err) {
     serverLog(`[ERROR] SQL Error: ${err}`);
     res.status(500).json({ error: err.message });
   }
 });
+
 // app.get('/programada/insertDistr', async (req, res) => {
 //   serverLog('GET /programada/insertDistr');
 
