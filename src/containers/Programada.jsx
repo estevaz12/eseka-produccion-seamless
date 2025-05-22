@@ -65,6 +65,7 @@ export default function Programada() {
         body: JSON.stringify(diff),
       })
         .then(fetchCurrTotal()) // Refresh total
+        .then(setDiff()) // Clear diff
         .catch((err) => console.log('[CLIENT] Error fetching data:', err));
     }
   }
