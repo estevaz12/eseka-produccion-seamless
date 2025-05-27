@@ -1,0 +1,98 @@
+const insertColorCodes = () => {
+  let query = '';
+  for (const row of articulos) {
+    query += `
+      INSERT INTO SEA_COLOR_CODES (Articulo, Color, Code)
+        VALUES (
+          ${row.articulo}, 
+          (SELECT Id FROM SEA_COLORES WHERE Color = '${row.color}'), 
+          '${row.colorCode}'
+        ); 
+    \n\n`;
+  }
+
+  return query;
+};
+
+export { insertColorCodes };
+
+const articulos = [
+  { articulo: 4891, colorCode: 'CG', color: 'CRUDO GRIS' },
+  { articulo: 4893, colorCode: 'CG', color: 'CRUDO GRIS' },
+  { articulo: 5007, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 5172, colorCode: 'CG', color: 'CRUDO GRIS' },
+  { articulo: 5173, colorCode: 'CG', color: 'CRUDO GRIS' },
+  { articulo: 5320, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 5394, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 5449, colorCode: 'C#', color: 'CORAZONES' },
+  { articulo: 5449, colorCode: 'M#', color: 'MARIPOSAS' },
+  { articulo: 5533, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 5537, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 5538, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 5539, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 5653, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 5655, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 5718, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 5757, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 6328, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 6329, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 6349, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 6791, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 6793, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 6795, colorCode: 'C#', color: 'CRUDO CRUDO' },
+  { articulo: 7500, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 7501, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 7503, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 7504, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 7505, colorCode: 'CC', color: 'CRUDO CRUDO' },
+  { articulo: 11731, colorCode: 'AE', color: 'AERO' },
+  { articulo: 11731, colorCode: 'AG', color: 'MELANGE MARINO' },
+  { articulo: 11731, colorCode: 'VG', color: 'MELANGE VERDE' },
+  { articulo: 11731, colorCode: 'NG', color: 'NEGRO GRIS' },
+  { articulo: 11736, colorCode: 'MA', color: 'MELANGE MARINO' },
+  { articulo: 11736, colorCode: 'MB', color: 'MELANGE BLANCO' },
+  { articulo: 11736, colorCode: 'MG', color: 'MELANGE GRIS' },
+  { articulo: 11736, colorCode: 'MN', color: 'MELANGE NEGRO' },
+  { articulo: 11737, colorCode: 'AE', color: 'AERO' },
+  { articulo: 11737, colorCode: 'MA', color: 'MELANGE MARINO' },
+  { articulo: 11737, colorCode: 'MB', color: 'MELANGE BORDO' },
+  { articulo: 11737, colorCode: 'MF', color: 'MELANGE FRANCIA' },
+  { articulo: 11737, colorCode: 'MM', color: 'MELANGE MELANGE' },
+  { articulo: 11737, colorCode: 'MN', color: 'MELANGE NEGRO' },
+  { articulo: 11737, colorCode: 'MV', color: 'MELANGE VERDE' },
+  { articulo: 11788, colorCode: 'MB', color: 'MELANGE BLANCO' },
+  { articulo: 11788, colorCode: 'MN', color: 'MELANGE NEGRO' },
+  { articulo: 11788, colorCode: 'NA', color: 'NEGRO AZUL' },
+  { articulo: 11788, colorCode: 'RN', color: 'NEGRO ROJO' },
+  { articulo: 11788, colorCode: 'NB', color: 'NEGRO BLANCO' },
+  { articulo: 11788, colorCode: 'NR', color: 'NEGRO ROJO' },
+  { articulo: 11788, colorCode: 'AN', color: 'NEGRO AZUL' },
+  { articulo: 11789, colorCode: 'AR', color: 'AZUL ROJO' },
+  { articulo: 11789, colorCode: 'FN', color: 'NEGRO FRANCIA' },
+  { articulo: 11789, colorCode: 'NB', color: 'NEGRO BLANCO' },
+  { articulo: 11798, colorCode: 'MB', color: 'MELANGE BLANCO' },
+  { articulo: 11798, colorCode: 'MN', color: 'MELANGE NEGRO' },
+  { articulo: 11798, colorCode: 'MR', color: 'MELANGE ROJO' },
+  { articulo: 11812, colorCode: 'NB', color: 'NEGRO BLANCO' },
+  { articulo: 11812, colorCode: 'NF', color: 'NEGRO FRANCIA' },
+  { articulo: 11812, colorCode: 'NR', color: 'NEGRO ROJO' },
+  { articulo: 11855, colorCode: 'MF', color: 'MELANGE FRANCIA' },
+  { articulo: 11855, colorCode: 'MN', color: 'MELANGE NEGRO' },
+  { articulo: 11855, colorCode: 'MR', color: 'MELANGE ROJO' },
+  { articulo: 11869, colorCode: 'KB', color: 'POAL BLANCO' },
+  { articulo: 11881, colorCode: 'CF', color: 'CRUDO FRANCIA' },
+  { articulo: 11927, colorCode: 'C$', color: 'CRUDO CRUDO' },
+  { articulo: 11927, colorCode: 'C%', color: 'CRUDO CRUDO' },
+  { articulo: 11940, colorCode: 'NN', color: 'NEGRO NEGRO' },
+  { articulo: 11941, colorCode: 'NN', color: 'NEGRO NEGRO' },
+  { articulo: 11943, colorCode: 'CM', color: 'CRUDO MELANGE' },
+  { articulo: 12050, colorCode: 'NG', color: 'NEGRO GRIS' },
+  { articulo: 12050, colorCode: 'CG', color: 'CRUDO GRIS' },
+  { articulo: 12050, colorCode: 'FG', color: 'GRIS FRANCIA' },
+  { articulo: 12050, colorCode: 'ZG', color: 'GRIS MOSTAZA' },
+  { articulo: 12050, colorCode: 'AG', color: 'GRIS MARINO' },
+  { articulo: 12056, colorCode: 'CG', color: 'CRUDO GRIS' },
+  { articulo: 12056, colorCode: 'CN', color: 'CRUDO NEGRO' },
+  { articulo: 12062, colorCode: 'KB', color: 'POAL BLANCO' },
+  { articulo: 12093, colorCode: 'CG', color: 'CRUDO GRIS' },
+];

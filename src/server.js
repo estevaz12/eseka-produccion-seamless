@@ -1,15 +1,23 @@
+// FIXME - fix imports for consistency; change all to CommonJS
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
 const { default: serverLog } = require('./utils/serverLog.js');
 const { produccionTest } = require('./utils/test-data.js');
 const { processPDF } = require('./utils/processPDF.js');
+const dayjs = require('dayjs');
+
+// Queries
 const { default: produccion } = require('./utils/queries/produccion');
 const { insertProgramada } = require('./utils/queries/insertProgramada');
 const { compareProgramada } = require('./utils/compareProgramada.js');
 const { getProgramada } = require('./utils/queries/getProgramada.js');
 const { updateProgramada } = require('./utils/queries/updateProgramada.js');
 const { getProgramadaTotal } = require('./utils/queries/getProgramadaTotal.js');
+const { getProgColor } = require('./utils/queries/getProgColor.js');
+const { getMachines } = require('./utils/queries/getMachines.js');
+const { calculateNewTargets } = require('./utils/calculateNewTargets.js');
+// const { insertColorCodes } = require('./utils/queries/insertColorCodes.js');
 // const { insertDistr } = require('./utils/queries/insertDistr');
 
 // Environment
@@ -74,11 +82,58 @@ const startServer = () => {
 
         res.json(result.recordset);
       } catch (err) {
-        serverLog(`[ERROR] SQL Error: ${err}`);
+        serverLog(`[ERROR] GET /produccion: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
       res.json(produccionTest);
+    }
+  });
+
+  // app.get('/produccion/insertColorCodes', async (req, res) => {
+  //   serverLog('GET /produccion/insertColorCodes');
+
+  //   try {
+  //     const query = insertColorCodes();
+  //     serverLog(query);
+  //     const result = await sql.query(query);
+  //     // serverLog(JSON.stringify(result.recordset, null, 2));
+  //   } catch (err) {
+  //     serverLog(`[ERROR] SQL Error: ${err}`);
+  //     res.status(500).json({ error: err.message });
+  //   }
+  // });
+
+  app.post('/programada/calculateNewTargets', async (req, res) => {
+    serverLog('POST /programada/calculateNewTargets');
+    const progUpdates = req.body;
+
+    try {
+      const machines = await sql.query(getMachines());
+      const targets = await calculateNewTargets(
+        progUpdates,
+        machines.recordset
+      );
+
+      res.json(targets);
+    } catch (err) {
+      serverLog(`[ERROR] POST /programada/calculateNewTargets: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/programada/compare', async (req, res) => {
+    serverLog('POST /programada/compare');
+    const data = req.body;
+
+    try {
+      const currProg = await sql.query(getProgramada(data.startDate));
+      const diff = compareProgramada(currProg.recordset, data.new);
+      res.json(diff);
+      // const result = await sql.query(query);
+    } catch (err) {
+      serverLog(`[ERROR] POST /programada/compare: ${err}`);
+      res.status(500).json({ error: err.message });
     }
   });
 
@@ -94,77 +149,65 @@ const startServer = () => {
       res.status(500).json({ error: err.message });
     }
   });
+
+  app.post('/programada/insertAll', async (req, res) => {
+    serverLog('POST /programada/insertAll');
+    const data = req.body;
+
+    try {
+      await sql.query(insertProgramada(data, 'added'));
+      serverLog('POST /programada/insertAll - SUCCESS');
+    } catch (err) {
+      serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // app.get('/programada/insertDistr', async (req, res) => {
+  //   serverLog('GET /programada/insertDistr');
+
+  //   try {
+  //     const query = insertDistr();
+  //     serverLog(query);
+  //     const result = await sql.query(query);
+  //     serverLog(JSON.stringify(result.recordset, null, 2));
+  //   } catch (err) {
+  //     serverLog(`[ERROR] SQL Error: ${err}`);
+  //     res.status(500).json({ error: err.message });
+  //   }
+  // });
+
+  app.get('/programada/total', async (req, res) => {
+    serverLog('GET /programada/total');
+    const { startDate } = req.query;
+
+    try {
+      const result = await sql.query(getProgramadaTotal(startDate));
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /programada/total: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/programada/update', async (req, res) => {
+    serverLog('POST /programada/update');
+    const data = req.body;
+
+    try {
+      const now = dayjs();
+      await sql.query(updateProgramada(data, now));
+      serverLog('POST /programada/update - SUCCESS');
+      // return inserted rows to calculate new targets
+      // include deleted articulos to stop machines
+      const result = await sql.query(getProgColor(now, true));
+      // serverLog(JSON.stringify(result.recordset, null, 2));
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] POST /programada/update: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
 };
-
-app.get('/programada/total', async (req, res) => {
-  serverLog('GET /programada/total');
-  const { startDate } = req.query;
-
-  try {
-    const result = await sql.query(getProgramadaTotal(startDate));
-    res.json(result.recordset);
-  } catch (err) {
-    serverLog(`[ERROR] SQL Error: ${err}`);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/programada/insertAll', async (req, res) => {
-  serverLog('POST /programada/insertAll');
-  const data = req.body;
-
-  try {
-    const query = insertProgramada(data, 'added');
-    const result = await sql.query(query);
-    serverLog('Inserted');
-  } catch (err) {
-    serverLog(`[ERROR] SQL Error: ${err}`);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/programada/compare', async (req, res) => {
-  serverLog('POST /programada/compare');
-  const data = req.body;
-
-  try {
-    const currProg = await sql.query(getProgramada(data.startDate));
-    const diff = compareProgramada(currProg.recordset, data.new);
-    res.json(diff);
-    // const result = await sql.query(query);
-  } catch (err) {
-    serverLog(`[ERROR] SQL Error: ${err}`);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/programada/update', async (req, res) => {
-  serverLog('POST /programada/update');
-  const data = req.body;
-
-  try {
-    const query = updateProgramada(data);
-    serverLog(query);
-    const result = await sql.query(query);
-    serverLog('Updated');
-  } catch (err) {
-    serverLog(`[ERROR] SQL Error: ${err}`);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// app.get('/programada/insertDistr', async (req, res) => {
-//   serverLog('GET /programada/insertDistr');
-
-//   try {
-//     const query = insertDistr();
-//     serverLog(query);
-//     const result = await sql.query(query);
-//     serverLog(JSON.stringify(result.recordset, null, 2));
-//   } catch (err) {
-//     serverLog(`[ERROR] SQL Error: ${err}`);
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
 // startServer();

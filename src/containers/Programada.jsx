@@ -12,6 +12,7 @@ export default function Programada() {
   const [filePath, setFilePath] = useState();
   const [programada, setProgramada] = useState();
   const [diff, setDiff] = useState();
+  const [newTargets, setNewTargets] = useState();
 
   useEffect(() => {
     if (localStorage.getItem('progStartDate')) {
@@ -28,47 +29,6 @@ export default function Programada() {
         .catch((err) => console.log('[CLIENT] Error fetching data:', err));
     }
   }, [filePath]);
-
-  function fetchCurrTotal() {
-    const params = new URLSearchParams({
-      startDate: localStorage.getItem('progStartDate'),
-    }).toString();
-    fetch(`${apiUrl}/programada/total?${params}`)
-      .then((res) => res.json())
-      .then((data) => setCurrTotal(data[0].Total)) // single-record object
-      .catch((err) => console.log('[CLIENT] Error fetching data:', err));
-  }
-
-  function handleInsertAll() {
-    if (programada) {
-      fetch(`${apiUrl}/programada/insertAll`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(programada.rows),
-      })
-        // .then((res) =>
-        //   console.log(`[CLIENT] Response:\n${JSON.stringify(res)}`)
-        // )
-        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
-    }
-  }
-
-  function handleProgramadaUpdate() {
-    if (diff) {
-      fetch(`${apiUrl}/programada/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(diff),
-      })
-        .then(fetchCurrTotal()) // Refresh total
-        .then(setDiff()) // Clear diff
-        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
-    }
-  }
 
   function handleCompare() {
     if (programada) {
@@ -88,23 +48,75 @@ export default function Programada() {
     }
   }
 
+  function handleInsertAll() {
+    if (programada) {
+      fetch(`${apiUrl}/programada/insertAll`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(programada.rows),
+      }).catch((err) => console.log('[CLIENT] Error fetching data:', err));
+    }
+  }
+
+  function handleProgramadaUpdate() {
+    if (diff) {
+      fetch(`${apiUrl}/programada/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(diff),
+      })
+        .then((res) => res.json())
+        .then((data) => fetchNewTargets(data))
+        .then(() => fetchCurrTotal()) // Refresh total
+        .then(() => setDiff()) // Clear diff
+        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+    }
+  }
+
   async function handleUpload() {
+    // Reset states before uploading a new file
     setProgramada();
     setDiff();
+    setNewTargets();
     setFilePath(await window.electronAPI.openFile());
+  }
+
+  function fetchCurrTotal() {
+    const params = new URLSearchParams({
+      startDate: localStorage.getItem('progStartDate'),
+    }).toString();
+    fetch(`${apiUrl}/programada/total?${params}`)
+      .then((res) => res.json())
+      .then((data) => setCurrTotal(data[0].Total)) // single-record object
+      .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+  }
+
+  function fetchNewTargets(inserted) {
+    fetch(`${apiUrl}/programada/calculateNewTargets`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inserted), // inserted prog updates
+    })
+      .then((res) => res.json())
+      .then((data) => setNewTargets(data))
+      .catch((err) => console.log('[CLIENT] Error fetching data:', err));
   }
 
   return (
     <Box>
       <Typography>
         Total Actual:{' '}
-        {
-          currTotal // if
-            ? JSON.stringify(currTotal)
-            : localStorage.getItem('progStartDate') // else if
-            ? 'Cargando...'
-            : 0 //else
-        }
+        {currTotal !== undefined
+          ? currTotal
+          : localStorage.getItem('progStartDate')
+          ? 'Cargando...'
+          : 0}
       </Typography>
       <InputFileUpload onClick={handleUpload} />
       <Typography>File path: {filePath}</Typography>
@@ -114,16 +126,22 @@ export default function Programada() {
         value={
           localStorage.getItem('progStartDate')
             ? dayjs(localStorage.getItem('progStartDate'))
-            : undefined
+            : null
         }
         onChange={(newValue) => {
-          localStorage.setItem('progStartDate', newValue.format(sqlDateFormat));
+          if (newValue) {
+            localStorage.setItem(
+              'progStartDate',
+              newValue.format(sqlDateFormat)
+            );
+            fetchCurrTotal();
+          }
         }}
         disableFuture
         disabled={localStorage.getItem('progStartDate') !== null}
       />
 
-      {programada && (
+      {programada && !diff && !newTargets && (
         <Button
           onClick={handleInsertAll}
           disabled={localStorage.getItem('progStartDate') !== null}
@@ -132,7 +150,9 @@ export default function Programada() {
         </Button>
       )}
 
-      {programada && <Button onClick={handleCompare}>Comparar</Button>}
+      {programada && !diff && !newTargets && (
+        <Button onClick={handleCompare}>Comparar</Button>
+      )}
 
       {diff &&
         !(
@@ -142,7 +162,7 @@ export default function Programada() {
         ) && <Button onClick={handleProgramadaUpdate}>Cargar cambios</Button>}
 
       {programada && <Typography>Total: {programada.total}</Typography>}
-      {programada && !diff && (
+      {programada && !diff && !newTargets && (
         <DataTable
           cols={['Artículo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
         >
@@ -209,6 +229,15 @@ export default function Programada() {
             </DataTable>
           </Box>
         </Box>
+      )}
+
+      {newTargets && (
+        <Typography
+          component='pre'
+          sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
+        >
+          {JSON.stringify(newTargets, null, 2)}
+        </Typography>
       )}
     </Box>
   );
