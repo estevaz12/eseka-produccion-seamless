@@ -5,134 +5,134 @@ import dayjs from 'dayjs';
 import serverLog from './serverLog.js';
 
 const calculateNewTargets = async (progUpdates, machines) => {
-  const newTargets = [];
-
   await parseMachines(machines);
   serverLog(JSON.stringify(machines, null, 2));
 
   // Look through inserted articulos in MACHINES
-  // Use for...of to await each async operation in sequence
-  for (const newRecord of progUpdates) {
-    serverLog(
-      `Calculating new targets for ${newRecord.Articulo} ${newRecord.Talle} ${newRecord.Color}(${newRecord.ColorId})`
-    );
+  // Use Promise.all to run concurrently
+  const newTargets = await Promise.all(
+    progUpdates.map(async (newRecord) => {
+      serverLog(
+        `Calculating new targets for ${newRecord.Articulo} ${newRecord.Talle} ${newRecord.Color}(${newRecord.ColorId})`
+      );
 
-    // look for machines making the articulo
-    /* Machine states
-     * 0: RUN
-     * 2: STOP BUTTON
-     * 3: AUTOMATIC STOP
-     * 4: TARGET
-     * 5: F1
-     * 6: ELECTRÓNICO
-     * 7: MECANICO
-     * 9: HILADO
-     */
-    const targetMachines = machines.filter(
-      (machine) =>
-        machine.StyleCode.articulo === Math.floor(newRecord.Articulo) &&
-        machine.StyleCode.talle === newRecord.Talle &&
-        machine.StyleCode.colorId === newRecord.ColorId &&
-        machine.State in [0, 2, 3, 4, 5, 6, 7, 9]
-    );
+      // look for machines making the articulo
+      /* Machine states
+       * 0: RUN
+       * 2: STOP BUTTON
+       * 3: AUTOMATIC STOP
+       * 4: TARGET
+       * 5: F1
+       * 6: ELECTRÓNICO
+       * 7: MECANICO
+       * 9: HILADO
+       */
+      const targetMachines = machines.filter(
+        (machine) =>
+          machine.StyleCode.articulo === Math.floor(newRecord.Articulo) &&
+          machine.StyleCode.talle === newRecord.Talle &&
+          machine.StyleCode.colorId === newRecord.ColorId &&
+          machine.State in [0, 2, 3, 4, 5, 6, 7, 9]
+      );
 
-    serverLog(
-      `Target machines for ${newRecord.Articulo} ${newRecord.Talle} ${
-        newRecord.Color
-      }(${newRecord.ColorId}): ${JSON.stringify(targetMachines, null, 2)}`
-    );
+      serverLog(
+        `Target machines for ${newRecord.Articulo} ${newRecord.Talle} ${
+          newRecord.Color
+        }(${newRecord.ColorId}): ${JSON.stringify(targetMachines, null, 2)}`
+      );
 
-    // if any machines are found
-    if (targetMachines.length > 0) {
-      // get the previous record in programada
-      const previousRecord = await getPrevProgramada(newRecord);
-      // get month production
-      const monthProduction = await getMonthProduction(newRecord);
+      // if any machines are found
+      if (targetMachines.length > 0) {
+        const [previousRecord, monthProduction] = await Promise.all([
+          getPrevProgramada(newRecord), // get the previous record in programada
+          getMonthProduction(newRecord), // get month production
+        ]);
 
-      // Use for...of to await each async operation in sequence
-      for (const machine of targetMachines) {
-        let newTargetObj = {
-          machCode: machine.MachCode,
-          styleCode: machine.StyleCode.styleCode,
-          machTarget: machine.TargetOrder,
-          prevProgTarget: previousRecord ? previousRecord.Target : 0,
-          newProgTarget: newRecord.Target,
-          monthProduction: monthProduction,
-          machinePieces: machine.Pieces,
-        };
+        // Use Promise.all to run concurrently
+        return Promise.all(
+          targetMachines.map(async (machine) => {
+            let newTargetObj = {
+              machCode: machine.MachCode,
+              styleCode: machine.StyleCode.styleCode,
+              machTarget: machine.TargetOrder,
+              prevProgTarget: previousRecord ? previousRecord.Target : 0,
+              newProgTarget: newRecord.Target,
+              monthProduction: monthProduction,
+              machinePieces: machine.Pieces,
+            };
 
-        if (newRecord.Target - monthProduction <= 0) {
-          // If the new target is less than the month production, then
-          // articulo is done, no need to sum pieces or calculate new target.
-          newTargetObj = {
-            ...newTargetObj,
-            sendTarget: newRecord.Target - monthProduction,
-          };
-          // TODO: warn articulo is done
+            if (newRecord.Target - monthProduction <= 0) {
+              // If the new target is less than the month production, then
+              // articulo is done, no need to sum pieces or calculate new target.
+              newTargetObj = {
+                ...newTargetObj,
+                sendTarget: newRecord.Target - monthProduction,
+              };
+              // TODO: warn articulo is done
 
-          serverLog(
-            `New target for ${machine.StyleCode.styleCode}: ${JSON.stringify(
-              newTargetObj,
-              null,
-              2
-            )}`
-          );
-        } else if (
-          // If 2+ machines are found, newTarget needs to be calculated
-          targetMachines.length === 1 &&
-          // If no previous record, then send new target
-          (!previousRecord ||
-            Object.keys(previousRecord).length === 0 ||
-            // If no target and articulo was not done before,
-            // then send the new target
-            (machine.TargetOrder === 0 && monthProduction === machine.Pieces) ||
-            // If target is the same as the previous record in programada
-            // then just update the target to the new one
-            previousRecord.Target === machine.TargetOrder)
-        ) {
-          newTargetObj = {
-            ...newTargetObj,
-            sendTarget: newRecord.Target,
-          };
+              serverLog(
+                `New target for ${
+                  machine.StyleCode.styleCode
+                }: ${JSON.stringify(newTargetObj, null, 2)}`
+              );
+            } else if (
+              // If 2+ machines are found, newTarget needs to be calculated
+              targetMachines.length === 1 &&
+              // If no previous record, then send new target
+              (!previousRecord ||
+                Object.keys(previousRecord).length === 0 ||
+                // If no target and articulo was not done before,
+                // then send the new target
+                (machine.TargetOrder === 0 &&
+                  monthProduction === machine.Pieces) ||
+                // If target is the same as the previous record in programada
+                // then just update the target to the new one
+                previousRecord.Target === machine.TargetOrder)
+            ) {
+              newTargetObj = {
+                ...newTargetObj,
+                sendTarget: newRecord.Target,
+              };
 
-          serverLog(
-            `New target for ${machine.StyleCode.styleCode}: ${JSON.stringify(
-              newTargetObj,
-              null,
-              2
-            )}`
-          );
-        } else {
-          // If machine target is different than prevRecord, means that articulo
-          // was incomplete OR the counter was reset at some point. To
-          // calculate new target, get the production from the month and subtract
-          // newTarget - monthProduction / targetMachines.length + machine.Pieces
-          let newTarget = Math.ceil(
-            (newRecord.Target - monthProduction) / targetMachines.length +
-              machine.Pieces
-          );
-          newTarget = newTarget % 2 === 0 ? newTarget : newTarget + 1; // make it even
+              serverLog(
+                `New target for ${
+                  machine.StyleCode.styleCode
+                }: ${JSON.stringify(newTargetObj, null, 2)}`
+              );
+            } else {
+              // If machine target is different than prevRecord, means that articulo
+              // was incomplete OR the counter was reset at some point. To
+              // calculate new target, get the production from the month and subtract
+              // newTarget - monthProduction / targetMachines.length + machine.Pieces
+              let newTarget = Math.ceil(
+                (newRecord.Target - monthProduction) / targetMachines.length +
+                  machine.Pieces
+              );
+              newTarget = newTarget % 2 === 0 ? newTarget : newTarget + 1; // make it even
 
-          newTargetObj = {
-            ...newTargetObj,
-            sendTarget: newTarget,
-          };
+              newTargetObj = {
+                ...newTargetObj,
+                sendTarget: newTarget,
+              };
 
-          serverLog(
-            `New target for ${machine.StyleCode.styleCode}: ${JSON.stringify(
-              newTargetObj,
-              null,
-              2
-            )}`
-          );
-        }
+              serverLog(
+                `New target for ${
+                  machine.StyleCode.styleCode
+                }: ${JSON.stringify(newTargetObj, null, 2)}`
+              );
+            }
 
-        newTargets.push(newTargetObj);
+            return newTargetObj;
+          })
+        );
       }
-    }
-  }
 
-  return newTargets;
+      return []; // to avoid undefined in the array
+    })
+  );
+
+  // Flatten the array of arrays
+  return newTargets.flat();
 };
 
 export { calculateNewTargets };
