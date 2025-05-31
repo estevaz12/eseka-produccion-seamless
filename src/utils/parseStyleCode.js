@@ -16,7 +16,9 @@ const parseStyleCode = async (styleCode) => {
       colorId = await sql.query(getColorId(articulo, color));
       colorId = colorId.recordset[0].Id;
     } catch (err) {
-      serverLog(`[ERROR] [parseStyleCode] SQL ERROR: ${err}`);
+      serverLog(
+        `[ERROR] [parseStyleCode] Please add to COLOR_CODES: ${articulo}, ${color}\n${err}`
+      );
     }
   }
 

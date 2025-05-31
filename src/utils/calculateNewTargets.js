@@ -6,7 +6,7 @@ import serverLog from './serverLog.js';
 
 const calculateNewTargets = async (progUpdates, machines) => {
   await parseMachines(machines);
-  serverLog(JSON.stringify(machines, null, 2));
+  // serverLog(JSON.stringify(machines, null, 2));
 
   // Look through inserted articulos in MACHINES
   // Use Promise.all to run concurrently

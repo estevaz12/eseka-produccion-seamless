@@ -1,18 +1,41 @@
-import { Box, Typography, Button } from '@mui/joy';
+// TODO reset localStorage.date button
+// TODO fix insertAll
+
+import {
+  Box,
+  Typography,
+  Button,
+  Modal,
+  ModalDialog,
+  DialogTitle,
+  DialogContent,
+  FormControl,
+  FormLabel,
+  Input,
+  FormHelperText,
+  ModalOverflow,
+} from '@mui/joy';
 import InputFileUpload from '../components/InputFileUpload.jsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
+import ColorFormInputs from '../components/ColorFormInputs.jsx';
+
+// to avoid useEffect dependency issues
+let apiUrl, sqlDateFormat;
 
 export default function Programada() {
-  const { apiUrl, sqlDateFormat } = useConfig();
+  [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
   const [currTotal, setCurrTotal] = useState();
   const [filePath, setFilePath] = useState();
   const [programada, setProgramada] = useState();
   const [diff, setDiff] = useState();
+  const diffMounted = useRef(false);
   const [newTargets, setNewTargets] = useState();
+  const [newArticuloData, setNewArticuloData] = useState([]);
+  const [articuloFormData, setArticuloFormData] = useState({});
 
   useEffect(() => {
     if (localStorage.getItem('progStartDate')) {
@@ -26,7 +49,7 @@ export default function Programada() {
       fetch(`${apiUrl}/programada/file?${params}`)
         .then((res) => res.json())
         .then((data) => setProgramada(data))
-        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
     }
   }, [filePath]);
 
@@ -44,7 +67,7 @@ export default function Programada() {
       })
         .then((res) => res.json())
         .then((data) => setDiff(data))
-        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
     }
   }
 
@@ -56,29 +79,185 @@ export default function Programada() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(programada.rows),
-      }).catch((err) => console.log('[CLIENT] Error fetching data:', err));
+      }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
     }
   }
 
-  function handleProgramadaUpdate() {
+  // TODO: show form/modal to insert new articulo data
+  async function handleProgramadaUpdate() {
     if (diff) {
-      fetch(`${apiUrl}/programada/update`, {
+      // Check if articulo, color codes, and color distr exist and handle accordingly
+      let prevArticulo; // to avoid duplicate fetches
+
+      for (const row of diff.added) {
+        // TODO: change to be parallel
+        if (prevArticulo !== row.articulo) {
+          let articulo;
+          try {
+            let res = await fetch(`${apiUrl}/articulo/${row.articulo}`);
+            articulo = await res.json();
+          } catch (err) {
+            console.error('[CLIENT] Error fetching articulo:', err);
+          }
+
+          // if else to avoid making unnecessary fetches if articulo doesn't exist
+          if (!articulo || articulo.length === 0) {
+            // ask for Tipo, ColorDistr, ColorCodes
+            setNewArticuloData((prev) => [
+              ...prev,
+              {
+                articuloExists: false, // to know if an articulo insert is needed
+                articulo: row.articulo,
+                tipo: null,
+                colorDistr: null,
+                colorCodes: null,
+              },
+            ]);
+          } else {
+            // If articulo exists, check if color codes and color distr exists
+            const [colorDistr, colorCodes] = await Promise.all([
+              fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`)
+                .then((res) => res.json())
+                .catch((err) =>
+                  console.error('[CLIENT] Error fetching colorDistr:', err)
+                ),
+              fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorCodes`)
+                .then((res) => res.json())
+                .catch((err) =>
+                  console.error('[CLIENT] Error fetching colorCodes:', err)
+                ),
+            ]);
+
+            console.log(
+              JSON.stringify(
+                {
+                  articuloExists: true, // no need to insert articulo
+                  articulo: articulo[0].Articulo,
+                  tipo: articulo[0].Tipo,
+                  // if undefined or length 0, results in null
+                  colorDistr: colorDistr?.length > 0 ? colorDistr : null,
+                  colorCodes: colorCodes?.length > 0 ? colorCodes : null,
+                },
+                null,
+                2
+              )
+            );
+
+            // if color codes and color distr exist, don't add to newArticuloData
+            if (!(colorDistr?.length > 0 && colorCodes?.length > 0)) {
+              setNewArticuloData((prev) => [
+                ...prev,
+                {
+                  articuloExists: true, // no need to insert articulo
+                  articulo: articulo[0].Articulo,
+                  tipo: articulo[0].Tipo,
+                  // if undefined or length 0, results in null
+                  colorDistr: colorDistr?.length > 0 ? colorDistr : null,
+                  colorCodes: colorCodes?.length > 0 ? colorCodes : null,
+                },
+              ]);
+            }
+          }
+        }
+
+        prevArticulo = row.articulo;
+      }
+
+      // move from added to modified to trigger useEffect after inserting new articulos
+      setDiff((prev) => ({
+        ...prev,
+        modified: [...prev.modified, ...prev.added],
+        added: [],
+      }));
+    }
+  }
+
+  function handleNewArticuloSubmit(e, articulo, articuloExists) {
+    // articuloFormData = {
+    //  tipo,
+    //  colorDistr: [{color, porcentaje}], -- won't be there if no need to insert
+    //  colorCodes: [{color, code}]  -- won't be there if no need to insert
+    // }
+    e.preventDefault();
+    const data = { articulo, ...articuloFormData };
+    if (!articuloExists) {
+      // if articulo doesn't exist, insert articulo, colorDistr, and colorCodes
+      fetch(`${apiUrl}/articulo/insertWithColors`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(diff),
-      })
-        .then((res) => res.json())
-        .then((data) => fetchNewTargets(data))
-        .then(() => fetchCurrTotal()) // Refresh total
-        .then(() => setDiff()) // Clear diff
-        .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+        body: JSON.stringify(data),
+      }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
+    } else {
+      // if articulo exists, check if colorCodes and colorDistr exists
+      // if not, insert them
+      if (articuloFormData.colorDistr) {
+        fetch(`${apiUrl}/colorDistr/insert`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            articulo: data.articulo,
+            colorDistr: data.colorDistr, // [{color, porcentaje}]
+          }),
+        }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
+      }
+
+      if (articuloFormData.colorCodes) {
+        fetch(`${apiUrl}/colorCodes/insert`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            articulo: data.articulo,
+            colorCodes: data.colorCodes, // [{color, code}]
+          }),
+        }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
+      }
     }
+
+    setNewArticuloData((prev) => prev.slice(1)); // Remove first item
+    setArticuloFormData({});
   }
+
+  // TODO: add fetch cancel to all useEffects
+  // Insert diff updates after validating new articulos
+  useEffect(() => {
+    // can't make an async useEffect, instead use inner function
+    async function insertProgUpdatesAndRefresh() {
+      try {
+        const res = await fetch(`${apiUrl}/programada/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(diff),
+        });
+        const data = await res.json();
+        fetchNewTargets(data);
+        fetchCurrTotal();
+        setDiff();
+      } catch (err) {
+        console.error('[CLIENT] Error fetching data:', err);
+      }
+    }
+
+    if (diff && !diffMounted.current) {
+      diffMounted.current = true;
+      return; // skip when diff is first set
+    }
+
+    if (diff && diff.added.length === 0 && newArticuloData.length === 0) {
+      insertProgUpdatesAndRefresh();
+    }
+  }, [diff, newArticuloData]);
 
   async function handleUpload() {
     // Reset states before uploading a new file
+    diffMounted.current = false;
     setProgramada();
     setDiff();
     setNewTargets();
@@ -86,13 +265,10 @@ export default function Programada() {
   }
 
   function fetchCurrTotal() {
-    const params = new URLSearchParams({
-      startDate: localStorage.getItem('progStartDate'),
-    }).toString();
-    fetch(`${apiUrl}/programada/total?${params}`)
+    fetch(`${apiUrl}/programada/total/${localStorage.getItem('progStartDate')}`)
       .then((res) => res.json())
       .then((data) => setCurrTotal(data[0].Total)) // single-record object
-      .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+      .catch((err) => console.error('[CLIENT] Error fetching data:', err));
   }
 
   function fetchNewTargets(inserted) {
@@ -105,7 +281,7 @@ export default function Programada() {
     })
       .then((res) => res.json())
       .then((data) => setNewTargets(data))
-      .catch((err) => console.log('[CLIENT] Error fetching data:', err));
+      .catch((err) => console.error('[CLIENT] Error fetching data:', err));
   }
 
   return (
@@ -160,6 +336,110 @@ export default function Programada() {
           diff.modified.length === 0 &&
           diff.deleted.length === 0
         ) && <Button onClick={handleProgramadaUpdate}>Cargar cambios</Button>}
+
+      {/* render one Modal at a time */}
+      {newArticuloData.length > 0 && (
+        <Modal open>
+          <ModalOverflow>
+            <ModalDialog>
+              <DialogTitle>
+                Agregar artículo {newArticuloData[0].articulo}
+              </DialogTitle>
+              <DialogContent>
+                Por favor, ingrese los datos del artículo.
+              </DialogContent>
+              <form
+                onSubmit={(e) =>
+                  handleNewArticuloSubmit(
+                    e,
+                    newArticuloData[0].articulo,
+                    newArticuloData[0].articuloExists
+                  )
+                }
+              >
+                <Box>
+                  {/* TODO: validation */}
+                  <FormControl>
+                    <FormLabel>Articulo</FormLabel>
+                    <Input value={newArticuloData[0].articulo} disabled />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Tipo (si aplica)</FormLabel>
+                    <Input
+                      value={newArticuloData[0].tipo}
+                      onChange={(e) =>
+                        setArticuloFormData({
+                          ...articuloFormData,
+                          tipo: e.target.value,
+                        })
+                      }
+                      disabled={newArticuloData[0].tipo}
+                      maxLength={1}
+                      pattern='%|\$|#'
+                      // slotProps={{
+                      //   input: {
+                      //     readOnly: newArticuloData[0].tipo ? true : false,
+                      //     maxLength: 1,
+                      //     pattern: '%|$|#',
+                      //   },
+                      // }}
+                    />
+                    <FormHelperText>
+                      <Typography variant='solid' color='primary'>
+                        #
+                      </Typography>
+                      &nbsp;si se divide a la mitad.&nbsp;
+                      <Typography variant='solid' color='primary'>
+                        $
+                      </Typography>
+                      &nbsp;o&nbsp;
+                      <Typography variant='solid' color='primary'>
+                        %
+                      </Typography>
+                      &nbsp;si se duplica.
+                    </FormHelperText>
+                  </FormControl>
+                  {/* TODO: 
+                    - input colorDistr first
+                      --> input field where you can add more as you go
+                    - based on the num of colors in colorDistr, amount of colorCode input fields
+                  */}
+                  {newArticuloData[0].colorDistr ? (
+                    // colorDistr won't exist in articuloFormData
+                    <Typography>Distribución ya cargada</Typography>
+                  ) : (
+                    <ColorFormInputs
+                      fieldName='colorDistr'
+                      title='Distribución de colores'
+                      label2='Porcentaje'
+                      input2Key='porcentaje'
+                      input2Attrs={{ type: 'number', min: 1, max: 100 }}
+                      articuloFormData={articuloFormData}
+                      setArticuloFormData={setArticuloFormData}
+                    />
+                  )}
+
+                  {newArticuloData[0].colorCodes ? (
+                    // colorCodes won't exist in articuloFormData
+                    <Typography>Códigos ya cargados</Typography>
+                  ) : (
+                    <ColorFormInputs
+                      fieldName='colorCodes'
+                      title='Códigos de colores'
+                      label2='Código'
+                      input2Key='code'
+                      input2Attrs={{ type: 'text' }}
+                      articuloFormData={articuloFormData}
+                      setArticuloFormData={setArticuloFormData}
+                    />
+                  )}
+                </Box>
+                <Button type='submit'>Agregar artículo</Button>
+              </form>
+            </ModalDialog>
+          </ModalOverflow>
+        </Modal>
+      )}
 
       {programada && <Typography>Total: {programada.total}</Typography>}
       {programada && !diff && !newTargets && (

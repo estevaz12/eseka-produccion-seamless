@@ -1,3 +1,4 @@
+// TODO: api docs
 // FIXME - fix imports for consistency; change all to CommonJS
 const express = require('express');
 const sql = require('mssql');
@@ -17,8 +18,18 @@ const { getProgramadaTotal } = require('./utils/queries/getProgramadaTotal.js');
 const { getProgColor } = require('./utils/queries/getProgColor.js');
 const { getMachines } = require('./utils/queries/getMachines.js');
 const { calculateNewTargets } = require('./utils/calculateNewTargets.js');
-// const { insertColorCodes } = require('./utils/queries/insertColorCodes.js');
-// const { insertDistr } = require('./utils/queries/insertDistr');
+const { insertColorCodes } = require('./utils/queries/insertColorCodes.js');
+const { insertDistr } = require('./utils/queries/insertDistr');
+const { getArticulo } = require('./utils/queries/getArticulo.js');
+const {
+  getArticuloColorDistr,
+} = require('./utils/queries/getArticuloColorDistr.js');
+const {
+  getArticuloColorCodes,
+} = require('./utils/queries/getArticuloColorCodes.js');
+const {
+  insertArticuloWithColors,
+} = require('./utils/queries/insertArticuloWithColors.js');
 
 // Environment
 let isPackaged; //= false;
@@ -69,6 +80,84 @@ const startServer = () => {
     res.json({ data: 'Hello from server!' });
   });
 
+  app.get('/articulo/:articulo', async (req, res) => {
+    const { articulo } = req.params;
+    serverLog(`GET /articulo/${articulo}`);
+    try {
+      const result = await sql.query(getArticulo(articulo));
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /articulo/${articulo}: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/articulo/:articulo/colorDistr', async (req, res) => {
+    const { articulo } = req.params;
+    serverLog(`GET /articulo/${articulo}/colorDistr`);
+    try {
+      const result = await sql.query(getArticuloColorDistr(articulo));
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /articulo/${articulo}/colorDistr: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/articulo/:articulo/colorCodes', async (req, res) => {
+    const { articulo } = req.params;
+    serverLog(`GET /articulo/${articulo}/colorCodes`);
+    try {
+      const result = await sql.query(getArticuloColorCodes(articulo));
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /articulo/${articulo}/colorCodes: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/articulo/insertWithColors', async (req, res) => {
+    serverLog('POST /articulo/insertWithColors');
+    const data = req.body;
+
+    try {
+      const query = insertArticuloWithColors(data);
+      serverLog(query);
+      await sql.query(query);
+    } catch (err) {
+      serverLog(`[ERROR] POST /articulo/insertWithColors: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/colorCodes/insert', async (req, res) => {
+    serverLog('POST /colorCodes/insert');
+    const data = req.body;
+
+    try {
+      const query = insertColorCodes(data);
+      serverLog(query);
+      await sql.query(query);
+    } catch (err) {
+      serverLog(`[ERROR] POST /colorCodes/insert: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/colorDistr/insert', async (req, res) => {
+    serverLog('POST /colorDistr/insert');
+    const data = req.body;
+
+    try {
+      const query = insertDistr(data);
+      serverLog(query);
+      await sql.query(query);
+    } catch (err) {
+      serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get('/produccion', async (req, res) => {
     serverLog('GET /produccion');
     serverLog(JSON.stringify(req.query));
@@ -89,20 +178,6 @@ const startServer = () => {
       res.json(produccionTest);
     }
   });
-
-  // app.get('/produccion/insertColorCodes', async (req, res) => {
-  //   serverLog('GET /produccion/insertColorCodes');
-
-  //   try {
-  //     const query = insertColorCodes();
-  //     serverLog(query);
-  //     const result = await sql.query(query);
-  //     // serverLog(JSON.stringify(result.recordset, null, 2));
-  //   } catch (err) {
-  //     serverLog(`[ERROR] SQL Error: ${err}`);
-  //     res.status(500).json({ error: err.message });
-  //   }
-  // });
 
   app.post('/programada/calculateNewTargets', async (req, res) => {
     serverLog('POST /programada/calculateNewTargets');
@@ -163,23 +238,9 @@ const startServer = () => {
     }
   });
 
-  // app.get('/programada/insertDistr', async (req, res) => {
-  //   serverLog('GET /programada/insertDistr');
-
-  //   try {
-  //     const query = insertDistr();
-  //     serverLog(query);
-  //     const result = await sql.query(query);
-  //     serverLog(JSON.stringify(result.recordset, null, 2));
-  //   } catch (err) {
-  //     serverLog(`[ERROR] SQL Error: ${err}`);
-  //     res.status(500).json({ error: err.message });
-  //   }
-  // });
-
-  app.get('/programada/total', async (req, res) => {
+  app.get('/programada/total/:startDate', async (req, res) => {
     serverLog('GET /programada/total');
-    const { startDate } = req.query;
+    const { startDate } = req.params;
 
     try {
       const result = await sql.query(getProgramadaTotal(startDate));

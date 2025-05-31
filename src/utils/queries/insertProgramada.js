@@ -6,6 +6,7 @@ const insertProgramada = (data, status, date = dayjs()) => {
   let query = '';
 
   for (const row of data) {
+    // TODO: see if 'added' is necessary for insertAll endpoint
     if (status === 'added') {
       query += `
       IF NOT EXISTS (SELECT Articulo FROM SEA_ARTICULOS WHERE Articulo = ${row.articulo})
