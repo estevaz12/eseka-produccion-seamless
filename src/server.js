@@ -130,6 +130,17 @@ const startServer = () => {
     }
   });
 
+  app.get('/colors', async (req, res) => {
+    serverLog('GET /colors');
+    try {
+      const result = await sql.query(`SELECT * FROM SEA_COLORES`);
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /colors: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post('/colorCodes/insert', async (req, res) => {
     serverLog('POST /colorCodes/insert');
     const data = req.body;

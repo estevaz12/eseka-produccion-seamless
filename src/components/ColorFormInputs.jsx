@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
   Typography,
 } from '@mui/joy';
 
@@ -16,6 +17,7 @@ function ColorFormInputs({
   input2Attrs,
   articuloFormData,
   setArticuloFormData,
+  colors,
 }) {
   const [color, setColor] = useState();
   const [input2, setInput2] = useState();
@@ -25,7 +27,17 @@ function ColorFormInputs({
       <Typography>{title}</Typography>
       <FormControl>
         <FormLabel>Color</FormLabel>
-        <Input value={color} onChange={(e) => setColor(e.target.value)} />
+        <Select
+          placeholder='Seleccioná un color...'
+          onChange={(e) => setColor(e.target.value)}
+          required
+        >
+          {colors.map((color) => (
+            <option key={color.Id} value={color.Id}>
+              {color.Color}
+            </option>
+          ))}
+        </Select>
       </FormControl>
       <FormControl>
         <FormLabel>{label2}</FormLabel>
@@ -33,6 +45,7 @@ function ColorFormInputs({
           value={input2}
           onChange={(e) => setInput2(e.target.value)}
           slotProps={{ input: { ...input2Attrs } }}
+          required={input2Key === 'code'}
         />
       </FormControl>
       <Button

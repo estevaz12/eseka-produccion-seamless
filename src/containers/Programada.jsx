@@ -1,4 +1,4 @@
-// TODO fix insertAll
+// TODO ask to insert color codes when calculating new targets
 
 import {
   Box,
@@ -35,6 +35,7 @@ export default function Programada() {
   const [newTargets, setNewTargets] = useState();
   const [newArticuloData, setNewArticuloData] = useState([]);
   const [articuloFormData, setArticuloFormData] = useState({});
+  const [colors, setColors] = useState();
   const loadType = useRef('');
 
   useEffect(() => {
@@ -71,93 +72,83 @@ export default function Programada() {
     }
   }
 
-  // TODO: show form/modal to insert new articulo data
   async function handleProgramadaUpdate() {
-    if (diff) {
-      // Check if articulo, color codes, and color distr exist and handle accordingly
-      let prevArticulo; // to avoid duplicate fetches
+    // Check if articulo, color codes, and color distr exist and handle accordingly
+    let prevArticulo; // to avoid duplicate fetches
 
-      for (const row of diff.added) {
-        // TODO: change to be parallel
-        if (prevArticulo !== row.articulo) {
-          let articulo;
-          try {
-            let res = await fetch(`${apiUrl}/articulo/${row.articulo}`);
-            articulo = await res.json();
-          } catch (err) {
-            console.error('[CLIENT] Error fetching articulo:', err);
-          }
+    // GET colors for form
+    if (diff.added.length > 0) {
+      fetch(`${apiUrl}/colors`)
+        .then((res) => res.json())
+        .then((data) => setColors(data))
+        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
+    }
 
-          // if else to avoid making unnecessary fetches if articulo doesn't exist
-          if (!articulo || articulo.length === 0) {
-            // ask for Tipo, ColorDistr, ColorCodes
+    for (const row of diff.added) {
+      // TODO: change to be parallel
+      if (prevArticulo !== row.articulo) {
+        let articulo;
+        try {
+          let res = await fetch(`${apiUrl}/articulo/${row.articulo}`);
+          articulo = await res.json();
+        } catch (err) {
+          console.error('[CLIENT] Error fetching articulo:', err);
+        }
+
+        // if else to avoid making unnecessary fetches if articulo doesn't exist
+        if (!articulo || articulo.length === 0) {
+          // ask for Tipo, ColorDistr, ColorCodes
+          setNewArticuloData((prev) => [
+            ...prev,
+            {
+              articuloExists: false, // to know if an articulo insert is needed
+              articulo: row.articulo,
+              tipo: null,
+              colorDistr: null,
+              colorCodes: null,
+            },
+          ]);
+        } else {
+          // If articulo exists, check if color codes and color distr exists
+          const [colorDistr, colorCodes] = await Promise.all([
+            fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`)
+              .then((res) => res.json())
+              .catch((err) =>
+                console.error('[CLIENT] Error fetching colorDistr:', err)
+              ),
+            fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorCodes`)
+              .then((res) => res.json())
+              .catch((err) =>
+                console.error('[CLIENT] Error fetching colorCodes:', err)
+              ),
+          ]);
+
+          // if color codes and color distr exist, don't add to newArticuloData
+          if (!(colorDistr?.length > 0 && colorCodes?.length > 0)) {
             setNewArticuloData((prev) => [
               ...prev,
               {
-                articuloExists: false, // to know if an articulo insert is needed
-                articulo: row.articulo,
-                tipo: null,
-                colorDistr: null,
-                colorCodes: null,
+                articuloExists: true, // no need to insert articulo
+                articulo: articulo[0].Articulo,
+                tipo: articulo[0].Tipo,
+                // if undefined or length 0, results in null
+                colorDistr: colorDistr?.length > 0 ? colorDistr : null,
+                colorCodes: colorCodes?.length > 0 ? colorCodes : null,
               },
             ]);
-          } else {
-            // If articulo exists, check if color codes and color distr exists
-            const [colorDistr, colorCodes] = await Promise.all([
-              fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`)
-                .then((res) => res.json())
-                .catch((err) =>
-                  console.error('[CLIENT] Error fetching colorDistr:', err)
-                ),
-              fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorCodes`)
-                .then((res) => res.json())
-                .catch((err) =>
-                  console.error('[CLIENT] Error fetching colorCodes:', err)
-                ),
-            ]);
-
-            console.log(
-              JSON.stringify(
-                {
-                  articuloExists: true, // no need to insert articulo
-                  articulo: articulo[0].Articulo,
-                  tipo: articulo[0].Tipo,
-                  // if undefined or length 0, results in null
-                  colorDistr: colorDistr?.length > 0 ? colorDistr : null,
-                  colorCodes: colorCodes?.length > 0 ? colorCodes : null,
-                },
-                null,
-                2
-              )
-            );
-
-            // if color codes and color distr exist, don't add to newArticuloData
-            if (!(colorDistr?.length > 0 && colorCodes?.length > 0)) {
-              setNewArticuloData((prev) => [
-                ...prev,
-                {
-                  articuloExists: true, // no need to insert articulo
-                  articulo: articulo[0].Articulo,
-                  tipo: articulo[0].Tipo,
-                  // if undefined or length 0, results in null
-                  colorDistr: colorDistr?.length > 0 ? colorDistr : null,
-                  colorCodes: colorCodes?.length > 0 ? colorCodes : null,
-                },
-              ]);
-            }
           }
         }
-
-        prevArticulo = row.articulo;
       }
 
-      // move from added to modified to trigger useEffect after inserting new articulos
-      setDiff((prev) => ({
-        ...prev,
-        modified: [...prev.modified, ...prev.added],
-        added: [],
-      }));
+      prevArticulo = row.articulo;
     }
+
+    // move from added to modified to trigger useEffect after inserting new articulos
+    setDiff((prev) => ({
+      ...prev,
+      modified: [...prev.modified, ...prev.added],
+      added: [],
+    }));
   }
 
   function handleNewArticuloSubmit(e, articulo, articuloExists) {
@@ -432,40 +423,29 @@ export default function Programada() {
                       &nbsp;si se duplica.
                     </FormHelperText>
                   </FormControl>
-                  {/* TODO: 
-                    - input colorDistr first
-                      --> input field where you can add more as you go
-                    - based on the num of colors in colorDistr, amount of colorCode input fields
-                  */}
-                  {newArticuloData[0].colorDistr ? (
-                    // colorDistr won't exist in articuloFormData
-                    <Typography>Distribución ya cargada</Typography>
-                  ) : (
-                    <ColorFormInputs
-                      fieldName='colorDistr'
-                      title='Distribución de colores'
-                      label2='Porcentaje'
-                      input2Key='porcentaje'
-                      input2Attrs={{ type: 'number', min: 1, max: 100 }}
-                      articuloFormData={articuloFormData}
-                      setArticuloFormData={setArticuloFormData}
-                    />
-                  )}
+                  {/* TODO: based on the num of colors in colorDistr, amount of colorCode input fields
+                   */}
+                  <ColorFormInputs
+                    fieldName='colorDistr'
+                    title='Distribución de colores'
+                    label2='Porcentaje'
+                    input2Key='porcentaje'
+                    input2Attrs={{ type: 'number', min: 1, max: 100 }}
+                    articuloFormData={articuloFormData}
+                    setArticuloFormData={setArticuloFormData}
+                    colors={colors}
+                  />
 
-                  {newArticuloData[0].colorCodes ? (
-                    // colorCodes won't exist in articuloFormData
-                    <Typography>Códigos ya cargados</Typography>
-                  ) : (
-                    <ColorFormInputs
-                      fieldName='colorCodes'
-                      title='Códigos de colores'
-                      label2='Código'
-                      input2Key='code'
-                      input2Attrs={{ type: 'text' }}
-                      articuloFormData={articuloFormData}
-                      setArticuloFormData={setArticuloFormData}
-                    />
-                  )}
+                  <ColorFormInputs
+                    fieldName='colorCodes'
+                    title='Códigos de colores'
+                    label2='Código'
+                    input2Key='code'
+                    input2Attrs={{ type: 'text' }}
+                    articuloFormData={articuloFormData}
+                    setArticuloFormData={setArticuloFormData}
+                    colors={colors}
+                  />
                 </Box>
                 <Button type='submit'>Agregar artículo</Button>
               </form>
