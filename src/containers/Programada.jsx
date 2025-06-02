@@ -1,4 +1,3 @@
-// TODO reset localStorage.date button
 // TODO fix insertAll
 
 import {
@@ -36,6 +35,7 @@ export default function Programada() {
   const [newTargets, setNewTargets] = useState();
   const [newArticuloData, setNewArticuloData] = useState([]);
   const [articuloFormData, setArticuloFormData] = useState({});
+  const loadType = useRef('');
 
   useEffect(() => {
     if (localStorage.getItem('progStartDate')) {
@@ -68,18 +68,6 @@ export default function Programada() {
         .then((res) => res.json())
         .then((data) => setDiff(data))
         .catch((err) => console.error('[CLIENT] Error fetching data:', err));
-    }
-  }
-
-  function handleInsertAll() {
-    if (programada) {
-      fetch(`${apiUrl}/programada/insertAll`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(programada.rows),
-      }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
     }
   }
 
@@ -227,7 +215,7 @@ export default function Programada() {
   // Insert diff updates after validating new articulos
   useEffect(() => {
     // can't make an async useEffect, instead use inner function
-    async function insertProgUpdatesAndRefresh() {
+    async function insertUpdates() {
       try {
         const res = await fetch(`${apiUrl}/programada/update`, {
           method: 'POST',
@@ -238,10 +226,24 @@ export default function Programada() {
         });
         const data = await res.json();
         fetchNewTargets(data);
-        fetchCurrTotal();
-        setDiff();
       } catch (err) {
         console.error('[CLIENT] Error fetching data:', err);
+      }
+    }
+
+    function insertAll() {
+      if (programada) {
+        fetch(`${apiUrl}/programada/insertAll`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(programada.rows),
+        })
+          .then(() =>
+            localStorage.setItem('progStartDate', dayjs().format(sqlDateFormat))
+          )
+          .catch((err) => console.error('[CLIENT] Error fetching data:', err));
       }
     }
 
@@ -251,9 +253,12 @@ export default function Programada() {
     }
 
     if (diff && diff.added.length === 0 && newArticuloData.length === 0) {
-      insertProgUpdatesAndRefresh();
+      if (loadType.current === 'update') insertUpdates();
+      else if (loadType.current === 'insert') insertAll();
+      fetchCurrTotal();
+      setDiff();
     }
-  }, [diff, newArticuloData]);
+  }, [diff, newArticuloData, programada]);
 
   async function handleUpload() {
     // Reset states before uploading a new file
@@ -319,15 +324,11 @@ export default function Programada() {
 
       {programada && !diff && !newTargets && (
         <Button
-          onClick={handleInsertAll}
+          onClick={handleCompare}
           disabled={localStorage.getItem('progStartDate') !== null}
         >
-          Cargar todo
+          Comparar
         </Button>
-      )}
-
-      {programada && !diff && !newTargets && (
-        <Button onClick={handleCompare}>Comparar</Button>
       )}
 
       {diff &&
@@ -335,7 +336,39 @@ export default function Programada() {
           diff.added.length === 0 &&
           diff.modified.length === 0 &&
           diff.deleted.length === 0
-        ) && <Button onClick={handleProgramadaUpdate}>Cargar cambios</Button>}
+        ) && (
+          <>
+            <Button
+              disabled={localStorage.getItem('progStartDate') === null}
+              onClick={() => {
+                localStorage.removeItem('progStartDate');
+                setCurrTotal(0); // to trigger a re-render
+              }}
+            >
+              Reset fecha
+            </Button>
+
+            <Button
+              onClick={() => {
+                loadType.current = 'update';
+                handleProgramadaUpdate();
+              }}
+              disabled={localStorage.getItem('progStartDate') === null}
+            >
+              Cargar cambios
+            </Button>
+
+            <Button
+              onClick={() => {
+                loadType.current = 'insert';
+                handleProgramadaUpdate();
+              }}
+              disabled={localStorage.getItem('progStartDate') !== null}
+            >
+              Cargar todo
+            </Button>
+          </>
+        )}
 
       {/* render one Modal at a time */}
       {newArticuloData.length > 0 && (

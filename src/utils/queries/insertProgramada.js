@@ -1,23 +1,14 @@
 import dayjs from 'dayjs';
 
-// TODO: ask to insert Tipo and ColorDistr if Articulo doesn't exist
+// TODO: ask to insert Tipo, ColorDistr, and ColorCodes if Articulo doesn't exist
 const insertProgramada = (data, status, date = dayjs()) => {
   const FECHA = date.format(process.env.SQL_DATE_FORMAT);
   let query = '';
 
   for (const row of data) {
-    // TODO: see if 'added' is necessary for insertAll endpoint
-    if (status === 'added') {
-      query += `
-      IF NOT EXISTS (SELECT Articulo FROM SEA_ARTICULOS WHERE Articulo = ${row.articulo})
-        INSERT INTO SEA_ARTICULOS (Articulo, Tipo)
-          VALUES (${row.articulo}, NULL); 
-  
-      INSERT INTO SEA_PROGRAMADA (Fecha, Articulo, Talle, Docenas)
-        VALUES ('${FECHA}', ${row.articulo}, ${row.talle}, ${row.aProducir});\n\n
-    `;
-    } else if (status === 'modified') {
+    if (status === 'inserted') {
       // no need to check if Articulo exists because it has already been inserted
+      // through the view
       query += `
         INSERT INTO SEA_PROGRAMADA (Fecha, Articulo, Talle, Docenas)
           VALUES ('${FECHA}', ${row.articulo}, ${row.talle}, ${row.aProducir});\n\n

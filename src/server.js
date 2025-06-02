@@ -230,7 +230,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      await sql.query(insertProgramada(data, 'added'));
+      await sql.query(insertProgramada(data, 'inserted'));
       serverLog('POST /programada/insertAll - SUCCESS');
     } catch (err) {
       serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
