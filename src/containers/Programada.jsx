@@ -78,10 +78,13 @@ export default function Programada() {
 
     // GET colors for form
     if (diff.added.length > 0) {
-      fetch(`${apiUrl}/colors`)
-        .then((res) => res.json())
-        .then((data) => setColors(data))
-        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
+      try {
+        const res = await fetch(`${apiUrl}/colors`);
+        const data = await res.json();
+        setColors(data);
+      } catch (err) {
+        console.error('[CLIENT] Error fetching /colors:', err);
+      }
     }
 
     for (const row of diff.added) {
@@ -230,11 +233,9 @@ export default function Programada() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(programada.rows),
-        })
-          .then(() =>
-            localStorage.setItem('progStartDate', dayjs().format(sqlDateFormat))
-          )
-          .catch((err) => console.error('[CLIENT] Error fetching data:', err));
+        }).catch((err) => {
+          console.error('[CLIENT] Error fetching data:', err);
+        });
       }
     }
 
@@ -245,7 +246,10 @@ export default function Programada() {
 
     if (diff && diff.added.length === 0 && newArticuloData.length === 0) {
       if (loadType.current === 'update') insertUpdates();
-      else if (loadType.current === 'insert') insertAll();
+      else if (loadType.current === 'insert') {
+        insertAll();
+        localStorage.setItem('progStartDate', dayjs().format(sqlDateFormat));
+      }
       fetchCurrTotal();
       setDiff();
     }
@@ -316,7 +320,7 @@ export default function Programada() {
       {programada && !diff && !newTargets && (
         <Button
           onClick={handleCompare}
-          disabled={localStorage.getItem('progStartDate') !== null}
+          disabled={localStorage.getItem('progStartDate') === null}
         >
           Comparar
         </Button>
@@ -373,6 +377,7 @@ export default function Programada() {
                 Por favor, ingrese los datos del artículo.
               </DialogContent>
               <form
+                key={newArticuloData[0].articulo}
                 onSubmit={(e) =>
                   handleNewArticuloSubmit(
                     e,
@@ -425,27 +430,41 @@ export default function Programada() {
                   </FormControl>
                   {/* TODO: based on the num of colors in colorDistr, amount of colorCode input fields
                    */}
-                  <ColorFormInputs
-                    fieldName='colorDistr'
-                    title='Distribución de colores'
-                    label2='Porcentaje'
-                    input2Key='porcentaje'
-                    input2Attrs={{ type: 'number', min: 1, max: 100 }}
-                    articuloFormData={articuloFormData}
-                    setArticuloFormData={setArticuloFormData}
-                    colors={colors}
-                  />
+                  {newArticuloData[0].colorDistr ? (
+                    // colorDistr won't exist in articuloFormData
+                    <Typography>Distribución ya cargada</Typography>
+                  ) : (
+                    <ColorFormInputs
+                      fieldName='colorDistr'
+                      title='Distribución de colores'
+                      label2='Porcentaje'
+                      input2Key='porcentaje'
+                      input2Attrs={{ type: 'number', min: 0, max: 100 }}
+                      articuloFormData={articuloFormData}
+                      setArticuloFormData={setArticuloFormData}
+                      colors={colors}
+                    />
+                  )}
 
-                  <ColorFormInputs
-                    fieldName='colorCodes'
-                    title='Códigos de colores'
-                    label2='Código'
-                    input2Key='code'
-                    input2Attrs={{ type: 'text' }}
-                    articuloFormData={articuloFormData}
-                    setArticuloFormData={setArticuloFormData}
-                    colors={colors}
-                  />
+                  {newArticuloData[0].colorCodes ? (
+                    // colorCodes won't exist in articuloFormData
+                    <Typography>Códigos ya cargados</Typography>
+                  ) : (
+                    <ColorFormInputs
+                      fieldName='colorCodes'
+                      title='Códigos de colores'
+                      label2='Código'
+                      input2Key='code'
+                      input2Attrs={{
+                        type: 'text',
+                        // if colorCodes is empty or undefined, code is required
+                        required: !(articuloFormData.colorCodes?.length >= 0),
+                      }}
+                      articuloFormData={articuloFormData}
+                      setArticuloFormData={setArticuloFormData}
+                      colors={colors}
+                    />
+                  )}
                 </Box>
                 <Button type='submit'>Agregar artículo</Button>
               </form>

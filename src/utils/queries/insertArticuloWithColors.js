@@ -5,7 +5,7 @@ const insertArticuloWithColors = (data) => {
   let query = `
     INSERT INTO SEA_ARTICULOS (Articulo, Tipo)
      VALUES (${data.articulo}, ${
-    data.tipo && data.tipo !== '' ? data.tipo : null
+    data.tipo && data.tipo !== '' ? `'${data.tipo}'` : null
   });\n
   `;
 

@@ -10,7 +10,7 @@ const getProgColor = (startDate, includeDeleted = false) => {
                       WHERE pc2.Articulo = pc.Articulo 
                             AND pc2.Talle = pc.Talle)
           AND pc.Fecha >= '${fecha}'
-          ${includeDeleted ? '' : 'AND pc.Docenas > 0'}
+          ${includeDeleted ? '' : 'AND pc.DocProg > 0'}
     ORDER BY pc.Articulo, pc.Talle;
   `;
 };
