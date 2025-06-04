@@ -16,8 +16,8 @@ function ColorFormInputs({
   label2,
   input2Key,
   input2Attrs,
-  articuloFormData,
-  setArticuloFormData,
+  formData,
+  setFormData,
   colors,
 }) {
   const [color, setColor] = useState();
@@ -33,7 +33,7 @@ function ColorFormInputs({
           <Select
             placeholder='Seleccioná un color...'
             onChange={(event, value) => setColor(value)}
-            required={!(articuloFormData[fieldName]?.length >= 0)}
+            required={!(formData[fieldName]?.length >= 0)}
           >
             {colors.map((color) => (
               <Option key={color.Id} value={color.Id}>
@@ -58,7 +58,7 @@ function ColorFormInputs({
       <Button
         onClick={() => {
           if (color && input2) {
-            setArticuloFormData((prev) => ({
+            setFormData((prev) => ({
               ...prev,
               [fieldName]: [
                 ...(prev[fieldName] || []),
@@ -77,8 +77,8 @@ function ColorFormInputs({
         Agregar
       </Button>
 
-      {articuloFormData[fieldName] &&
-        articuloFormData[fieldName].map((color, i) => (
+      {formData[fieldName] &&
+        formData[fieldName].map((color, i) => (
           <Box key={i}>
             <Input value={color.color} disabled />
             <Input value={color[input2Key]} disabled />

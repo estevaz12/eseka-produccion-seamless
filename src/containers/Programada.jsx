@@ -1,49 +1,51 @@
 // TODO ask to insert color codes when calculating new targets
+// TODO porcentaje as fraction
 
-import {
-  Box,
-  Typography,
-  Button,
-  Modal,
-  ModalDialog,
-  DialogTitle,
-  DialogContent,
-  FormControl,
-  FormLabel,
-  Input,
-  FormHelperText,
-  ModalOverflow,
-} from '@mui/joy';
+import { Box, Typography, Button } from '@mui/joy';
 import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import ColorFormInputs from '../components/ColorFormInputs.jsx';
+import NewArticuloForm from '../components/NewArticuloForm.jsx';
+import ModalWrapper from '../components/ModalWrapper.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
 
 export default function Programada() {
   [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
+  // load, file upload and reading
   const [currTotal, setCurrTotal] = useState();
   const [filePath, setFilePath] = useState();
   const [programada, setProgramada] = useState();
+  // diff and updates
   const [diff, setDiff] = useState();
-  const diffMounted = useRef(false);
-  const [newTargets, setNewTargets] = useState();
-  const [newArticuloData, setNewArticuloData] = useState([]);
-  const [articuloFormData, setArticuloFormData] = useState({});
   const [colors, setColors] = useState();
+  const [newArticuloData, setNewArticuloData] = useState([]);
+  const [newTargets, setNewTargets] = useState();
+  // helper refs
+  const diffMounted = useRef(false);
   const loadType = useRef('');
 
+  // get current programada total on load
   useEffect(() => {
     if (localStorage.getItem('progStartDate')) {
       fetchCurrTotal();
     }
   }, []);
 
+  async function handleUpload() {
+    // Reset states before uploading a new file
+    diffMounted.current = false;
+    setProgramada();
+    setDiff();
+    setNewTargets();
+    setFilePath(await window.electronAPI.openFile());
+  }
+
+  // read programada file
   useEffect(() => {
     if (filePath) {
       const params = new URLSearchParams({ path: filePath }).toString();
@@ -54,6 +56,7 @@ export default function Programada() {
     }
   }, [filePath]);
 
+  // compare new programada to old
   function handleCompare() {
     if (programada) {
       fetch(`${apiUrl}/programada/compare`, {
@@ -154,61 +157,10 @@ export default function Programada() {
     }));
   }
 
-  function handleNewArticuloSubmit(e, articulo, articuloExists) {
-    // articuloFormData = {
-    //  tipo,
-    //  colorDistr: [{color, porcentaje}], -- won't be there if no need to insert
-    //  colorCodes: [{color, code}]  -- won't be there if no need to insert
-    // }
-    e.preventDefault();
-    const data = { articulo, ...articuloFormData };
-    if (!articuloExists) {
-      // if articulo doesn't exist, insert articulo, colorDistr, and colorCodes
-      fetch(`${apiUrl}/articulo/insertWithColors`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
-    } else {
-      // if articulo exists, check if colorCodes and colorDistr exists
-      // if not, insert them
-      if (articuloFormData.colorDistr) {
-        fetch(`${apiUrl}/colorDistr/insert`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            articulo: data.articulo,
-            colorDistr: data.colorDistr, // [{color, porcentaje}]
-          }),
-        }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
-      }
-
-      if (articuloFormData.colorCodes) {
-        fetch(`${apiUrl}/colorCodes/insert`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            articulo: data.articulo,
-            colorCodes: data.colorCodes, // [{color, code}]
-          }),
-        }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
-      }
-    }
-
-    setNewArticuloData((prev) => prev.slice(1)); // Remove first item
-    setArticuloFormData({});
-  }
-
   // TODO: add fetch cancel to all useEffects
   // Insert diff updates after validating new articulos
   useEffect(() => {
-    // can't make an async useEffect, instead use inner function
+    // just inserts updates
     async function insertUpdates() {
       try {
         const res = await fetch(`${apiUrl}/programada/update`, {
@@ -225,6 +177,8 @@ export default function Programada() {
       }
     }
 
+    // inserts the whole programada
+    // used for initial load at month start
     function insertAll() {
       if (programada) {
         fetch(`${apiUrl}/programada/insertAll`, {
@@ -241,9 +195,11 @@ export default function Programada() {
 
     if (diff && !diffMounted.current) {
       diffMounted.current = true;
-      return; // skip when diff is first set
+      return; // skip when diff is first set to not auto-insert updates
     }
 
+    // need to check both diff.added and newArticuloData because one could be
+    // empty while the other isn't
     if (diff && diff.added.length === 0 && newArticuloData.length === 0) {
       if (loadType.current === 'update') insertUpdates();
       else if (loadType.current === 'insert') {
@@ -254,15 +210,6 @@ export default function Programada() {
       setDiff();
     }
   }, [diff, newArticuloData, programada]);
-
-  async function handleUpload() {
-    // Reset states before uploading a new file
-    diffMounted.current = false;
-    setProgramada();
-    setDiff();
-    setNewTargets();
-    setFilePath(await window.electronAPI.openFile());
-  }
 
   function fetchCurrTotal() {
     fetch(`${apiUrl}/programada/total/${localStorage.getItem('progStartDate')}`)
@@ -286,6 +233,12 @@ export default function Programada() {
 
   return (
     <Box>
+      {/* Process:
+      1. Upload programada
+      2. Compare to programada in DB
+      3. If updating, insert changes only in DB
+      4. If resetting programada, reset date first, then insert whole programda
+       */}
       <Typography>
         Total Actual:{' '}
         {currTotal !== undefined
@@ -320,6 +273,7 @@ export default function Programada() {
       {programada && !diff && !newTargets && (
         <Button
           onClick={handleCompare}
+          // can compare only if there is reference date
           disabled={localStorage.getItem('progStartDate') === null}
         >
           Comparar
@@ -365,126 +319,14 @@ export default function Programada() {
           </>
         )}
 
-      {/* render one Modal at a time */}
-      {newArticuloData.length > 0 && (
-        <Modal open>
-          <ModalOverflow>
-            <ModalDialog>
-              <DialogTitle>
-                Agregar artículo {newArticuloData[0].articulo}
-              </DialogTitle>
-              <DialogContent>
-                Por favor, ingrese los datos del artículo.
-              </DialogContent>
-              <form
-                key={newArticuloData[0].articulo}
-                onSubmit={(e) =>
-                  handleNewArticuloSubmit(
-                    e,
-                    newArticuloData[0].articulo,
-                    newArticuloData[0].articuloExists
-                  )
-                }
-              >
-                <Box>
-                  {/* TODO: validation */}
-                  <FormControl>
-                    <FormLabel>Articulo</FormLabel>
-                    <Input value={newArticuloData[0].articulo} disabled />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Tipo (si aplica)</FormLabel>
-                    <Input
-                      value={newArticuloData[0].tipo}
-                      onChange={(e) =>
-                        setArticuloFormData({
-                          ...articuloFormData,
-                          tipo: e.target.value,
-                        })
-                      }
-                      disabled={newArticuloData[0].tipo}
-                      maxLength={1}
-                      pattern='%|\$|#'
-                      // slotProps={{
-                      //   input: {
-                      //     readOnly: newArticuloData[0].tipo ? true : false,
-                      //     maxLength: 1,
-                      //     pattern: '%|$|#',
-                      //   },
-                      // }}
-                    />
-                    <FormHelperText>
-                      <Typography variant='solid' color='primary'>
-                        #
-                      </Typography>
-                      &nbsp;si se divide a la mitad.&nbsp;
-                      <Typography variant='solid' color='primary'>
-                        $
-                      </Typography>
-                      &nbsp;o&nbsp;
-                      <Typography variant='solid' color='primary'>
-                        %
-                      </Typography>
-                      &nbsp;si se duplica.
-                    </FormHelperText>
-                  </FormControl>
-                  {/* TODO: based on the num of colors in colorDistr, amount of colorCode input fields
-                   */}
-                  {newArticuloData[0].colorDistr ? (
-                    // colorDistr won't exist in articuloFormData
-                    <Typography>Distribución ya cargada</Typography>
-                  ) : (
-                    <ColorFormInputs
-                      fieldName='colorDistr'
-                      title='Distribución de colores'
-                      label2='Porcentaje'
-                      input2Key='porcentaje'
-                      input2Attrs={{ type: 'number', min: 0, max: 100 }}
-                      articuloFormData={articuloFormData}
-                      setArticuloFormData={setArticuloFormData}
-                      colors={colors}
-                    />
-                  )}
-
-                  {newArticuloData[0].colorCodes ? (
-                    // colorCodes won't exist in articuloFormData
-                    <Typography>Códigos ya cargados</Typography>
-                  ) : (
-                    <ColorFormInputs
-                      fieldName='colorCodes'
-                      title='Códigos de colores'
-                      label2='Código'
-                      input2Key='code'
-                      input2Attrs={{
-                        type: 'text',
-                        // if colorCodes is empty or undefined, code is required
-                        required: !(articuloFormData.colorCodes?.length >= 0),
-                      }}
-                      articuloFormData={articuloFormData}
-                      setArticuloFormData={setArticuloFormData}
-                      colors={colors}
-                    />
-                  )}
-                </Box>
-                <Button type='submit'>Agregar artículo</Button>
-              </form>
-            </ModalDialog>
-          </ModalOverflow>
-        </Modal>
-      )}
-
       {programada && <Typography>Total: {programada.total}</Typography>}
       {programada && !diff && !newTargets && (
-        <DataTable
-          cols={['Artículo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
-        >
+        <DataTable cols={['Artículo', 'Talle', 'A Producir']}>
           {programada.rows.map((row, i) => (
             <tr key={i}>
               <td>{row.articulo}</td>
               <td>{row.talle}</td>
               <td>{row.aProducir}</td>
-              {/* <td>{row.producido}</td>
-              <td>{row.falta}</td> */}
             </tr>
           ))}
         </DataTable>
@@ -494,16 +336,12 @@ export default function Programada() {
         <Box>
           <Box>
             <Typography>Agregado</Typography>
-            <DataTable
-              cols={['Artículo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
-            >
+            <DataTable cols={['Artículo', 'Talle', 'A Producir']}>
               {diff.added.map((row, i) => (
                 <tr key={i}>
                   <td>{row.articulo}</td>
                   <td>{row.talle}</td>
                   <td>{row.aProducir}</td>
-                  {/* <td>{row.producido}</td>
-            <td>{row.falta}</td> */}
                 </tr>
               ))}
             </DataTable>
@@ -511,31 +349,23 @@ export default function Programada() {
 
           <Box>
             <Typography>Modificado</Typography>
-            <DataTable
-              cols={['Articulo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
-            >
+            <DataTable cols={['Articulo', 'Talle', 'A Producir']}>
               {diff.modified.map((row, i) => (
                 <tr key={i}>
                   <td>{row.articulo}</td>
                   <td>{row.talle}</td>
                   <td>{row.aProducir}</td>
-                  {/* <td>{row.producido}</td>
-            <td>{row.falta}</td> */}
                 </tr>
               ))}
             </DataTable>
 
             <Typography>Eliminado</Typography>
-            <DataTable
-              cols={['Articulo', 'Talle', 'A Producir']} //, 'Producido', 'Falta']}
-            >
+            <DataTable cols={['Articulo', 'Talle', 'A Producir']}>
               {diff.deleted.map((row, i) => (
                 <tr key={i}>
                   <td>{row.articulo}</td>
                   <td>{row.talle}</td>
                   <td>{row.aProducir}</td>
-                  {/* <td>{row.producido}</td>
-            <td>{row.falta}</td> */}
                 </tr>
               ))}
             </DataTable>
@@ -544,12 +374,42 @@ export default function Programada() {
       )}
 
       {newTargets && (
-        <Typography
-          component='pre'
-          sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
+        <DataTable
+          cols={[
+            'Máquina',
+            'StyleCode',
+            'MachTarget',
+            'ProgTarget Previo',
+            'ProgTarget Nuevo',
+            'Producción Mes',
+            'MachPieces',
+            'Enviar Target',
+          ]}
         >
-          {JSON.stringify(newTargets, null, 2)}
-        </Typography>
+          {newTargets.map((row, i) => (
+            <tr key={i}>
+              <td>{row.machCode}</td>
+              <td>{row.styleCode}</td>
+              <td>{row.machTarget}</td>
+              <td>{row.prevProgTarget}</td>
+              <td>{row.newProgTarget}</td>
+              <td>{row.monthProduction}</td>
+              <td>{row.machPieces}</td>
+              <td>{row.sendTarget}</td>
+            </tr>
+          ))}
+        </DataTable>
+      )}
+
+      {/* render one Modal at a time */}
+      {newArticuloData.length > 0 && (
+        <ModalWrapper>
+          <NewArticuloForm
+            newArticuloData={newArticuloData[0]}
+            colors={colors}
+            setNewArticuloData={setNewArticuloData}
+          />
+        </ModalWrapper>
       )}
     </Box>
   );

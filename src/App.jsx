@@ -14,6 +14,7 @@ import 'dayjs/locale/es';
 import { ConfigProvider } from './ConfigContext.jsx';
 import Produccion from './containers/Produccion.jsx';
 import Programada from './containers/Programada.jsx';
+import { Modal } from '@mui/joy';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
@@ -65,5 +66,21 @@ root.render(
 );
 
 export default function App() {
-  return <Programada />;
+  const [newColorCodes, setNewColorCodes] = React.useState();
+  // check for newColorCodes on load
+  React.useEffect(() => {
+    fetch(`${config.apiUrl}/machines/newColorCodes`)
+      .then((res) => res.json())
+      .then((data) => setNewColorCodes(data))
+      .catch((err) =>
+        console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
+      );
+  }, []);
+
+  return (
+    <>
+      <Programada />
+      {newColorCodes && newColorCodes.map((machine) => <Modal></Modal>)}
+    </>
+  );
 }

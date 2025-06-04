@@ -1,5 +1,6 @@
 // TODO: api docs
 // FIXME - fix imports for consistency; change all to CommonJS
+// FIXME - sql injections
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
@@ -30,6 +31,7 @@ const {
 const {
   insertArticuloWithColors,
 } = require('./utils/queries/insertArticuloWithColors.js');
+const { parseMachines } = require('./utils/parseMachines.js');
 
 // Environment
 let isPackaged; //= false;
@@ -165,6 +167,31 @@ const startServer = () => {
       await sql.query(query);
     } catch (err) {
       serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/machines', async (req, res) => {
+    serverLog('GET /machines');
+    try {
+      const result = await sql.query(getMachines());
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /machines: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/machines/newColorCodes', async (req, res) => {
+    serverLog('GET /machines/newColorCodes');
+    try {
+      let machines = await sql.query(getMachines());
+      await parseMachines(machines.recordset);
+      serverLog(machines);
+      machines = machines.filter((m) => m.StyleCode.colorId === null);
+      res.json(machines);
+    } catch (err) {
+      serverLog(`[ERROR] GET /machines/newColorCodes: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });

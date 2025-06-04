@@ -1,4 +1,4 @@
-import { parseStyleCode } from './parseStyleCode.js';
+import { parseMachines } from './parseMachines.js';
 import sql from 'mssql';
 import produccion from './queries/produccion.js';
 import dayjs from 'dayjs';
@@ -58,7 +58,7 @@ const calculateNewTargets = async (progUpdates, machines) => {
               prevProgTarget: previousRecord ? previousRecord.Target : 0,
               newProgTarget: newRecord.Target,
               monthProduction: monthProduction,
-              machinePieces: machine.Pieces,
+              machPieces: machine.Pieces,
             };
 
             if (newRecord.Target - monthProduction <= 0) {
@@ -213,14 +213,4 @@ function getPreviousRecord(newRecord) {
             AND ColorId = ${newRecord.ColorId}
       ORDER BY Fecha DESC;
     `;
-}
-
-// Machines: [{MachCode, StyleCode: {styleCode, articulo, talle, color, colorId}, ...}]
-async function parseMachines(machines) {
-  await Promise.all(
-    machines.map(async (m) => {
-      const parsedStyleCode = await parseStyleCode(m.StyleCode);
-      m.StyleCode = { ...parsedStyleCode };
-    })
-  );
 }

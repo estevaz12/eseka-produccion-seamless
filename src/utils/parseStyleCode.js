@@ -14,10 +14,11 @@ const parseStyleCode = async (styleCode) => {
     // TODO: if colorId null, ask to insert in COLOR_CODES and repeat
     try {
       colorId = await sql.query(getColorId(articulo, color));
-      colorId = colorId.recordset[0].Id;
+      colorId = colorId.recordset[0]?.Id; // will be undefined if not there
+      // undefined colorId means that it is not in COLOR_CODES
     } catch (err) {
       serverLog(
-        `[ERROR] [parseStyleCode] Please add to COLOR_CODES: ${articulo}, ${color}\n${err}`
+        `[ERROR] [parseStyleCode] Please add to COLOR_CODES: ${articulo}, ${color}`
       );
     }
   }
@@ -27,7 +28,7 @@ const parseStyleCode = async (styleCode) => {
     articulo: parseInt(articulo),
     talle: parseInt(talle),
     color: color,
-    colorId: colorId, // already an int
+    colorId: colorId ? colorId : null, // already an int
   };
 };
 
