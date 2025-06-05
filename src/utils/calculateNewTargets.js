@@ -159,7 +159,7 @@ async function getMonthProduction(newRecord) {
         'SEAMLESS',
         startDate,
         endDate,
-        `${newRecord.Articulo}${newRecord.Talle}`,
+        `${Math.floor(newRecord.Articulo)}${newRecord.Talle}`,
         'true'
       )
     );

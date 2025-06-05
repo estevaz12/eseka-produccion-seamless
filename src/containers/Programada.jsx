@@ -1,4 +1,4 @@
-// TODO ask to insert color codes when calculating new targets
+// TODO calculateNewTargets on button press, recalculate if clicked again
 // TODO porcentaje as fraction
 
 import { Box, Typography, Button } from '@mui/joy';
