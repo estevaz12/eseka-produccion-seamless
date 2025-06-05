@@ -19,7 +19,7 @@ export default function NewArticuloForm({
   const { apiUrl } = useConfig();
   const [formData, setFormData] = useState({});
 
-  function handleNewArticuloSubmit(e, articulo, articuloExists) {
+  function handleSubmit(e, articulo, articuloExists) {
     // formData = {
     //  tipo,
     //  colorDistr: [{color, porcentaje}], -- won't be there if no need to insert
@@ -35,7 +35,12 @@ export default function NewArticuloForm({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-      }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
+      }).catch((err) =>
+        console.error(
+          '[CLIENT] Error fetching /articulo/insertWithColors:',
+          err
+        )
+      );
     } else {
       // if articulo exists, check if colorCodes and colorDistr exists
       // if not, insert them
@@ -49,7 +54,9 @@ export default function NewArticuloForm({
             articulo: data.articulo,
             colorDistr: data.colorDistr, // [{color, porcentaje}]
           }),
-        }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
+        }).catch((err) =>
+          console.error('[CLIENT] Error fetching /colorDistr/insert:', err)
+        );
       }
 
       if (formData.colorCodes) {
@@ -62,7 +69,9 @@ export default function NewArticuloForm({
             articulo: data.articulo,
             colorCodes: data.colorCodes, // [{color, code}]
           }),
-        }).catch((err) => console.error('[CLIENT] Error fetching data:', err));
+        }).catch((err) =>
+          console.error('[CLIENT] Error fetching /colorCodes/insert:', err)
+        );
       }
     }
 
@@ -74,7 +83,7 @@ export default function NewArticuloForm({
     <form
       key={newArticuloData.articulo}
       onSubmit={(e) => {
-        handleNewArticuloSubmit(
+        handleSubmit(
           e,
           newArticuloData.articulo,
           newArticuloData.articuloExists

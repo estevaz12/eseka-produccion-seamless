@@ -16,12 +16,13 @@ function ColorFormInputs({
   label2,
   input2Key,
   input2Attrs,
+  input2Val,
   formData,
   setFormData,
   colors,
 }) {
-  const [color, setColor] = useState();
-  const [input2, setInput2] = useState();
+  const [colorInput, setColorInput] = useState();
+  const [input2, setInput2] = useState(input2Val ? input2Val : undefined);
   const [key, setKey] = useState(0);
 
   return (
@@ -31,8 +32,8 @@ function ColorFormInputs({
         <FormControl>
           <FormLabel>Color</FormLabel>
           <Select
-            placeholder='Seleccioná un color...'
-            onChange={(event, value) => setColor(value)}
+            placeholder='Seleccione un color...'
+            onChange={(event, value) => setColorInput(value)}
             required={!(formData[fieldName]?.length >= 0)}
           >
             {colors.map((color) => (
@@ -57,18 +58,18 @@ function ColorFormInputs({
       </Box>
       <Button
         onClick={() => {
-          if (color && input2) {
+          if (colorInput && input2) {
             setFormData((prev) => ({
               ...prev,
               [fieldName]: [
                 ...(prev[fieldName] || []),
                 {
-                  color: color,
+                  color: colorInput,
                   [input2Key]: input2,
                 },
               ],
             }));
-            setColor();
+            setColorInput();
             setInput2();
             setKey((prev) => prev + 1);
           }
@@ -78,12 +79,15 @@ function ColorFormInputs({
       </Button>
 
       {formData[fieldName] &&
-        formData[fieldName].map((color, i) => (
-          <Box key={i}>
-            <Input value={color.color} disabled />
-            <Input value={color[input2Key]} disabled />
-          </Box>
-        ))}
+        formData[fieldName].map((color, i) => {
+          const colorObj = colors.find((c) => c.Id === color.color);
+          return (
+            <Box key={i}>
+              <Input value={colorObj ? colorObj.Color : color.color} disabled />
+              <Input value={color[input2Key]} disabled />
+            </Box>
+          );
+        })}
     </Box>
   );
 }

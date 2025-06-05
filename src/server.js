@@ -135,7 +135,9 @@ const startServer = () => {
   app.get('/colors', async (req, res) => {
     serverLog('GET /colors');
     try {
-      const result = await sql.query(`SELECT * FROM SEA_COLORES`);
+      const result = await sql.query(
+        `SELECT * FROM SEA_COLORES ORDER BY Color`
+      );
       res.json(result.recordset);
     } catch (err) {
       serverLog(`[ERROR] GET /colors: ${err}`);
@@ -186,9 +188,25 @@ const startServer = () => {
     serverLog('GET /machines/newColorCodes');
     try {
       let machines = await sql.query(getMachines());
-      await parseMachines(machines.recordset);
-      serverLog(machines);
-      machines = machines.filter((m) => m.StyleCode.colorId === null);
+      machines = machines.recordset;
+      await parseMachines(machines);
+      // serverLog(JSON.stringify(machines, null, 2));
+      /* Machine states
+       * 0: RUN
+       * 2: STOP BUTTON
+       * 3: AUTOMATIC STOP
+       * 4: TARGET
+       * 5: F1
+       * 6: ELECTRÓNICO
+       * 7: MECANICO
+       * 9: HILADO
+       *
+       * Machines in other states could have invalid stylecodes
+       */
+      machines = machines.filter(
+        (m) =>
+          m.State in [0, 2, 3, 4, 5, 6, 7, 9] && m.StyleCode.colorId === null
+      );
       res.json(machines);
     } catch (err) {
       serverLog(`[ERROR] GET /machines/newColorCodes: ${err}`);
