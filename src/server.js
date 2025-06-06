@@ -218,20 +218,24 @@ const startServer = () => {
     serverLog('GET /produccion');
     serverLog(JSON.stringify(req.query));
 
-    if (isPackaged) {
-      try {
-        const { room, startDate, endDate, articulo, actual } = req.query;
-        const result = await sql.query(
-          produccion(room, startDate, endDate, articulo, actual)
-        );
-
-        res.json(result.recordset);
-      } catch (err) {
-        serverLog(`[ERROR] GET /produccion: ${err}`);
-        res.status(500).json({ error: err.message });
-      }
-    } else {
-      res.json(produccionTest);
+    try {
+      const { room, startDate, endDate, actual, articulo, talle, colorId } =
+        req.query;
+      const query = produccion(
+        room,
+        startDate,
+        endDate,
+        actual,
+        articulo,
+        talle,
+        colorId
+      );
+      const result = await sql.query(query);
+      serverLog(query);
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /produccion: ${err}`);
+      res.status(500).json({ error: err.message });
     }
   });
 

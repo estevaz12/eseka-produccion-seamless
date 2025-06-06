@@ -12,9 +12,21 @@ import { renderTimeViewClock } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import { useConfig } from '../ConfigContext.jsx';
+import ColorSelect from './ColorSelect.jsx';
+import { useEffect, useState } from 'react';
+
+let apiUrl, sqlDateFormat;
 
 export default function ProduccionForm({ formData, setFormData, setUrl }) {
-  const { apiUrl, sqlDateFormat } = useConfig();
+  [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
+  const [colors, setColors] = useState([]);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/colors`)
+      .then((res) => res.json())
+      .then((data) => setColors(data))
+      .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -139,12 +151,38 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
         <FormControl>
           <FormLabel>Artículo</FormLabel>
           <Input
+            slotProps={{
+              input: { type: 'number', min: 0.0, max: 99999.99, step: 0.01 },
+            }}
             onChange={(e) =>
-              setFormData({ ...formData, articulo: e.target.value.trim() })
+              setFormData({ ...formData, articulo: e.target.value })
             }
             placeholder='Buscar artículo...'
           />
         </FormControl>
+
+        <FormControl>
+          <FormLabel>Talle</FormLabel>
+          <Select
+            placeholder='Seleccione un talle...'
+            onChange={(e, val) => setFormData({ ...formData, talle: val })}
+          >
+            <Option value=''>Seleccione un talle...</Option>
+            <Option value='0'>0</Option>
+            <Option value='1'>1</Option>
+            <Option value='2'>2</Option>
+            <Option value='3'>3</Option>
+            <Option value='4'>4</Option>
+            <Option value='5'>5</Option>
+            <Option value='6'>6</Option>
+            <Option value='7'>7</Option>
+          </Select>
+        </FormControl>
+
+        <ColorSelect
+          colors={colors}
+          onChange={(color) => setFormData({ ...formData, colorId: color })}
+        />
 
         <Button type='submit' onKeyDown={(e) => handleKeyDown(e)}>
           Buscar

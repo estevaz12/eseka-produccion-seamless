@@ -91,7 +91,6 @@ export default function Programada() {
     }
 
     for (const row of diff.added) {
-      // TODO: change to be parallel
       if (prevArticulo !== row.articulo) {
         let articulo;
         try {

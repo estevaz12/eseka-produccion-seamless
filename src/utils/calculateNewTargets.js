@@ -138,9 +138,6 @@ const calculateNewTargets = async (progUpdates, machines) => {
 export { calculateNewTargets };
 
 async function getMonthProduction(newRecord) {
-  // TODO: cases where articulo has a punto
-  // TODO: cases where articulo or color are null
-
   const startDate = dayjs()
     .startOf('month')
     .hour(6)
@@ -159,15 +156,14 @@ async function getMonthProduction(newRecord) {
         'SEAMLESS',
         startDate,
         endDate,
-        `${Math.floor(newRecord.Articulo)}${newRecord.Talle}`,
-        'true'
+        true,
+        newRecord.Articulo,
+        newRecord.Talle,
+        newRecord.ColorId
       )
     );
 
-    // give me an array with an object matching the colorId
-    monthProduction = monthProduction.recordset.filter(
-      (record) => record.ColorId === newRecord.ColorId
-    );
+    monthProduction = monthProduction.recordset;
 
     // The articulo might not be in the production table
     monthProduction =

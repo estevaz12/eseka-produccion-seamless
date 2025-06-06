@@ -5,10 +5,9 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Option,
-  Select,
   Typography,
 } from '@mui/joy';
+import ColorSelect from './ColorSelect.jsx';
 
 function ColorFormInputs({
   fieldName, // colorDistr or colorCodes
@@ -29,20 +28,13 @@ function ColorFormInputs({
     <Box>
       <Box key={key}>
         <Typography>{title}</Typography>
-        <FormControl>
-          <FormLabel>Color</FormLabel>
-          <Select
-            placeholder='Seleccione un color...'
-            onChange={(event, value) => setColorInput(value)}
-            required={!(formData[fieldName]?.length >= 0)}
-          >
-            {colors.map((color) => (
-              <Option key={color.Id} value={color.Id}>
-                {color.Color}
-              </Option>
-            ))}
-          </Select>
-        </FormControl>
+
+        <ColorSelect
+          colors={colors}
+          onChange={setColorInput}
+          required={!(formData[fieldName]?.length >= 0)}
+        />
+
         <FormControl>
           <FormLabel>{label2}</FormLabel>
           <Input

@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 
-// TODO: ask to insert Tipo, ColorDistr, and ColorCodes if Articulo doesn't exist
 const insertProgramada = (data, status, date = dayjs()) => {
   const FECHA = date.format(process.env.SQL_DATE_FORMAT);
   let query = '';

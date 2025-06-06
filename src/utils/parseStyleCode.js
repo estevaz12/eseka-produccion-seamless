@@ -11,7 +11,6 @@ const parseStyleCode = async (styleCode) => {
 
   if (/^\d{5}$/.test(articulo)) {
     // articulo must be a 5-digit string
-    // TODO: if colorId null, ask to insert in COLOR_CODES and repeat
     try {
       colorId = await sql.query(getColorId(articulo, color));
       colorId = colorId.recordset[0]?.Id; // will be undefined if not there

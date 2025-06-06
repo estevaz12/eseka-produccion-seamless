@@ -2,7 +2,7 @@ import { Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import Programada from './Programada.jsx';
-// import Produccion from './Produccion.jsx';
+import Produccion from './Produccion.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import NewColorCodeForm from '../components/NewColorCodeForm.jsx';
 
@@ -35,8 +35,10 @@ export default function Home() {
 
   return (
     <>
-      <Programada />
+      <Produccion />
+      {/* <Programada /> */}
 
+      {/* Modal for new Color Codes */}
       {newColorCodes.length > 0 && (
         <ModalWrapper
           title={
