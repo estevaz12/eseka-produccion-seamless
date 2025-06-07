@@ -1,4 +1,3 @@
-// TODO - join with machines to show current production
 import { Box } from '@mui/joy';
 import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
@@ -84,8 +83,7 @@ export default function Produccion() {
       >
         {data.map((row, i) => (
           <tr key={i}>
-            <td>{row.Articulo}</td>
-            <td>{row.Tipo}</td>
+            <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
             <td>{row.Talle}</td>
             <td>{row.Color}</td>
             <td>
@@ -116,7 +114,7 @@ export default function Produccion() {
                     m.StyleCode.colorId === row.ColorId
                 )
                 .map((m) => m.MachCode) // display all machines with articulo
-                .join('-')}
+                .join(' - ')}
             </td>
           </tr>
         ))}

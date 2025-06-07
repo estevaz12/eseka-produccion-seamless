@@ -1,4 +1,3 @@
-// TODO: modify produccion view with new query
 const produccion = (
   room,
   startDate,
@@ -82,7 +81,6 @@ const produccion = (
   }
 
   // Match with SEA_COLOR_CODES and return a record per color
-  // TODO: Fix produciendo column to include machines
   return (
     query +
     `,ProdColor AS (
@@ -101,7 +99,7 @@ const produccion = (
                 ON c.Id = cc.Color
             JOIN SEA_ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
-        GROUP BY cc.Articulo, CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT), cc.Color, c.Color, c.Id
+        GROUP BY cc.Articulo, a.Tipo, CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT), cc.Color, c.Color, c.Id
     )
     SELECT *
     FROM ProdColor
