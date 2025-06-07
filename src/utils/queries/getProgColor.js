@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 const getProgColor = (startDate, includeDeleted = false) => {
   const fecha = startDate.format(process.env.SQL_DATE_FORMAT);
   return `
@@ -15,4 +13,4 @@ const getProgColor = (startDate, includeDeleted = false) => {
   `;
 };
 
-export { getProgColor };
+module.exports = getProgColor;

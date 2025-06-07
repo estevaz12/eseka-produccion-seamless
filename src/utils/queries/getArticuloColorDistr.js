@@ -6,4 +6,4 @@ const getArticuloColorDistr = (articulo) => {
   `;
 };
 
-export { getArticuloColorDistr };
+module.exports = getArticuloColorDistr;

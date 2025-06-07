@@ -4,33 +4,29 @@
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
-const { default: serverLog } = require('./utils/serverLog.js');
-const { processPDF } = require('./utils/processPDF.js');
 const dayjs = require('dayjs');
 
+// Utils
+const serverLog = require('./utils/serverLog.js');
+const processPDF = require('./utils/processPDF.js');
+const calculateNewTargets = require('./utils/calculateNewTargets.js');
+const parseMachines = require('./utils/parseMachines.js');
+
 // Queries
-const { default: produccion } = require('./utils/queries/produccion');
-const { insertProgramada } = require('./utils/queries/insertProgramada');
-const { compareProgramada } = require('./utils/compareProgramada.js');
-const { getProgramada } = require('./utils/queries/getProgramada.js');
-const { updateProgramada } = require('./utils/queries/updateProgramada.js');
-const { getProgramadaTotal } = require('./utils/queries/getProgramadaTotal.js');
-const { getProgColor } = require('./utils/queries/getProgColor.js');
-const { getMachines } = require('./utils/queries/getMachines.js');
-const { calculateNewTargets } = require('./utils/calculateNewTargets.js');
-const { insertColorCodes } = require('./utils/queries/insertColorCodes.js');
-const { insertDistr } = require('./utils/queries/insertDistr');
-const { getArticulo } = require('./utils/queries/getArticulo.js');
-const {
-  getArticuloColorDistr,
-} = require('./utils/queries/getArticuloColorDistr.js');
-const {
-  getArticuloColorCodes,
-} = require('./utils/queries/getArticuloColorCodes.js');
-const {
-  insertArticuloWithColors,
-} = require('./utils/queries/insertArticuloWithColors.js');
-const { parseMachines } = require('./utils/parseMachines.js');
+const produccion = require('./utils/queries/produccion');
+const insertProgramada = require('./utils/queries/insertProgramada');
+const compareProgramada = require('./utils/compareProgramada.js');
+const getProgramada = require('./utils/queries/getProgramada.js');
+const updateProgramada = require('./utils/queries/updateProgramada.js');
+const getProgramadaTotal = require('./utils/queries/getProgramadaTotal.js');
+const getProgColor = require('./utils/queries/getProgColor.js');
+const getMachines = require('./utils/queries/getMachines.js');
+const insertColorCodes = require('./utils/queries/insertColorCodes.js');
+const insertDistr = require('./utils/queries/insertDistr');
+const getArticulo = require('./utils/queries/getArticulo.js');
+const getArticuloColorDistr = require('./utils/queries/getArticuloColorDistr.js');
+const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js');
+const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColors.js');
 
 // Environment
 let isPackaged; //= false;

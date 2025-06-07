@@ -1,4 +1,4 @@
-import { parseStyleCode } from './parseStyleCode.js';
+const parseStyleCode = require('./parseStyleCode.js');
 
 // Machines: [{MachCode, StyleCode: {styleCode, articulo, talle, color, colorId}, ...}]
 async function parseMachines(machines) {
@@ -10,4 +10,4 @@ async function parseMachines(machines) {
   );
 }
 
-export { parseMachines };
+module.exports = parseMachines;

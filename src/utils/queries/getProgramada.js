@@ -12,4 +12,4 @@ const getProgramada = (startDate) => {
   `;
 };
 
-export { getProgramada };
+module.exports = getProgramada;

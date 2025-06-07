@@ -1,8 +1,8 @@
-import { parseMachines } from './parseMachines.js';
-import sql from 'mssql';
-import produccion from './queries/produccion.js';
-import dayjs from 'dayjs';
-import serverLog from './serverLog.js';
+const parseMachines = require('./parseMachines.js');
+const sql = require('mssql');
+const produccion = require('./queries/produccion.js');
+const dayjs = require('dayjs');
+const serverLog = require('./serverLog.js');
 
 const calculateNewTargets = async (progUpdates, machines) => {
   await parseMachines(machines);
@@ -136,7 +136,7 @@ const calculateNewTargets = async (progUpdates, machines) => {
   return newTargets.flat();
 };
 
-export { calculateNewTargets };
+module.exports = calculateNewTargets;
 
 async function getMonthProduction(newRecord) {
   const startDate = dayjs()

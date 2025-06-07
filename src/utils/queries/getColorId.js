@@ -9,4 +9,4 @@ const getColorId = (articulo, colorCode) => {
       `;
 };
 
-export { getColorId };
+module.exports = getColorId;

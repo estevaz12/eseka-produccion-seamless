@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+const dayjs = require('dayjs');
 
 const insertProgramada = (data, status, date = dayjs()) => {
   const FECHA = date.format(process.env.SQL_DATE_FORMAT);
@@ -25,4 +25,4 @@ const insertProgramada = (data, status, date = dayjs()) => {
   return query;
 };
 
-export { insertProgramada };
+module.exports = insertProgramada;

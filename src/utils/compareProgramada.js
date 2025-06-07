@@ -30,4 +30,4 @@ const compareProgramada = (oldProg, newProg) => {
   return { added, modified, deleted };
 };
 
-export { compareProgramada };
+module.exports = compareProgramada;

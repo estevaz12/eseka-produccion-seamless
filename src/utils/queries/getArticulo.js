@@ -6,4 +6,4 @@ const getArticulo = (articulo) => {
   `;
 };
 
-export { getArticulo };
+module.exports = getArticulo;

@@ -1,5 +1,4 @@
-import { data } from 'autoprefixer';
-import { PdfReader, TableParser } from 'pdfreader';
+const { PdfReader, TableParser } = require('pdfreader');
 
 const processPDF = async (path) => {
   return new Promise((resolve, reject) => {

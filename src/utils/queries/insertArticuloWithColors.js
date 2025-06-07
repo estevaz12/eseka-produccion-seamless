@@ -1,5 +1,5 @@
-import { insertDistr } from './insertDistr';
-import { insertColorCodes } from './insertColorCodes';
+const insertDistr = require('./insertDistr');
+const insertColorCodes = require('./insertColorCodes');
 
 const insertArticuloWithColors = (data) => {
   let query = `
@@ -15,4 +15,4 @@ const insertArticuloWithColors = (data) => {
   return query;
 };
 
-export { insertArticuloWithColors };
+module.exports = insertArticuloWithColors;

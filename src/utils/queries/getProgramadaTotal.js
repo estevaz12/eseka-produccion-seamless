@@ -11,4 +11,4 @@ const getProgramadaTotal = (startDate) => {
   `;
 };
 
-export { getProgramadaTotal };
+module.exports = getProgramadaTotal;

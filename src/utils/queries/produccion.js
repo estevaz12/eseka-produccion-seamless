@@ -109,4 +109,4 @@ const produccion = (
   );
 };
 
-export default produccion;
+module.exports = produccion;

@@ -1,4 +1,4 @@
-import { insertProgramada } from './insertProgramada';
+const insertProgramada = require('./insertProgramada');
 
 // data = {added[Objects], modified[Objects], deleted[Objects]}
 const updateProgramada = (data, date) => {
@@ -11,4 +11,4 @@ const updateProgramada = (data, date) => {
   return query;
 };
 
-export { updateProgramada };
+module.exports = updateProgramada;

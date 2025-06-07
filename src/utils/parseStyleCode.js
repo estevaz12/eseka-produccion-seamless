@@ -1,6 +1,6 @@
-import sql from 'mssql';
-import { getColorId } from './queries/getColorId.js';
-import serverLog from './serverLog.js';
+const sql = require('mssql');
+const getColorId = require('./queries/getColorId.js');
+const serverLog = require('./serverLog.js');
 
 const parseStyleCode = async (styleCode) => {
   styleCode = styleCode.trim().substring(0, 8);
@@ -31,4 +31,4 @@ const parseStyleCode = async (styleCode) => {
   };
 };
 
-export { parseStyleCode };
+module.exports = parseStyleCode;

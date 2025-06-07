@@ -17,4 +17,4 @@ const getMachines = () => {
   `;
 };
 
-export { getMachines };
+module.exports = getMachines;
