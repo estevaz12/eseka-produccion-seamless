@@ -8,6 +8,7 @@ const getMachines = () => {
   6: ELECTRÓNICO
   7: MECANICO
   9: HILADO
+  13: TURBINA	
   */
   return `
     SELECT MachCode, StyleCode, Pieces, TargetOrder, State

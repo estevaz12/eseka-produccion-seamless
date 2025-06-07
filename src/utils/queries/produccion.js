@@ -8,17 +8,6 @@ const produccion = (
   talle,
   colorId
 ) => {
-  /* Machine states
-  0: RUN
-  2: STOP BUTTON
-  3: AUTOMATIC STOP
-  4: TARGET
-  5: F1
-  6: ELECTRÓNICO
-  7: MECANICO
-  9: HILADO
-  */
-
   if (typeof actual === 'string') {
     actual = actual === 'true' ? true : false;
   }
@@ -99,6 +88,7 @@ const produccion = (
     `,ProdColor AS (
         SELECT 
             cc.Articulo, 
+            a.Tipo,
             CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT) AS Talle,
             c.Color,
             c.Id AS ColorId,
@@ -109,6 +99,8 @@ const produccion = (
                 AND CONVERT(INT, LEFT(p.StyleCode, 5)) = CAST(cc.Articulo AS INT)
             JOIN SEA_COLORES AS c
                 ON c.Id = cc.Color
+            JOIN SEA_ARTICULOS AS a 
+                ON a.Articulo = cc.Articulo
         GROUP BY cc.Articulo, CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT), cc.Color, c.Color, c.Id
     )
     SELECT *

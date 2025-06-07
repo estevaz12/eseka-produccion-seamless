@@ -26,13 +26,14 @@ const calculateNewTargets = async (progUpdates, machines) => {
        * 6: ELECTRÓNICO
        * 7: MECANICO
        * 9: HILADO
+       * 13: TURBINA
        */
       const targetMachines = machines.filter(
         (machine) =>
           machine.StyleCode.articulo === Math.floor(newRecord.Articulo) &&
           machine.StyleCode.talle === newRecord.Talle &&
           machine.StyleCode.colorId === newRecord.ColorId &&
-          machine.State in [0, 2, 3, 4, 5, 6, 7, 9]
+          [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(machine.State)
       );
 
       serverLog(

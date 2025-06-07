@@ -5,7 +5,6 @@ const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
 const { default: serverLog } = require('./utils/serverLog.js');
-const { produccionTest } = require('./utils/test-data.js');
 const { processPDF } = require('./utils/processPDF.js');
 const dayjs = require('dayjs');
 
@@ -184,13 +183,39 @@ const startServer = () => {
     }
   });
 
+  app.get('/machines/producing', async (req, res) => {
+    serverLog('GET /machines/producing');
+    try {
+      let machines = await sql.query(getMachines());
+      machines = machines.recordset;
+      await parseMachines(machines);
+      /* Machine states that count for production
+       * 0: RUN
+       * 2: STOP BUTTON
+       * 3: AUTOMATIC STOP
+       * 4: TARGET
+       * 5: F1
+       * 6: ELECTRÓNICO
+       * 7: MECANICO
+       * 9: HILADO
+       * 13: TURBINA
+       */
+      machines = machines.filter((m) =>
+        [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(m.State)
+      );
+      res.json(machines);
+    } catch (err) {
+      serverLog(`[ERROR] GET /machines/producing: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get('/machines/newColorCodes', async (req, res) => {
     serverLog('GET /machines/newColorCodes');
     try {
       let machines = await sql.query(getMachines());
       machines = machines.recordset;
       await parseMachines(machines);
-      // serverLog(JSON.stringify(machines, null, 2));
       /* Machine states
        * 0: RUN
        * 2: STOP BUTTON
@@ -200,12 +225,14 @@ const startServer = () => {
        * 6: ELECTRÓNICO
        * 7: MECANICO
        * 9: HILADO
+       * 13: TURBINA
        *
        * Machines in other states could have invalid stylecodes
        */
       machines = machines.filter(
         (m) =>
-          m.State in [0, 2, 3, 4, 5, 6, 7, 9] && m.StyleCode.colorId === null
+          [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(m.State) &&
+          m.StyleCode.colorId === null
       );
       res.json(machines);
     } catch (err) {
@@ -221,17 +248,9 @@ const startServer = () => {
     try {
       const { room, startDate, endDate, actual, articulo, talle, colorId } =
         req.query;
-      const query = produccion(
-        room,
-        startDate,
-        endDate,
-        actual,
-        articulo,
-        talle,
-        colorId
+      const result = await sql.query(
+        produccion(room, startDate, endDate, actual, articulo, talle, colorId)
       );
-      const result = await sql.query(query);
-      serverLog(query);
       res.json(result.recordset);
     } catch (err) {
       serverLog(`[ERROR] GET /produccion: ${err}`);
