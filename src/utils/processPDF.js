@@ -84,7 +84,7 @@ const processPDF = async (path) => {
 };
 
 // processPDF().then((data) => console.log(JSON.stringify(data, null, 2)));
-export { processPDF };
+module.exports = processPDF;
 
 /**
  * Determines which column a text item belongs to,

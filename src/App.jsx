@@ -12,7 +12,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
 import { ConfigProvider } from './ConfigContext.jsx';
+import { HashRouter, Route, Routes } from 'react-router';
 import Home from './containers/Home.jsx';
+import Produccion from './containers/Produccion.jsx';
+import Programada from './containers/Programada.jsx';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
@@ -64,5 +67,14 @@ root.render(
 );
 
 export default function App() {
-  return <Home />;
+  return (
+    <HashRouter>
+      <Routes>
+        <Route path='/' element={<Home />}>
+          <Route index element={<Produccion />} />
+          <Route path='programada' element={<Programada />} />
+        </Route>
+      </Routes>
+    </HashRouter>
+  );
 }

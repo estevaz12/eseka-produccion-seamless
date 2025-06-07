@@ -1,5 +1,4 @@
 // TODO: api docs
-// FIXME - fix imports for consistency; change all to CommonJS
 // FIXME - sql injections
 const express = require('express');
 const sql = require('mssql');

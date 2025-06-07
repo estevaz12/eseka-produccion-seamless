@@ -1,10 +1,10 @@
 import { Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import Programada from './Programada.jsx';
-import Produccion from './Produccion.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import NewColorCodeForm from '../components/NewColorCodeForm.jsx';
+import { Outlet } from 'react-router';
+import NavBar from '../components/NavBar.jsx';
 
 let apiUrl;
 
@@ -35,8 +35,9 @@ export default function Home() {
 
   return (
     <>
-      <Produccion />
-      {/* <Programada /> */}
+      <NavBar />
+
+      <Outlet />
 
       {/* Modal for new Color Codes */}
       {newColorCodes.length > 0 && (
