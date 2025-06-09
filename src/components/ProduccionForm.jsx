@@ -22,10 +22,17 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
   const [colors, setColors] = useState([]);
 
   useEffect(() => {
+    let ignore = false;
     fetch(`${apiUrl}/colors`)
       .then((res) => res.json())
-      .then((data) => setColors(data))
+      .then((data) => {
+        if (!ignore) setColors(data);
+      })
       .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleSubmit = (e) => {

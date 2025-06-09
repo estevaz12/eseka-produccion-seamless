@@ -31,9 +31,14 @@ export default function Programada() {
 
   // get current programada total on load
   useEffect(() => {
-    if (localStorage.getItem('progStartDate')) {
+    let ignore = false;
+    if (!ignore && localStorage.getItem('progStartDate')) {
       fetchCurrTotal();
     }
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   async function handleUpload() {
@@ -47,13 +52,20 @@ export default function Programada() {
 
   // read programada file
   useEffect(() => {
-    if (filePath) {
+    let ignore = false;
+    if (!ignore && filePath) {
       const params = new URLSearchParams({ path: filePath }).toString();
       fetch(`${apiUrl}/programada/file?${params}`)
         .then((res) => res.json())
-        .then((data) => setProgramada(data))
+        .then((data) => {
+          if (!ignore) setProgramada(data);
+        })
         .catch((err) => console.error('[CLIENT] Error fetching data:', err));
     }
+
+    return () => {
+      ignore = true;
+    };
   }, [filePath]);
 
   // compare new programada to old
@@ -156,9 +168,9 @@ export default function Programada() {
     }));
   }
 
-  // TODO: add fetch cancel to all useEffects
   // Insert diff updates after validating new articulos
   useEffect(() => {
+    let ignore = false;
     // just inserts updates
     async function insertUpdates() {
       try {
@@ -199,7 +211,12 @@ export default function Programada() {
 
     // need to check both diff.added and newArticuloData because one could be
     // empty while the other isn't
-    if (diff && diff.added.length === 0 && newArticuloData.length === 0) {
+    if (
+      !ignore &&
+      diff &&
+      diff.added.length === 0 &&
+      newArticuloData.length === 0
+    ) {
       if (loadType.current === 'update') insertUpdates();
       else if (loadType.current === 'insert') {
         insertAll();
@@ -208,6 +225,10 @@ export default function Programada() {
       fetchCurrTotal();
       setDiff();
     }
+
+    return () => {
+      ignore = true;
+    };
   }, [diff, newArticuloData, programada]);
 
   function fetchCurrTotal() {

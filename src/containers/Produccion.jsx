@@ -24,6 +24,7 @@ export default function Produccion() {
 
   // get all on load
   useEffect(() => {
+    let ignore = false;
     const params = new URLSearchParams({
       room: 'SEAMLESS',
       startDate: dayjs()
@@ -40,34 +41,51 @@ export default function Produccion() {
 
     fetch(`${apiUrl}/machines/producing`)
       .then((res) => res.json())
-      .then((data) => setMachines(data))
+      .then((data) => {
+        if (!ignore) setMachines(data);
+      })
       .catch((err) =>
         console.log('[CLIENT] Error fetching /machines/producing:', err)
       );
 
     fetch(`${apiUrl}/produccion?${params}`)
       .then((res) => res.json())
-      .then((data) => setData(data))
+      .then((data) => {
+        if (!ignore) setData(data);
+      })
       .catch((err) => console.log('[CLIENT] Error fetching /produccion:', err));
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // get data on form submission
   useEffect(() => {
+    let ignore = false;
     if (url) {
       fetch(`${apiUrl}/machines/producing`)
         .then((res) => res.json())
-        .then((data) => setMachines(data))
+        .then((data) => {
+          if (!ignore) setMachines(data);
+        })
         .catch((err) =>
           console.log('[CLIENT] Error fetching /machines/producing:', err)
         );
 
       fetch(url)
         .then((res) => res.json())
-        .then((data) => setData(data))
+        .then((data) => {
+          if (!ignore) setData(data);
+        })
         .catch((err) =>
           console.log('[CLIENT] Error fetching /produccion:', err)
         );
     }
+
+    return () => {
+      ignore = true;
+    };
   }, [url]);
 
   return (

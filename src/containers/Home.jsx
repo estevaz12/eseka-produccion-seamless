@@ -15,22 +15,36 @@ export default function Home() {
 
   // check for newColorCodes on load
   useEffect(() => {
+    let ignore = false;
     fetch(`${apiUrl}/machines/newColorCodes`)
       .then((res) => res.json())
-      .then((data) => setNewColorCodes(data))
+      .then((data) => {
+        if (!ignore) setNewColorCodes(data);
+      })
       .catch((err) =>
         console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
       );
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // get colors for form
   useEffect(() => {
+    let ignore = false;
     if (newColorCodes.length > 0) {
       fetch(`${apiUrl}/colors`)
         .then((res) => res.json())
-        .then((data) => setColors(data))
+        .then((data) => {
+          if (!ignore) setColors(data);
+        })
         .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
     }
+
+    return () => {
+      ignore = true;
+    };
   }, [newColorCodes]);
 
   return (
