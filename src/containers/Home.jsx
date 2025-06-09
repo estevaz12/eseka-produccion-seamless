@@ -8,6 +8,7 @@ import NavBar from '../components/NavBar.jsx';
 
 let apiUrl;
 
+// TODO handle casaes for newColorCodes where articulo doesn't exist
 export default function Home() {
   apiUrl = useConfig().apiUrl;
   const [newColorCodes, setNewColorCodes] = useState([]);

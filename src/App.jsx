@@ -71,8 +71,8 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path='/' element={<Home />}>
-          <Route index element={<Produccion />} />
-          <Route path='programada' element={<Programada />} />
+          <Route index element={<Programada />} />
+          <Route path='produccion' element={<Produccion />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -5,7 +5,8 @@ const produccion = (
   actual,
   articulo,
   talle,
-  colorId
+  colorId,
+  showResults = true
 ) => {
   if (typeof actual === 'string') {
     actual = actual === 'true' ? true : false;
@@ -101,10 +102,16 @@ const produccion = (
                 ON a.Articulo = cc.Articulo
         GROUP BY cc.Articulo, a.Tipo, CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT), cc.Color, c.Color, c.Id
     )
-    SELECT *
-    FROM ProdColor
-    ${whereClause}
-    ORDER BY Articulo, Talle, Color;
+    ${
+      showResults
+        ? `
+      SELECT *
+      FROM ProdColor
+      ${whereClause}
+      ORDER BY Articulo, Talle, Color;
+      `
+        : ''
+    }
     `
   );
 };

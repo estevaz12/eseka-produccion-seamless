@@ -26,6 +26,8 @@ const getArticulo = require('./utils/queries/getArticulo.js');
 const getArticuloColorDistr = require('./utils/queries/getArticuloColorDistr.js');
 const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js');
 const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColors.js');
+const getDocPorArt = require('./utils/queries/getDocPorArt.js');
+const getProgColorTable = require('./utils/queries/getProgColorTable.js');
 
 // Environment
 let isPackaged; //= false;
@@ -167,11 +169,18 @@ const startServer = () => {
     }
   });
 
+  async function getParsedMachines() {
+    let machines = await sql.query(getMachines());
+    machines = machines.recordset;
+    await parseMachines(machines);
+    return machines;
+  }
+
   app.get('/machines', async (req, res) => {
     serverLog('GET /machines');
     try {
-      const result = await sql.query(getMachines());
-      res.json(result.recordset);
+      const machines = await getParsedMachines();
+      res.json(machines);
     } catch (err) {
       serverLog(`[ERROR] GET /machines: ${err}`);
       res.status(500).json({ error: err.message });
@@ -181,9 +190,7 @@ const startServer = () => {
   app.get('/machines/producing', async (req, res) => {
     serverLog('GET /machines/producing');
     try {
-      let machines = await sql.query(getMachines());
-      machines = machines.recordset;
-      await parseMachines(machines);
+      let machines = await getParsedMachines();
       /* Machine states that count for production
        * 0: RUN
        * 2: STOP BUTTON
@@ -208,9 +215,7 @@ const startServer = () => {
   app.get('/machines/newColorCodes', async (req, res) => {
     serverLog('GET /machines/newColorCodes');
     try {
-      let machines = await sql.query(getMachines());
-      machines = machines.recordset;
-      await parseMachines(machines);
+      let machines = await getParsedMachines();
       /* Machine states
        * 0: RUN
        * 2: STOP BUTTON
@@ -249,6 +254,26 @@ const startServer = () => {
       res.json(result.recordset);
     } catch (err) {
       serverLog(`[ERROR] GET /produccion: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/programada', async (req, res) => {
+    serverLog('GET /programada');
+    try {
+      const { startDate } = req.query;
+      const [progColor, machines] = await Promise.all([
+        // get Programada with Color, month production, and docenas by art.
+        sql.query(getProgColorTable(startDate)),
+        getParsedMachines(), // get Machines
+      ]);
+
+      res.json({
+        progColor: progColor.recordset,
+        machines: machines,
+      });
+    } catch (err) {
+      serverLog(`[ERROR] GET /programada: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });

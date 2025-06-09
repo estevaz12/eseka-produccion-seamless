@@ -9,20 +9,20 @@ export default function NavBar() {
           <NavLink
             to='/'
             className={({ isActive }) =>
-              isActive ? 'text-blue-600' : 'text-black'
+              isActive ? '**:text-blue-600' : '**:text-black'
             }
           >
-            <ListItemButton>Producción</ListItemButton>
+            <ListItemButton>Programada</ListItemButton>
           </NavLink>
         </ListItem>
         <ListItem>
           <NavLink
-            to='/programada'
+            to='/produccion'
             className={({ isActive }) =>
-              isActive ? 'text-blue-600' : 'text-black'
+              isActive ? '**:text-blue-600' : '**:text-black'
             }
           >
-            <ListItemButton>Programada</ListItemButton>
+            <ListItemButton>Producción</ListItemButton>
           </NavLink>
         </ListItem>
       </List>

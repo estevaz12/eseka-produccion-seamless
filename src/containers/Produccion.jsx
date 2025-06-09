@@ -99,43 +99,52 @@ export default function Produccion() {
       <DataTable
         cols={['Artículo', 'Talle', 'Color', 'Unidades', 'Docenas', 'Máquinas']}
       >
-        {data.map((row, i) => (
-          <tr key={i}>
-            <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
-            <td>{row.Talle}</td>
-            <td>{row.Color}</td>
-            <td>
-              {row.Tipo === null
-                ? row.Unidades
-                : row.Tipo === '#'
-                ? `${row.Unidades / 2} (${row.Unidades})`
-                : `${row.Unidades * 2} (${row.Unidades})`}
-            </td>
-            <td>
-              {row.Tipo === null
-                ? (row.Unidades / 12).toFixed(1)
-                : row.Tipo === '#'
-                ? `${(row.Unidades / 2 / 12).toFixed(1)} (${(
-                    row.Unidades / 12
-                  ).toFixed(1)})`
-                : `${((row.Unidades * 2) / 12).toFixed(1)} (${(
-                    row.Unidades / 12
-                  ).toFixed(1)})`}
-            </td>
-            <td>
-              {machines
-                .filter(
-                  // match machines with articulo
-                  (m) =>
-                    m.StyleCode.articulo === Math.floor(row.Articulo) &&
-                    m.StyleCode.talle === row.Talle &&
-                    m.StyleCode.colorId === row.ColorId
-                )
-                .map((m) => m.MachCode) // display all machines with articulo
-                .join(' - ')}
-            </td>
-          </tr>
-        ))}
+        {data.map((row, i) => {
+          const producido =
+            row.Tipo === null
+              ? row.Unidades
+              : row.Tipo === '#'
+              ? row.Unidades * 2
+              : row.Unidades / 2;
+
+          return (
+            <tr key={i}>
+              {/* Articulo */}
+              <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
+              {/* Talle */}
+              <td>{row.Talle}</td>
+              {/* Color */}
+              <td>{row.Color}</td>
+              {/* Unidades */}
+              <td>
+                {row.Tipo === null
+                  ? row.Unidades
+                  : `${producido} (${row.Unidades})`}
+              </td>
+              {/* Docenas */}
+              <td>
+                {row.Tipo === null
+                  ? (producido / 12).toFixed(1)
+                  : `${(producido / 12).toFixed(1)} (${(
+                      row.Unidades / 12
+                    ).toFixed(1)})`}
+              </td>
+              {/* Maquinas */}
+              <td>
+                {machines
+                  .filter(
+                    // match machines with articulo
+                    (m) =>
+                      m.StyleCode.articulo === Math.floor(row.Articulo) &&
+                      m.StyleCode.talle === row.Talle &&
+                      m.StyleCode.colorId === row.ColorId
+                  )
+                  .map((m) => m.MachCode) // display all machines with articulo
+                  .join(' - ')}
+              </td>
+            </tr>
+          );
+        })}
       </DataTable>
     </Box>
   );

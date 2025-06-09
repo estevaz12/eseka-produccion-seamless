@@ -10,6 +10,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
+import ProgramadaTable from '../components/ProgramadaTable.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -25,6 +26,9 @@ export default function Programada() {
   const [colors, setColors] = useState();
   const [newArticuloData, setNewArticuloData] = useState([]);
   const [newTargets, setNewTargets] = useState();
+  const [startDate, setStartDate] = useState(
+    localStorage.getItem('progStartDate')
+  );
   // helper refs
   const diffMounted = useRef(false);
   const loadType = useRef('');
@@ -221,6 +225,7 @@ export default function Programada() {
       else if (loadType.current === 'insert') {
         insertAll();
         localStorage.setItem('progStartDate', dayjs().format(sqlDateFormat));
+        setStartDate(localStorage.getItem('progStartDate'));
       }
       fetchCurrTotal();
       setDiff();
@@ -283,6 +288,7 @@ export default function Programada() {
               'progStartDate',
               newValue.format(sqlDateFormat)
             );
+            setStartDate(localStorage.getItem('progStartDate'));
             fetchCurrTotal();
           }
         }}
@@ -311,6 +317,7 @@ export default function Programada() {
               disabled={localStorage.getItem('progStartDate') === null}
               onClick={() => {
                 localStorage.removeItem('progStartDate');
+                setStartDate(localStorage.getItem('progStartDate'));
                 setCurrTotal(0); // to trigger a re-render
               }}
             >
@@ -420,6 +427,8 @@ export default function Programada() {
           ))}
         </DataTable>
       )}
+
+      <ProgramadaTable startDate={startDate} />
 
       {/* render one Modal at a time */}
       {newArticuloData.length > 0 && (
