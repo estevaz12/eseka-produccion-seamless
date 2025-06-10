@@ -13,11 +13,11 @@ export default function ProgramadaTable({ startDate }) {
   useEffect(() => {
     let ignore = false;
 
+    // fetch and repeat every minute
     if (startDate) {
       const params = new URLSearchParams({
         startDate,
       }).toString();
-
       fetch(`${apiUrl}/programada?${params}`)
         .then((res) => res.json())
         .then((data) => {
@@ -28,7 +28,24 @@ export default function ProgramadaTable({ startDate }) {
         });
     }
 
+    const intervalId = setInterval(() => {
+      if (startDate) {
+        const params = new URLSearchParams({
+          startDate,
+        }).toString();
+        fetch(`${apiUrl}/programada?${params}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (!ignore) {
+              setProgColor(data.progColor);
+              setMachines(data.machines);
+            }
+          });
+      }
+    }, 60000); // update every minute
+
     return () => {
+      clearInterval(intervalId);
       ignore = true;
     };
   }, [startDate]);

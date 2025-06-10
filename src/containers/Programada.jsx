@@ -1,4 +1,3 @@
-// TODO calculateNewTargets on button press, recalculate if clicked again
 // TODO porcentaje as fraction
 
 import { Box, Typography, Button } from '@mui/joy';
@@ -175,6 +174,7 @@ export default function Programada() {
   // Insert diff updates after validating new articulos
   useEffect(() => {
     let ignore = false;
+    let intervalId;
     // just inserts updates
     async function insertUpdates() {
       try {
@@ -186,7 +186,11 @@ export default function Programada() {
           body: JSON.stringify(diff),
         });
         const data = await res.json();
+        // fetch and repeat every 30 seconds
         fetchNewTargets(data);
+        intervalId = setInterval(() => {
+          fetchNewTargets(data);
+        }, 30000); // update every 30 seconds
       } catch (err) {
         console.error('[CLIENT] Error fetching data:', err);
       }
@@ -232,6 +236,7 @@ export default function Programada() {
     }
 
     return () => {
+      clearInterval(intervalId);
       ignore = true;
     };
   }, [diff, newArticuloData, programada]);

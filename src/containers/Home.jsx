@@ -14,9 +14,10 @@ export default function Home() {
   const [newColorCodes, setNewColorCodes] = useState([]);
   const [colors, setColors] = useState([]);
 
-  // check for newColorCodes on load
+  // check for newColorCodes on load and then every hour
   useEffect(() => {
     let ignore = false;
+    // fetch and repeat every hour
     fetch(`${apiUrl}/machines/newColorCodes`)
       .then((res) => res.json())
       .then((data) => {
@@ -26,7 +27,19 @@ export default function Home() {
         console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
       );
 
+    const intervalId = setInterval(() => {
+      fetch(`${apiUrl}/machines/newColorCodes`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!ignore) setNewColorCodes(data);
+        })
+        .catch((err) =>
+          console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
+        );
+    }, 1 * 3600 * 1000); // update every hour
+
     return () => {
+      clearInterval(intervalId);
       ignore = true;
     };
   }, []);
