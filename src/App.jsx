@@ -12,10 +12,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
 import { ConfigProvider } from './ConfigContext.jsx';
-import { HashRouter, Route, Routes } from 'react-router';
+import { HashRouter, Navigate, Route, Routes } from 'react-router';
 import Home from './containers/Home.jsx';
 import Produccion from './containers/Produccion.jsx';
 import Programada from './containers/Programada.jsx';
+import ProgComparar from './containers/ProgComparar.jsx';
+import ProgHistorica from './containers/ProgHistorica.jsx';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
@@ -71,7 +73,12 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path='/' element={<Home />}>
-          <Route index element={<Programada />} />
+          <Route index element={<Navigate to='/programada' replace />} />
+          <Route path='programada'>
+            <Route index element={<Programada />} />
+            <Route path='comparar' element={<ProgComparar />} />
+            <Route path='historica' element={<ProgHistorica />} />
+          </Route>
           <Route path='produccion' element={<Produccion />} />
         </Route>
       </Routes>

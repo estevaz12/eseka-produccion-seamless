@@ -5,7 +5,9 @@ import DataTable from './DataTable.jsx';
 let apiUrl;
 
 // TODO - handle articulos incompletos
-export default function ProgramadaTable({ startDate }) {
+export default function ProgramadaTable({
+  startDate = localStorage.getItem('progStartDate'),
+}) {
   apiUrl = useConfig().apiUrl;
   const [progColor, setProgColor] = useState([]);
   const [machines, setMachines] = useState([]);
