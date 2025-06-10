@@ -88,7 +88,15 @@ const produccion = (
         SELECT 
             cc.Articulo, 
             a.Tipo,
-            CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT) AS Talle,
+            CASE -- Account for PARCHES
+              WHEN CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT) = 9 THEN
+                CASE 
+                  WHEN ISNUMERIC(SUBSTRING(p.StyleCode, 7, 1)) = 1 
+                  THEN CAST(SUBSTRING(p.StyleCode, 7, 1) AS INT)
+                  ELSE CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT)
+                END
+              ELSE CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT)
+            END AS Talle,
             c.Color,
             c.Id AS ColorId,
             SUM(p.Unidades) AS Unidades
@@ -100,7 +108,7 @@ const produccion = (
                 ON c.Id = cc.Color
             JOIN SEA_ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
-        GROUP BY cc.Articulo, a.Tipo, CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT), cc.Color, c.Color, c.Id
+        GROUP BY cc.Articulo, a.Tipo, p.StyleCode, cc.Color, c.Color, c.Id
     )
     ${
       showResults

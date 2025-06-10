@@ -45,27 +45,32 @@ export default function NewColorCodeForm({
 
   return (
     <form key={newColorCode.MachCode} onSubmit={(e) => handleSubmit(e)}>
-      {/* TODO: add input for punto and add to articulo (as string then convert to float) */}
       <Box>
         <Typography>
           {newColorCode.StyleCode.articulo}
           <Typography variant='solid'>.</Typography>
         </Typography>
-        <FloatingLabelInput
-          inputProps={{
-            label: 'Punto',
-            type: 'number',
-            min: 0,
-            max: 99,
-            placeholder: 'Sin (.)',
-            onChange: (e) =>
-              setFormData({
-                ...formData,
-                articulo:
-                  newColorCode.StyleCode.articulo + '.' + e.target.value,
-              }),
-          }}
-        />
+        <FormControl>
+          <FloatingLabelInput
+            inputProps={{
+              label: 'Punto',
+              type: 'number',
+              min: 0,
+              max: 99,
+              placeholder: 'Sin (.)',
+              onChange: (e) =>
+                setFormData({
+                  ...formData,
+                  articulo:
+                    newColorCode.StyleCode.articulo + '.' + e.target.value,
+                }),
+            }}
+          />
+          <FormHelperText>
+            Si es un <Typography variant='solid'>PARCHE</Typography> sin talle,
+            dejar vacío. Si tiene talle, ingresar (.)9.
+          </FormHelperText>
+        </FormControl>
       </Box>
       <FormControl>
         <FormLabel>Tipo (si aplica)</FormLabel>
