@@ -26,7 +26,6 @@ const getArticulo = require('./utils/queries/getArticulo.js');
 const getArticuloColorDistr = require('./utils/queries/getArticuloColorDistr.js');
 const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js');
 const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColors.js');
-const getDocPorArt = require('./utils/queries/getDocPorArt.js');
 const getProgColorTable = require('./utils/queries/getProgColorTable.js');
 
 // Environment

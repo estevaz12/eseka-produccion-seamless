@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import ColorFormInputs from './ColorFormInputs.jsx';
-import { Box, Button, Typography } from '@mui/joy';
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  Typography,
+} from '@mui/joy';
 import { useConfig } from '../ConfigContext.jsx';
 import FloatingLabelInput from './FloatingLabelInput.jsx';
 
@@ -49,7 +57,7 @@ export default function NewColorCodeForm({
             type: 'number',
             min: 0,
             max: 99,
-            placeholder: 'Del 00 al 99...',
+            placeholder: 'Sin (.)',
             onChange: (e) =>
               setFormData({
                 ...formData,
@@ -59,6 +67,38 @@ export default function NewColorCodeForm({
           }}
         />
       </Box>
+      <FormControl>
+        <FormLabel>Tipo (si aplica)</FormLabel>
+        <Input
+          value={newColorCode.StyleCode.tipo}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              tipo: e.target.value,
+            })
+          }
+          disabled={newColorCode.StyleCode.tipo}
+          maxLength={1}
+          pattern='[%$#]'
+        />
+        {!newColorCode.StyleCode.tipo && (
+          <FormHelperText>
+            <Typography variant='solid' color='primary'>
+              #
+            </Typography>
+            &nbsp;si se divide a la mitad.&nbsp;
+            <Typography variant='solid' color='primary'>
+              $
+            </Typography>
+            &nbsp;o&nbsp;
+            <Typography variant='solid' color='primary'>
+              %
+            </Typography>
+            &nbsp;si se duplica.
+          </FormHelperText>
+        )}
+      </FormControl>
+
       <ColorFormInputs
         fieldName='colorCodes'
         title='Códigos de colores'
