@@ -6,16 +6,19 @@ let apiUrl;
 
 export default function ColorSelect({
   onChange,
-  inheretedColors = [],
+  inheritedColors,
   required = false,
 }) {
   apiUrl = useConfig().apiUrl;
-  const [colors, setColors] = useState(inheretedColors);
+  const [colors, setColors] = useState(
+    Array.isArray(inheritedColors) ? inheritedColors : []
+  );
 
   useEffect(() => {
     let ignore = false;
-    // prevents fetching when parent passes them already
-    if (inheretedColors.length === 0) {
+    if (Array.isArray(inheritedColors)) {
+      setColors(inheritedColors);
+    } else {
       fetch(`${apiUrl}/colors`)
         .then((res) => res.json())
         .then((data) => {
@@ -23,11 +26,10 @@ export default function ColorSelect({
         })
         .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
     }
-
     return () => {
       ignore = true;
     };
-  }, [inheretedColors.length]);
+  }, [inheritedColors]);
 
   return (
     <FormControl>

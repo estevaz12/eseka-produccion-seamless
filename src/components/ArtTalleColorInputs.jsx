@@ -1,7 +1,11 @@
 import { FormControl, FormLabel, Input, Option, Select } from '@mui/joy';
 import ColorSelect from './ColorSelect.jsx';
 
-export default function ArtColorTalleInputs({ formData, setFormData }) {
+export default function ArtColorTalleInputs({
+  formData,
+  setFormData,
+  ...props
+}) {
   return (
     <>
       <FormControl>
@@ -37,6 +41,7 @@ export default function ArtColorTalleInputs({ formData, setFormData }) {
 
       <ColorSelect
         onChange={(color) => setFormData({ ...formData, colorId: color })}
+        {...props}
       />
     </>
   );

@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import ArtTalleColorInputs from './ArtTalleColorInputs.jsx';
 import { Button } from '@mui/joy';
 
-export default function ProgSearchForm({ progColor, setFilteredProgColor }) {
+export default function ProgSearchForm({
+  progColor,
+  filteredProgColor,
+  setFilteredProgColor,
+}) {
   const [formData, setFormData] = useState({});
   const [key, setKey] = useState(0);
 
@@ -29,7 +33,18 @@ export default function ProgSearchForm({ progColor, setFilteredProgColor }) {
         setKey((prev) => prev + 1); // force re-render for ColorSelect
       }}
     >
-      <ArtTalleColorInputs formData={formData} setFormData={setFormData} />
+      <ArtTalleColorInputs
+        formData={formData}
+        setFormData={setFormData}
+        inheritedColors={Array.from(
+          new Map(
+            filteredProgColor.map((row) => [
+              row.ColorId,
+              { Color: row.Color, Id: row.ColorId },
+            ])
+          ).values()
+        ).sort()}
+      />
       <Button type='reset'>Limpiar</Button>
     </form>
   );

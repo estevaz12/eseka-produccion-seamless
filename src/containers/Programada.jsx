@@ -59,6 +59,7 @@ export default function Programada() {
 
       <ProgSearchForm
         progColor={progColor}
+        filteredProgColor={filteredProgColor}
         setFilteredProgColor={setFilteredProgColor}
       />
 
