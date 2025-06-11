@@ -13,7 +13,6 @@ import { useConfig } from '../ConfigContext.jsx';
 
 export default function NewArticuloForm({
   newArticuloData,
-  colors,
   setNewArticuloData,
 }) {
   const { apiUrl } = useConfig();
@@ -137,7 +136,6 @@ export default function NewArticuloForm({
             input2Attrs={{ type: 'number', min: 0, max: 100 }}
             formData={formData}
             setFormData={setFormData}
-            colors={colors}
           />
         )}
 
@@ -155,7 +153,6 @@ export default function NewArticuloForm({
             }}
             formData={formData}
             setFormData={setFormData}
-            colors={colors}
           />
         )}
       </Box>

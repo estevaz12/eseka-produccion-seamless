@@ -1,6 +1,34 @@
 import { FormControl, FormLabel, Option, Select } from '@mui/joy';
+import { useEffect, useState } from 'react';
+import { useConfig } from '../ConfigContext.jsx';
 
-export default function ColorSelect({ colors, onChange, required = false }) {
+let apiUrl;
+
+export default function ColorSelect({
+  onChange,
+  inheretedColors = [],
+  required = false,
+}) {
+  apiUrl = useConfig().apiUrl;
+  const [colors, setColors] = useState(inheretedColors);
+
+  useEffect(() => {
+    let ignore = false;
+    // prevents fetching when parent passes them already
+    if (inheretedColors.length === 0) {
+      fetch(`${apiUrl}/colors`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!ignore) setColors(data);
+        })
+        .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [inheretedColors.length]);
+
   return (
     <FormControl>
       <FormLabel>Color</FormLabel>

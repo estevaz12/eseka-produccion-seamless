@@ -4,37 +4,19 @@ import {
   FormControl,
   FormLabel,
   Box,
-  Input,
-  Button,
   Switch,
+  Button,
 } from '@mui/joy';
 import { renderTimeViewClock } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import { useConfig } from '../ConfigContext.jsx';
-import ColorSelect from './ColorSelect.jsx';
-import { useEffect, useState } from 'react';
+import ArtTalleColorInputs from './ArtTalleColorInputs.jsx';
 
 let apiUrl, sqlDateFormat;
 
 export default function ProduccionForm({ formData, setFormData, setUrl }) {
   [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
-  const [colors, setColors] = useState([]);
-
-  useEffect(() => {
-    let ignore = false;
-    fetch(`${apiUrl}/colors`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!ignore) setColors(data);
-      })
-      .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -155,41 +137,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
           />
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Artículo</FormLabel>
-          <Input
-            slotProps={{
-              input: { type: 'number', min: 0.0, max: 99999.99, step: 0.01 },
-            }}
-            onChange={(e) =>
-              setFormData({ ...formData, articulo: e.target.value })
-            }
-            placeholder='Buscar artículo...'
-          />
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Talle</FormLabel>
-          <Select
-            placeholder='Seleccione un talle...'
-            onChange={(e, val) => setFormData({ ...formData, talle: val })}
-          >
-            <Option value=''>Seleccione un talle...</Option>
-            <Option value='0'>0</Option>
-            <Option value='1'>1</Option>
-            <Option value='2'>2</Option>
-            <Option value='3'>3</Option>
-            <Option value='4'>4</Option>
-            <Option value='5'>5</Option>
-            <Option value='6'>6</Option>
-            <Option value='7'>7</Option>
-          </Select>
-        </FormControl>
-
-        <ColorSelect
-          colors={colors}
-          onChange={(color) => setFormData({ ...formData, colorId: color })}
-        />
+        <ArtTalleColorInputs formData={formData} setFormData={setFormData} />
 
         <Button type='submit' onKeyDown={(e) => handleKeyDown(e)}>
           Buscar

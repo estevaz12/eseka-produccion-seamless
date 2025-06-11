@@ -6,6 +6,7 @@ import { useConfig } from '../ConfigContext.jsx';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import ProgramadaTable from '../components/ProgramadaTable.jsx';
+import ProgSearchForm from '../components/ProgSearchForm.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl;
@@ -13,6 +14,8 @@ let apiUrl;
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
   const [currTotal, setCurrTotal] = useState();
+  const [progColor, setProgColor] = useState([]);
+  const [filteredProgColor, setFilteredProgColor] = useState([]);
 
   // get current programada total on load
   useEffect(() => {
@@ -54,7 +57,16 @@ export default function Programada() {
         disabled
       />
 
-      <ProgramadaTable />
+      <ProgSearchForm
+        progColor={progColor}
+        setFilteredProgColor={setFilteredProgColor}
+      />
+
+      <ProgramadaTable
+        progColor={progColor}
+        setProgColor={setProgColor}
+        filteredProgColor={filteredProgColor}
+      />
     </Box>
   );
 }

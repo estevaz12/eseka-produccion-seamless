@@ -12,11 +12,7 @@ import {
 import { useConfig } from '../ConfigContext.jsx';
 import FloatingLabelInput from './FloatingLabelInput.jsx';
 
-export default function NewColorCodeForm({
-  newColorCode,
-  colors,
-  setNewColorCodes,
-}) {
+export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   const apiUrl = useConfig().apiUrl;
   const [formData, setFormData] = useState({ colorCodes: [] });
 
@@ -116,7 +112,6 @@ export default function NewColorCodeForm({
         input2Val={newColorCode.StyleCode.color}
         formData={formData}
         setFormData={setFormData}
-        colors={colors}
       />
       <Button type='submit'>Agregar códigos</Button>
     </form>

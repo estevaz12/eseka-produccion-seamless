@@ -19,7 +19,6 @@ export default function ProgComparar() {
   const [programada, setProgramada] = useState();
   // diff and updates
   const [diff, setDiff] = useState();
-  const [colors, setColors] = useState();
   const [newArticuloData, setNewArticuloData] = useState([]);
   const [newTargets, setNewTargets] = useState();
   // helper refs
@@ -87,17 +86,6 @@ export default function ProgComparar() {
   async function handleProgramadaUpdate() {
     // Check if articulo, color codes, and color distr exist and handle accordingly
     let prevArticulo; // to avoid duplicate fetches
-
-    // GET colors for form
-    if (diff.added.length > 0) {
-      try {
-        const res = await fetch(`${apiUrl}/colors`);
-        const data = await res.json();
-        setColors(data);
-      } catch (err) {
-        console.error('[CLIENT] Error fetching /colors:', err);
-      }
-    }
 
     for (const row of diff.added) {
       if (prevArticulo !== row.articulo) {
@@ -429,7 +417,6 @@ export default function ProgComparar() {
         <ModalWrapper>
           <NewArticuloForm
             newArticuloData={newArticuloData[0]}
-            colors={colors}
             setNewArticuloData={setNewArticuloData}
           />
         </ModalWrapper>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -8,6 +8,9 @@ import {
   Typography,
 } from '@mui/joy';
 import ColorSelect from './ColorSelect.jsx';
+import { useConfig } from '../ConfigContext.jsx';
+
+let apiUrl;
 
 function ColorFormInputs({
   fieldName, // colorDistr or colorCodes
@@ -18,11 +21,27 @@ function ColorFormInputs({
   input2Val,
   formData,
   setFormData,
-  colors,
 }) {
+  apiUrl = useConfig().apiUrl;
+  const [colors, setColors] = useState([]);
   const [colorInput, setColorInput] = useState();
   const [input2, setInput2] = useState(input2Val ? input2Val : undefined);
   const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    let ignore = false;
+
+    fetch(`${apiUrl}/colors`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore) setColors(data);
+      })
+      .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <Box>
@@ -30,8 +49,8 @@ function ColorFormInputs({
         <Typography>{title}</Typography>
 
         <ColorSelect
-          colors={colors}
           onChange={setColorInput}
+          inheretedColors={colors}
           required={!(formData[fieldName]?.length >= 0)}
         />
 

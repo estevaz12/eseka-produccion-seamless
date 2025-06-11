@@ -8,11 +8,9 @@ import NavBar from '../components/NavBar.jsx';
 
 let apiUrl;
 
-// TODO handle casaes for newColorCodes where articulo doesn't exist
 export default function Home() {
   apiUrl = useConfig().apiUrl;
   const [newColorCodes, setNewColorCodes] = useState([]);
-  const [colors, setColors] = useState([]);
 
   // check for newColorCodes on load and then every hour
   useEffect(() => {
@@ -43,23 +41,6 @@ export default function Home() {
       ignore = true;
     };
   }, []);
-
-  // get colors for form
-  useEffect(() => {
-    let ignore = false;
-    if (newColorCodes.length > 0) {
-      fetch(`${apiUrl}/colors`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!ignore) setColors(data);
-        })
-        .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
-    }
-
-    return () => {
-      ignore = true;
-    };
-  }, [newColorCodes]);
 
   return (
     <>
@@ -98,7 +79,6 @@ export default function Home() {
         >
           <NewColorCodeForm
             newColorCode={newColorCodes[0]}
-            colors={colors}
             setNewColorCodes={setNewColorCodes}
           />
         </ModalWrapper>

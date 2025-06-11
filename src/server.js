@@ -228,10 +228,20 @@ const startServer = () => {
        *
        * Machines in other states could have invalid stylecodes
        */
+      serverLog(
+        `[GET /machines/newColorCodes] ${JSON.stringify(machines, null, 2)}`
+      );
       machines = machines.filter(
         (m) =>
           [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(m.State) &&
           m.StyleCode.colorId === null
+      );
+      serverLog(
+        `[GET /machines/newColorCodes FILTERED] ${JSON.stringify(
+          machines,
+          null,
+          2
+        )}`
       );
       res.json(machines);
     } catch (err) {
