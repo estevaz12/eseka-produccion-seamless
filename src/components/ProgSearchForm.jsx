@@ -17,7 +17,7 @@ export default function ProgSearchForm({
         // if the fields are undefined, they are set as empty strings
         const { articulo = '', talle = '', colorId = '' } = formData;
         if (articulo !== '' && row.Articulo !== Number(articulo)) return false;
-        if (talle !== '' && row.Talle !== talle) return false;
+        if (talle !== '' && row.Talle !== Number(talle)) return false;
         if (colorId !== '' && row.ColorId !== colorId) return false;
         return true;
       })
@@ -43,7 +43,7 @@ export default function ProgSearchForm({
               { Color: row.Color, Id: row.ColorId },
             ])
           ).values()
-        ).sort()}
+        )}
       />
       <Button type='reset'>Limpiar</Button>
     </form>

@@ -40,11 +40,14 @@ export default function ColorSelect({
         required={required}
       >
         <Option value=''>Seleccione un color...</Option>
-        {colors.map((color) => (
-          <Option key={color.Id} value={color.Id}>
-            {color.Color}
-          </Option>
-        ))}
+        {colors
+          .slice()
+          .sort((a, b) => a.Color.localeCompare(b.Color))
+          .map((color) => (
+            <Option key={color.Id} value={color.Id}>
+              {color.Color}
+            </Option>
+          ))}
       </Select>
     </FormControl>
   );
