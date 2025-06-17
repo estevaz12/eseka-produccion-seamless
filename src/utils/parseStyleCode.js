@@ -15,7 +15,7 @@ const parseStyleCode = async (styleCode) => {
     // articulo must be a 5-digit string
     try {
       colorId = await sql.query(getColorId(articulo, color));
-      colorId = colorId.recordset[0]?.Id; // will be undefined if not there
+      colorId = colorId.recordset[0]?.Id ?? null; // will be undefined if not there
       // undefined colorId means that it is not in COLOR_CODES
     } catch (err) {
       serverLog(
@@ -25,7 +25,7 @@ const parseStyleCode = async (styleCode) => {
 
     try {
       tipo = await sql.query(getArticulo(articulo));
-      tipo = tipo.recordset[0]?.Tipo;
+      tipo = tipo.recordset[0]?.Tipo ?? null;
     } catch (err) {
       serverLog(`[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo}`);
     }

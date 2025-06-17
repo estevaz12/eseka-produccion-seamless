@@ -22,7 +22,13 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     // }
     e.preventDefault();
 
-    const data = { ...formData };
+    const data = {
+      ...formData,
+      articulo: !formData.articulo
+        ? newColorCode.StyleCode.articulo
+        : formData.articulo,
+    };
+
     fetch(`${apiUrl}/colorCodes/insert`, {
       method: 'POST',
       headers: {
@@ -63,8 +69,8 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
             }}
           />
           <FormHelperText>
-            Si es un <Typography variant='solid'>PARCHE</Typography> sin talle,
-            dejar vacío. Si tiene talle, ingresar (.)9.
+            Si es un&nbsp;<Typography variant='solid'>PARCHE</Typography>
+            &nbsp;sin talle, dejar vacío. Si tiene talle, ingresar punto "9".
           </FormHelperText>
         </FormControl>
       </Box>
