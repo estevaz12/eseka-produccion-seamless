@@ -25,9 +25,11 @@ export default function NavBar() {
               </NavLink>
             </ListItem>
             <ListItem>
-              <NavLink to='/programada/historica'>
+              <NavLink to='/programada/anteriores'>
                 {({ isActive }) => (
-                  <ListItemButton selected={isActive}>Histórica</ListItemButton>
+                  <ListItemButton selected={isActive}>
+                    Anteriores
+                  </ListItemButton>
                 )}
               </NavLink>
             </ListItem>

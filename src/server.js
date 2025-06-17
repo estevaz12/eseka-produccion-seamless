@@ -28,6 +28,7 @@ const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js'
 const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColors.js');
 const getProgColorTable = require('./utils/queries/getProgColorTable.js');
 const updateProgColorDoc = require('./utils/queries/updateProgColorDoc.js');
+const getProgActualDate = require('./utils/queries/getProgActualDate.js');
 
 // Environment
 let isPackaged; //= false;
@@ -285,6 +286,17 @@ const startServer = () => {
       });
     } catch (err) {
       serverLog(`[ERROR] GET /programada: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/programada/actual', async (req, res) => {
+    serverLog('GET /programada/actual');
+    try {
+      const result = await sql.query(getProgActualDate());
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /programada/actual: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });

@@ -8,7 +8,7 @@ let apiUrl;
 
 // TODO - handle articulos incompletos
 export default function ProgramadaTable({
-  startDate = localStorage.getItem('progStartDate'),
+  startDate,
   progColor,
   setProgColor,
   filteredProgColor,

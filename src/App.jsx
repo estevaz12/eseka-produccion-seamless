@@ -17,7 +17,7 @@ import Home from './containers/Home.jsx';
 import Produccion from './containers/Produccion.jsx';
 import Programada from './containers/Programada.jsx';
 import ProgComparar from './containers/ProgComparar.jsx';
-import ProgHistorica from './containers/ProgHistorica.jsx';
+import ProgAnteriores from './containers/ProgAnteriores.jsx';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
@@ -77,7 +77,7 @@ export default function App() {
           <Route index element={<Programada />} />
           <Route path='programada'>
             <Route path='comparar' element={<ProgComparar />} />
-            <Route path='historica' element={<ProgHistorica />} />
+            <Route path='anteriores' element={<ProgAnteriores />} />
           </Route>
           <Route path='produccion' element={<Produccion />} />
         </Route>
