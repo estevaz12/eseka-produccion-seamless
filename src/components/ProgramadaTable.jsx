@@ -135,10 +135,10 @@ export default function ProgramadaTable({
   function mapRows(row) {
     const aProducir =
       row.Tipo === null
-        ? row.Docenas
+        ? row.Docenas.toFixed(1)
         : row.Tipo === '#'
-        ? row.Docenas * 2
-        : row.Docenas / 2;
+        ? (row.Docenas * 2).toFixed(1)
+        : (row.Docenas / 2).toFixed(1);
 
     const producido =
       row.Tipo === null
