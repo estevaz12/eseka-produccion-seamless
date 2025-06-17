@@ -67,6 +67,7 @@ export default function Programada() {
         progColor={progColor}
         setProgColor={setProgColor}
         filteredProgColor={filteredProgColor}
+        setFilteredProgColor={setFilteredProgColor}
       />
     </Box>
   );

@@ -27,6 +27,7 @@ const getArticuloColorDistr = require('./utils/queries/getArticuloColorDistr.js'
 const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js');
 const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColors.js');
 const getProgColorTable = require('./utils/queries/getProgColorTable.js');
+const updateProgColorDoc = require('./utils/queries/updateProgColorDoc.js');
 
 // Environment
 let isPackaged; //= false;
@@ -121,6 +122,7 @@ const startServer = () => {
       const query = insertArticuloWithColors(data);
       serverLog(query);
       await sql.query(query);
+      res.status(204).end();
     } catch (err) {
       serverLog(`[ERROR] POST /articulo/insertWithColors: ${err}`);
       res.status(500).json({ error: err.message });
@@ -148,6 +150,7 @@ const startServer = () => {
       const query = insertColorCodes(data);
       serverLog(query);
       await sql.query(query);
+      res.status(204).end();
     } catch (err) {
       serverLog(`[ERROR] POST /colorCodes/insert: ${err}`);
       res.status(500).json({ error: err.message });
@@ -162,6 +165,7 @@ const startServer = () => {
       const query = insertDistr(data);
       serverLog(query);
       await sql.query(query);
+      res.status(204).end();
     } catch (err) {
       serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
       res.status(500).json({ error: err.message });
@@ -338,8 +342,23 @@ const startServer = () => {
     try {
       await sql.query(insertProgramada(data, 'inserted'));
       serverLog('POST /programada/insertAll - SUCCESS');
+      res.status(204).end();
     } catch (err) {
       serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/programada/updateDocenas', async (req, res) => {
+    serverLog('POST /programada/updateDocenas');
+    const data = req.body;
+
+    try {
+      await sql.query(updateProgColorDoc(data));
+      serverLog('POST /programada/updateDocenas - SUCCESS');
+      res.status(204).end();
+    } catch (err) {
+      serverLog(`[ERROR] POST /programada/updateDocenas: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });

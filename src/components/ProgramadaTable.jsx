@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from './DataTable.jsx';
+import { Check, Edit } from '@mui/icons-material';
+import { Button, FormControl, Input } from '@mui/joy';
 
 let apiUrl;
 
@@ -10,6 +12,7 @@ export default function ProgramadaTable({
   progColor,
   setProgColor,
   filteredProgColor,
+  setFilteredProgColor,
 }) {
   apiUrl = useConfig().apiUrl;
   const [machines, setMachines] = useState([]);
@@ -29,7 +32,10 @@ export default function ProgramadaTable({
               setProgColor(data.progColor);
               setMachines(data.machines);
             }
-          });
+          })
+          .catch((err) =>
+            console.error('[CLIENT] Error fetching /programada:', err)
+          );
       }
     }
 
@@ -42,6 +48,89 @@ export default function ProgramadaTable({
       ignore = true;
     };
   }, [startDate, setProgColor]);
+
+  // If an articulo has a NULL color distr, docenas will be null.
+  // This lets the user input the docenas value and update the programada.
+  function AProducir({ row, aProducir }) {
+    const [editProducir, setEditProducir] = useState(false);
+    const [docenas, setDocenas] = useState();
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+      let timeoutId;
+      if (editProducir) {
+        timeoutId = setTimeout(() => {
+          inputRef.current.focus();
+        }, 10);
+      }
+
+      return () => clearTimeout(timeoutId);
+    }, [editProducir]);
+
+    async function handleProducirEdit(e) {
+      e.preventDefault();
+
+      try {
+        await fetch(`${apiUrl}/programada/updateDocenas`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            programadaId: row.Programada,
+            colorDistrId: row.ColorDistr,
+            docenas,
+          }),
+        });
+
+        // update programada view
+        const params = new URLSearchParams({
+          startDate,
+        }).toString();
+        const res = await fetch(`${apiUrl}/programada?${params}`);
+        const data = await res.json();
+
+        setProgColor(data.progColor);
+        setFilteredProgColor(data.progColor);
+        setMachines(data.machines);
+        setEditProducir(false);
+      } catch (err) {
+        console.error(
+          '[CLIENT] Error fetching /programada/updateDocenas:',
+          err
+        );
+      }
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        handleProducirEdit(e);
+      }
+    };
+
+    return !editProducir ? (
+      <span>
+        {row.Tipo === null ? aProducir : `${aProducir} (${row.Docenas})`}
+        {!row.Docenas && row.Docenas !== 0 && (
+          <Edit onClick={() => setEditProducir(true)} />
+        )}
+      </span>
+    ) : (
+      <form onSubmit={handleProducirEdit}>
+        <FormControl>
+          <Input
+            required
+            type='number'
+            slotProps={{ input: { ref: inputRef, min: 0 } }}
+            onChange={(e) => setDocenas(e.target.value)}
+          />
+        </FormControl>
+        <Button type='submit' onKeyDown={(e) => handleKeyDown(e)}>
+          <Check />
+        </Button>
+      </form>
+    );
+  }
 
   function mapRows(row) {
     const aProducir =
@@ -87,7 +176,7 @@ export default function ProgramadaTable({
         <td>{row.Target}</td>
         {/* A Producir */}
         <td>
-          {row.Tipo === null ? aProducir : `${aProducir} (${row.Docenas})`}
+          <AProducir row={row} aProducir={aProducir} />
         </td>
         {/* Producido */}
         <td>
