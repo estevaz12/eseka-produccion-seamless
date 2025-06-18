@@ -99,7 +99,7 @@ const produccion = (
             END AS Talle,
             c.Color,
             c.Id AS ColorId,
-            SUM(p.Unidades) AS Unidades
+            p.Unidades
         FROM Produccion AS p
             JOIN SEA_COLOR_CODES AS cc
                 ON SUBSTRING(p.StyleCode, 7, 2) = cc.Code
@@ -108,14 +108,14 @@ const produccion = (
                 ON c.Id = cc.Color
             JOIN SEA_ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
-        GROUP BY cc.Articulo, a.Tipo, p.StyleCode, cc.Color, c.Color, c.Id
     )
     ${
       showResults
         ? `
-      SELECT *
+      SELECT Articulo, Tipo, Talle, Color, ColorId, SUM(Unidades) AS Unidades
       FROM ProdColor
       ${whereClause}
+      GROUP BY Articulo, Tipo, Talle, Color, ColorId
       ORDER BY Articulo, Talle, Color;
       `
         : ''
