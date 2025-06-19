@@ -1,3 +1,5 @@
+// TODO: adapt to use dates from db rathar than localStorage
+
 import { Box, Typography, Button } from '@mui/joy';
 import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useRef, useState } from 'react';

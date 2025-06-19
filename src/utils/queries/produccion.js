@@ -82,9 +82,10 @@ const produccion = (
   }
 
   // Match with SEA_COLOR_CODES and return a record per color
+  // TODO: account for parches and stuff, colorcodes2
   return (
     query +
-    `,ProdColor AS (
+    `,ProdColorUngrouped AS (
         SELECT 
             cc.Articulo, 
             a.Tipo,
@@ -93,7 +94,7 @@ const produccion = (
                 CASE 
                   WHEN ISNUMERIC(SUBSTRING(p.StyleCode, 7, 1)) = 1 
                   THEN CAST(SUBSTRING(p.StyleCode, 7, 1) AS INT)
-                  ELSE CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT)
+                  ELSE 1
                 END
               ELSE CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT)
             END AS Talle,
@@ -108,14 +109,18 @@ const produccion = (
                 ON c.Id = cc.Color
             JOIN SEA_ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
+    ),
+    ProdColor AS (
+        SELECT Articulo, Tipo, Talle, Color, ColorId, SUM(Unidades) AS Unidades
+        FROM ProdColorUngrouped
+        ${whereClause}
+        GROUP BY Articulo, Tipo, Talle, Color, ColorId
     )
     ${
       showResults
         ? `
-      SELECT Articulo, Tipo, Talle, Color, ColorId, SUM(Unidades) AS Unidades
+      SELECT *
       FROM ProdColor
-      ${whereClause}
-      GROUP BY Articulo, Tipo, Talle, Color, ColorId
       ORDER BY Articulo, Talle, Color;
       `
         : ''

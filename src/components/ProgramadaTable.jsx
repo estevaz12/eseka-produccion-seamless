@@ -13,6 +13,7 @@ export default function ProgramadaTable({
   setProgColor,
   filteredProgColor,
   setFilteredProgColor,
+  live = true,
 }) {
   apiUrl = useConfig().apiUrl;
   const [machines, setMachines] = useState([]);
@@ -39,15 +40,17 @@ export default function ProgramadaTable({
       }
     }
 
-    fetchProgColor();
-    // update every minute
-    const intervalId = setInterval(fetchProgColor, 60000);
+    if (live) {
+      fetchProgColor();
+      // update every minute
+      const intervalId = setInterval(fetchProgColor, 60000);
 
-    return () => {
-      clearInterval(intervalId);
-      ignore = true;
-    };
-  }, [startDate, setProgColor]);
+      return () => {
+        clearInterval(intervalId);
+        ignore = true;
+      };
+    }
+  }, [startDate, setProgColor, live]);
 
   // If an articulo has a NULL color distr, docenas will be null.
   // This lets the user input the docenas value and update the programada.
@@ -193,7 +196,7 @@ export default function ProgramadaTable({
         {/* Doc. x Art. */}
         <td>{row.DocPorArt}</td>
         {/* Maquinas */}
-        <td>{matchingMachines}</td>
+        {live && <td>{matchingMachines}</td>}
       </tr>
     );
   }
@@ -211,10 +214,10 @@ export default function ProgramadaTable({
         'Falta (un.)',
         'Doc. x Talle', // DocProg
         'Doc. x Art.', // DocPorArt
-        'Máquinas',
+        live && 'Máquinas',
       ]}
     >
-      {startDate && progColor && machines && filteredProgColor.length === 0
+      {startDate && progColor && filteredProgColor.length === 0
         ? progColor.map(mapRows)
         : filteredProgColor.map(mapRows)}
     </DataTable>

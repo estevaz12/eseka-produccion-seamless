@@ -24,13 +24,13 @@ export default function Programada() {
 
     if (!startDate) {
       // fetch start date of current programada
-      fetch(`${apiUrl}/programada/actual`)
+      fetch(`${apiUrl}/programada/actualDate`)
         .then((res) => res.json())
         .then((data) => {
-          if (!ignore) setStartDate(data[0].Fecha);
+          if (!ignore) setStartDate(data[0].Date);
         })
         .catch((err) =>
-          console.error('[CLIENT] Error fetching /programada/actual:', err)
+          console.error('[CLIENT] Error fetching /programada/actualDate:', err)
         );
     } else {
       // fetch total of current programada

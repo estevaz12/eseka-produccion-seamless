@@ -5,7 +5,7 @@ export default function DataTable({ cols, children }) {
     <Table aria-label='simple table' className='**:text-center'>
       <thead className='sticky top-0'>
         <tr>
-          {cols.map((col) => (
+          {cols.filter(Boolean).map((col) => (
             <th key={col}>{col}</th>
           ))}
         </tr>

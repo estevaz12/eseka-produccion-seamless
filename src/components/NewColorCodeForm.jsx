@@ -70,7 +70,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
           />
           <FormHelperText>
             Si es un&nbsp;<Typography variant='solid'>PARCHE</Typography>
-            &nbsp;sin talle, dejar vacío. Si tiene talle, ingresar punto "9".
+            &nbsp;ingresar punto "9".
           </FormHelperText>
         </FormControl>
       </Box>

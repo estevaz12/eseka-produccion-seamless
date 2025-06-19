@@ -29,6 +29,7 @@ const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColo
 const getProgColorTable = require('./utils/queries/getProgColorTable.js');
 const updateProgColorDoc = require('./utils/queries/updateProgColorDoc.js');
 const getProgActualDate = require('./utils/queries/getProgActualDate.js');
+const getProgLoadDates = require('./utils/queries/getProgLoadDates.js');
 
 // Environment
 let isPackaged; //= false;
@@ -273,11 +274,11 @@ const startServer = () => {
   app.get('/programada', async (req, res) => {
     serverLog('GET /programada');
     try {
-      const { startDate } = req.query;
+      const { startDate, endMonth, endYear } = req.query;
       const [progColor, machines] = await Promise.all([
         // get Programada with Color, month production, and docenas by art.
-        sql.query(getProgColorTable(startDate)),
-        getParsedMachines(), // get Machines
+        sql.query(getProgColorTable(startDate, endMonth, endYear)),
+        !req.query.endMonth ? getParsedMachines() : null, // get Machines
       ]);
 
       res.json({
@@ -290,13 +291,13 @@ const startServer = () => {
     }
   });
 
-  app.get('/programada/actual', async (req, res) => {
-    serverLog('GET /programada/actual');
+  app.get('/programada/actualDate', async (req, res) => {
+    serverLog('GET /programada/actualDate');
     try {
       const result = await sql.query(getProgActualDate());
       res.json(result.recordset);
     } catch (err) {
-      serverLog(`[ERROR] GET /programada/actual: ${err}`);
+      serverLog(`[ERROR] GET /programada/actualDate: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });
@@ -357,6 +358,17 @@ const startServer = () => {
       res.status(204).end();
     } catch (err) {
       serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get('/programada/loadDates', async (req, res) => {
+    serverLog('GET /programada/loadDates');
+    try {
+      const result = await sql.query(getProgLoadDates());
+      res.json(result.recordset);
+    } catch (err) {
+      serverLog(`[ERROR] GET /programada/loadDates: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });
