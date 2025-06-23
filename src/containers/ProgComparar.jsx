@@ -1,5 +1,5 @@
 // TODO: adapt to use dates from db rathar than localStorage
-
+// TODO when running calculate new targets fetch newColorCodes
 import { Box, Typography, Button } from '@mui/joy';
 import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useRef, useState } from 'react';
@@ -16,6 +16,7 @@ let apiUrl, sqlDateFormat;
 export default function ProgComparar() {
   [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
   // load, file upload and reading
+  const [startDate, setStartDate] = useState();
   const [currTotal, setCurrTotal] = useState();
   const [filePath, setFilePath] = useState();
   const [programada, setProgramada] = useState();
@@ -30,14 +31,32 @@ export default function ProgComparar() {
   // get current programada total on load
   useEffect(() => {
     let ignore = false;
-    if (!ignore && localStorage.getItem('progStartDate')) {
-      fetchCurrTotal();
+    if (startDate === undefined) {
+      // fetch start date of current programada
+      fetch(`${apiUrl}/programada/actualDate`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!ignore) setStartDate(data[0].Date);
+        })
+        .catch((err) =>
+          console.error('[CLIENT] Error fetching /programada/actualDate:', err)
+        );
+    } else if (startDate) {
+      // fetch total of current programada
+      fetch(`${apiUrl}/programada/total/${startDate}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!ignore) setCurrTotal(data[0].Total);
+        })
+        .catch((err) =>
+          console.error('[CLIENT] Error fetching /programada/total:', err)
+        );
     }
 
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [startDate]);
 
   async function handleUpload() {
     // Reset states before uploading a new file
@@ -75,7 +94,7 @@ export default function ProgComparar() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          startDate: localStorage.getItem('progStartDate'),
+          startDate: startDate,
           new: programada.rows,
         }),
       })
@@ -215,16 +234,23 @@ export default function ProgComparar() {
     // empty while the other isn't
     if (
       !ignore &&
+      startDate !== undefined &&
       diff &&
       diff.added.length === 0 &&
       newArticuloData.length === 0
     ) {
-      if (loadType.current === 'update') insertUpdates();
-      else if (loadType.current === 'insert') {
+      if (loadType.current === 'update') {
+        insertUpdates();
+        fetch(`${apiUrl}/programada/total/${startDate}`)
+          .then((res) => res.json())
+          .then((data) => setCurrTotal(data[0].Total)) // single-record object
+          .catch((err) => console.error('[CLIENT] Error fetching data:', err));
+      } else if (loadType.current === 'insert') {
         insertAll();
-        localStorage.setItem('progStartDate', dayjs().format(sqlDateFormat));
+        setStartDate(dayjs().format(sqlDateFormat));
+        // currTotal auto-updates on startDate change
       }
-      fetchCurrTotal();
+
       setDiff();
     }
 
@@ -232,14 +258,7 @@ export default function ProgComparar() {
       clearInterval(intervalId);
       ignore = true;
     };
-  }, [diff, newArticuloData, programada]);
-
-  function fetchCurrTotal() {
-    fetch(`${apiUrl}/programada/total/${localStorage.getItem('progStartDate')}`)
-      .then((res) => res.json())
-      .then((data) => setCurrTotal(data[0].Total)) // single-record object
-      .catch((err) => console.error('[CLIENT] Error fetching data:', err));
-  }
+  }, [diff, newArticuloData, programada, startDate]);
 
   function fetchNewTargets(inserted) {
     fetch(`${apiUrl}/programada/calculateNewTargets`, {
@@ -264,40 +283,29 @@ export default function ProgComparar() {
       */}
       <Typography>
         Total Actual:{' '}
-        {currTotal !== undefined
-          ? currTotal
-          : localStorage.getItem('progStartDate')
-          ? 'Cargando...'
-          : 0}
+        {currTotal !== undefined ? currTotal : startDate ? 'Cargando...' : 0}
       </Typography>
       <InputFileUpload onClick={handleUpload} />
       <Typography>File path: {filePath}</Typography>
 
       <DatePicker
         label='Fecha de inicio'
-        value={
-          localStorage.getItem('progStartDate')
-            ? dayjs(localStorage.getItem('progStartDate'))
-            : null
-        }
+        value={startDate ? dayjs(startDate) : null}
         onChange={(newValue) => {
           if (newValue) {
-            localStorage.setItem(
-              'progStartDate',
-              newValue.format(sqlDateFormat)
-            );
-            fetchCurrTotal();
+            setStartDate(newValue.format(sqlDateFormat));
+            // fetchCurrTotal() runs on startDate change
           }
         }}
         disableFuture
-        disabled={localStorage.getItem('progStartDate') !== null}
+        disabled={startDate !== null}
       />
 
       {programada && !diff && !newTargets && (
         <Button
           onClick={handleCompare}
           // can compare only if there is reference date
-          disabled={localStorage.getItem('progStartDate') === null}
+          disabled={startDate === null}
         >
           Comparar
         </Button>
@@ -311,9 +319,9 @@ export default function ProgComparar() {
         ) && (
           <>
             <Button
-              disabled={localStorage.getItem('progStartDate') === null}
+              disabled={startDate === null}
               onClick={() => {
-                localStorage.removeItem('progStartDate');
+                setStartDate(null);
                 setCurrTotal(0); // to trigger a re-render
               }}
             >
@@ -325,7 +333,7 @@ export default function ProgComparar() {
                 loadType.current = 'update';
                 handleProgramadaUpdate();
               }}
-              disabled={localStorage.getItem('progStartDate') === null}
+              disabled={startDate === null}
             >
               Cargar cambios
             </Button>
@@ -335,7 +343,7 @@ export default function ProgComparar() {
                 loadType.current = 'insert';
                 handleProgramadaUpdate();
               }}
-              disabled={localStorage.getItem('progStartDate') !== null}
+              disabled={startDate !== null}
             >
               Cargar todo
             </Button>

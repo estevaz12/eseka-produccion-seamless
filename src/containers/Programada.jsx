@@ -13,8 +13,8 @@ let apiUrl;
 
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
-  const [currTotal, setCurrTotal] = useState();
   const [startDate, setStartDate] = useState();
+  const [currTotal, setCurrTotal] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
 
