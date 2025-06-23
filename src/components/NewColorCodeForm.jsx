@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import ColorFormInputs from './ColorFormInputs.jsx';
+import { useEffect, useState } from 'react';
+// import ColorFormInputs from './ColorFormInputs.jsx';
 import {
   Box,
   Button,
@@ -11,17 +11,36 @@ import {
 } from '@mui/joy';
 import { useConfig } from '../ConfigContext.jsx';
 import FloatingLabelInput from './FloatingLabelInput.jsx';
+import ColorSelect from './ColorSelect.jsx';
+
+let apiUrl;
 
 export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
-  const apiUrl = useConfig().apiUrl;
+  apiUrl = useConfig().apiUrl;
+  const [colors, setColors] = useState([]);
   const [formData, setFormData] = useState({ colorCodes: [] });
 
+  useEffect(() => {
+    let ignore = false;
+
+    fetch(`${apiUrl}/colors`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore) setColors(data);
+      })
+      .catch((err) => console.error('[CLIENT] Error fetching /colors:', err));
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   function handleSubmit(e) {
+    e.preventDefault();
+
     // formData = {
     //  colorCodes: [{color, code}]
     // }
-    e.preventDefault();
-
     const data = {
       ...formData,
       articulo: !formData.articulo
@@ -110,7 +129,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
         )}
       </FormControl>
 
-      <ColorFormInputs
+      {/* <ColorFormInputs
         fieldName='colorCodes'
         title='Códigos de colores'
         label2='Código'
@@ -122,8 +141,30 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
         input2Val={newColorCode.StyleCode.color}
         formData={formData}
         setFormData={setFormData}
-      />
-      <Button type='submit'>Agregar códigos</Button>
+      /> */}
+
+      <Box>
+        <FormControl>
+          <FormLabel>Código</FormLabel>
+          <Input value={newColorCode.StyleCode.color} type='text' disabled />
+        </FormControl>
+
+        <ColorSelect
+          onChange={(color) => {
+            setFormData((prev) => ({
+              ...prev,
+              colorCodes: [
+                ...(prev.colorCodes || []),
+                { color: color, code: newColorCode.StyleCode.color },
+              ],
+            }));
+          }}
+          inheretedColors={colors}
+          required={!(formData.colorCodes?.length >= 0)}
+        />
+      </Box>
+
+      <Button type='submit'>Agregar código</Button>
     </form>
   );
 }

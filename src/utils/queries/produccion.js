@@ -94,7 +94,7 @@ const produccion = (
             c.Id AS ColorId,
             p.Unidades
         FROM Produccion AS p
-            JOIN SEA_COLOR_CODES2 AS cc
+            JOIN SEA_COLOR_CODES AS cc
                 ON p.StyleCode = cc.StyleCode
             JOIN SEA_COLORES AS c
                 ON c.Id = cc.Color
