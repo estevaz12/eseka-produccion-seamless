@@ -1,5 +1,3 @@
-// TODO: adapt to use dates from db rathar than localStorage
-// TODO when running calculate new targets fetch newColorCodes
 import { Box, Typography, Button } from '@mui/joy';
 import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useRef, useState } from 'react';
@@ -109,6 +107,7 @@ export default function ProgComparar() {
 
     // colorCodes will be inserted through newColorCodes.
     // Leaving code in case its needed in the future.
+    // TODO when running calculate new targets fetch newColorCodes
 
     let prevArticulo; // to avoid duplicate fetches
 

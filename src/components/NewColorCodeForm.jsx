@@ -154,7 +154,6 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
             setFormData((prev) => ({
               ...prev,
               colorCodes: [
-                ...(prev.colorCodes || []),
                 { color: color, code: newColorCode.StyleCode.color },
               ],
             }));
