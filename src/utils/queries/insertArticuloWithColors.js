@@ -10,7 +10,11 @@ const insertArticuloWithColors = (data) => {
   `;
 
   query += insertDistr(data);
-  query += insertColorCodes(data);
+  if (data.colorCodes) {
+    // data.colorCodes will be undefined when coming from calculateNewTargets
+    // instead, colorCodes will be inserted through newColorCodes
+    query += insertColorCodes(data);
+  }
 
   return query;
 };

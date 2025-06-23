@@ -139,7 +139,9 @@ export default function NewArticuloForm({
           />
         )}
 
-        {newArticuloData.colorCodes ? (
+        {/* colorCodes will be inserted through newColorCodes.
+        Leaving it in case its needed in the future. */}
+        {/* {newArticuloData.colorCodes ? (
           <Typography>Códigos ya cargados</Typography>
         ) : (
           <ColorFormInputs
@@ -154,7 +156,7 @@ export default function NewArticuloForm({
             formData={formData}
             setFormData={setFormData}
           />
-        )}
+        )} */}
       </Box>
       <Button type='submit'>Agregar artículo</Button>
     </form>

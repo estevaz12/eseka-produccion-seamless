@@ -87,6 +87,10 @@ export default function ProgComparar() {
 
   async function handleProgramadaUpdate() {
     // Check if articulo, color codes, and color distr exist and handle accordingly
+
+    // colorCodes will be inserted through newColorCodes.
+    // Leaving code in case its needed in the future.
+
     let prevArticulo; // to avoid duplicate fetches
 
     for (const row of diff.added) {
@@ -109,7 +113,7 @@ export default function ProgComparar() {
               articulo: row.articulo,
               tipo: null,
               colorDistr: null,
-              colorCodes: null,
+              // colorCodes: null,
             },
           ]);
         } else {
@@ -120,11 +124,11 @@ export default function ProgComparar() {
               .catch((err) =>
                 console.error('[CLIENT] Error fetching colorDistr:', err)
               ),
-            fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorCodes`)
-              .then((res) => res.json())
-              .catch((err) =>
-                console.error('[CLIENT] Error fetching colorCodes:', err)
-              ),
+            // fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorCodes`)
+            //   .then((res) => res.json())
+            //   .catch((err) =>
+            //     console.error('[CLIENT] Error fetching colorCodes:', err)
+            //   ),
           ]);
 
           // if color codes and color distr exist, don't add to newArticuloData
@@ -137,7 +141,7 @@ export default function ProgComparar() {
                 tipo: articulo[0].Tipo,
                 // if undefined or length 0, results in null
                 colorDistr: colorDistr?.length > 0 ? colorDistr : null,
-                colorCodes: colorCodes?.length > 0 ? colorCodes : null,
+                // colorCodes: colorCodes?.length > 0 ? colorCodes : null,
               },
             ]);
           }

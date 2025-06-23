@@ -294,11 +294,8 @@ const startServer = () => {
     const progUpdates = req.body;
 
     try {
-      const machines = await sql.query(getMachines());
-      const targets = await calculateNewTargets(
-        progUpdates,
-        machines.recordset
-      );
+      const machines = await getParsedMachines(true);
+      const targets = await calculateNewTargets(progUpdates, machines);
 
       res.json(targets);
     } catch (err) {
@@ -360,20 +357,6 @@ const startServer = () => {
     }
   });
 
-  app.post('/programada/updateDocenas', async (req, res) => {
-    serverLog('POST /programada/updateDocenas');
-    const data = req.body;
-
-    try {
-      await sql.query(updateProgColorDoc(data));
-      serverLog('POST /programada/updateDocenas - SUCCESS');
-      res.status(204).end();
-    } catch (err) {
-      serverLog(`[ERROR] POST /programada/updateDocenas: ${err}`);
-      res.status(500).json({ error: err.message });
-    }
-  });
-
   app.get('/programada/total/:startDate', async (req, res) => {
     serverLog('GET /programada/total');
     const { startDate } = req.params;
@@ -402,6 +385,20 @@ const startServer = () => {
       res.json(result.recordset);
     } catch (err) {
       serverLog(`[ERROR] POST /programada/update: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/programada/updateDocenas', async (req, res) => {
+    serverLog('POST /programada/updateDocenas');
+    const data = req.body;
+
+    try {
+      await sql.query(updateProgColorDoc(data));
+      serverLog('POST /programada/updateDocenas - SUCCESS');
+      res.status(204).end();
+    } catch (err) {
+      serverLog(`[ERROR] POST /programada/updateDocenas: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });

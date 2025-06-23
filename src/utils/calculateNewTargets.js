@@ -1,11 +1,9 @@
-const parseMachines = require('./parseMachines.js');
 const sql = require('mssql');
 const produccion = require('./queries/produccion.js');
 const dayjs = require('dayjs');
 const serverLog = require('./serverLog.js');
 
 const calculateNewTargets = async (progUpdates, machines) => {
-  await parseMachines(machines);
   // serverLog(JSON.stringify(machines, null, 2));
 
   // Look through inserted articulos in MACHINES
@@ -17,23 +15,11 @@ const calculateNewTargets = async (progUpdates, machines) => {
       );
 
       // look for machines making the articulo
-      /* Machine states
-       * 0: RUN
-       * 2: STOP BUTTON
-       * 3: AUTOMATIC STOP
-       * 4: TARGET
-       * 5: F1
-       * 6: ELECTRÓNICO
-       * 7: MECANICO
-       * 9: HILADO
-       * 13: TURBINA
-       */
       const targetMachines = machines.filter(
         (machine) =>
           machine.StyleCode.articulo === Math.floor(newRecord.Articulo) &&
           machine.StyleCode.talle === newRecord.Talle &&
-          machine.StyleCode.colorId === newRecord.ColorId &&
-          [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(machine.State)
+          machine.StyleCode.colorId === newRecord.ColorId
       );
 
       serverLog(
@@ -148,10 +134,7 @@ async function getMonthProduction(newRecord) {
   let monthProduction = 0;
 
   try {
-    // Get the production for the month for articulo + talle
-    // We don't search for the whole stylecode because of differing
-    // color codes.
-    // We get the results of all the colors and then filter
+    // Get the production for the month
     monthProduction = await sql.query(
       produccion(
         'SEAMLESS',
