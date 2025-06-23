@@ -14,7 +14,7 @@ const parseStyleCode = async (styleCode) => {
   if (/^\d{5}$/.test(articulo)) {
     // articulo must be a 5-digit string
     try {
-      colorId = await sql.query(getColorId(articulo, color));
+      colorId = await sql.query(getColorId(styleCode));
       colorId = colorId.recordset[0]?.Id ?? null; // will be undefined if not there
       // undefined colorId means that it is not in COLOR_CODES
     } catch (err) {

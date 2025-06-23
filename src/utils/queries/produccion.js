@@ -89,22 +89,13 @@ const produccion = (
         SELECT 
             cc.Articulo, 
             a.Tipo,
-            CASE -- Account for PARCHES
-              WHEN CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT) = 9 THEN
-                CASE 
-                  WHEN ISNUMERIC(SUBSTRING(p.StyleCode, 7, 1)) = 1 
-                  THEN CAST(SUBSTRING(p.StyleCode, 7, 1) AS INT)
-                  ELSE 1
-                END
-              ELSE CAST(SUBSTRING(p.StyleCode, 6, 1) AS INT)
-            END AS Talle,
+            cc.Talle,
             c.Color,
             c.Id AS ColorId,
             p.Unidades
         FROM Produccion AS p
-            JOIN SEA_COLOR_CODES AS cc
-                ON SUBSTRING(p.StyleCode, 7, 2) = cc.Code
-                AND CONVERT(INT, LEFT(p.StyleCode, 5)) = CAST(cc.Articulo AS INT)
+            JOIN SEA_COLOR_CODES2 AS cc
+                ON p.StyleCode = cc.StyleCode
             JOIN SEA_COLORES AS c
                 ON c.Id = cc.Color
             JOIN SEA_ARTICULOS AS a 

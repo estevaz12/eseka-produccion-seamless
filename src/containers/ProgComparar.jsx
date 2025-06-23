@@ -142,6 +142,12 @@ export default function ProgComparar() {
             ]);
           }
         }
+      } else {
+        // if articulo is the same as previous, it means we are looking at a
+        // different talle. Hence, we insert colorCodes for that talle
+        // insert colorCodes for each talle
+        // do we even need to insert color codes on this step if we're checking
+        // constantly?
       }
 
       prevArticulo = row.articulo;

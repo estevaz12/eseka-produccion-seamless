@@ -9,8 +9,10 @@ const insertColorCodes = (data) => {
         INSERT INTO SEA_ARTICULOS (Articulo, Tipo)
           VALUES (${data.articulo}, ${data.tipo ? data.tipo : null});
 
-      INSERT INTO SEA_COLOR_CODES (Articulo, Color, Code)
-        VALUES (${data.articulo}, ${row.color}, '${row.code}');\n 
+      INSERT INTO SEA_COLOR_CODES2 (Articulo, Color, Code, Talle, StyleCode)
+        VALUES (${data.articulo}, ${row.color}, '${row.code}', ${
+      data.talle
+    }, '${data.styleCode}');\n 
     `;
   }
 

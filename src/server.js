@@ -174,10 +174,28 @@ const startServer = () => {
     }
   });
 
-  async function getParsedMachines() {
+  async function getParsedMachines(producing = false) {
     let machines = await sql.query(getMachines());
     machines = machines.recordset;
     await parseMachines(machines);
+
+    if (producing) {
+      /* Machine states that count for production
+       * 0: RUN
+       * 2: STOP BUTTON
+       * 3: AUTOMATIC STOP
+       * 4: TARGET
+       * 5: F1
+       * 6: ELECTRÓNICO
+       * 7: MECANICO
+       * 9: HILADO
+       * 13: TURBINA
+       */
+      machines = machines.filter((m) =>
+        [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(m.State)
+      );
+    }
+
     return machines;
   }
 
@@ -195,21 +213,7 @@ const startServer = () => {
   app.get('/machines/producing', async (req, res) => {
     serverLog('GET /machines/producing');
     try {
-      let machines = await getParsedMachines();
-      /* Machine states that count for production
-       * 0: RUN
-       * 2: STOP BUTTON
-       * 3: AUTOMATIC STOP
-       * 4: TARGET
-       * 5: F1
-       * 6: ELECTRÓNICO
-       * 7: MECANICO
-       * 9: HILADO
-       * 13: TURBINA
-       */
-      machines = machines.filter((m) =>
-        [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(m.State)
-      );
+      let machines = await getParsedMachines(true);
       res.json(machines);
     } catch (err) {
       serverLog(`[ERROR] GET /machines/producing: ${err}`);
@@ -220,28 +224,11 @@ const startServer = () => {
   app.get('/machines/newColorCodes', async (req, res) => {
     serverLog('GET /machines/newColorCodes');
     try {
-      let machines = await getParsedMachines();
-      /* Machine states
-       * 0: RUN
-       * 2: STOP BUTTON
-       * 3: AUTOMATIC STOP
-       * 4: TARGET
-       * 5: F1
-       * 6: ELECTRÓNICO
-       * 7: MECANICO
-       * 9: HILADO
-       * 13: TURBINA
-       *
-       * Machines in other states could have invalid stylecodes
-       */
+      let machines = await getParsedMachines(true);
       machines = Array.from(
         new Map(
           machines
-            .filter(
-              (m) =>
-                [0, 2, 3, 4, 5, 6, 7, 9, 13].includes(m.State) &&
-                m.StyleCode.colorId === null
-            )
+            .filter((m) => m.StyleCode.colorId === null)
             // makes the entries unique by articulo and colorCode
             // 2+ machines can have the same articulo and color
             .map((m) => [`${m.StyleCode.articulo}_${m.StyleCode.color}`, m])
@@ -278,7 +265,7 @@ const startServer = () => {
       const [progColor, machines] = await Promise.all([
         // get Programada with Color, month production, and docenas by art.
         sql.query(getProgColorTable(startDate, endMonth, endYear)),
-        !req.query.endMonth ? getParsedMachines() : null, // get Machines
+        !req.query.endMonth ? getParsedMachines(true) : null, // get Machines
       ]);
 
       res.json({

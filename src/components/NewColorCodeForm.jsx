@@ -27,6 +27,8 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
       articulo: !formData.articulo
         ? newColorCode.StyleCode.articulo
         : formData.articulo,
+      talle: newColorCode.StyleCode.talle,
+      styleCode: newColorCode.StyleCode.styleCode,
     };
 
     fetch(`${apiUrl}/colorCodes/insert`, {
@@ -37,6 +39,8 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
       body: JSON.stringify({
         articulo: data.articulo,
         colorCodes: data.colorCodes, // [{color, code}]
+        talle: data.talle,
+        styleCode: data.styleCode,
       }),
     }).catch((err) =>
       console.error('[CLIENT] Error fetching /colorCodes/insert:', err)
@@ -59,7 +63,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
               type: 'number',
               min: 0,
               max: 99,
-              placeholder: 'Sin (.)',
+              placeholder: 'Sin "."',
               onChange: (e) =>
                 setFormData({
                   ...formData,

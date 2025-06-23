@@ -69,6 +69,10 @@ export default function Home() {
               <Typography variant='solid'>
                 {newColorCodes[0].StyleCode.articulo}
               </Typography>
+              &nbsp;talle&nbsp;
+              <Typography variant='solid'>
+                {newColorCodes[0].StyleCode.talle}
+              </Typography>
               &nbsp;en la máq.&nbsp;
               <Typography variant='solid'>
                 {newColorCodes[0].MachCode}
