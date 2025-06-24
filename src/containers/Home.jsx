@@ -10,7 +10,9 @@ let apiUrl;
 
 export default function Home() {
   apiUrl = useConfig().apiUrl;
-  const [newColorCodes, setNewColorCodes] = useState([]);
+  const [newColorCodes, setNewColorCodes] = useState(() =>
+    JSON.parse(localStorage.getItem('newColorCodes') || '[]')
+  );
 
   // check for newColorCodes on load and then every hour
   useEffect(() => {
@@ -18,8 +20,16 @@ export default function Home() {
     function fetchNewColorCodes() {
       fetch(`${apiUrl}/machines/newColorCodes`)
         .then((res) => res.json())
-        .then((data) => {
-          if (!ignore) setNewColorCodes(data);
+        .then((newCodes) => {
+          if (!ignore) {
+            // Whenever you update localStorage, also update state:
+            const currCodes = JSON.parse(
+              localStorage.getItem('newColorCodes') || '[]'
+            );
+            currCodes.push(...newCodes);
+            localStorage.setItem('newColorCodes', JSON.stringify(currCodes));
+            setNewColorCodes(currCodes);
+          }
         })
         .catch((err) =>
           console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
@@ -52,7 +62,7 @@ export default function Home() {
             <>
               Agregar código de color -{' '}
               <Typography variant='solid' color='primary'>
-                {newColorCodes[0].StyleCode.styleCode}
+                {newColorCodes[newColorCodes.length - 1].StyleCode.styleCode}
               </Typography>
             </>
           }
@@ -60,26 +70,26 @@ export default function Home() {
             <Typography>
               Se encontró el código&nbsp;
               <Typography variant='solid'>
-                {newColorCodes[0].StyleCode.color}
+                {newColorCodes[newColorCodes.length - 1].StyleCode.color}
               </Typography>
               &nbsp;para el art.&nbsp;
               <Typography variant='solid'>
-                {newColorCodes[0].StyleCode.articulo}
+                {newColorCodes[newColorCodes.length - 1].StyleCode.articulo}
               </Typography>
               &nbsp;talle&nbsp;
               <Typography variant='solid'>
-                {newColorCodes[0].StyleCode.talle}
+                {newColorCodes[newColorCodes.length - 1].StyleCode.talle}
               </Typography>
               &nbsp;en la máq.&nbsp;
               <Typography variant='solid'>
-                {newColorCodes[0].MachCode}
+                {newColorCodes[newColorCodes.length - 1].MachCode}
               </Typography>
               . Por favor, víncule el color correspondiente.
             </Typography>
           }
         >
           <NewColorCodeForm
-            newColorCode={newColorCodes[0]}
+            newColorCode={newColorCodes[newColorCodes.length - 1]}
             setNewColorCodes={setNewColorCodes}
           />
         </ModalWrapper>

@@ -114,8 +114,13 @@ export default function ProgComparar() {
     // fetch newColorCodes before updating
     try {
       const res = await fetch(`${apiUrl}/machines/newColorCodes`);
-      const data = await res.json();
-      setNewColorCodes(data);
+      const newCodes = await res.json();
+      const currCodes = JSON.parse(
+        localStorage.getItem('newColorCodes') || '[]'
+      );
+      currCodes.push(...newCodes);
+      localStorage.setItem('newColorCodes', JSON.stringify(currCodes));
+      setNewColorCodes(currCodes);
     } catch (err) {
       console.error('[CLIENT] Error fetching /machines/newColorCodes:', err);
     }

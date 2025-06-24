@@ -64,7 +64,10 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     }).catch((err) =>
       console.error('[CLIENT] Error fetching /colorCodes/insert:', err)
     );
-    setNewColorCodes((prev) => prev.slice(1));
+    const codes = JSON.parse(localStorage.getItem('newColorCodes'));
+    codes.pop();
+    localStorage.setItem('newColorCodes', JSON.stringify(codes));
+    setNewColorCodes(codes);
     setFormData({ colorCodes: [] });
   }
 
