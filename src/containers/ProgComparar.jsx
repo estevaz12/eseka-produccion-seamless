@@ -306,6 +306,7 @@ export default function ProgComparar() {
       <DatePicker
         label='Fecha de inicio'
         value={startDate ? dayjs(startDate) : null}
+        timezone='UTC'
         onChange={(newValue) => {
           if (newValue) {
             setStartDate(newValue.format(sqlDateFormat));

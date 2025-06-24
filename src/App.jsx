@@ -18,6 +18,10 @@ import Produccion from './containers/Produccion.jsx';
 import Programada from './containers/Programada.jsx';
 import ProgComparar from './containers/ProgComparar.jsx';
 import ProgAnteriores from './containers/ProgAnteriores.jsx';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);

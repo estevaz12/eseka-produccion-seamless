@@ -64,6 +64,7 @@ export default function Programada() {
       <DatePicker
         label='Fecha de inicio'
         value={startDate ? dayjs(startDate) : null}
+        timezone='UTC'
         disabled
       />
 
