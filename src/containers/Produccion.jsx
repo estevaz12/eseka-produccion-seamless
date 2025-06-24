@@ -1,6 +1,6 @@
 import { Box } from '@mui/joy';
 import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
 import ProduccionForm from '../components/ProduccionForm.jsx';
@@ -89,6 +89,25 @@ export default function Produccion() {
     };
   }, [url]);
 
+  function calcProducido(row) {
+    return row.Tipo === null
+      ? row.Unidades
+      : row.Tipo === '#'
+      ? row.Unidades * 2
+      : row.Unidades / 2;
+  }
+
+  // Memoized totals
+  const totalUnidades = useMemo(
+    () => data.reduce((acc, row) => acc + Math.round(calcProducido(row)), 0),
+    [data]
+  );
+  const totalDocenas = useMemo(
+    () =>
+      data.reduce((acc, row) => acc + Math.round(calcProducido(row) / 12), 0),
+    [data]
+  );
+
   return (
     <Box>
       <ProduccionForm
@@ -99,14 +118,10 @@ export default function Produccion() {
 
       <DataTable
         cols={['Artículo', 'Talle', 'Color', 'Unidades', 'Docenas', 'Máquinas']}
+        tfoot={['', '', 'Total', totalUnidades, totalDocenas, '']}
       >
         {data.map((row, i) => {
-          const producido =
-            row.Tipo === null
-              ? row.Unidades
-              : row.Tipo === '#'
-              ? row.Unidades * 2
-              : row.Unidades / 2;
+          const producido = calcProducido(row);
 
           return (
             <tr key={i}>
@@ -119,7 +134,7 @@ export default function Produccion() {
               {/* Unidades */}
               <td>
                 {row.Tipo === null
-                  ? row.Unidades
+                  ? producido
                   : `${producido} (${row.Unidades})`}
               </td>
               {/* Docenas */}
