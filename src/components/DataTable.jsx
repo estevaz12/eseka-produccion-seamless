@@ -1,6 +1,6 @@
 import { Table } from '@mui/joy';
 
-export default function DataTable({ cols, children }) {
+export default function DataTable({ cols, children, tfoot }) {
   return (
     <Table aria-label='simple table' className='**:text-center'>
       <thead className='sticky top-0'>
@@ -11,6 +11,15 @@ export default function DataTable({ cols, children }) {
         </tr>
       </thead>
       <tbody>{children}</tbody>
+      {tfoot && (
+        <tfoot className='sticky bottom-0'>
+          <tr>
+            {tfoot.map((foot, index) => (
+              <td key={index}>{foot}</td>
+            ))}
+          </tr>
+        </tfoot>
+      )}
     </Table>
   );
 }

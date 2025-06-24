@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from './DataTable.jsx';
 import { Check, Edit } from '@mui/icons-material';
@@ -135,22 +135,23 @@ export default function ProgramadaTable({
     );
   }
 
+  // Utility functions
+  function calcAProducir(row) {
+    if (row.Tipo === null) return row.Docenas;
+    if (row.Tipo === '#') return row.Docenas * 2;
+    return row.Docenas / 2;
+  }
+
+  function calcProducido(row) {
+    if (row.Tipo === null) return row.Producido / 12 / 1.01;
+    if (row.Tipo === '#') return (row.Producido * 2) / 12 / 1.01;
+    return row.Producido / 2 / 12 / 1.01;
+  }
+
   function mapRows(row) {
-    const aProducir =
-      row.Tipo === null
-        ? row.Docenas.toFixed(1)
-        : row.Tipo === '#'
-        ? (row.Docenas * 2).toFixed(1)
-        : (row.Docenas / 2).toFixed(1);
-
-    const producido =
-      row.Tipo === null
-        ? (row.Producido / 12 / 1.01).toFixed(1)
-        : row.Tipo === '#'
-        ? ((row.Producido * 2) / 12 / 1.01).toFixed(1)
-        : (row.Producido / 2 / 12 / 1.01).toFixed(1);
-
-    const falta = (aProducir - producido).toFixed(1);
+    const aProducir = calcAProducir(row).toFixed(1);
+    const producido = calcProducido(row).toFixed(1);
+    const falta = (calcAProducir(row) - calcProducido(row)).toFixed(1);
     const faltaFisico = ((row.Target - row.Producido) / 12 / 1.01).toFixed(1);
     const faltaUnidades = row.Target - row.Producido;
 
@@ -208,6 +209,26 @@ export default function ProgramadaTable({
     );
   }
 
+  // Memoized totals
+  const totalAProducir = useMemo(() => {
+    let progToUse =
+      filteredProgColor.length > 0 ? filteredProgColor : progColor;
+    return progToUse.reduce((acc, row) => acc + calcAProducir(row), 0);
+  }, [progColor, filteredProgColor]);
+  const totalProducido = useMemo(() => {
+    let progToUse =
+      filteredProgColor.length > 0 ? filteredProgColor : progColor;
+    return progToUse.reduce((acc, row) => acc + calcProducido(row), 0);
+  }, [progColor, filteredProgColor]);
+  const totalFalta = useMemo(() => {
+    let progToUse =
+      filteredProgColor.length > 0 ? filteredProgColor : progColor;
+    return progToUse.reduce(
+      (acc, row) => acc + (calcAProducir(row) - calcProducido(row)),
+      0
+    );
+  }, [progColor, filteredProgColor]);
+
   return (
     <DataTable
       cols={[
@@ -222,6 +243,19 @@ export default function ProgramadaTable({
         'Doc. x Talle', // DocProg
         'Doc. x Art.', // DocPorArt
         live && 'Máquinas',
+      ]}
+      tfoot={[
+        '',
+        '',
+        'Total',
+        Math.round(totalAProducir), // Total A Producir
+        Math.round(totalProducido), // Total Producido
+        Math.round(totalFalta), // Total Falta
+        '',
+        '',
+        '',
+        '',
+        live && '',
       ]}
     >
       {startDate && progColor && filteredProgColor.length === 0
