@@ -220,14 +220,10 @@ export default function ProgramadaTable({
       filteredProgColor.length > 0 ? filteredProgColor : progColor;
     return progToUse.reduce((acc, row) => acc + calcProducido(row), 0);
   }, [progColor, filteredProgColor]);
-  const totalFalta = useMemo(() => {
-    let progToUse =
-      filteredProgColor.length > 0 ? filteredProgColor : progColor;
-    return progToUse.reduce(
-      (acc, row) => acc + (calcAProducir(row) - calcProducido(row)),
-      0
-    );
-  }, [progColor, filteredProgColor]);
+  const totalFalta = useMemo(
+    () => totalAProducir - totalProducido,
+    [totalAProducir, totalProducido]
+  );
 
   return (
     <DataTable
