@@ -50,7 +50,7 @@ function ColorFormInputs({
 
         <ColorSelect
           onChange={setColorInput}
-          inheretedColors={colors}
+          inheritedColors={colors}
           required={!(formData[fieldName]?.length >= 0)}
         />
 

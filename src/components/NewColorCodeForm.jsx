@@ -161,7 +161,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
               ],
             }));
           }}
-          inheretedColors={colors}
+          inheritedColors={colors}
           required={!(formData.colorCodes?.length >= 0)}
         />
       </Box>

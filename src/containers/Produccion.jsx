@@ -7,6 +7,7 @@ import ProduccionForm from '../components/ProduccionForm.jsx';
 
 let apiUrl, sqlDateFormat;
 
+// TODO add totals
 export default function Produccion() {
   [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
   const [url, setUrl] = useState();
