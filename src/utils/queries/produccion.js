@@ -63,21 +63,17 @@ const produccion = (
   } else {
     // only PRODUCTIONS_MONITOR
     query = `
-        WITH Produccion AS (
-            SELECT 
-                pm.StyleCode,
-                SUM(pm.Pieces) AS 'Unidades'
-            FROM PRODUCTIONS_MONITOR pm
-            WHERE pm.RoomCode = '${room}'
-                AND DateRec BETWEEN '${startDate}' AND '${endDate}'
-                AND pm.Pieces > 0
-                ${
-                  !precise
-                    ? `AND LEFT(pm.StyleCode, 8) LIKE '%${articulo}%'`
-                    : ''
-                }
-            GROUP BY pm.StyleCode
-        )
+      WITH Produccion AS (
+        SELECT 
+            LEFT(pm.StyleCode, 8) AS StyleCode,
+            SUM(pm.Pieces) AS Unidades
+        FROM PRODUCTIONS_MONITOR pm
+        WHERE pm.RoomCode = '${room}'
+            AND pm.DateRec BETWEEN '${startDate}' AND '${endDate}'
+            AND pm.Pieces > 0
+            ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE '%${articulo}%'` : ''}
+        GROUP BY pm.StyleCode
+      )
     `;
   }
 
