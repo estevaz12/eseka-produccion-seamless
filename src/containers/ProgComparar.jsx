@@ -7,12 +7,15 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
+import { useOutletContext } from 'react-router';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
 
 export default function ProgComparar() {
+  // context
   [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
+  const setNewColorCodes = useOutletContext();
   // load, file upload and reading
   const [startDate, setStartDate] = useState();
   const [currTotal, setCurrTotal] = useState();
@@ -107,7 +110,15 @@ export default function ProgComparar() {
 
     // colorCodes will be inserted through newColorCodes.
     // Leaving code in case its needed in the future.
-    // TODO when running calculate new targets fetch newColorCodes
+
+    // fetch newColorCodes before updating
+    try {
+      const res = await fetch(`${apiUrl}/machines/newColorCodes`);
+      const data = await res.json();
+      setNewColorCodes(data);
+    } catch (err) {
+      console.error('[CLIENT] Error fetching /machines/newColorCodes:', err);
+    }
 
     let prevArticulo; // to avoid duplicate fetches
 

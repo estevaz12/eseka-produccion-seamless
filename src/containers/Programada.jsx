@@ -1,4 +1,5 @@
-// TODO porcentaje as fraction
+// TODO porcentaje as fraction - ask for num colors and then enter amount of
+// items per color in surtido
 
 import { Box, Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';

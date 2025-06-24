@@ -82,7 +82,6 @@ const produccion = (
   }
 
   // Match with SEA_COLOR_CODES and return a record per color
-  // TODO: account for parches and stuff, colorcodes2
   return (
     query +
     `,ProdColorUngrouped AS (

@@ -15,17 +15,7 @@ export default function Home() {
   // check for newColorCodes on load and then every hour
   useEffect(() => {
     let ignore = false;
-    // fetch and repeat every hour
-    fetch(`${apiUrl}/machines/newColorCodes`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!ignore) setNewColorCodes(data);
-      })
-      .catch((err) =>
-        console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
-      );
-
-    const intervalId = setInterval(() => {
+    function fetchNewColorCodes() {
       fetch(`${apiUrl}/machines/newColorCodes`)
         .then((res) => res.json())
         .then((data) => {
@@ -34,6 +24,13 @@ export default function Home() {
         .catch((err) =>
           console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
         );
+    }
+
+    // fetch and repeat every hour
+    fetchNewColorCodes();
+
+    const intervalId = setInterval(() => {
+      fetchNewColorCodes();
     }, 1 * 3600 * 1000); // update every hour
 
     return () => {
@@ -46,7 +43,7 @@ export default function Home() {
     <>
       <NavBar />
 
-      <Outlet />
+      <Outlet context={setNewColorCodes} />
 
       {/* Modal for new Color Codes */}
       {newColorCodes.length > 0 && (
