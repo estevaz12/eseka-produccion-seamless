@@ -154,6 +154,7 @@ export default function ProgramadaTable({
     const faltaFisico = ((row.Target - row.Producido) / 12 / 1.01).toFixed(1);
     const faltaUnidades = row.Target - row.Producido;
 
+    let machinePieces = 0;
     const matchingMachines = machines
       .filter(
         // match machines with articulo
@@ -162,8 +163,14 @@ export default function ProgramadaTable({
           m.StyleCode.talle === row.Talle &&
           m.StyleCode.colorId === row.ColorId
       )
-      .map((m) => `${m.MachCode} (P: ${m.Pieces})`) // display all machines with articulo
-      .join(' - ');
+      .map((m) => {
+        machinePieces += m.Pieces;
+        return `${m.MachCode} (P: ${m.Pieces})`;
+      })
+      .join(' - '); // display all machines with articulo
+
+    // TODO test for multiple machines
+    const targetCalc = faltaUnidades + machinePieces;
 
     return (
       <tr>
@@ -175,8 +182,6 @@ export default function ProgramadaTable({
         <td>{`${row.Color} ${
           row.Porcentaje && row.Porcentaje < 100 ? `(${row.Porcentaje}%)` : ''
         }`}</td>
-        {/* Target (un.) */}
-        <td>{row.Target}</td>
         {/* A Producir */}
         <td>
           <AProducir row={row} aProducir={aProducir} />
@@ -189,6 +194,8 @@ export default function ProgramadaTable({
         </td>
         {/* Falta */}
         <td>{row.Tipo === null ? falta : `${falta} (${faltaFisico})`}</td>
+        {/* Target (un.) */}
+        <td>{faltaUnidades <= 0 ? 'LLEGÓ' : targetCalc}</td>
         {/* Falta (un.) */}
         <td>{faltaUnidades}</td>
         {/* Doc. x Talle */}
@@ -207,10 +214,10 @@ export default function ProgramadaTable({
         'Artículo', // Articulo + Tipo
         'Talle',
         'Color', // Color + Porcentaje
-        'Target (un.)',
         'A Producir', // Docenas
         'Producido', // Produccion Mensual
         'Falta', // A Producir - Producido
+        'Target (un.)',
         'Falta (un.)',
         'Doc. x Talle', // DocProg
         'Doc. x Art.', // DocPorArt
