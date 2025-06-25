@@ -118,9 +118,16 @@ export default function ProgComparar() {
       const currCodes = JSON.parse(
         localStorage.getItem('newColorCodes') || '[]'
       );
-      currCodes.push(...newCodes);
-      localStorage.setItem('newColorCodes', JSON.stringify(currCodes));
-      setNewColorCodes(currCodes);
+      // Deduplicate by StyleCode.styleCode
+      const uniqueNewCodes = newCodes.filter(
+        (newCode) =>
+          !currCodes.some(
+            (curr) => curr.StyleCode.styleCode === newCode.StyleCode.styleCode
+          )
+      );
+      const updatedCodes = [...currCodes, ...uniqueNewCodes];
+      localStorage.setItem('newColorCodes', JSON.stringify(updatedCodes));
+      setNewColorCodes(updatedCodes);
     } catch (err) {
       console.error('[CLIENT] Error fetching /machines/newColorCodes:', err);
     }

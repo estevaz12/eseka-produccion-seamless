@@ -26,9 +26,26 @@ export default function Home() {
             const currCodes = JSON.parse(
               localStorage.getItem('newColorCodes') || '[]'
             );
-            currCodes.push(...newCodes);
-            localStorage.setItem('newColorCodes', JSON.stringify(currCodes));
-            setNewColorCodes(currCodes);
+            // Make sure codes in localStorage are unique. Otherwise, the same
+            // codes will be added every hour
+            const uniqueNewCodes = newCodes.filter(
+              (newCode) =>
+                !currCodes.some(
+                  (curr) =>
+                    curr.StyleCode.styleCode === newCode.StyleCode.styleCode
+                )
+            );
+            if (uniqueNewCodes.length > 0) {
+              const updatedCodes = [...currCodes, ...uniqueNewCodes];
+              localStorage.setItem(
+                'newColorCodes',
+                JSON.stringify(updatedCodes)
+              );
+              setNewColorCodes(updatedCodes);
+            } else {
+              // If no new codes, just update the state with the same codes
+              setNewColorCodes(currCodes);
+            }
           }
         })
         .catch((err) =>

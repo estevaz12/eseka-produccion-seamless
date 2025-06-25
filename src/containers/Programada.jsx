@@ -54,11 +54,7 @@ export default function Programada() {
     <Box>
       <Typography>
         Total Actual:{' '}
-        {currTotal !== undefined
-          ? currTotal
-          : localStorage.getItem('progStartDate')
-          ? 'Cargando...'
-          : 0}
+        {currTotal !== undefined ? currTotal : startDate ? 'Cargando...' : 0}
       </Typography>
 
       <DatePicker
