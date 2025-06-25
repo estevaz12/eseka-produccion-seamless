@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from './DataTable.jsx';
 import { Check, Edit } from '@mui/icons-material';
-import { Button, FormControl, Input } from '@mui/joy';
+import { Button, FormControl, Input, Typography } from '@mui/joy';
 
 let apiUrl;
 
@@ -155,23 +155,42 @@ export default function ProgramadaTable({
     const faltaFisico = ((row.Target - row.Producido) / 12 / 1.01).toFixed(1);
     const faltaUnidades = row.Target - row.Producido;
 
-    let machinePieces = 0;
-    const matchingMachines = machines
-      .filter(
-        // match machines with articulo
-        (m) =>
-          m.StyleCode.articulo === Math.floor(row.Articulo) &&
-          m.StyleCode.talle === row.Talle &&
-          m.StyleCode.colorId === row.ColorId
-      )
-      .map((m) => {
-        machinePieces += m.Pieces;
-        return `${m.MachCode} (P: ${m.Pieces})`;
-      })
-      .join(' - '); // display all machines with articulo
+    const matchingMachines = machines.filter(
+      // match machines with articulo
+      (m) =>
+        m.StyleCode.articulo === Math.floor(row.Articulo) &&
+        m.StyleCode.talle === row.Talle &&
+        m.StyleCode.colorId === row.ColorId
+    );
+    const machinesList = matchingMachines.map((m) => {
+      return (
+        <Typography
+          key={m.MachCode}
+        >{`${m.MachCode} (P: ${m.Pieces})`}</Typography>
+      );
+    }); // display all machines with articulo
 
-    // TODO test for multiple machines
-    const targetCalc = faltaUnidades + machinePieces;
+    const targetCalc =
+      matchingMachines.length <= 1
+        ? // if one machine, just add pieces to remaining
+          // if no machines, just show remaining
+          faltaUnidades + (matchingMachines[0]?.Pieces || 0)
+        : matchingMachines.map((m) => {
+            // if multiple machines, calculate target per machine
+            // divide remaining pieces by number of machines
+            let machineTarget = Math.ceil(
+              m.Pieces + faltaUnidades / matchingMachines.length
+            );
+            // round up to nearest even number
+            machineTarget =
+              machineTarget % 2 === 0 ? machineTarget : machineTarget + 1;
+
+            return (
+              <Typography
+                key={m.MachCode}
+              >{`${m.MachCode} -> ${machineTarget}`}</Typography>
+            );
+          });
 
     return (
       <tr>
@@ -204,7 +223,7 @@ export default function ProgramadaTable({
         {/* Doc. x Art. */}
         <td>{row.DocPorArt}</td>
         {/* Maquinas */}
-        {live && <td>{matchingMachines}</td>}
+        {live && <td>{machinesList}</td>}
       </tr>
     );
   }
