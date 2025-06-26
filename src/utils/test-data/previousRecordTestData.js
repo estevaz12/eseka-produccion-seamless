@@ -1,0 +1,15 @@
+module.exports = {
+  Fecha: '2025-06-03T14:24:49.000Z',
+  Programada: 3354,
+  ColorDistr: 77,
+  Articulo: 11881,
+  Tipo: null,
+  Talle: 1,
+  Color: 'CRUDO FRANCIA',
+  ColorId: 22,
+  Porcentaje: 100,
+  Docenas: 60,
+  Unidades: 720,
+  Target: 728,
+  DocProg: 60,
+};

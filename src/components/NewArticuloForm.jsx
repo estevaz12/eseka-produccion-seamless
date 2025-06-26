@@ -98,7 +98,7 @@ export default function NewArticuloForm({
         <FormControl>
           <FormLabel>Tipo (si aplica)</FormLabel>
           <Input
-            value={newArticuloData.tipo}
+            value={newArticuloData.tipo || ''}
             onChange={(e) =>
               setFormData({
                 ...formData,

@@ -6,7 +6,6 @@ import { Button, FormControl, Input, Typography } from '@mui/joy';
 
 let apiUrl;
 
-// TODO - handle articulos incompletos
 export default function ProgramadaTable({
   startDate,
   progColor,
@@ -148,6 +147,12 @@ export default function ProgramadaTable({
     return row.Producido / 2 / 12 / 1.01;
   }
 
+  function roundUpEven(num) {
+    // round up to nearest even number
+    num = Math.ceil(num);
+    return num % 2 === 0 ? num : num + 1;
+  }
+
   function mapRows(row) {
     const aProducir = calcAProducir(row).toFixed(1);
     const producido = calcProducido(row).toFixed(1);
@@ -174,16 +179,13 @@ export default function ProgramadaTable({
       matchingMachines.length <= 1
         ? // if one machine, just add pieces to remaining
           // if no machines, just show remaining
-          faltaUnidades + (matchingMachines[0]?.Pieces || 0)
+          roundUpEven(faltaUnidades + (matchingMachines[0]?.Pieces || 0))
         : matchingMachines.map((m) => {
             // if multiple machines, calculate target per machine
             // divide remaining pieces by number of machines
-            let machineTarget = Math.ceil(
+            let machineTarget = roundUpEven(
               m.Pieces + faltaUnidades / matchingMachines.length
             );
-            // round up to nearest even number
-            machineTarget =
-              machineTarget % 2 === 0 ? machineTarget : machineTarget + 1;
 
             return (
               <Typography

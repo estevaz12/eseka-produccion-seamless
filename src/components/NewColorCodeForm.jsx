@@ -103,7 +103,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
       <FormControl>
         <FormLabel>Tipo (si aplica)</FormLabel>
         <Input
-          value={newColorCode.StyleCode.tipo}
+          value={newColorCode.StyleCode.tipo || ''}
           onChange={(e) =>
             setFormData({
               ...formData,
