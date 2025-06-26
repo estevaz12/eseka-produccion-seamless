@@ -1,13 +1,7 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { StyledEngineProvider } from '@mui/material';
-import {
-  createTheme,
-  ThemeProvider,
-  THEME_ID as MATERIAL_THEME_ID,
-} from '@mui/material/styles';
-import { CssVarsProvider as JoyCssVarsProvider } from '@mui/joy/styles';
-import CssBaseline from '@mui/joy/CssBaseline';
+import { StyledEngineProvider } from '@mui/material/styles';
+import GlobalStyles from '@mui/joy/GlobalStyles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
@@ -26,49 +20,19 @@ dayjs.extend(utc);
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
-const materialTheme = createTheme({
-  cssVariables: true,
-  components: {
-    MuiPopover: {
-      defaultProps: {
-        container: rootElement,
-      },
-    },
-    MuiPopper: {
-      defaultProps: {
-        container: rootElement,
-      },
-    },
-    MuiDialog: {
-      defaultProps: {
-        container: rootElement,
-      },
-    },
-    MuiModal: {
-      defaultProps: {
-        container: rootElement,
-      },
-    },
-  },
-});
-
 const config = {
   apiUrl: process.env.EXPRESS_URL,
   sqlDateFormat: 'MM-DD-YYYY HH:mm:ss',
 };
 
 root.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
-      <JoyCssVarsProvider>
-        <CssBaseline enableColorScheme />
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
-          <ConfigProvider config={config}>
-            <App />
-          </ConfigProvider>
-        </LocalizationProvider>
-      </JoyCssVarsProvider>
-    </ThemeProvider>
+  <StyledEngineProvider enableCssLayer>
+    <GlobalStyles styles='@layer theme, base, mui, components, utilities;' />
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
+      <ConfigProvider config={config}>
+        <App />
+      </ConfigProvider>
+    </LocalizationProvider>
   </StyledEngineProvider>
 );
 

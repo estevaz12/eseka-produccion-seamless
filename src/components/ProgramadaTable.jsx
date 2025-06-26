@@ -194,8 +194,17 @@ export default function ProgramadaTable({
             );
           });
 
+    let rowColor = 'green';
+    if (faltaUnidades <= 0) {
+      rowColor = 'red'; // LLEGÓ
+    } else if (matchingMachines.length > 0) {
+      rowColor = 'yellow'; // TEJIENDO
+    } else if (matchingMachines.length === 0 && faltaUnidades < row.Target) {
+      rowColor = 'gray'; // INCOMPLETO
+    }
+
     return (
-      <tr>
+      <tr className='bg-green-500'>
         {/* Articulo */}
         <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
         {/* Talle */}
