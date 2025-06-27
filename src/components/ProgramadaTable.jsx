@@ -153,7 +153,7 @@ export default function ProgramadaTable({
     return num % 2 === 0 ? num : num + 1;
   }
 
-  function mapRows(row) {
+  function mapRows(row, i) {
     const aProducir = calcAProducir(row).toFixed(1);
     const producido = calcProducido(row).toFixed(1);
     const falta = (calcAProducir(row) - calcProducido(row)).toFixed(1);
@@ -194,17 +194,20 @@ export default function ProgramadaTable({
             );
           });
 
-    let rowColor = 'green';
-    if (faltaUnidades <= 0) {
-      rowColor = 'red'; // LLEGÓ
-    } else if (matchingMachines.length > 0) {
-      rowColor = 'yellow'; // TEJIENDO
+    let rowClassName = 'bg-todo';
+    if (matchingMachines.length > 0) {
+      rowClassName = 'bg-making'; // TEJIENDO
+    } else if (faltaUnidades <= 0) {
+      rowClassName = 'bg-done'; // LLEGÓ
+    } else if (matchingMachines.length === 0 && faltaUnidades <= 12) {
+      rowClassName = 'bg-almost-done'; // CASI LLEGÓ - Menos de una docena
     } else if (matchingMachines.length === 0 && faltaUnidades < row.Target) {
-      rowColor = 'gray'; // INCOMPLETO
+      rowClassName = 'bg-incomplete'; // INCOMPLETO
     }
+    rowClassName = `${rowClassName} *:border-dark-accent`;
 
     return (
-      <tr className='bg-green-500'>
+      <tr key={i} className={rowClassName}>
         {/* Articulo */}
         <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
         {/* Talle */}
@@ -229,10 +232,6 @@ export default function ProgramadaTable({
         <td>{faltaUnidades <= 0 ? 'LLEGÓ' : targetCalc}</td>
         {/* Falta (un.) */}
         <td>{faltaUnidades}</td>
-        {/* Doc. x Talle */}
-        <td>{row.DocProg}</td>
-        {/* Doc. x Art. */}
-        <td>{row.DocPorArt}</td>
         {/* Maquinas */}
         {live && <td>{machinesList}</td>}
       </tr>
@@ -266,22 +265,29 @@ export default function ProgramadaTable({
         'Falta', // A Producir - Producido
         'Target (un.)',
         'Falta (un.)',
-        'Doc. x Talle', // DocProg
-        'Doc. x Art.', // DocPorArt
         live && 'Máquinas',
       ]}
+      colsWidths={[
+        '', // Articulo + Tipo
+        live && 'w-[6%]', // Talle
+        live ? 'w-[20%]' : 'w-[25%]', // Color + Porcentaje
+        live && 'w-[11%]', // Docenas
+        live && 'w-[11%]', // Produccion Mensual
+        live && 'w-[11%]', // A Producir - Producido
+        '', // Target (un.)
+        '', // Falta (un.)
+        live && 'w-[12%]', // Maquinas
+      ]}
       tfoot={[
-        '',
-        '',
+        true,
+        true,
         'Total',
         Math.round(totalAProducir), // Total A Producir
         Math.round(totalProducido), // Total Producido
         Math.round(totalFalta), // Total Falta
-        '',
-        '',
-        '',
-        '',
-        live && '',
+        true,
+        true,
+        live && true,
       ]}
     >
       {startDate && progColor && filteredProgColor.length === 0

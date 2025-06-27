@@ -1,1 +1,10 @@
 @import 'tailwindcss' important;
+
+@theme {
+  --color-done: #ff1d15;
+  --color-almost-done: #ff8985;
+  --color-todo: #9ad35b;
+  --color-making: #ffc000;
+  --color-incomplete: #decccc;
+  --color-dark-accent: #0f0326;
+}

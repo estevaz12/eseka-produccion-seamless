@@ -76,14 +76,16 @@ export default function ProgAnteriores() {
         setFilteredProgColor={setFilteredProgColor}
       />
 
-      <ProgramadaTable
-        startDate={selectedDate}
-        progColor={progColor}
-        setProgColor={setProgColor}
-        filteredProgColor={filteredProgColor}
-        setFilteredProgColor={setFilteredProgColor}
-        live={false}
-      />
+      {selectedDate && (
+        <ProgramadaTable
+          startDate={selectedDate}
+          progColor={progColor}
+          setProgColor={setProgColor}
+          filteredProgColor={filteredProgColor}
+          setFilteredProgColor={setFilteredProgColor}
+          live={false}
+        />
+      )}
     </Box>
   );
 }
