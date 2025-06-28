@@ -1,9 +1,16 @@
+import {
+  CompareArrowsTwoTone,
+  FactoryTwoTone,
+  HistoryTwoTone,
+  PrecisionManufacturingTwoTone,
+  TableChartTwoTone,
+} from '@mui/icons-material';
 import { List, ListItem, ListItemButton, ListSubheader } from '@mui/joy';
 import { NavLink } from 'react-router';
 
 export default function NavBar() {
   return (
-    <nav>
+    <nav className=''>
       <List>
         <ListItem nested>
           <ListSubheader>Programada</ListSubheader>
@@ -11,7 +18,10 @@ export default function NavBar() {
             <ListItem>
               <NavLink to='/'>
                 {({ isActive }) => (
-                  <ListItemButton selected={isActive}>Actual</ListItemButton>
+                  <ListItemButton selected={isActive}>
+                    <TableChartTwoTone />
+                    Actual
+                  </ListItemButton>
                 )}
               </NavLink>
             </ListItem>
@@ -19,7 +29,8 @@ export default function NavBar() {
               <NavLink to='/programada/comparar'>
                 {({ isActive }) => (
                   <ListItemButton selected={isActive}>
-                    Comparar y cargar
+                    <CompareArrowsTwoTone />
+                    Comparar
                   </ListItemButton>
                 )}
               </NavLink>
@@ -28,6 +39,7 @@ export default function NavBar() {
               <NavLink to='/programada/anteriores'>
                 {({ isActive }) => (
                   <ListItemButton selected={isActive}>
+                    <HistoryTwoTone />
                     Anteriores
                   </ListItemButton>
                 )}
@@ -36,12 +48,25 @@ export default function NavBar() {
           </List>
         </ListItem>
         <ListItem nested>
-          <ListSubheader>Producción</ListSubheader>
+          <ListSubheader>Herramientas</ListSubheader>
           <List>
             <ListItem>
               <NavLink to='/produccion'>
                 {({ isActive }) => (
-                  <ListItemButton selected={isActive}>Búsqueda</ListItemButton>
+                  <ListItemButton selected={isActive}>
+                    <FactoryTwoTone />
+                    Producción
+                  </ListItemButton>
+                )}
+              </NavLink>
+            </ListItem>
+            <ListItem>
+              <NavLink to='/maquinas'>
+                {({ isActive }) => (
+                  <ListItemButton selected={isActive}>
+                    <PrecisionManufacturingTwoTone />
+                    Máquinas
+                  </ListItemButton>
                 )}
               </NavLink>
             </ListItem>

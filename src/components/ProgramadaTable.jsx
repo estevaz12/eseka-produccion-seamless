@@ -153,11 +153,19 @@ export default function ProgramadaTable({
     return num % 2 === 0 ? num : num + 1;
   }
 
+  function formatNum(num) {
+    if (num % 1 < 0.1) {
+      return num.toFixed(); // No decimals for whole numbers
+    } else {
+      return num.toFixed(1); // One decimal for non-whole numbers
+    }
+  }
+
   function mapRows(row, i) {
-    const aProducir = calcAProducir(row).toFixed(1);
-    const producido = calcProducido(row).toFixed(1);
-    const falta = (calcAProducir(row) - calcProducido(row)).toFixed(1);
-    const faltaFisico = ((row.Target - row.Producido) / 12 / 1.01).toFixed(1);
+    const aProducir = formatNum(calcAProducir(row));
+    const producido = formatNum(calcProducido(row));
+    const falta = formatNum(calcAProducir(row) - calcProducido(row));
+    const faltaFisico = formatNum((row.Target - row.Producido) / 12 / 1.01);
     const faltaUnidades = row.Target - row.Producido;
 
     const matchingMachines = machines.filter(
@@ -204,7 +212,7 @@ export default function ProgramadaTable({
     } else if (matchingMachines.length === 0 && faltaUnidades < row.Target) {
       rowClassName = 'bg-incomplete'; // INCOMPLETO
     }
-    rowClassName = `${rowClassName} *:border-dark-accent`;
+    rowClassName = `${rowClassName} *:border-dark-accent hover:bg-row-hover`;
 
     return (
       <tr key={i} className={rowClassName}>
@@ -224,10 +232,10 @@ export default function ProgramadaTable({
         <td>
           {row.Tipo === null
             ? producido
-            : `${producido} (${(row.Producido / 12 / 1.01).toFixed(1)})`}
+            : `${producido} (${formatNum(row.Producido / 12 / 1.01)})`}
         </td>
         {/* Falta */}
-        <td>{row.Tipo === null ? falta : `${falta} (${faltaFisico})`}</td>
+        <td>{row.Tipo == null ? falta : `${falta} (${faltaFisico})`}</td>
         {/* Target (un.) */}
         <td>{faltaUnidades <= 0 ? 'LLEGÓ' : targetCalc}</td>
         {/* Falta (un.) */}
@@ -282,9 +290,9 @@ export default function ProgramadaTable({
         true,
         true,
         'Total',
-        Math.round(totalAProducir), // Total A Producir
-        Math.round(totalProducido), // Total Producido
-        Math.round(totalFalta), // Total Falta
+        Math.round(totalAProducir) || '0', // Total A Producir
+        Math.round(totalProducido) || '0', // Total Producido
+        Math.round(totalFalta) || '0', // Total Falta
         true,
         true,
         live && true,

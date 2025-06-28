@@ -1,4 +1,4 @@
-import { Typography } from '@mui/joy';
+import { Stack, Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
@@ -67,7 +67,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <Stack direction='row' spacing={1}>
       <NavBar />
 
       <Outlet context={setNewColorCodes} />
@@ -111,6 +111,6 @@ export default function Home() {
           />
         </ModalWrapper>
       )}
-    </>
+    </Stack>
   );
 }

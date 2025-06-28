@@ -4,10 +4,9 @@ export default function DataTable({ cols, colsWidths = [], children, tfoot }) {
   return (
     <Table
       aria-label='simple table'
-      className='**:text-center **:font-semibold rounded-md'
+      className='**:text-center rounded-md'
       variant='outlined'
       size='lg'
-      hoverRow
     >
       <thead className='sticky top-0'>
         <tr>
@@ -20,7 +19,7 @@ export default function DataTable({ cols, colsWidths = [], children, tfoot }) {
       </thead>
       <tbody>{children}</tbody>
       {tfoot && (
-        <tfoot className='sticky bottom-0'>
+        <tfoot className='sticky bottom-0 font-semibold'>
           <tr>
             {tfoot.filter(Boolean).map((foot, i) => (
               <td key={i}>{foot}</td>

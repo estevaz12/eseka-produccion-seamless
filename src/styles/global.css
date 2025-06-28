@@ -1,10 +1,20 @@
-@import 'tailwindcss' important;
+@import 'tailwindcss';
 
-@theme {
-  --color-done: #ff1d15;
-  --color-almost-done: #ff8985;
+/* :root {
+  --color-done: #ef4351;
+  --color-almost-done: #f68e96;
   --color-todo: #9ad35b;
   --color-making: #ffc000;
   --color-incomplete: #decccc;
-  --color-dark-accent: #0f0326;
+  --color-dark-accent: #272727;
+} */
+
+@theme {
+  --color-done: #f05663;
+  --color-almost-done: #f68e96;
+  --color-todo: #9ad35b;
+  --color-making: #ffc000;
+  --color-incomplete: #decccc;
+  --color-dark-accent: #272727;
+  --color-row-hover: #85c7f2;
 }
