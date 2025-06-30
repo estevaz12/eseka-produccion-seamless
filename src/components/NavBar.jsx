@@ -10,8 +10,8 @@ import { NavLink } from 'react-router';
 
 export default function NavBar() {
   return (
-    <nav className='bg-neutral-100 [&_.Mui-selected]:bg-neutral-300 [&_.MuiListItemButton-root]:not-[.Mui-selected]:hover:bg-neutral-200'>
-      <List className='sticky top-0'>
+    <nav className='h-full w-full bg-neutral-100 [&_.Mui-selected]:bg-neutral-300 [&_.MuiListItemButton-root]:not-[.Mui-selected]:hover:bg-neutral-200'>
+      <List className=''>
         <ListItem nested>
           <ListSubheader>Programada</ListSubheader>
           <List>

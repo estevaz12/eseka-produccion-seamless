@@ -68,13 +68,12 @@ export default function Home() {
 
   return (
     <>
-      <Stack
-        direction='row'
-        className='items-stretch justify-start w-full h-full '
-      >
-        <NavBar />
+      <Stack direction='row' className='items-stretch justify-start size-full'>
+        <aside className='fixed top-0 bottom-0 left-0 w-40 h-screen'>
+          <NavBar />
+        </aside>
 
-        <Box className='p-4'>
+        <Box className='w-full p-4 ml-40'>
           <Outlet context={setNewColorCodes} />
         </Box>
       </Stack>
