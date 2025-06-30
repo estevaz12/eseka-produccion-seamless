@@ -434,9 +434,12 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        await sql.query(insertProgramada(data, 'inserted'));
+        const now = dayjs();
+        await sql.query(insertProgramada(data, 'inserted', now));
         serverLog('POST /programada/insertAll - SUCCESS');
-        res.status(204).end();
+        // return inserted rows to calculate new targets
+        const result = await sql.query(getProgColor(now));
+        res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
         res.status(500).json({ error: err.message });
@@ -515,7 +518,6 @@ const startServer = () => {
         // return inserted rows to calculate new targets
         // include deleted articulos to stop machines
         const result = await sql.query(getProgColor(now, true));
-        // serverLog(JSON.stringify(result.recordset, null, 2));
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] POST /programada/update: ${err}`);

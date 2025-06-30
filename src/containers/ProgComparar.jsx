@@ -28,6 +28,7 @@ export default function ProgComparar() {
   // helper refs
   const diffMounted = useRef(false);
   const loadType = useRef('');
+  const intervalRef = useRef();
 
   // get current programada total on load
   useEffect(() => {
@@ -209,7 +210,7 @@ export default function ProgComparar() {
   // Insert diff updates after validating new articulos
   useEffect(() => {
     let ignore = false;
-    let intervalId;
+
     // just inserts updates
     async function insertUpdates() {
       try {
@@ -223,28 +224,57 @@ export default function ProgComparar() {
         const data = await res.json();
         // fetch and repeat every 30 seconds
         fetchNewTargets(data);
-        intervalId = setInterval(() => {
+        intervalRef.current = setInterval(() => {
           fetchNewTargets(data);
         }, 30000); // update every 30 seconds
       } catch (err) {
         console.error('[CLIENT] Error fetching data:', err);
       }
+
+      fetch(`${apiUrl}/programada/total/${startDate}`)
+        .then((res) => res.json())
+        .then((data) => setCurrTotal(data[0].Total)) // single-record object
+        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
     }
 
     // inserts the whole programada
     // used for initial load at month start
-    function insertAll() {
+    async function insertAll() {
       if (programada) {
-        fetch(`${apiUrl}/programada/insertAll`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(programada.rows),
-        }).catch((err) => {
+        try {
+          const res = await fetch(`${apiUrl}/programada/insertAll`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(programada.rows),
+          });
+          const data = await res.json();
+          // fetch and repeat every 30 seconds
+          fetchNewTargets(data);
+          intervalRef.current = setInterval(() => {
+            fetchNewTargets(data);
+          }, 30000); // update every 30 seconds
+        } catch (err) {
           console.error('[CLIENT] Error fetching data:', err);
-        });
+        }
       }
+
+      setStartDate(dayjs().format(sqlDateFormat));
+      fetch(`${apiUrl}/programada/insertStartDate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date: dayjs().format(sqlDateFormat),
+          month: dayjs().month() + 1, // month is 0-indexed in dayjs
+          year: dayjs().year(),
+        }),
+      }).catch((err) => {
+        console.error('[CLIENT] Error inserting start date:', err);
+      });
+      // currTotal auto-updates on startDate change
     }
 
     if (diff && !diffMounted.current) {
@@ -263,35 +293,15 @@ export default function ProgComparar() {
     ) {
       if (loadType.current === 'update') {
         insertUpdates();
-        fetch(`${apiUrl}/programada/total/${startDate}`)
-          .then((res) => res.json())
-          .then((data) => setCurrTotal(data[0].Total)) // single-record object
-          .catch((err) => console.error('[CLIENT] Error fetching data:', err));
       } else if (loadType.current === 'insert') {
         insertAll();
-        setStartDate(dayjs().format(sqlDateFormat));
-        // TODO: insert startDate in DB
-        fetch(`${apiUrl}/programada/insertStartDate`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            date: dayjs().format(sqlDateFormat),
-            month: dayjs().month() + 1, // month is 0-indexed in dayjs
-            year: dayjs().year(),
-          }),
-        }).catch((err) => {
-          console.error('[CLIENT] Error inserting start date:', err);
-        });
-        // currTotal auto-updates on startDate change
       }
 
       setDiff();
     }
 
     return () => {
-      clearInterval(intervalId);
+      clearInterval(intervalRef.current);
       ignore = true;
     };
   }, [diff, newArticuloData, programada, startDate]);
