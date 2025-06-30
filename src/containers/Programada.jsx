@@ -15,7 +15,6 @@ let apiUrl;
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
   const [startDate, setStartDate] = useState();
-  const [currTotal, setCurrTotal] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
 
@@ -33,16 +32,6 @@ export default function Programada() {
         .catch((err) =>
           console.error('[CLIENT] Error fetching /programada/actualDate:', err)
         );
-    } else {
-      // fetch total of current programada
-      fetch(`${apiUrl}/programada/total/${startDate}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!ignore) setCurrTotal(data[0].Total);
-        })
-        .catch((err) =>
-          console.error('[CLIENT] Error fetching /programada/total:', err)
-        );
     }
 
     return () => {
@@ -52,11 +41,6 @@ export default function Programada() {
 
   return (
     <Box>
-      <Typography>
-        Total Actual:{' '}
-        {currTotal !== undefined ? currTotal : startDate ? 'Cargando...' : 0}
-      </Typography>
-
       <DatePicker
         label='Fecha de inicio'
         value={startDate ? dayjs(startDate) : null}

@@ -6,7 +6,7 @@ export default function DataTable({ cols, colsWidths = [], children, tfoot }) {
       aria-label='simple table'
       className='**:text-center rounded-md'
       variant='outlined'
-      size='lg'
+      // size='md'
     >
       <thead className='sticky top-0'>
         <tr>

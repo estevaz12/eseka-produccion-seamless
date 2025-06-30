@@ -212,10 +212,12 @@ export default function ProgramadaTable({
     } else if (matchingMachines.length === 0 && faltaUnidades < row.Target) {
       rowClassName = 'bg-incomplete'; // INCOMPLETO
     }
-    rowClassName = `${rowClassName} *:border-dark-accent hover:bg-row-hover`;
 
     return (
-      <tr key={i} className={rowClassName}>
+      <tr
+        key={i}
+        className={`${rowClassName} *:border-dark-accent hover:bg-row-hover`}
+      >
         {/* Articulo */}
         <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
         {/* Talle */}
@@ -265,7 +267,7 @@ export default function ProgramadaTable({
   return (
     <DataTable
       cols={[
-        'Artículo', // Articulo + Tipo
+        'Artículo', // Articulo + Tipo
         'Talle',
         'Color', // Color + Porcentaje
         'A Producir', // Docenas
@@ -277,11 +279,11 @@ export default function ProgramadaTable({
       ]}
       colsWidths={[
         '', // Articulo + Tipo
-        live && 'w-[6%]', // Talle
-        live ? 'w-[20%]' : 'w-[25%]', // Color + Porcentaje
-        live && 'w-[11%]', // Docenas
-        live && 'w-[11%]', // Produccion Mensual
-        live && 'w-[11%]', // A Producir - Producido
+        'w-[5%]', // Talle
+        'w-[19%]', // Color + Porcentaje
+        '', // Docenas
+        '', // Produccion Mensual
+        '', // A Producir - Producido
         '', // Target (un.)
         '', // Falta (un.)
         live && 'w-[12%]', // Maquinas

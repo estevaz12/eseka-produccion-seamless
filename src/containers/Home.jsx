@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/joy';
+import { Box, Stack, Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
@@ -67,10 +67,17 @@ export default function Home() {
   }, []);
 
   return (
-    <Stack direction='row' spacing={1}>
-      <NavBar />
+    <>
+      <Stack
+        direction='row'
+        className='items-stretch justify-start w-full h-full '
+      >
+        <NavBar />
 
-      <Outlet context={setNewColorCodes} />
+        <Box className='p-4'>
+          <Outlet context={setNewColorCodes} />
+        </Box>
+      </Stack>
 
       {/* Modal for new Color Codes */}
       {newColorCodes.length > 0 && (
@@ -111,6 +118,6 @@ export default function Home() {
           />
         </ModalWrapper>
       )}
-    </Stack>
+    </>
   );
 }

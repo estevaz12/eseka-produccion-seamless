@@ -10,6 +10,13 @@
 } */
 
 @theme {
+  --color-primary: var(--joy-palette-primary-500);
+  --color-neutral-100: var(--joy-palette-neutral-100);
+  --color-neutral-200: var(--joy-palette-neutral-200);
+  --color-neutral-300: var(--joy-palette-neutral-300);
+  --color-neutral-400: var(--joy-palette-neutral-400);
+  --color-neutral: var(--joy-palette-neutral-500);
+
   --color-done: #f05663;
   --color-almost-done: #f68e96;
   --color-todo: #9ad35b;

@@ -10,66 +10,66 @@ import { NavLink } from 'react-router';
 
 export default function NavBar() {
   return (
-    <nav className=''>
-      <List>
+    <nav className='bg-neutral-100 [&_.Mui-selected]:bg-neutral-300 [&_.MuiListItemButton-root]:not-[.Mui-selected]:hover:bg-neutral-200'>
+      <List className='sticky top-0'>
         <ListItem nested>
           <ListSubheader>Programada</ListSubheader>
           <List>
-            <ListItem>
-              <NavLink to='/'>
-                {({ isActive }) => (
+            <NavLink to='/'>
+              {({ isActive }) => (
+                <ListItem>
                   <ListItemButton selected={isActive}>
                     <TableChartTwoTone />
                     Actual
                   </ListItemButton>
-                )}
-              </NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to='/programada/comparar'>
-                {({ isActive }) => (
+                </ListItem>
+              )}
+            </NavLink>
+            <NavLink to='/programada/comparar'>
+              {({ isActive }) => (
+                <ListItem>
                   <ListItemButton selected={isActive}>
                     <CompareArrowsTwoTone />
                     Comparar
                   </ListItemButton>
-                )}
-              </NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to='/programada/anteriores'>
-                {({ isActive }) => (
+                </ListItem>
+              )}
+            </NavLink>
+            <NavLink to='/programada/anteriores'>
+              {({ isActive }) => (
+                <ListItem>
                   <ListItemButton selected={isActive}>
                     <HistoryTwoTone />
                     Anteriores
                   </ListItemButton>
-                )}
-              </NavLink>
-            </ListItem>
+                </ListItem>
+              )}
+            </NavLink>
           </List>
         </ListItem>
         <ListItem nested>
           <ListSubheader>Herramientas</ListSubheader>
           <List>
-            <ListItem>
-              <NavLink to='/produccion'>
-                {({ isActive }) => (
+            <NavLink to='/produccion'>
+              {({ isActive }) => (
+                <ListItem>
                   <ListItemButton selected={isActive}>
                     <FactoryTwoTone />
                     Producción
                   </ListItemButton>
-                )}
-              </NavLink>
-            </ListItem>
-            <ListItem>
-              <NavLink to='/maquinas'>
-                {({ isActive }) => (
+                </ListItem>
+              )}
+            </NavLink>
+            <NavLink to='/maquinas'>
+              {({ isActive }) => (
+                <ListItem>
                   <ListItemButton selected={isActive}>
                     <PrecisionManufacturingTwoTone />
                     Máquinas
                   </ListItemButton>
-                )}
-              </NavLink>
-            </ListItem>
+                </ListItem>
+              )}
+            </NavLink>
           </List>
         </ListItem>
       </List>

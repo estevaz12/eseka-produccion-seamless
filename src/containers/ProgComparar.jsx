@@ -270,6 +270,7 @@ export default function ProgComparar() {
       } else if (loadType.current === 'insert') {
         insertAll();
         setStartDate(dayjs().format(sqlDateFormat));
+        // TODO: insertStartDate in DB
         // currTotal auto-updates on startDate change
       }
 
