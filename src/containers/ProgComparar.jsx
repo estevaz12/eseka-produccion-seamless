@@ -270,7 +270,20 @@ export default function ProgComparar() {
       } else if (loadType.current === 'insert') {
         insertAll();
         setStartDate(dayjs().format(sqlDateFormat));
-        // TODO: insertStartDate in DB
+        // TODO: insert startDate in DB
+        fetch(`${apiUrl}/programada/insertStartDate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            date: dayjs().format(sqlDateFormat),
+            month: dayjs().month() + 1, // month is 0-indexed in dayjs
+            year: dayjs().year(),
+          }),
+        }).catch((err) => {
+          console.error('[CLIENT] Error inserting start date:', err);
+        });
         // currTotal auto-updates on startDate change
       }
 
