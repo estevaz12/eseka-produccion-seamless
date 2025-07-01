@@ -157,7 +157,7 @@ export default function Produccion() {
                   .filter(
                     // match machines with articulo
                     (m) =>
-                      m.StyleCode.articulo === Math.floor(row.Articulo) &&
+                      m.StyleCode.articulo === row.Articulo &&
                       m.StyleCode.talle === row.Talle &&
                       m.StyleCode.colorId === row.ColorId
                   )

@@ -17,7 +17,7 @@ const calculateNewTargets = async (progUpdates, machines) => {
       // look for machines making the articulo
       const targetMachines = machines.filter(
         (machine) =>
-          machine.StyleCode.articulo === Math.floor(newRecord.Articulo) &&
+          machine.StyleCode.articulo === newRecord.Articulo &&
           machine.StyleCode.talle === newRecord.Talle &&
           machine.StyleCode.colorId === newRecord.ColorId
       );

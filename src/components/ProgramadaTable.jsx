@@ -154,11 +154,10 @@ export default function ProgramadaTable({
   }
 
   function formatNum(num) {
-    if (num % 1 < 0.1) {
+    if (!num) return num;
+    else if (num % 1 < 0.1)
       return num.toFixed(); // No decimals for whole numbers
-    } else {
-      return num.toFixed(1); // One decimal for non-whole numbers
-    }
+    else return num.toFixed(1); // One decimal for non-whole numbers
   }
 
   function mapRows(row, i) {
@@ -171,7 +170,7 @@ export default function ProgramadaTable({
     const matchingMachines = machines.filter(
       // match machines with articulo
       (m) =>
-        m.StyleCode.articulo === Math.floor(row.Articulo) &&
+        m.StyleCode.articulo === row.Articulo &&
         m.StyleCode.talle === row.Talle &&
         m.StyleCode.colorId === row.ColorId
     );

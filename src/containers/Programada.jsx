@@ -1,7 +1,7 @@
 // TODO porcentaje as fraction - ask for num colors and then enter amount of
 // items per color in surtido
 
-import { Box, Stack } from '@mui/joy';
+import { Box, Stack, Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ProgramadaTable from '../components/ProgramadaTable.jsx';
@@ -15,6 +15,7 @@ let apiUrl;
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
   const [startDate, setStartDate] = useState();
+  const [currTotal, setCurrTotal] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
 
@@ -32,6 +33,16 @@ export default function Programada() {
         .catch((err) =>
           console.error('[CLIENT] Error fetching /programada/actualDate:', err)
         );
+    } else if (startDate) {
+      // fetch total of current programada
+      fetch(`${apiUrl}/programada/total/${startDate}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!ignore) setCurrTotal(data[0].Total);
+        })
+        .catch((err) =>
+          console.error('[CLIENT] Error fetching /programada/total:', err)
+        );
     }
 
     return () => {
@@ -42,17 +53,28 @@ export default function Programada() {
   return (
     <Box>
       <Stack direction='row' className='items-end justify-between gap-4 mb-4'>
+        <Stack direction='row' className='items-end gap-4'>
+          <StyledDatePicker
+            label='Fecha de inicio'
+            value={startDate ? dayjs(startDate) : null}
+            timezone='UTC'
+            disabled
+          />
+
+          <Typography>
+            Total Actual:{' '}
+            {currTotal !== undefined
+              ? currTotal
+              : startDate
+              ? 'Cargando...'
+              : 0}
+          </Typography>
+        </Stack>
+
         <ProgSearchForm
           progColor={progColor}
           filteredProgColor={filteredProgColor}
           setFilteredProgColor={setFilteredProgColor}
-        />
-
-        <StyledDatePicker
-          label='Fecha de inicio'
-          value={startDate ? dayjs(startDate) : null}
-          timezone='UTC'
-          disabled
         />
       </Stack>
 

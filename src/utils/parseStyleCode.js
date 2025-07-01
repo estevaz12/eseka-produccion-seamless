@@ -1,11 +1,11 @@
 const sql = require('mssql');
-const getColorId = require('./queries/getColorId.js');
 const serverLog = require('./serverLog.js');
 const getArticulo = require('./queries/getArticulo.js');
+const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode.js');
 
 const parseStyleCode = async (styleCode) => {
   styleCode = styleCode.trim().substring(0, 8);
-  const articulo = styleCode.substring(0, 5);
+  let articulo = styleCode.substring(0, 5);
   let tipo = null;
   const talle = styleCode.substring(5, 6);
   const color = styleCode.substring(6, 8);
@@ -14,18 +14,20 @@ const parseStyleCode = async (styleCode) => {
   if (/^\d{5}$/.test(articulo)) {
     // articulo must be a 5-digit string
     try {
-      colorId = await sql.query(getColorId(styleCode));
-      colorId = colorId.recordset[0]?.Id ?? null; // will be undefined if not there
-      // undefined colorId means that it is not in COLOR_CODES
+      const res = await sql.query(getArticuloByStyleCode(styleCode));
+      // will be undefined if not there
+      // undefined means that it is not in COLOR_CODES
+      articulo = res.recordset[0]?.Articulo ?? null;
+      colorId = res.recordset[0]?.Color ?? null;
     } catch (err) {
       serverLog(
-        `[ERROR] [parseStyleCode] Please add to COLOR_CODES: ${articulo}, ${color}`
+        `[ERROR] [parseStyleCode] StyleCode not in COLOR_CODES: ${styleCode}`
       );
     }
 
     try {
-      tipo = await sql.query(getArticulo(articulo));
-      tipo = tipo.recordset[0]?.Tipo ?? null;
+      const res = await sql.query(getArticulo(articulo));
+      tipo = res.recordset[0]?.Tipo ?? null;
     } catch (err) {
       serverLog(`[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo}`);
     }
@@ -33,11 +35,11 @@ const parseStyleCode = async (styleCode) => {
 
   return {
     styleCode,
-    articulo: parseInt(articulo),
-    tipo: tipo,
+    articulo,
+    tipo,
     talle: parseInt(talle),
-    color: color,
-    colorId: colorId, // already an int
+    color,
+    colorId,
   };
 };
 
