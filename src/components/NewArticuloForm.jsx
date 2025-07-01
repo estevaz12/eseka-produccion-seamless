@@ -98,7 +98,7 @@ export default function NewArticuloForm({
         <FormControl>
           <FormLabel>Tipo (si aplica)</FormLabel>
           <Input
-            value={newArticuloData.tipo || ''}
+            value={formData.tipo ?? newArticuloData.tipo ?? ''}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -106,8 +106,7 @@ export default function NewArticuloForm({
               })
             }
             disabled={newArticuloData.tipo}
-            maxLength={1}
-            pattern='[%$#]'
+            slotProps={{ input: { pattern: '[$%#]' } }}
           />
           <FormHelperText>
             <Typography variant='solid' color='primary'>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import ArtTalleColorInputs from './ArtTalleColorInputs.jsx';
-import { Button } from '@mui/joy';
 
 export default function ProgSearchForm({
   progColor,
@@ -36,6 +35,8 @@ export default function ProgSearchForm({
       <ArtTalleColorInputs
         formData={formData}
         setFormData={setFormData}
+        btnType='reset'
+        btnText='Limpiar'
         inheritedColors={Array.from(
           new Map(
             filteredProgColor.map((row) => [
@@ -45,7 +46,6 @@ export default function ProgSearchForm({
           ).values()
         )}
       />
-      <Button type='reset'>Limpiar</Button>
     </form>
   );
 }

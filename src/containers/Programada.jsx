@@ -1,13 +1,13 @@
 // TODO porcentaje as fraction - ask for num colors and then enter amount of
 // items per color in surtido
 
-import { Box, Typography } from '@mui/joy';
+import { Box, Stack } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import { DatePicker } from '@mui/x-date-pickers';
 import ProgramadaTable from '../components/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/ProgSearchForm.jsx';
 import dayjs from 'dayjs';
+import StyledDatePicker from '../components/StyledDatePicker.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl;
@@ -41,18 +41,20 @@ export default function Programada() {
 
   return (
     <Box>
-      <DatePicker
-        label='Fecha de inicio'
-        value={startDate ? dayjs(startDate) : null}
-        timezone='UTC'
-        disabled
-      />
+      <Stack direction='row' className='items-end justify-between gap-4 mb-4'>
+        <ProgSearchForm
+          progColor={progColor}
+          filteredProgColor={filteredProgColor}
+          setFilteredProgColor={setFilteredProgColor}
+        />
 
-      <ProgSearchForm
-        progColor={progColor}
-        filteredProgColor={filteredProgColor}
-        setFilteredProgColor={setFilteredProgColor}
-      />
+        <StyledDatePicker
+          label='Fecha de inicio'
+          value={startDate ? dayjs(startDate) : null}
+          timezone='UTC'
+          disabled
+        />
+      </Stack>
 
       <ProgramadaTable
         startDate={startDate}

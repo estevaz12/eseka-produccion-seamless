@@ -1,12 +1,4 @@
-import {
-  Select,
-  Option,
-  FormControl,
-  FormLabel,
-  Box,
-  Switch,
-  Button,
-} from '@mui/joy';
+import { Select, Option, FormControl, FormLabel, Box, Switch } from '@mui/joy';
 import { renderTimeViewClock } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
@@ -137,11 +129,13 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
           />
         </FormControl>
 
-        <ArtTalleColorInputs formData={formData} setFormData={setFormData} />
-
-        <Button type='submit' onKeyDown={(e) => handleKeyDown(e)}>
-          Buscar
-        </Button>
+        <ArtTalleColorInputs
+          formData={formData}
+          setFormData={setFormData}
+          btnType='submit'
+          btnText='Buscar'
+          onKeyDown={(e) => handleKeyDown(e)}
+        />
       </form>
     </Box>
   );

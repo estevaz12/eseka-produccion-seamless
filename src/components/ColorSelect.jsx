@@ -35,11 +35,12 @@ export default function ColorSelect({
     <FormControl>
       <FormLabel>Color</FormLabel>
       <Select
-        placeholder='Seleccione un color...'
+        placeholder='Seleccione...'
         onChange={(event, value) => onChange(value)}
         required={required}
+        className='min-w-56'
       >
-        <Option value=''>Seleccione un color...</Option>
+        <Option value=''>Seleccione...</Option>
         {colors
           .slice()
           .sort((a, b) => a.Color.localeCompare(b.Color))

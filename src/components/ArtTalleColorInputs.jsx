@@ -1,13 +1,24 @@
-import { FormControl, FormLabel, Input, Option, Select } from '@mui/joy';
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Option,
+  Select,
+  Stack,
+} from '@mui/joy';
 import ColorSelect from './ColorSelect.jsx';
 
 export default function ArtColorTalleInputs({
   formData,
   setFormData,
+  btnType,
+  btnText,
+  btnOnKeyDown,
   ...props
 }) {
   return (
-    <>
+    <Stack direction='row' className='items-end gap-4'>
       <FormControl>
         <FormLabel>Artículo</FormLabel>
         <Input
@@ -17,17 +28,19 @@ export default function ArtColorTalleInputs({
           onChange={(e) =>
             setFormData({ ...formData, articulo: e.target.value })
           }
-          placeholder='Buscar artículo...'
+          placeholder='Buscar...'
+          className='w-32'
         />
       </FormControl>
 
       <FormControl>
         <FormLabel>Talle</FormLabel>
         <Select
-          placeholder='Seleccione un talle...'
+          placeholder='0-7'
           onChange={(e, val) => setFormData({ ...formData, talle: val })}
+          className='min-w-20'
         >
-          <Option value=''>Seleccione un talle...</Option>
+          <Option value=''>0-7</Option>
           <Option value='0'>0</Option>
           <Option value='1'>1</Option>
           <Option value='2'>2</Option>
@@ -43,6 +56,9 @@ export default function ArtColorTalleInputs({
         onChange={(color) => setFormData({ ...formData, colorId: color })}
         {...props}
       />
-    </>
+      <Button type={btnType} onKeyDown={btnOnKeyDown}>
+        {btnText}
+      </Button>
+    </Stack>
   );
 }

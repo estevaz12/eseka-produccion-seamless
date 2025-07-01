@@ -450,17 +450,17 @@ const startServer = () => {
     }
   });
 
-  app.get('/programada/insertStartDate', async (req, res) => {
-    serverLog('GET /programada/insertStartDate');
-    const { date, month, year } = req.query;
+  app.post('/programada/insertStartDate', async (req, res) => {
+    serverLog('POST /programada/insertStartDate');
+    const data = req.body;
 
     if (isPackaged) {
       try {
-        await sql.query(insertProgStartDate({ date, month, year }));
+        await sql.query(insertProgStartDate(data));
         serverLog('POST /programada/insertStartDate - SUCCESS');
         res.status(204).end();
       } catch (err) {
-        serverLog(`[ERROR] GET /programada/insertStartDate: ${err}`);
+        serverLog(`[ERROR] POST /programada/insertStartDate: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {

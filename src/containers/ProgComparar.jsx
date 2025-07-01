@@ -28,7 +28,6 @@ export default function ProgComparar() {
   // helper refs
   const diffMounted = useRef(false);
   const loadType = useRef('');
-  const intervalRef = useRef();
 
   // get current programada total on load
   useEffect(() => {
@@ -209,6 +208,7 @@ export default function ProgComparar() {
 
   // Insert diff updates after validating new articulos
   useEffect(() => {
+    let intervalId;
     let ignore = false;
 
     // just inserts updates
@@ -224,7 +224,7 @@ export default function ProgComparar() {
         const data = await res.json();
         // fetch and repeat every 30 seconds
         fetchNewTargets(data);
-        intervalRef.current = setInterval(() => {
+        intervalId = setInterval(() => {
           fetchNewTargets(data);
         }, 30000); // update every 30 seconds
       } catch (err) {
@@ -250,31 +250,32 @@ export default function ProgComparar() {
             body: JSON.stringify(programada.rows),
           });
           const data = await res.json();
+          // insert programada start date to db
+          fetch(`${apiUrl}/programada/insertStartDate`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              date: dayjs().format(sqlDateFormat),
+              month: dayjs().month() + 1, // month is 0-indexed in dayjs
+              year: dayjs().year(),
+            }),
+          }).catch((err) => {
+            console.error('[CLIENT] Error inserting start date:', err);
+          });
           // fetch and repeat every 30 seconds
           fetchNewTargets(data);
-          intervalRef.current = setInterval(() => {
+          intervalId = setInterval(() => {
             fetchNewTargets(data);
           }, 30000); // update every 30 seconds
+
+          setStartDate(dayjs().format(sqlDateFormat));
+          // currTotal auto-updates on startDate change
         } catch (err) {
           console.error('[CLIENT] Error fetching data:', err);
         }
       }
-
-      setStartDate(dayjs().format(sqlDateFormat));
-      fetch(`${apiUrl}/programada/insertStartDate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date: dayjs().format(sqlDateFormat),
-          month: dayjs().month() + 1, // month is 0-indexed in dayjs
-          year: dayjs().year(),
-        }),
-      }).catch((err) => {
-        console.error('[CLIENT] Error inserting start date:', err);
-      });
-      // currTotal auto-updates on startDate change
     }
 
     if (diff && !diffMounted.current) {
@@ -301,7 +302,7 @@ export default function ProgComparar() {
     }
 
     return () => {
-      clearInterval(intervalRef.current);
+      clearInterval(intervalId);
       ignore = true;
     };
   }, [diff, newArticuloData, programada, startDate]);
