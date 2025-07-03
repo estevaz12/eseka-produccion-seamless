@@ -2,36 +2,44 @@ import { styled } from '@mui/joy/styles';
 import { DatePicker, PickersTextField } from '@mui/x-date-pickers';
 
 const JoyPickersTextField = styled(PickersTextField)({
-  margin: '0.375rem 0 0 0',
-  color: 'var(--joy-palette-text-secondary)',
-  alignSelf: 'flex-start',
-  display: 'flex',
-  position: 'relative',
-  flexDirection: 'column',
+  boxShadow: 'var(--joy-shadowRing)',
   '& *': {
+    transition: 'none !important',
+    transform: 'none !important',
     fontFamily: 'var(--joy-fontFamily-body) !important',
   },
   '& label': {
-    // fontSize: 'var(--joy-fontSize-sm)',
+    fontSize: 'var(--joy-fontSize-sm)',
+    margin: '0 0 0.375rem 0',
     lineHeight: 'var(--joy-lineHeight-sm)',
     color: 'var(--joy-palette-text-secondary)',
+    position: 'relative',
   },
   '& span': {
     color: 'var(--joy-palette-text-secondary)',
+    lineHeight: 'var(--joy-lineHeight-md)',
   },
   '& button': {
     color: 'var(--joy-palette-text-secondary)',
   },
   '& .MuiPickersInputBase-root': {
-    borderRadius: 'var(--joy-radius-sm)',
     minHeight: '2.25rem',
     paddingInline: '0.75rem',
-    boxShadow: 'var(--joy-shadowRing)',
-    lineHeight: 'var(--joy-lineHeight-md)',
+    fontSize: 'var(--joy-fontSize-md)',
+    backgroundColor: 'var(--joy-palette-background-surface)',
+    border: '1px solid var(--joy-palette-neutral-outlinedBorder)',
+    borderRadius: 'var(--joy-radius-sm)',
   },
   // '& .MuiPickersInputBase-root.Mui-focused': {
   //   borderColor: 'var(--joy-palette-focusVisible)',
   // },
+  '& .MuiPickersOutlinedInput-root *': {
+    transform: 'none !important',
+    transition: 'none !important',
+  },
+  '& .MuiPickersSectionList-root': {
+    padding: '0',
+  },
 });
 
 export default function StyledDatePicker({ ...props }) {

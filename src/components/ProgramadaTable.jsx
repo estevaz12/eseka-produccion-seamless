@@ -112,10 +112,16 @@ export default function ProgramadaTable({
 
     return !editProducir ? (
       <span>
-        {row.Tipo === null ? aProducir : `${aProducir} (${row.Docenas})`}
-        {!row.Docenas && row.Docenas !== 0 && (
-          <Edit onClick={() => setEditProducir(true)} />
-        )}
+        {
+          // if docenas is null, show edit icon, otherwise show docenas
+          !row.Docenas && row.Docenas !== 0 ? (
+            <Edit onClick={() => setEditProducir(true)} />
+          ) : row.Tipo === null ? (
+            aProducir
+          ) : (
+            `${aProducir} (${row.Docenas})`
+          )
+        }
       </span>
     ) : (
       <form onSubmit={handleProducirEdit}>
@@ -202,15 +208,15 @@ export default function ProgramadaTable({
           });
 
     let rowClassName = 'bg-todo';
-    if (matchingMachines.length > 0) {
+    if (!row.Docenas && row.Docenas !== 0)
+      rowClassName = ''; // NO TIENE DISTR, FALTA ASIGNAR
+    else if (matchingMachines.length > 0)
       rowClassName = 'bg-making'; // TEJIENDO
-    } else if (faltaUnidades <= 0) {
-      rowClassName = 'bg-done'; // LLEGÓ
-    } else if (matchingMachines.length === 0 && faltaUnidades <= 12) {
+    else if (faltaUnidades <= 0) rowClassName = 'bg-done'; // LLEGÓ
+    else if (matchingMachines.length === 0 && faltaUnidades <= 12)
       rowClassName = 'bg-almost-done'; // CASI LLEGÓ - Menos de una docena
-    } else if (matchingMachines.length === 0 && faltaUnidades < row.Target) {
+    else if (matchingMachines.length === 0 && faltaUnidades < row.Target)
       rowClassName = 'bg-incomplete'; // INCOMPLETO
-    }
 
     return (
       <tr
