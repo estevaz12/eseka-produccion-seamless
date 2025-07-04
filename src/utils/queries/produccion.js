@@ -17,7 +17,7 @@ const produccion = (
 
   let query;
   const precise = articulo.includes('.');
-  let whereClause = 'WHERE';
+  let whereClause = '';
   // Build dynamic WHERE clause based on talle, colorId, and precise/articulo
   const conditions = [];
   if (precise) {
@@ -31,9 +31,7 @@ const produccion = (
   }
 
   if (conditions.length > 0) {
-    whereClause += ' ' + conditions.join(' AND ');
-  } else {
-    whereClause = ''; // No WHERE clause needed if no conditions
+    whereClause += ' AND ' + conditions.join(' AND ');
   }
 
   if (actual) {
@@ -55,7 +53,6 @@ const produccion = (
         WHERE 
             pm.RoomCode = '${room}'
             AND pm.DateRec BETWEEN '${startDate}' AND '${endDate}'
-            AND pm.Pieces > 0
             ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE '%${articulo}%'` : ''}
         GROUP BY COALESCE(pm.StyleCode, m.StyleCode)
     )
@@ -70,7 +67,6 @@ const produccion = (
         FROM PRODUCTIONS_MONITOR pm
         WHERE pm.RoomCode = '${room}'
             AND pm.DateRec BETWEEN '${startDate}' AND '${endDate}'
-            AND pm.Pieces > 0
             ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE '%${articulo}%'` : ''}
         GROUP BY pm.StyleCode
       )
@@ -99,7 +95,7 @@ const produccion = (
     ProdColor AS (
         SELECT Articulo, Tipo, Talle, Color, ColorId, SUM(Unidades) AS Unidades
         FROM ProdColorUngrouped
-        ${whereClause}
+        WHERE Unidades > 0 ${whereClause}
         GROUP BY Articulo, Tipo, Talle, Color, ColorId
     )
     ${
