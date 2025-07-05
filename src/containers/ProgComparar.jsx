@@ -28,6 +28,7 @@ export default function ProgComparar() {
   // helper refs
   const diffMounted = useRef(false);
   const loadType = useRef('');
+  const intervalRef = useRef();
 
   // get current programada total on load
   useEffect(() => {
@@ -208,7 +209,11 @@ export default function ProgComparar() {
 
   // Insert diff updates after validating new articulos
   useEffect(() => {
-    let intervalId;
+    // Always clear any previous interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
     let ignore = false;
 
     // just inserts updates
@@ -224,7 +229,7 @@ export default function ProgComparar() {
         const data = await res.json();
         // fetch and repeat every 30 seconds
         fetchNewTargets(data);
-        intervalId = setInterval(() => {
+        intervalRef.current = setInterval(() => {
           fetchNewTargets(data);
         }, 30000); // update every 30 seconds
       } catch (err) {
@@ -266,7 +271,7 @@ export default function ProgComparar() {
           });
           // fetch and repeat every 30 seconds
           fetchNewTargets(data);
-          intervalId = setInterval(() => {
+          intervalRef.current = setInterval(() => {
             fetchNewTargets(data);
           }, 30000); // update every 30 seconds
 
@@ -302,7 +307,10 @@ export default function ProgComparar() {
     }
 
     return () => {
-      clearInterval(intervalId);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       ignore = true;
     };
   }, [diff, newArticuloData, programada, startDate]);
