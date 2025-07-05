@@ -1,25 +1,29 @@
 const dayjs = require('dayjs');
 const produccion = require('./produccion');
-const getDocPorArt = require('./getDocPorArt');
 
-const getProgColorTable = (startDate, endMonth = null, endYear = null) => {
+const getProgColorTable = (
+  startDate,
+  startMonth = null,
+  startYear = null,
+  endDate = null
+) => {
   let prodStartDate, prodEndDate;
-  if (endMonth && endYear) {
+  if (startMonth && startYear) {
     // month starts first day of month at 6am + 1 second
     prodStartDate = dayjs()
-      .month(endMonth - 1)
-      .year(endYear)
+      .month(startMonth - 1)
+      .year(startYear)
       .startOf('month')
       .add(6, 'hour')
       .add(1, 'second')
       .format(process.env.SQL_DATE_FORMAT);
     // month always ends on the first day of the next month at 6am
     prodEndDate = dayjs()
-      .month(endMonth - 1)
-      .year(endYear)
+      .month(startMonth - 1)
+      .year(startYear)
       .endOf('month')
-      .add(1, 'day')
       .add(6, 'hour')
+      .add(1, 'second')
       .format(process.env.SQL_DATE_FORMAT);
   } else {
     // current date
@@ -36,25 +40,18 @@ const getProgColorTable = (startDate, endMonth = null, endYear = null) => {
     'SEAMLESS',
     prodStartDate,
     prodEndDate,
-    true,
+    endDate === null ? true : false,
     '',
     '',
     '',
     false
   );
-  // get Docenas por Articulo
-  const docPorArt = getDocPorArt(startDate);
 
   // monthProd query already has WITH clause
   return `
     ${monthProd}
-    ,DocPorArt AS (
-      ${docPorArt}
-    )
-    SELECT pc.*, d.DocPorArt, COALESCE(p.Unidades, 0) AS Producido
+    SELECT pc.*, COALESCE(p.Unidades, 0) AS Producido
     FROM View_Prog_Color AS pc
-      JOIN DocPorArt AS d
-        ON d.Articulo = pc.Articulo
       LEFT JOIN ProdColor as p
         ON p.Articulo = pc.Articulo 
            AND p.Talle = pc.Talle 
@@ -64,14 +61,14 @@ const getProgColorTable = (startDate, endMonth = null, endYear = null) => {
                       WHERE pc2.Articulo = pc.Articulo 
                             AND pc2.Talle = pc.Talle
                             ${
-                              endMonth && endYear
-                                ? `AND pc2.Fecha <= '${prodEndDate}'`
+                              startMonth && startYear && endDate
+                                ? `AND pc2.Fecha < '${endDate}'`
                                 : ''
                             }
                             )
           ${
-            endMonth && endYear
-              ? `AND pc.Fecha BETWEEN '${startDate}' AND '${prodEndDate}'`
+            startMonth && startYear && endDate
+              ? `AND pc.Fecha >= '${startDate}' AND pc.Fecha < '${endDate}'`
               : `AND pc.Fecha >= '${startDate}'`
           } 
           AND pc.DocProg > 0

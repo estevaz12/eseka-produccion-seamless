@@ -329,12 +329,13 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const { startDate, endMonth, endYear } = req.query;
-        serverLog(getProgColorTable(startDate, endMonth, endYear));
+        const { startDate, startMonth, startYear, endDate } = req.query;
         const [progColor, machines] = await Promise.all([
           // get Programada with Color, month production, and docenas by art.
-          sql.query(getProgColorTable(startDate, endMonth, endYear)),
-          !req.query.endMonth ? getParsedMachines(true) : null, // get Machines
+          sql.query(
+            getProgColorTable(startDate, startMonth, startYear, endDate)
+          ),
+          !req.query.startMonth ? getParsedMachines(true) : null, // get Machines
         ]);
 
         res.json({

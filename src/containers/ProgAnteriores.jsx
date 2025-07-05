@@ -32,12 +32,13 @@ export default function ProgAnteriores() {
 
   function handleChange(val) {
     if (!val) return;
-    const [date, month, year] = val.split('|');
+    const [date, month, year, idx] = val.split('|');
     setSelectedDate(date);
     const params = new URLSearchParams({
       startDate: date,
-      endMonth: month,
-      endYear: year,
+      startMonth: month,
+      startYear: year,
+      endDate: dates[idx - 1].Date, // dates are ordered desc
     }).toString();
     fetch(`${apiUrl}/programada?${params}`)
       .then((res) => res.json())
@@ -56,10 +57,12 @@ export default function ProgAnteriores() {
             handleChange(val);
           }}
         >
-          {dates.map((row) => (
+          {dates.slice(1).map((row, i) => (
+            // sliced array doesn't include the current programada date
+            // so we add 1 to idx value to match dates array index
             <Option
-              key={row.Date}
-              value={`${row.Date}|${row.Month}|${row.Year}`}
+              key={i}
+              value={`${row.Date}|${row.Month}|${row.Year}|${i + 1}`}
             >
               {`${dayjs()
                 .month(row.Month - 1)
