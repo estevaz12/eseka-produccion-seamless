@@ -20,7 +20,14 @@ const JoyPickersTextField = styled(PickersTextField)({
     lineHeight: 'var(--joy-lineHeight-md)',
   },
   '& button': {
-    color: 'var(--joy-palette-text-secondary)',
+    color: 'var(--joy-palette-text-icon)',
+    fontSize: 'var(--joy-fontSize-xl2)',
+    borderRadius: 'var(--joy-radius-sm)',
+    padding: '4px',
+    marginRight: '-8px',
+    '&:hover': {
+      backgroundColor: 'var(--joy-palette-primary-plainHoverBg)',
+    },
   },
   '& .MuiPickersInputBase-root': {
     minHeight: '2.25rem',
@@ -29,10 +36,24 @@ const JoyPickersTextField = styled(PickersTextField)({
     backgroundColor: 'var(--joy-palette-background-surface)',
     border: '1px solid var(--joy-palette-neutral-outlinedBorder)',
     borderRadius: 'var(--joy-radius-sm)',
+    '&.Mui-focused::before': {
+      boxSizing: 'border-box',
+      content: '""',
+      display: 'block',
+      position: 'absolute',
+      pointerEvents: 'none',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      zIndex: 1,
+      borderRadius: 'var(--joy-radius-sm)',
+      margin: 'calc(1px * -1)',
+      borderColor: 'var(--joy-palette-focusVisible)',
+      boxShadow:
+        'inset 0 0 0 calc(1 * var(--joy-focus-thickness)) var(--joy-palette-focusVisible)',
+    },
   },
-  // '& .MuiPickersInputBase-root.Mui-focused': {
-  //   borderColor: 'var(--joy-palette-focusVisible)',
-  // },
   '& .MuiPickersOutlinedInput-notchedOutline': {
     display: 'none',
   },
@@ -42,11 +63,17 @@ const JoyPickersTextField = styled(PickersTextField)({
     color: 'var(--joy-palette-neutral-outlinedDisabledColor)',
     borderColor: 'var(--joy-palette-neutral-outlinedDisabledBorder)',
   },
-  '& .MuiInputLabel-root.Mui-disabled': {
-    color: 'var(--joy-palette-text-primary)',
+  '& .MuiInputLabel-root': {
+    '&.Mui-disabled, &.Mui-focused': {
+      color: 'var(--joy-palette-text-primary)',
+    },
   },
   '& .MuiPickersSectionList-root': {
     padding: '0',
+    width: 'fit-content',
+  },
+  '& .MuiTouchRipple-root': {
+    display: 'none',
   },
 });
 
