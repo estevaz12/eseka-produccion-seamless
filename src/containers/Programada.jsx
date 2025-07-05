@@ -58,7 +58,7 @@ export default function Programada() {
             label='Fecha de inicio'
             value={startDate ? dayjs(startDate) : null}
             timezone='UTC'
-            readOnly
+            disabled
           />
 
           <Typography>

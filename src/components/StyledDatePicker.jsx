@@ -36,6 +36,15 @@ const JoyPickersTextField = styled(PickersTextField)({
   '& .MuiPickersOutlinedInput-notchedOutline': {
     display: 'none',
   },
+  '& .MuiPickersOutlinedInput-root.Mui-disabled *': {
+    pointerEvents: 'none',
+    cursor: 'default',
+    color: 'var(--joy-palette-neutral-outlinedDisabledColor)',
+    borderColor: 'var(--joy-palette-neutral-outlinedDisabledBorder)',
+  },
+  '& .MuiInputLabel-root.Mui-disabled': {
+    color: 'var(--joy-palette-text-primary)',
+  },
   '& .MuiPickersSectionList-root': {
     padding: '0',
   },
