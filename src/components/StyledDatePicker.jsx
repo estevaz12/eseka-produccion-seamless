@@ -12,7 +12,7 @@ const JoyPickersTextField = styled(PickersTextField)({
     fontSize: 'var(--joy-fontSize-sm)',
     margin: '0 0 0.375rem 0',
     lineHeight: 'var(--joy-lineHeight-sm)',
-    color: 'var(--joy-palette-text-secondary)',
+    color: 'var(--joy-palette-text-primary)',
     position: 'relative',
   },
   '& span': {
@@ -33,9 +33,8 @@ const JoyPickersTextField = styled(PickersTextField)({
   // '& .MuiPickersInputBase-root.Mui-focused': {
   //   borderColor: 'var(--joy-palette-focusVisible)',
   // },
-  '& .MuiPickersOutlinedInput-root *': {
-    transform: 'none !important',
-    transition: 'none !important',
+  '& .MuiPickersOutlinedInput-notchedOutline': {
+    display: 'none',
   },
   '& .MuiPickersSectionList-root': {
     padding: '0',
