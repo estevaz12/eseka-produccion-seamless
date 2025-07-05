@@ -1,9 +1,9 @@
 import { Select, Option, FormControl, FormLabel, Box, Switch } from '@mui/joy';
 import { renderTimeViewClock } from '@mui/x-date-pickers';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import { useConfig } from '../ConfigContext.jsx';
 import ArtTalleColorInputs from './ArtTalleColorInputs.jsx';
+import { StyledDateTimePicker } from './StyledPickers.jsx';
 
 let apiUrl, sqlDateFormat;
 
@@ -52,7 +52,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
 
         <FormControl>
           <FormLabel>Fecha de inicio</FormLabel>
-          <DateTimePicker
+          <StyledDateTimePicker
             value={formData.startDate}
             onChange={(date) => {
               const hour = dayjs(date).hour();
@@ -83,7 +83,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
 
         <FormControl>
           <FormLabel>Fecha final</FormLabel>
-          <DateTimePicker
+          <StyledDateTimePicker
             value={formData.endDate}
             onChange={(date) => {
               const newEndDate = dayjs(date);

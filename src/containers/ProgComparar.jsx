@@ -3,11 +3,11 @@ import InputFileUpload from '../components/InputFileUpload.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
-import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useOutletContext } from 'react-router';
+import { StyledDatePicker } from '../components/StyledPickers.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -343,7 +343,7 @@ export default function ProgComparar() {
       <InputFileUpload onClick={handleUpload} />
       <Typography>File path: {filePath}</Typography>
 
-      <DatePicker
+      <StyledDatePicker
         label='Fecha de inicio'
         value={startDate ? dayjs(startDate) : null}
         timezone='UTC'

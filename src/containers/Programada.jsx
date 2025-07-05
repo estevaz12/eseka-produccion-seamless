@@ -7,7 +7,7 @@ import { useConfig } from '../ConfigContext.jsx';
 import ProgramadaTable from '../components/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/ProgSearchForm.jsx';
 import dayjs from 'dayjs';
-import StyledDatePicker from '../components/StyledDatePicker.jsx';
+import { StyledDatePicker } from '../components/StyledPickers.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl;
@@ -58,6 +58,7 @@ export default function Programada() {
             label='Fecha de inicio'
             value={startDate ? dayjs(startDate) : null}
             timezone='UTC'
+            disabled
           />
 
           <Typography>

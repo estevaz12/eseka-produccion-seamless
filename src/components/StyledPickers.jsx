@@ -1,5 +1,9 @@
 import { styled } from '@mui/joy/styles';
-import { DatePicker, PickersTextField } from '@mui/x-date-pickers';
+import {
+  DatePicker,
+  DateTimePicker,
+  PickersTextField,
+} from '@mui/x-date-pickers';
 
 const JoyPickersTextField = styled(PickersTextField)({
   boxShadow: 'var(--joy-shadowRing)',
@@ -77,7 +81,7 @@ const JoyPickersTextField = styled(PickersTextField)({
   },
 });
 
-export default function StyledDatePicker({ ...props }) {
+function StyledDatePicker({ ...props }) {
   return (
     <DatePicker
       {...props}
@@ -87,3 +91,16 @@ export default function StyledDatePicker({ ...props }) {
     />
   );
 }
+
+function StyledDateTimePicker({ ...props }) {
+  return (
+    <DateTimePicker
+      {...props}
+      slots={{
+        textField: JoyPickersTextField,
+      }}
+    />
+  );
+}
+
+export { StyledDatePicker, StyledDateTimePicker };
