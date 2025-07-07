@@ -8,6 +8,7 @@ import NewArticuloForm from '../components/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useOutletContext } from 'react-router';
 import { StyledDatePicker } from '../components/StyledPickers.jsx';
+import ProgTotal from '../components/ProgTotal.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -42,16 +43,6 @@ export default function ProgComparar() {
         })
         .catch((err) =>
           console.error('[CLIENT] Error fetching /programada/actualDate:', err)
-        );
-    } else if (startDate) {
-      // fetch total of current programada
-      fetch(`${apiUrl}/programada/total/${startDate}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!ignore) setCurrTotal(data[0].Total);
-        })
-        .catch((err) =>
-          console.error('[CLIENT] Error fetching /programada/total:', err)
         );
     }
 
@@ -336,10 +327,7 @@ export default function ProgComparar() {
       3. If updating, insert changes only in DB
       4. If resetting programada, reset date first, then insert whole programda
       */}
-      <Typography>
-        Total Actual:{' '}
-        {currTotal !== undefined ? currTotal : startDate ? 'Cargando...' : 0}
-      </Typography>
+      <ProgTotal startDate={startDate} currTotal={currTotal} />
       <InputFileUpload onClick={handleUpload} />
       <Typography>File path: {filePath}</Typography>
 

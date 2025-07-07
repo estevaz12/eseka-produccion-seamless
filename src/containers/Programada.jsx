@@ -1,13 +1,14 @@
 // TODO porcentaje as fraction - ask for num colors and then enter amount of
 // items per color in surtido
 
-import { Box, Stack, Typography } from '@mui/joy';
+import { Box, Stack } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ProgramadaTable from '../components/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/ProgSearchForm.jsx';
 import dayjs from 'dayjs';
 import { StyledDatePicker } from '../components/StyledPickers.jsx';
+import ProgTotal from '../components/ProgTotal.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl;
@@ -15,7 +16,6 @@ let apiUrl;
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
   const [startDate, setStartDate] = useState();
-  const [currTotal, setCurrTotal] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
 
@@ -32,16 +32,6 @@ export default function Programada() {
         })
         .catch((err) =>
           console.error('[CLIENT] Error fetching /programada/actualDate:', err)
-        );
-    } else if (startDate) {
-      // fetch total of current programada
-      fetch(`${apiUrl}/programada/total/${startDate}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!ignore) setCurrTotal(data[0].Total);
-        })
-        .catch((err) =>
-          console.error('[CLIENT] Error fetching /programada/total:', err)
         );
     }
 
@@ -61,14 +51,7 @@ export default function Programada() {
             disabled
           />
 
-          <Typography>
-            Total Actual:{' '}
-            {currTotal !== undefined
-              ? currTotal
-              : startDate
-              ? 'Cargando...'
-              : 0}
-          </Typography>
+          <ProgTotal startDate={startDate} />
         </Stack>
 
         <ProgSearchForm
