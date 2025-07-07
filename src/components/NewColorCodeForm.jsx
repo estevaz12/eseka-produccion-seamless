@@ -73,33 +73,35 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
 
   return (
     <form key={newColorCode.MachCode} onSubmit={(e) => handleSubmit(e)}>
-      <Box>
-        <Typography>
-          {newColorCode.StyleCode.articulo}
-          <Typography variant='solid'>.</Typography>
-        </Typography>
-        <FormControl>
-          <FloatingLabelInput
-            inputProps={{
-              label: 'Punto',
-              type: 'number',
-              min: 0,
-              max: 99,
-              placeholder: 'Sin "."',
-              onChange: (e) =>
-                setFormData({
-                  ...formData,
-                  articulo:
-                    newColorCode.StyleCode.articulo + '.' + e.target.value,
-                }),
-            }}
-          />
-          <FormHelperText>
-            Si es un&nbsp;<Typography variant='solid'>PARCHE</Typography>
-            &nbsp;ingresar punto "9".
-          </FormHelperText>
-        </FormControl>
-      </Box>
+      {newColorCode.StyleCode.articulo % 1 === 0 && (
+        <Box>
+          <Typography>
+            {newColorCode.StyleCode.articulo}
+            <Typography variant='solid'>.</Typography>
+          </Typography>
+          <FormControl>
+            <FloatingLabelInput
+              inputProps={{
+                label: 'Punto',
+                type: 'number',
+                min: 0,
+                max: 99,
+                placeholder: 'Sin "."',
+                onChange: (e) =>
+                  setFormData({
+                    ...formData,
+                    articulo:
+                      newColorCode.StyleCode.articulo + '.' + e.target.value,
+                  }),
+              }}
+            />
+            <FormHelperText>
+              Si es un&nbsp;<Typography variant='solid'>PARCHE</Typography>
+              &nbsp;ingresar punto "9".
+            </FormHelperText>
+          </FormControl>
+        </Box>
+      )}
       <FormControl>
         <FormLabel>Tipo (si aplica)</FormLabel>
         <Input

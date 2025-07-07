@@ -26,15 +26,9 @@ const parseStyleCode = async (styleCode) => {
       );
     }
 
-    try {
-      const res = await sql.query(getArticulo(articulo));
-      tipo = res.recordset[0]?.Tipo ?? null;
-    } catch (err) {
-      serverLog(`[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo}`);
-    }
-
-    // Check if talle is a PARCHE and set correct talle
+    // Check if talle is a PARCHE and set correct talle and punto
     if (talle === 9) {
+      // set correct talle
       const color1 = parseInt(color[0]);
       const color2 = parseInt(color[1]);
       if (!isNaN(color1)) {
@@ -44,6 +38,21 @@ const parseStyleCode = async (styleCode) => {
       } else {
         talle = 1;
       }
+
+      // set correct punto if articulo is an Int
+      if (Number.isInteger(articulo)) {
+        // if aticulo is int, then it came from the styleCode and we need to
+        // assign correct punto. otherwise, the result of getArticulo below
+        // will be incorrect
+        articulo += 0.9;
+      }
+    }
+
+    try {
+      const res = await sql.query(getArticulo(articulo));
+      tipo = res.recordset[0]?.Tipo ?? null;
+    } catch (err) {
+      serverLog(`[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo}`);
     }
   }
 
