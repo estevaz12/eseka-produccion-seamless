@@ -42,7 +42,10 @@ export default function Programada() {
 
   return (
     <Box>
-      <Stack direction='row' className='items-end justify-between gap-4 mb-4'>
+      <Stack
+        direction='row'
+        className='sticky items-end justify-between gap-4 top-0 bg-[var(--joy-palette-background-body)] pb-4'
+      >
         <Stack direction='row' className='items-end gap-4'>
           <StyledDatePicker
             label='Fecha de inicio'

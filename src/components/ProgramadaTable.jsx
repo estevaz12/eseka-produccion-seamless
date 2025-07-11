@@ -304,6 +304,7 @@ export default function ProgramadaTable({
         true,
         live && true,
       ]}
+      headerTop='top-16'
     >
       {startDate && progColor && filteredProgColor.length === 0
         ? progColor.map(mapRows)

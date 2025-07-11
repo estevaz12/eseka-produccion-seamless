@@ -82,34 +82,38 @@ export default function Home() {
       {newColorCodes.length > 0 && (
         <ModalWrapper
           title={
-            <>
-              Agregar código de color -{' '}
+            <Stack
+              direction='row'
+              className='items-center justify-between size-full'
+            >
+              <Typography>Agregar código de color</Typography>
               <Typography variant='solid' color='primary'>
                 {newColorCodes[newColorCodes.length - 1].StyleCode.styleCode}
               </Typography>
-            </>
+            </Stack>
           }
           content={
             <Typography>
               Se encontró el código&nbsp;
-              <Typography variant='solid'>
+              <Typography variant='soft'>
                 {newColorCodes[newColorCodes.length - 1].StyleCode.color}
               </Typography>
               &nbsp;para el art.&nbsp;
-              <Typography variant='solid'>
+              <Typography variant='soft'>
                 {newColorCodes[newColorCodes.length - 1].StyleCode.articulo}
               </Typography>
               &nbsp;talle&nbsp;
-              <Typography variant='solid'>
+              <Typography variant='soft'>
                 {newColorCodes[newColorCodes.length - 1].StyleCode.talle}
               </Typography>
               &nbsp;en la máq.&nbsp;
-              <Typography variant='solid'>
+              <Typography variant='soft'>
                 {newColorCodes[newColorCodes.length - 1].MachCode}
               </Typography>
               . Por favor, víncule el color correspondiente.
             </Typography>
           }
+          contentClassName='w-xs'
         >
           <NewColorCodeForm
             newColorCode={newColorCodes[newColorCodes.length - 1]}

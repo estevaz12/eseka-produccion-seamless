@@ -1,1 +1,1 @@
-module.exports = [{ Articulo: 11731, Tipo: null }];
+module.exports = [{ Articulo: 12050.45, Tipo: null }];

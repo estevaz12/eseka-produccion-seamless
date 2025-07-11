@@ -5,10 +5,10 @@ import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/DataTable.jsx';
 import ProduccionForm from '../components/ProduccionForm.jsx';
 
-let apiUrl, sqlDateFormat;
+let apiUrl, sqlDateFormat, stripedTableRows;
 
 export default function Produccion() {
-  [apiUrl, sqlDateFormat] = [useConfig().apiUrl, useConfig().sqlDateFormat];
+  ({ apiUrl, sqlDateFormat, stripedTableRows } = useConfig());
   const [url, setUrl] = useState();
   // const [machines, setMachines] = useState([]);
   const [data, setData] = useState([]);
@@ -125,6 +125,7 @@ export default function Produccion() {
           // 'Máquinas'
         ]}
         tfoot={['', '', 'Total', totalUnidades, totalDocenas]}
+        className={stripedTableRows}
       >
         {data.map((row, i) => {
           const producido = calcProducido(row);

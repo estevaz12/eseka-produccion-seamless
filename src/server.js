@@ -225,6 +225,8 @@ const startServer = () => {
     machines = machines.recordset;
     await parseMachines(machines);
 
+    machines = machines.filter((m) => !Number.isNaN(m.StyleCode.articulo));
+
     if (producing) {
       /* Machine states that count for production
        * 0: RUN

@@ -7,7 +7,9 @@ let apiUrl;
 export default function ColorSelect({
   onChange,
   inheritedColors,
+  showLabel = true,
   required = false,
+  className = '',
 }) {
   apiUrl = useConfig().apiUrl;
   const [colors, setColors] = useState(
@@ -32,13 +34,12 @@ export default function ColorSelect({
   }, [inheritedColors]);
 
   return (
-    <FormControl>
-      <FormLabel>Color</FormLabel>
+    <FormControl className={`min-w-56 ${className}`}>
+      {showLabel && <FormLabel>Color</FormLabel>}
       <Select
         placeholder='Seleccione...'
         onChange={(event, value) => onChange(value)}
         required={required}
-        className='min-w-56'
       >
         <Option value=''>Seleccione...</Option>
         {colors

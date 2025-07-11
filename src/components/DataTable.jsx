@@ -1,14 +1,37 @@
-import { Table } from '@mui/joy';
+import { Table, Typography } from '@mui/joy';
 
-export default function DataTable({ cols, colsWidths = [], children, tfoot }) {
+export default function DataTable({
+  cols,
+  colsWidths = [],
+  children,
+  tfoot,
+  className = '',
+  titleHeader = undefined,
+  titleHeaderColor = 'bg-[var(--joy-palette-primary-softBg)]',
+  headerTop = '',
+}) {
   return (
     <Table
       aria-label='simple table'
-      className='**:text-center rounded-md'
+      stripe='even'
+      stickyHeader
+      stickyFooter
+      className={`**:text-center rounded-md ${className}`}
       variant='outlined'
+      hoverRow
+
       // size='md'
     >
-      <thead className='sticky top-0'>
+      <thead className={`sticky ${headerTop}`}>
+        {titleHeader && (
+          <tr>
+            <th colSpan={cols.length} className={titleHeaderColor}>
+              <Typography level='title-md' className='font-semibold'>
+                {titleHeader}
+              </Typography>
+            </th>
+          </tr>
+        )}
         <tr>
           {cols.filter(Boolean).map((col, i) => (
             <th key={col} className={colsWidths[i]}>

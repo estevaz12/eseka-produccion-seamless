@@ -65,13 +65,19 @@ const InnerInput = React.forwardRef(function InnerInput(props, ref) {
   );
 });
 
-export default function FloatingLabelInput({ inputProps }) {
+export default function FloatingLabelInput({
+  inputProps,
+  className = '',
+  disabled = false,
+}) {
   return (
     <Input
       // endDecorator={<CheckCircleOutlined />}
       slots={{ input: InnerInput }}
       slotProps={{ input: { ...inputProps } }}
       sx={{ '--Input-minHeight': '56px', '--Input-radius': '6px' }}
+      className={className}
+      disabled={disabled}
     />
   );
 }

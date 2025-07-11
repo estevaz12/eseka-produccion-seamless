@@ -30,7 +30,7 @@ export default function ProgTotal({ startDate, currTotal = undefined }) {
 
   return (
     <Typography level='body-lg'>
-      Total Actual:{' '}
+      Total actual:{' '}
       {total !== undefined ? total : startDate ? 'Cargando...' : 0}
     </Typography>
   );

@@ -1,4 +1,4 @@
-import { Box, FormControl, FormLabel, Option, Select } from '@mui/joy';
+import { Box, FormControl, FormLabel, Option, Select, Stack } from '@mui/joy';
 import ProgramadaTable from '../components/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/ProgSearchForm.jsx';
 import { useEffect, useState } from 'react';
@@ -49,35 +49,42 @@ export default function ProgAnteriores() {
 
   return (
     <Box>
-      <FormControl>
-        <FormLabel>Fecha</FormLabel>
-        <Select
-          placeholder='Seleccione una fecha...'
-          onChange={(e, val) => {
-            handleChange(val);
-          }}
-        >
-          {dates.slice(1).map((row, i) => (
-            // sliced array doesn't include the current programada date
-            // so we add 1 to idx value to match dates array index
-            <Option
-              key={i}
-              value={`${row.Date}|${row.Month}|${row.Year}|${i + 1}`}
-            >
-              {`${dayjs()
-                .month(row.Month - 1)
-                .locale('es')
-                .format('MMMM')} ${row.Year}`}
-            </Option>
-          ))}
-        </Select>
-      </FormControl>
+      <Stack
+        direction='row'
+        className='items-end justify-between top-0 bg-[var(--joy-palette-background-body)] pb-4 sticky'
+      >
+        <FormControl className='min-w-48'>
+          <FormLabel>Fecha</FormLabel>
+          <Select
+            placeholder='Seleccione...'
+            onChange={(e, val) => {
+              handleChange(val);
+            }}
+          >
+            {dates.slice(1).map((row, i) => (
+              // sliced array doesn't include the current programada date
+              // so we add 1 to idx value to match dates array index
+              <Option
+                key={i}
+                value={`${row.Date}|${row.Month}|${row.Year}|${i + 1}`}
+              >
+                {`${dayjs()
+                  .month(row.Month - 1)
+                  .locale('es')
+                  .format('MMMM')} ${row.Year}`}
+              </Option>
+            ))}
+          </Select>
+        </FormControl>
 
-      <ProgSearchForm
-        progColor={progColor}
-        filteredProgColor={filteredProgColor}
-        setFilteredProgColor={setFilteredProgColor}
-      />
+        {selectedDate && (
+          <ProgSearchForm
+            progColor={progColor}
+            filteredProgColor={filteredProgColor}
+            setFilteredProgColor={setFilteredProgColor}
+          />
+        )}
+      </Stack>
 
       {selectedDate && (
         <ProgramadaTable

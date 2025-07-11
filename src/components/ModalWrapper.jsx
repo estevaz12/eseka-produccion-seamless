@@ -6,13 +6,18 @@ import {
   DialogContent,
 } from '@mui/joy';
 
-export default function ModalWrapper({ title, content, children }) {
+export default function ModalWrapper({
+  title,
+  content,
+  children,
+  contentClassName = '',
+}) {
   return (
     <Modal open>
       <ModalOverflow>
         <ModalDialog>
           <DialogTitle>{title}</DialogTitle>
-          <DialogContent>{content}</DialogContent>
+          <DialogContent className={contentClassName}>{content}</DialogContent>
           {children}
         </ModalDialog>
       </ModalOverflow>

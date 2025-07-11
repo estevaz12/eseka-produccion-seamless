@@ -7,9 +7,11 @@ import {
   FormHelperText,
   Typography,
   Button,
+  Stack,
 } from '@mui/joy';
 import ColorFormInputs from './ColorFormInputs.jsx';
 import { useConfig } from '../ConfigContext.jsx';
+import ColorDistrInputs from './ColorDistrInputs.jsx';
 
 export default function NewArticuloForm({
   newArticuloData,
@@ -88,58 +90,78 @@ export default function NewArticuloForm({
           newArticuloData.articuloExists
         );
       }}
+      className='w-sm'
     >
-      <Box>
-        <FormControl>
-          <FormLabel>Articulo</FormLabel>
-          <Input value={newArticuloData.articulo} disabled />
-        </FormControl>
+      <Stack direction='column' className='gap-4'>
+        {/* articulo and tipo */}
+        <Stack direction='row' className='gap-4'>
+          <FormControl>
+            <FormLabel>Artículo</FormLabel>
+            <Input
+              value={newArticuloData.articulo}
+              disabled
+              className='w-24 grow'
+            />
+          </FormControl>
 
-        <FormControl>
-          <FormLabel>Tipo (si aplica)</FormLabel>
-          <Input
-            value={formData.tipo ?? newArticuloData.tipo ?? ''}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                tipo: e.target.value,
-              })
-            }
-            disabled={newArticuloData.tipo}
-            slotProps={{ input: { pattern: '[$%#]' } }}
-          />
-          <FormHelperText>
-            <Typography variant='solid' color='primary'>
-              #
-            </Typography>
-            &nbsp;si se divide a la mitad.&nbsp;
-            <Typography variant='solid' color='primary'>
-              $
-            </Typography>
-            &nbsp;o&nbsp;
-            <Typography variant='solid' color='primary'>
-              %
-            </Typography>
-            &nbsp;si se duplica.
-          </FormHelperText>
-        </FormControl>
+          <FormControl className='grow'>
+            <FormLabel>Tipo (si aplica)</FormLabel>
+            <Stack direction='row' className='gap-2'>
+              <Input
+                value={formData.tipo ?? newArticuloData.tipo ?? ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    tipo: e.target.value,
+                  })
+                }
+                disabled={newArticuloData.tipo}
+                type='text'
+                slotProps={{ input: { maxLength: 1, pattern: '[#$%]' } }}
+                className='w-10'
+              />
+              <FormHelperText className='mt-0'>
+                <Stack direction='column' className='justify-between size-full'>
+                  <Box>
+                    <Typography level='body-sm'>
+                      <Typography variant='soft' color='warning'>
+                        #
+                      </Typography>
+                      &nbsp;si se divide a la mitad.&nbsp;
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography level='body-sm'>
+                      <Typography variant='soft' color='warning'>
+                        $
+                      </Typography>
+                      &nbsp;o&nbsp;
+                      <Typography variant='soft' color='warning'>
+                        %
+                      </Typography>
+                      &nbsp;si se duplica.
+                    </Typography>
+                  </Box>
+                </Stack>
+              </FormHelperText>
+            </Stack>
+          </FormControl>
+        </Stack>
+        {/* color distr */}
+        <ColorDistrInputs formData={formData} setFormData={setFormData} />
 
-        {newArticuloData.colorDistr ? (
-          <Typography>Distribución ya cargada</Typography>
-        ) : (
-          <ColorFormInputs
-            fieldName='colorDistr'
-            title='Distribución de colores'
-            label2='Porcentaje'
-            input2Key='porcentaje'
-            input2Attrs={{ type: 'number', min: 0, max: 100 }}
-            formData={formData}
-            setFormData={setFormData}
-          />
-        )}
+        {/* <ColorFormInputs
+          fieldName='colorDistr'
+          title='Distribución de colores'
+          label2='Porcentaje'
+          input2Key='porcentaje'
+          input2Attrs={{ type: 'number', min: 0, max: 100 }}
+          formData={formData}
+          setFormData={setFormData}
+        /> */}
 
         {/* colorCodes will be inserted through newColorCodes.
-        Leaving it in case its needed in the future. */}
+        Leaving it in case it's needed in the future. */}
         {/* {newArticuloData.colorCodes ? (
           <Typography>Códigos ya cargados</Typography>
         ) : (
@@ -156,8 +178,9 @@ export default function NewArticuloForm({
             setFormData={setFormData}
           />
         )} */}
-      </Box>
-      <Button type='submit'>Agregar artículo</Button>
+
+        <Button type='submit'>Agregar artículo</Button>
+      </Stack>
     </form>
   );
 }

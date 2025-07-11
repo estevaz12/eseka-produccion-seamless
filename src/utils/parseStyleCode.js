@@ -45,6 +45,7 @@ const parseStyleCode = async (styleCode) => {
         // assign correct punto. otherwise, the result of getArticulo below
         // will be incorrect
         articulo += 0.9;
+        // needed for correct tipo, e.g. 5223% vs 5223.9
       }
     }
 
@@ -54,16 +55,26 @@ const parseStyleCode = async (styleCode) => {
     } catch (err) {
       serverLog(`[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo}`);
     }
-  }
 
-  return {
-    styleCode,
-    articulo,
-    tipo,
-    talle,
-    color,
-    colorId,
-  };
+    return {
+      styleCode,
+      // need to clear punto for proper form entry
+      articulo: talle === 9 ? parseInt(articulo) : articulo,
+      tipo,
+      talle,
+      color,
+      colorId,
+    };
+  } else {
+    return {
+      styleCode,
+      articulo, // will be string of non-digit chars
+      tipo: null,
+      talle: null,
+      color: null,
+      colorId: null,
+    };
+  }
 };
 
 module.exports = parseStyleCode;

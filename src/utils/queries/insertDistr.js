@@ -4,7 +4,7 @@ const insertDistr = (data) => {
     query += `
       INSERT INTO SEA_COLOR_DISTR (Articulo, Color, Porcentaje)
       VALUES (${data.articulo}, ${row.color}, ${
-      row.porcentaje && row.porcentaje !== '0' ? row.porcentaje / 100 : null
+      row.porcentaje && row.porcentaje !== '0' ? row.porcentaje : null
     });\n
     `;
   }
