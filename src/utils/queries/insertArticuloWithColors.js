@@ -1,5 +1,4 @@
 const insertDistr = require('./insertDistr');
-const insertColorCodes = require('./insertColorCodes');
 
 const insertArticuloWithColors = (data) => {
   let query = `
@@ -10,11 +9,6 @@ const insertArticuloWithColors = (data) => {
   `;
 
   query += insertDistr(data);
-  if (data.colorCodes) {
-    // data.colorCodes will be undefined when coming from calculateNewTargets
-    // instead, colorCodes will be inserted through newColorCodes
-    query += insertColorCodes(data);
-  }
 
   return query;
 };

@@ -113,8 +113,6 @@ export default function ProgComparar() {
     // Check if articulo, color codes, and color distr exist and handle accordingly
 
     // colorCodes will be inserted through newColorCodes.
-    // Leaving code in case its needed in the future.
-
     // fetch newColorCodes before updating
     try {
       const res = await fetch(`${apiUrl}/machines/newColorCodes`);
@@ -150,7 +148,7 @@ export default function ProgComparar() {
 
         // if else to avoid making unnecessary fetches if articulo doesn't exist
         if (!articulo || articulo.length === 0) {
-          // ask for Tipo, ColorDistr, ColorCodes
+          // ask for Tipo, ColorDistr
           setNewArticuloData((prev) => [
             ...prev,
             {
@@ -158,26 +156,22 @@ export default function ProgComparar() {
               articulo: row.articulo,
               tipo: null,
               colorDistr: null,
-              // colorCodes: null,
             },
           ]);
         } else {
-          // If articulo exists, check if color codes and color distr exists
-          const [colorDistr, colorCodes] = await Promise.all([
-            fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`)
-              .then((res) => res.json())
-              .catch((err) =>
-                console.error('[CLIENT] Error fetching colorDistr:', err)
-              ),
-            // fetch(`${apiUrl}/articulo/${articulo[0].Articulo}/colorCodes`)
-            //   .then((res) => res.json())
-            //   .catch((err) =>
-            //     console.error('[CLIENT] Error fetching colorCodes:', err)
-            //   ),
-          ]);
+          // If articulo exists, check if color distr exists
+          let colorDistr;
+          try {
+            const res = await fetch(
+              `${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`
+            );
+            colorDistr = await res.json();
+          } catch (err) {
+            console.error('[CLIENT] Error fetching colorDistr:', err);
+          }
 
-          // if color codes and color distr exist, don't add to newArticuloData
-          if (!((colorDistr?.length > 0) /* && colorCodes?.length > 0*/)) {
+          // if color distr exists, don't add to newArticuloData
+          if (!(colorDistr?.length > 0)) {
             setNewArticuloData((prev) => [
               ...prev,
               {
@@ -186,17 +180,10 @@ export default function ProgComparar() {
                 tipo: articulo[0].Tipo,
                 // if undefined or length 0, results in null
                 colorDistr: colorDistr?.length > 0 ? colorDistr : null,
-                // colorCodes: colorCodes?.length > 0 ? colorCodes : null,
               },
             ]);
           }
         }
-      } else {
-        // if articulo is the same as previous, it means we are looking at a
-        // different talle. Hence, we insert colorCodes for that talle
-        // insert colorCodes for each talle
-        // do we even need to insert color codes on this step if we're checking
-        // constantly?
       }
 
       prevArticulo = row.articulo;
