@@ -124,8 +124,9 @@ export default function Produccion() {
           'Docenas',
           // 'Máquinas'
         ]}
-        tfoot={['', '', 'Total', totalUnidades, totalDocenas]}
+        tfoot={[true, true, 'Total', totalUnidades || '0', totalDocenas || '0']}
         className={stripedTableRows}
+        headerTop='top-16'
       >
         {data.map((row, i) => {
           const producido = calcProducido(row);

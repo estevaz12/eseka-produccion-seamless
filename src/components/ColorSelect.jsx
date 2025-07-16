@@ -1,6 +1,8 @@
-import { FormControl, FormLabel, Option, Select } from '@mui/joy';
+import { FormControl, FormLabel, Option } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
+import SelectClearable from './SelectClearable.jsx';
+import AddColorBtn from './AddColorBtn.jsx';
 
 let apiUrl;
 
@@ -8,10 +10,13 @@ export default function ColorSelect({
   onChange,
   inheritedColors,
   showLabel = true,
+  allowAdd = false,
   required = false,
   className = '',
 }) {
   apiUrl = useConfig().apiUrl;
+  const [value, setValue] = useState(null);
+  const [selectOpen, setSelectOpen] = useState(false);
   const [colors, setColors] = useState(
     Array.isArray(inheritedColors) ? inheritedColors : []
   );
@@ -34,23 +39,34 @@ export default function ColorSelect({
   }, [inheritedColors]);
 
   return (
-    <FormControl className={`min-w-56 ${className}`}>
+    <FormControl className={`min-w-56 ${className}`} required={required}>
       {showLabel && <FormLabel>Color</FormLabel>}
-      <Select
+      <SelectClearable
+        value={value}
+        setValue={setValue}
+        setFormData={onChange}
         placeholder='Seleccione...'
-        onChange={(event, value) => onChange(value)}
         required={required}
+        listboxOpen={selectOpen}
+        onListboxOpen={setSelectOpen}
       >
-        <Option value=''>Seleccione...</Option>
         {colors
           .slice()
           .sort((a, b) => a.Color.localeCompare(b.Color))
           .map((color) => (
-            <Option key={color.Id} value={color.Id}>
+            <Option key={color.Id} value={color.Id} label={color.Color}>
               {color.Color}
             </Option>
           ))}
-      </Select>
+
+        {allowAdd && (
+          <AddColorBtn
+            setSelectVal={setValue}
+            setSelectOpen={setSelectOpen}
+            setFormData={onChange}
+          />
+        )}
+      </SelectClearable>
     </FormControl>
   );
 }

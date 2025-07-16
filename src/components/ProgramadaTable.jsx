@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from './DataTable.jsx';
-import { Check, Edit } from '@mui/icons-material';
-import { Button, FormControl, Input, Typography } from '@mui/joy';
+import { Check, Close, Edit } from '@mui/icons-material';
+import { Button, Input, Typography } from '@mui/joy';
 
 let apiUrl;
 
@@ -124,15 +124,17 @@ export default function ProgramadaTable({
         }
       </span>
     ) : (
-      <form onSubmit={handleProducirEdit}>
-        <FormControl>
-          <Input
-            required
-            type='number'
-            slotProps={{ input: { ref: inputRef, min: 0 } }}
-            onChange={(e) => setDocenas(e.target.value)}
-          />
-        </FormControl>
+      <form onSubmit={handleProducirEdit} className='grid grid-cols-2 gap-1'>
+        <Input
+          type='number'
+          slotProps={{ input: { ref: inputRef, min: 0 } }}
+          onChange={(e) => setDocenas(e.target.value)}
+          className='col-span-2'
+          required
+        />
+        <Button color='danger' onClick={() => setEditProducir(false)}>
+          <Close />
+        </Button>
         <Button type='submit' onKeyDown={(e) => handleKeyDown(e)}>
           <Check />
         </Button>
@@ -192,13 +194,17 @@ export default function ProgramadaTable({
       matchingMachines.length <= 1
         ? // if one machine, just add pieces to remaining
           // if no machines, just show remaining
-          roundUpEven(faltaUnidades + (matchingMachines[0]?.Pieces || 0))
+          roundUpEven(
+            faltaUnidades +
+              (row.Producido === 0 ? 0 : matchingMachines[0]?.Pieces || 0)
+          ) // FIXME
         : matchingMachines.map((m) => {
             // if multiple machines, calculate target per machine
             // divide remaining pieces by number of machines
             let machineTarget = roundUpEven(
-              m.Pieces + faltaUnidades / matchingMachines.length
-            );
+              (row.Producido === 0 ? 0 : m.Pieces) +
+                faltaUnidades / matchingMachines.length
+            ); // FIXME
 
             return (
               <Typography

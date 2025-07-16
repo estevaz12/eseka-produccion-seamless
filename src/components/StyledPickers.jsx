@@ -1,4 +1,5 @@
 import { styled } from '@mui/joy/styles';
+import { Paper } from '@mui/material';
 import {
   DatePicker,
   DateTimePicker,
@@ -81,12 +82,22 @@ const JoyPickersTextField = styled(PickersTextField)({
   },
 });
 
+const JoyPickersCalendar = styled(Paper)({
+  borderRadius: 'var(--joy-radius-sm)',
+  border: '1px solid var(--joy-palette-neutral-outlinedBorder)',
+  backgroundColor: 'var(--joy-palette-background-surface)',
+  '& *': {
+    fontFamily: 'var(--joy-fontFamily-body)!important',
+  },
+});
+
 function StyledDatePicker({ ...props }) {
   return (
     <DatePicker
       {...props}
       slots={{
         textField: JoyPickersTextField,
+        desktopPaper: JoyPickersCalendar,
       }}
     />
   );
@@ -98,6 +109,7 @@ function StyledDateTimePicker({ ...props }) {
       {...props}
       slots={{
         textField: JoyPickersTextField,
+        desktopPaper: JoyPickersCalendar,
       }}
     />
   );

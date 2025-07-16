@@ -40,10 +40,10 @@ const materialTheme = createTheme();
 root.render(
   <StyledEngineProvider enableCssLayer>
     <ThemeProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
+      {/* For tailwind */}
       <GlobalStyles styles='@layer theme, base, mui, components, utilities;' />
       <JoyCssVarsProvider>
         <CssBaseline />
-        {/* For tailwind */}
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
           <ConfigProvider config={config}>
             <App />
@@ -62,8 +62,8 @@ export default function App() {
           {/* Actual */}
           <Route index element={<Programada />} />
           <Route path='programada'>
-            <Route path='comparar' element={<ProgComparar />} />
             <Route path='anteriores' element={<ProgAnteriores />} />
+            <Route path='comparar' element={<ProgComparar />} />
           </Route>
           <Route path='produccion' element={<Produccion />} />
           <Route path='maquinas' element={<Maquinas />} />

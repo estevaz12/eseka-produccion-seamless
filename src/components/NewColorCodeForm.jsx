@@ -70,7 +70,10 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     localStorage.setItem('newColorCodes', JSON.stringify(codes));
     setNewColorCodes(codes);
     setFormData({ colorCodes: [] });
-    window.location.reload();
+
+    if (codes.length === 0) {
+      window.location.reload();
+    }
   }
 
   return (
@@ -214,6 +217,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
             }}
             inheritedColors={colors}
             required
+            allowAdd
             className='grow'
           />
         </Stack>

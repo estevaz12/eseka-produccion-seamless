@@ -1,4 +1,12 @@
-import { Select, Option, FormControl, FormLabel, Box, Switch } from '@mui/joy';
+import {
+  Select,
+  Option,
+  FormControl,
+  FormLabel,
+  Box,
+  Switch,
+  Stack,
+} from '@mui/joy';
 import { renderTimeViewClock } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useConfig } from '../ConfigContext.jsx';
@@ -36,9 +44,11 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
   };
 
   return (
-    <Box>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <FormControl>
+    <form
+      onSubmit={(e) => handleSubmit(e)}
+      className='sticky top-0 bg-[var(--joy-palette-background-body)] pb-4'
+    >
+      {/* <FormControl>
           <FormLabel>Room</FormLabel>
           <Select
             value={formData.room}
@@ -48,76 +58,76 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
             <Option value='HOMBRE'>HOMBRE</Option>
             <Option value='MUJER'>MUJER</Option>
           </Select>
-        </FormControl>
+        </FormControl> */}
 
-        <FormControl>
-          <FormLabel>Fecha de inicio</FormLabel>
-          <StyledDateTimePicker
-            value={formData.startDate}
-            onChange={(date) => {
-              const hour = dayjs(date).hour();
+      <Stack direction='row' className='items-end justify-between'>
+        <Stack direction='row' className='items-end gap-4'>
+          <FormControl>
+            <FormLabel>Fecha de inicio</FormLabel>
+            <StyledDateTimePicker
+              value={formData.startDate}
+              onChange={(date) => {
+                const hour = dayjs(date).hour();
 
-              if (hour === 6 || hour === 14 || hour === 22) {
-                // add a second when hour is 6, 14, 22 to exclude data from
-                // previous turn
-                setFormData({
-                  ...formData,
-                  startDate: dayjs(date).set('minutes', 0).set('seconds', 1),
-                });
-              } else {
-                setFormData({
-                  ...formData,
-                  startDate: dayjs(date).set('seconds', 0),
-                });
-              }
-            }}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: null,
-              seconds: null,
-            }}
-            disableFuture
-            maxDateTime={formData.endDate}
-          />
-        </FormControl>
+                if (hour === 6 || hour === 14 || hour === 22) {
+                  // add a second when hour is 6, 14, 22 to exclude data from
+                  // previous turn
+                  setFormData({
+                    ...formData,
+                    startDate: dayjs(date).set('minutes', 0).set('seconds', 1),
+                  });
+                } else {
+                  setFormData({
+                    ...formData,
+                    startDate: dayjs(date).set('seconds', 0),
+                  });
+                }
+              }}
+              viewRenderers={{
+                hours: renderTimeViewClock,
+                minutes: null,
+                seconds: null,
+              }}
+              disableFuture
+              maxDateTime={formData.endDate}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Fecha final</FormLabel>
+            <StyledDateTimePicker
+              value={formData.endDate}
+              onChange={(date) => {
+                const newEndDate = dayjs(date);
 
-        <FormControl>
-          <FormLabel>Fecha final</FormLabel>
-          <StyledDateTimePicker
-            value={formData.endDate}
-            onChange={(date) => {
-              const newEndDate = dayjs(date);
+                if (
+                  !formData.actual &&
+                  !newEndDate.isBefore(formData.startDate)
+                ) {
+                  setFormData({
+                    ...formData,
+                    endDate: newEndDate.set('minutes', 0).set('seconds', 0),
+                  });
+                } else if (!formData.actual) {
+                  setFormData({
+                    ...formData,
+                    endDate: formData.startDate,
+                  });
+                }
+              }}
+              viewRenderers={{
+                hours: renderTimeViewClock,
+                minutes: null,
+                seconds: null,
+              }}
+              disabled={formData.actual}
+              disableFuture
+              minDateTime={formData.startDate}
+            />
+          </FormControl>
 
-              if (
-                !formData.actual &&
-                !newEndDate.isBefore(formData.startDate)
-              ) {
-                setFormData({
-                  ...formData,
-                  endDate: newEndDate.set('minutes', 0).set('seconds', 0),
-                });
-              } else if (!formData.actual) {
-                setFormData({
-                  ...formData,
-                  endDate: formData.startDate,
-                });
-              }
-            }}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-              minutes: null,
-              seconds: null,
-            }}
-            disabled={formData.actual}
-            disableFuture
-            minDateTime={formData.startDate}
-          />
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Actual</FormLabel>
           <Switch
             checked={formData.actual}
+            endDecorator='Actual'
             onChange={(e) => {
               const isChecked = e.target.checked;
               setFormData({
@@ -126,8 +136,9 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
                 endDate: isChecked ? dayjs() : formData.endDate,
               });
             }}
+            className='self-end'
           />
-        </FormControl>
+        </Stack>
 
         <ArtTalleColorInputs
           formData={formData}
@@ -136,7 +147,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
           btnText='Buscar'
           onKeyDown={(e) => handleKeyDown(e)}
         />
-      </form>
-    </Box>
+      </Stack>
+    </form>
   );
 }

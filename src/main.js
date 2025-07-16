@@ -8,6 +8,8 @@ const {
 } = require('electron');
 const path = require('path');
 
+app.commandLine.appendSwitch('lang', 'es-419');
+
 let serverProcess;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.

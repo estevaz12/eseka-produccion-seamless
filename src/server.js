@@ -48,6 +48,7 @@ const programadaTestData = require('./utils/test-data/programadaTestData.js');
 const programadaAnteriorTestData = require('./utils/test-data/programadaAnteriorTestData.js');
 const programadaTotalTestData = require('./utils/test-data/programadaTotalTestData.js');
 const insertProgStartDate = require('./utils/queries/insertProgStartDate.js');
+const insertColor = require('./utils/queries/insertColor.js');
 
 // Environment
 let isPackaged; //= false;
@@ -187,6 +188,30 @@ const startServer = () => {
       // test data
       serverLog('Using test data for /colors');
       res.json(colorsTestData);
+    }
+  });
+
+  app.post('/colors/insert', async (req, res) => {
+    serverLog('POST /colors/insert');
+    const data = req.body;
+
+    if (isPackaged) {
+      try {
+        const query = insertColor(data);
+        serverLog(query);
+        await sql.query(query);
+        const result = await sql.query(
+          `SELECT TOP(1) * FROM SEA_COLORES ORDER BY Id DESC`
+        );
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(`[ERROR] POST /colors/insert: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /colors/insert');
+      res.json([{ Id: 999, Color: 'TEST COLOR' }]);
     }
   });
 

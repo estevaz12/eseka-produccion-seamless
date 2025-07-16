@@ -25,22 +25,22 @@ export default function NavBar() {
                 </ListItem>
               )}
             </NavLink>
-            <NavLink to='/programada/comparar'>
-              {({ isActive }) => (
-                <ListItem>
-                  <ListItemButton selected={isActive}>
-                    <CompareArrowsTwoTone />
-                    Comparar
-                  </ListItemButton>
-                </ListItem>
-              )}
-            </NavLink>
             <NavLink to='/programada/anteriores'>
               {({ isActive }) => (
                 <ListItem>
                   <ListItemButton selected={isActive}>
                     <HistoryTwoTone />
                     Anteriores
+                  </ListItemButton>
+                </ListItem>
+              )}
+            </NavLink>
+            <NavLink to='/programada/comparar'>
+              {({ isActive }) => (
+                <ListItem>
+                  <ListItemButton selected={isActive}>
+                    <CompareArrowsTwoTone />
+                    Comparar
                   </ListItemButton>
                 </ListItem>
               )}

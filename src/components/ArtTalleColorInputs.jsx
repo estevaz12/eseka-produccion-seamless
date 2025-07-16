@@ -1,13 +1,7 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Option,
-  Select,
-  Stack,
-} from '@mui/joy';
+import { Button, FormControl, FormLabel, Input, Option, Stack } from '@mui/joy';
 import ColorSelect from './ColorSelect.jsx';
+import SelectClearable from './SelectClearable.jsx';
+import { useState } from 'react';
 
 export default function ArtColorTalleInputs({
   formData,
@@ -15,8 +9,11 @@ export default function ArtColorTalleInputs({
   btnType,
   btnText,
   btnOnKeyDown,
-  ...props
+  inheritedColors,
 }) {
+  const [selectVal, setSelectVal] = useState(null);
+  const [selectOpen, setSelectOpen] = useState(false);
+
   return (
     <Stack direction='row' className='items-end gap-4'>
       <FormControl>
@@ -35,26 +32,26 @@ export default function ArtColorTalleInputs({
 
       <FormControl>
         <FormLabel>Talle</FormLabel>
-        <Select
+        <SelectClearable
+          value={selectVal}
+          setValue={setSelectVal}
+          listboxOpen={selectOpen}
+          onListboxOpenChange={setSelectOpen}
+          setFormData={(val) => setFormData({ ...formData, talle: val })}
           placeholder='0-7'
-          onChange={(e, val) => setFormData({ ...formData, talle: val })}
           className='min-w-20'
         >
-          <Option value=''>0-7</Option>
-          <Option value='0'>0</Option>
-          <Option value='1'>1</Option>
-          <Option value='2'>2</Option>
-          <Option value='3'>3</Option>
-          <Option value='4'>4</Option>
-          <Option value='5'>5</Option>
-          <Option value='6'>6</Option>
-          <Option value='7'>7</Option>
-        </Select>
+          {['0', '1', '2', '3', '4', '5', '6', '7'].map((val) => (
+            <Option key={val} value={val} label={val}>
+              {val}
+            </Option>
+          ))}
+        </SelectClearable>
       </FormControl>
 
       <ColorSelect
         onChange={(color) => setFormData({ ...formData, colorId: color })}
-        {...props}
+        inheritedColors={inheritedColors}
       />
       <Button type={btnType} onKeyDown={btnOnKeyDown}>
         {btnText}

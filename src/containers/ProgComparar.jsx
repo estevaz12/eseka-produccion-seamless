@@ -378,7 +378,7 @@ export default function ProgComparar() {
               <ListItem>
                 <Typography>
                   Para cargar programada nueva del mes, oprima{' '}
-                  <Typography variant='solid' color='primary'>
+                  <Typography variant='solid' color='danger'>
                     Reset
                   </Typography>{' '}
                   y luego{' '}
@@ -409,6 +409,7 @@ export default function ProgComparar() {
           />
 
           <Button
+            color='danger'
             disabled={
               !(
                 diff &&

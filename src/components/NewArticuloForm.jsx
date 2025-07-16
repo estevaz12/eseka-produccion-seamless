@@ -18,9 +18,24 @@ export default function NewArticuloForm({
 }) {
   const { apiUrl } = useConfig();
   const [formData, setFormData] = useState({});
+  const [distrErr, setDistrErr] = useState(false);
 
   function handleSubmit(e, articulo, articuloExists) {
     e.preventDefault();
+
+    if (formData.colorDistr.length > 1) {
+      const distrSum = formData.colorDistr.reduce(
+        (acc, curr) => acc + curr.porcentaje,
+        0
+      );
+
+      if (distrSum > 1) {
+        // 100%
+        setDistrErr(true);
+        return;
+      }
+    }
+
     const data = { articulo, ...formData };
     if (!articuloExists) {
       // if articulo doesn't exist, insert articulo, colorDistr
@@ -56,6 +71,7 @@ export default function NewArticuloForm({
 
     setNewArticuloData((prev) => prev.slice(1)); // Remove first item
     setFormData({});
+    setDistrErr(false);
   }
 
   return (
@@ -126,7 +142,11 @@ export default function NewArticuloForm({
           </FormControl>
         </Stack>
         {/* color distr */}
-        <ColorDistrInputs formData={formData} setFormData={setFormData} />
+        <ColorDistrInputs
+          formData={formData}
+          setFormData={setFormData}
+          distrErr={distrErr}
+        />
         {/* submit btn */}
         <Button type='submit'>Agregar artículo</Button>
       </Stack>

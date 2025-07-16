@@ -52,6 +52,7 @@ function ColorFormInputs({
           onChange={setColorInput}
           inheritedColors={colors}
           required={!(formData[fieldName]?.length >= 0)}
+          allowAdd
         />
 
         <FormControl>
