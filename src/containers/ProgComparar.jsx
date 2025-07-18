@@ -8,15 +8,15 @@ import {
   IconButton,
   Box,
 } from '@mui/joy';
-import InputFileUpload from '../components/InputFileUpload.jsx';
+import InputFileUpload from '../components/Inputs/InputFileUpload.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import DataTable from '../components/DataTable.jsx';
+import DataTable from '../components/Tables/DataTable.jsx';
 import dayjs from 'dayjs';
-import NewArticuloForm from '../components/NewArticuloForm.jsx';
+import NewArticuloForm from '../components/Forms/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useOutletContext } from 'react-router';
-import { StyledDatePicker } from '../components/StyledPickers.jsx';
+import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
 import { KeyboardArrowDownTwoTone } from '@mui/icons-material';
 

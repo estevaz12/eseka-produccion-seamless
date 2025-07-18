@@ -2,8 +2,8 @@ import { Box } from '@mui/joy';
 import dayjs from 'dayjs';
 import { useState, useEffect, useMemo } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import DataTable from '../components/DataTable.jsx';
-import ProduccionForm from '../components/ProduccionForm.jsx';
+import DataTable from '../components/Tables/DataTable.jsx';
+import ProduccionForm from '../components/Forms/ProduccionForm.jsx';
 
 let apiUrl, sqlDateFormat, stripedTableRows;
 

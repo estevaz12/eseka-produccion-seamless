@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ArtTalleColorInputs from './ArtTalleColorInputs.jsx';
+import ArtTalleColorInputs from '../Inputs/ArtTalleColorInputs.jsx';
 
 export default function ProgSearchForm({
   progColor,

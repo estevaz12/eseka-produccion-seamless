@@ -1,6 +1,6 @@
 import { Box, FormControl, FormLabel, Option, Select, Stack } from '@mui/joy';
-import ProgramadaTable from '../components/ProgramadaTable.jsx';
-import ProgSearchForm from '../components/ProgSearchForm.jsx';
+import ProgramadaTable from '../components/Tables/ProgramadaTable.jsx';
+import ProgSearchForm from '../components/Forms/ProgSearchForm.jsx';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import dayjs from 'dayjs';

@@ -9,9 +9,9 @@ import {
   Stack,
   Typography,
 } from '@mui/joy';
-import { useConfig } from '../ConfigContext.jsx';
-import FloatingLabelInput from './FloatingLabelInput.jsx';
-import ColorSelect from './ColorSelect.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
+import FloatingLabelInput from '../Inputs/FloatingLabelInput.jsx';
+import ColorSelect from '../Inputs/ColorSelect.jsx';
 
 let apiUrl;
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
 import { Check, Close, Edit } from '@mui/icons-material';
 import { Button, Input } from '@mui/joy';
 

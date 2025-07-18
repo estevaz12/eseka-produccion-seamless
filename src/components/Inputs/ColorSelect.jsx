@@ -1,8 +1,8 @@
 import { FormControl, FormLabel, Option } from '@mui/joy';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
 import SelectClearable from './SelectClearable.jsx';
-import AddColorBtn from './AddColorBtn.jsx';
+import AddColorBtn from '../AddColorBtn.jsx';
 
 let apiUrl;
 

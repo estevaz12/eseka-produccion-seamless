@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/joy';
 import ColorSelect from './ColorSelect.jsx';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
 
 let apiUrl;
 

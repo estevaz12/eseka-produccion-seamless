@@ -9,8 +9,8 @@ import {
   Button,
   Stack,
 } from '@mui/joy';
-import { useConfig } from '../ConfigContext.jsx';
-import ColorDistrInputs from './ColorDistrInputs.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
+import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
 
 export const ErrorContext = createContext(false);
 

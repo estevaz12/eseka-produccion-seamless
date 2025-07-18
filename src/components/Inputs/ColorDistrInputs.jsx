@@ -9,9 +9,9 @@ import {
 } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import ColorSelect from './ColorSelect.jsx';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
 import { ErrorOutline } from '@mui/icons-material';
-import { ErrorContext } from './NewArticuloForm.jsx';
+import { ErrorContext } from '../Forms/NewArticuloForm.jsx';
 
 let apiUrl;
 

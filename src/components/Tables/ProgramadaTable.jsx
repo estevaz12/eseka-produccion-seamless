@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
 import DataTable from './DataTable.jsx';
 import { Typography } from '@mui/joy';
 import TargetCol from './TargetCol.jsx';
@@ -7,7 +7,7 @@ import {
   calcAProducir,
   calcProducido,
   formatNum,
-} from '../utils/progTableUtils.js';
+} from '../../utils/progTableUtils.js';
 import AProducirCol from './AProducirCol.jsx';
 
 let apiUrl;

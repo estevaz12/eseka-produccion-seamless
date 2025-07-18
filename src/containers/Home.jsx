@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
-import NewColorCodeForm from '../components/NewColorCodeForm.jsx';
+import NewColorCodeForm from '../components/Forms/NewColorCodeForm.jsx';
 import { Outlet } from 'react-router';
 import NavBar from '../components/NavBar.jsx';
 

@@ -1,6 +1,6 @@
 import { Download, QuestionMark, SyncProblem } from '@mui/icons-material';
 import { Typography } from '@mui/joy';
-import { roundUpEven } from '../utils/progTableUtils';
+import { roundUpEven } from '../../utils/progTableUtils';
 
 // TODO: reset counter for multiple machines and for incomplete articulos
 export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
@@ -47,7 +47,7 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
 
     return machTarget;
   } else {
-    matchingMachines.map((m) => {
+    return matchingMachines.map((m) => {
       // if multiple machines, calculate target per machine
       // divide remaining pieces by number of machines
       let machineTarget = roundUpEven(

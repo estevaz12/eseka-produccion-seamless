@@ -1,17 +1,9 @@
-import {
-  Select,
-  Option,
-  FormControl,
-  FormLabel,
-  Box,
-  Switch,
-  Stack,
-} from '@mui/joy';
+import { FormControl, FormLabel, Switch, Stack } from '@mui/joy';
 import { renderTimeViewClock } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import { useConfig } from '../ConfigContext.jsx';
-import ArtTalleColorInputs from './ArtTalleColorInputs.jsx';
-import { StyledDateTimePicker } from './StyledPickers.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
+import ArtTalleColorInputs from '../Inputs/ArtTalleColorInputs.jsx';
+import { StyledDateTimePicker } from '../Inputs/StyledPickers.jsx';
 
 let apiUrl, sqlDateFormat;
 

@@ -4,10 +4,10 @@
 import { Box, Stack } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import ProgramadaTable from '../components/ProgramadaTable.jsx';
-import ProgSearchForm from '../components/ProgSearchForm.jsx';
+import ProgramadaTable from '../components/Tables/ProgramadaTable.jsx';
+import ProgSearchForm from '../components/Forms/ProgSearchForm.jsx';
 import dayjs from 'dayjs';
-import { StyledDatePicker } from '../components/StyledPickers.jsx';
+import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
 
 // to avoid useEffect dependency issues
