@@ -9,11 +9,12 @@ export default function DataTable({
   titleHeader = undefined,
   titleHeaderColor = 'bg-[var(--joy-palette-primary-softBg)]',
   headerTop = '',
+  stripe = 'even',
 }) {
   return (
     <Table
       aria-label='simple table'
-      stripe='even'
+      stripe={stripe}
       stickyHeader
       stickyFooter
       className={`**:text-center rounded-md ${className}`}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -12,13 +12,15 @@ import {
 import { useConfig } from '../ConfigContext.jsx';
 import ColorDistrInputs from './ColorDistrInputs.jsx';
 
+export const ErrorContext = createContext(false);
+
 export default function NewArticuloForm({
   newArticuloData,
   setNewArticuloData,
 }) {
   const { apiUrl } = useConfig();
   const [formData, setFormData] = useState({});
-  const [distrErr, setDistrErr] = useState(false);
+  const [error, setError] = useState(false); // 'color' || 'distr' || false
 
   function handleSubmit(e, articulo, articuloExists) {
     e.preventDefault();
@@ -31,7 +33,14 @@ export default function NewArticuloForm({
 
       if (distrSum > 1) {
         // 100%
-        setDistrErr(true);
+        setError('distr');
+        return;
+      }
+
+      // validate colors are unique
+      const colors = formData.colorDistr.map((color) => color.color);
+      if (new Set(colors).size !== colors.length) {
+        setError('color');
         return;
       }
     }
@@ -71,7 +80,7 @@ export default function NewArticuloForm({
 
     setNewArticuloData((prev) => prev.slice(1)); // Remove first item
     setFormData({});
-    setDistrErr(false);
+    setError(false);
   }
 
   return (
@@ -141,12 +150,11 @@ export default function NewArticuloForm({
             </Stack>
           </FormControl>
         </Stack>
+
         {/* color distr */}
-        <ColorDistrInputs
-          formData={formData}
-          setFormData={setFormData}
-          distrErr={distrErr}
-        />
+        <ErrorContext value={error}>
+          <ColorDistrInputs formData={formData} setFormData={setFormData} />
+        </ErrorContext>
         {/* submit btn */}
         <Button type='submit'>Agregar artículo</Button>
       </Stack>

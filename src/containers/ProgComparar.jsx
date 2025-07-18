@@ -226,6 +226,7 @@ export default function ProgComparar() {
         console.error('[CLIENT] Error fetching data:', err);
       }
 
+      // TODO: total actual is not updating view when programada is updated
       fetch(`${apiUrl}/programada/total/${startDate}`)
         .then((res) => res.json())
         .then((data) => setCurrTotal(data[0].Total)) // single-record object

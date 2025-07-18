@@ -250,7 +250,7 @@ const startServer = () => {
     machines = machines.recordset;
     await parseMachines(machines);
 
-    machines = machines.filter((m) => !Number.isNaN(m.StyleCode.articulo));
+    machines = machines.filter((m) => typeof m.StyleCode.articulo !== 'string');
 
     if (producing) {
       /* Machine states that count for production

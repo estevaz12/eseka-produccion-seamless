@@ -1,8 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from './DataTable.jsx';
-import { Check, Close, Edit } from '@mui/icons-material';
-import { Button, Input, Typography } from '@mui/joy';
+import { Typography } from '@mui/joy';
+import TargetCol from './TargetCol.jsx';
+import {
+  calcAProducir,
+  calcProducido,
+  formatNum,
+} from '../utils/progTableUtils.js';
+import AProducirCol from './AProducirCol.jsx';
 
 let apiUrl;
 
@@ -51,122 +57,21 @@ export default function ProgramadaTable({
     }
   }, [startDate, setProgColor, live]);
 
-  // If an articulo has a NULL color distr, docenas will be null.
-  // This lets the user input the docenas value and update the programada.
-  function AProducir({ row, aProducir }) {
-    const [editProducir, setEditProducir] = useState(false);
-    const [docenas, setDocenas] = useState();
-    const inputRef = useRef(null);
-
-    useEffect(() => {
-      let timeoutId;
-      if (editProducir) {
-        timeoutId = setTimeout(() => {
-          inputRef.current.focus();
-        }, 10);
-      }
-
-      return () => clearTimeout(timeoutId);
-    }, [editProducir]);
-
-    async function handleProducirEdit(e) {
-      e.preventDefault();
-
-      try {
-        await fetch(`${apiUrl}/programada/updateDocenas`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            programadaId: row.Programada,
-            colorDistrId: row.ColorDistr,
-            docenas,
-          }),
-        });
-
-        // update programada view
-        const params = new URLSearchParams({
-          startDate,
-        }).toString();
-        const res = await fetch(`${apiUrl}/programada?${params}`);
-        const data = await res.json();
-
-        setProgColor(data.progColor);
-        setFilteredProgColor(data.progColor);
-        setMachines(data.machines);
-        setEditProducir(false);
-      } catch (err) {
-        console.error(
-          '[CLIENT] Error fetching /programada/updateDocenas:',
-          err
-        );
-      }
-    }
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'Enter') {
-        handleProducirEdit(e);
-      }
-    };
-
-    return !editProducir ? (
-      <span>
-        {
-          // if docenas is null, show edit icon, otherwise show docenas
-          !row.Docenas && row.Docenas !== 0 ? (
-            <Edit onClick={() => setEditProducir(true)} />
-          ) : row.Tipo === null ? (
-            aProducir
-          ) : (
-            `${aProducir} (${row.Docenas})`
-          )
-        }
-      </span>
-    ) : (
-      <form onSubmit={handleProducirEdit} className='grid grid-cols-2 gap-1'>
-        <Input
-          type='number'
-          slotProps={{ input: { ref: inputRef, min: 0 } }}
-          onChange={(e) => setDocenas(e.target.value)}
-          className='col-span-2'
-          required
-        />
-        <Button color='danger' onClick={() => setEditProducir(false)}>
-          <Close />
-        </Button>
-        <Button type='submit' onKeyDown={(e) => handleKeyDown(e)}>
-          <Check />
-        </Button>
-      </form>
-    );
-  }
-
-  // Utility functions
-  function calcAProducir(row) {
-    if (row.Tipo === null) return row.Docenas;
-    if (row.Tipo === '#') return row.Docenas * 2;
-    return row.Docenas / 2;
-  }
-
-  function calcProducido(row) {
-    if (row.Tipo === null) return row.Producido / 12 / 1.01;
-    if (row.Tipo === '#') return (row.Producido * 2) / 12 / 1.01;
-    return row.Producido / 2 / 12 / 1.01;
-  }
-
-  function roundUpEven(num) {
-    // round up to nearest even number
-    num = Math.ceil(num);
-    return num % 2 === 0 ? num : num + 1;
-  }
-
-  function formatNum(num) {
-    if (!num) return num;
-    else if (num % 1 < 0.1)
-      return num.toFixed(); // No decimals for whole numbers
-    else return num.toFixed(1); // One decimal for non-whole numbers
-  }
+  // Memoized totals
+  const totalAProducir = useMemo(() => {
+    let progToUse =
+      filteredProgColor.length > 0 ? filteredProgColor : progColor;
+    return progToUse.reduce((acc, row) => acc + calcAProducir(row), 0);
+  }, [progColor, filteredProgColor]);
+  const totalProducido = useMemo(() => {
+    let progToUse =
+      filteredProgColor.length > 0 ? filteredProgColor : progColor;
+    return progToUse.reduce((acc, row) => acc + calcProducido(row), 0);
+  }, [progColor, filteredProgColor]);
+  const totalFalta = useMemo(
+    () => totalAProducir - totalProducido,
+    [totalAProducir, totalProducido]
+  );
 
   function mapRows(row, i) {
     const aProducir = formatNum(calcAProducir(row));
@@ -182,6 +87,7 @@ export default function ProgramadaTable({
         m.StyleCode.talle === row.Talle &&
         m.StyleCode.colorId === row.ColorId
     );
+
     const machinesList = matchingMachines.map((m) => {
       return (
         <Typography
@@ -189,29 +95,6 @@ export default function ProgramadaTable({
         >{`${m.MachCode} (P: ${m.Pieces})`}</Typography>
       );
     }); // display all machines with articulo
-
-    const targetCalc =
-      matchingMachines.length <= 1
-        ? // if one machine, just add pieces to remaining
-          // if no machines, just show remaining
-          roundUpEven(
-            faltaUnidades +
-              (row.Producido === 0 ? 0 : matchingMachines[0]?.Pieces || 0)
-          ) // FIXME
-        : matchingMachines.map((m) => {
-            // if multiple machines, calculate target per machine
-            // divide remaining pieces by number of machines
-            let machineTarget = roundUpEven(
-              (row.Producido === 0 ? 0 : m.Pieces) +
-                faltaUnidades / matchingMachines.length
-            ); // FIXME
-
-            return (
-              <Typography
-                key={m.MachCode}
-              >{`${m.MachCode} -> ${machineTarget}`}</Typography>
-            );
-          });
 
     let rowClassName = 'bg-todo';
     if (!row.Docenas && row.Docenas !== 0)
@@ -239,7 +122,14 @@ export default function ProgramadaTable({
         }`}</td>
         {/* A Producir */}
         <td>
-          <AProducir row={row} aProducir={aProducir} />
+          <AProducirCol
+            row={row}
+            aProducir={aProducir}
+            startDate={startDate}
+            setProgColor={setProgColor}
+            setFilteredProgColor={setFilteredProgColor}
+            setMachines={setMachines}
+          />
         </td>
         {/* Producido */}
         <td>
@@ -250,7 +140,17 @@ export default function ProgramadaTable({
         {/* Falta */}
         <td>{row.Tipo == null ? falta : `${falta} (${faltaFisico})`}</td>
         {/* Target (un.) */}
-        <td>{faltaUnidades <= 0 ? 'LLEGÓ' : targetCalc}</td>
+        <td>
+          {faltaUnidades <= 0 ? (
+            'LLEGÓ'
+          ) : (
+            <TargetCol
+              row={row}
+              faltaUnidades={faltaUnidades}
+              matchingMachines={matchingMachines}
+            />
+          )}
+        </td>
         {/* Falta (un.) */}
         <td>{faltaUnidades}</td>
         {/* Maquinas */}
@@ -258,22 +158,6 @@ export default function ProgramadaTable({
       </tr>
     );
   }
-
-  // Memoized totals
-  const totalAProducir = useMemo(() => {
-    let progToUse =
-      filteredProgColor.length > 0 ? filteredProgColor : progColor;
-    return progToUse.reduce((acc, row) => acc + calcAProducir(row), 0);
-  }, [progColor, filteredProgColor]);
-  const totalProducido = useMemo(() => {
-    let progToUse =
-      filteredProgColor.length > 0 ? filteredProgColor : progColor;
-    return progToUse.reduce((acc, row) => acc + calcProducido(row), 0);
-  }, [progColor, filteredProgColor]);
-  const totalFalta = useMemo(
-    () => totalAProducir - totalProducido,
-    [totalAProducir, totalProducido]
-  );
 
   return (
     <DataTable
@@ -311,6 +195,7 @@ export default function ProgramadaTable({
         live && true,
       ]}
       headerTop='top-16'
+      stripe=''
     >
       {startDate && progColor && filteredProgColor.length === 0
         ? progColor.map(mapRows)

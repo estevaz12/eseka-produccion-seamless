@@ -75,6 +75,7 @@ export default function AddColorBtn({
                 required
                 value={value}
                 onChange={(e) => setValue(e.target.value.toUpperCase())}
+                onKeyDown={(e) => e.stopPropagation()}
               />
             </FormControl>
             <Button

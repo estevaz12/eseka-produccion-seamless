@@ -1,7 +1,8 @@
 import Select from '@mui/joy/Select';
 import IconButton from '@mui/joy/IconButton';
 import CloseRounded from '@mui/icons-material/CloseRounded';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
+import { ErrorContext } from './NewArticuloForm.jsx';
 
 export default function SelectClearable({
   value,
@@ -10,8 +11,10 @@ export default function SelectClearable({
   listboxOpen,
   onListboxOpen,
   children,
+  className = '',
   ...props
 }) {
+  const error = useContext(ErrorContext);
   const action = useRef(null);
 
   return (
@@ -19,12 +22,13 @@ export default function SelectClearable({
       action={action}
       value={value}
       onChange={(e, newValue) => {
-        console.log('select changed:', newValue);
         setValue(newValue);
         setFormData(newValue);
       }}
       listboxOpen={listboxOpen}
       onListboxOpenChange={onListboxOpen}
+      color={error === 'color' ? 'danger' : ''}
+      className={`border border-solid border-[var(--joy-palette-neutral-outlinedBorder)] ${className}`}
       {...props}
       {...(value && {
         // display the button and remove select indicator

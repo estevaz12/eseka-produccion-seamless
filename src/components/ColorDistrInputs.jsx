@@ -7,15 +7,17 @@ import {
   Input,
   FormHelperText,
 } from '@mui/joy';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ColorSelect from './ColorSelect.jsx';
 import { useConfig } from '../ConfigContext.jsx';
 import { ErrorOutline } from '@mui/icons-material';
+import { ErrorContext } from './NewArticuloForm.jsx';
 
 let apiUrl;
 
-export default function ColorDistrInputs({ formData, setFormData, distrErr }) {
+export default function ColorDistrInputs({ formData, setFormData }) {
   apiUrl = useConfig().apiUrl;
+  const error = useContext(ErrorContext);
   const [colors, setColors] = useState([]);
   const [checked, setChecked] = useState(false);
   const [numColors, setNumColors] = useState(2);
@@ -84,10 +86,14 @@ export default function ColorDistrInputs({ formData, setFormData, distrErr }) {
           allowAdd
         />
       ) : (
-        <FormControl error={distrErr} required>
+        <FormControl error={error} required>
           <Stack direction='row' className='items-center justify-between'>
-            <FormLabel>Colores</FormLabel>
-            <FormLabel color={distrErr ? 'danger' : ''}>Distribución</FormLabel>
+            <FormLabel color={error === 'color' ? 'danger' : ''}>
+              Colores
+            </FormLabel>
+            <FormLabel color={error === 'distr' ? 'danger' : ''}>
+              Distribución
+            </FormLabel>
           </Stack>
           <Stack direction='column' className='gap-4'>
             {Array(numColors)
@@ -113,7 +119,7 @@ export default function ColorDistrInputs({ formData, setFormData, distrErr }) {
                   />
 
                   <Stack direction='row' className='items-center'>
-                    <FormControl required error={distrErr}>
+                    <FormControl required error={error === 'distr'}>
                       <Input
                         type='number'
                         value={
@@ -141,10 +147,12 @@ export default function ColorDistrInputs({ formData, setFormData, distrErr }) {
               ))}
           </Stack>
 
-          {distrErr && (
+          {error && (
             <FormHelperText>
               <ErrorOutline />
-              La suma del surtido es mayor a 12 unidades.
+              {error === 'distr'
+                ? 'La suma del surtido es mayor a 12 unidades.'
+                : 'Los colores no se pueden repetir.'}
             </FormHelperText>
           )}
         </FormControl>
