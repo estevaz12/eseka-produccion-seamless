@@ -8,7 +8,7 @@ import {
   Option,
 } from '@mui/joy';
 import { useEffect, useRef, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.jsx';
 
 export default function AddColorBtn({
   setSelectVal,

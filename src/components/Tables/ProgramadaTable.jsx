@@ -9,6 +9,7 @@ import {
   formatNum,
 } from '../../utils/progTableUtils.js';
 import AProducirCol from './AProducirCol.jsx';
+import EditChip from './EditChip.jsx';
 
 let apiUrl;
 
@@ -113,7 +114,10 @@ export default function ProgramadaTable({
         className={`${rowClassName} *:border-dark-accent hover:bg-row-hover`}
       >
         {/* Articulo */}
-        <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
+        <td className='group'>
+          {`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}
+          <EditChip articulo={row.Articulo} tipo={row.Tipo} />
+        </td>
         {/* Talle */}
         <td>{row.Talle}</td>
         {/* Color + Porcentaje */}

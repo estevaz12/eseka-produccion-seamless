@@ -18,7 +18,7 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
           <Typography>
             {row.Target}
             &nbsp;
-            <Download fontSize='md' />
+            <Download fontSize='small' />
           </Typography>
         );
       } else if (machTarget > row.Target) {
@@ -27,7 +27,7 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
           <Typography>
             {machTarget}
             &nbsp;
-            <SyncProblem fontSize='md' />
+            <SyncProblem fontSize='small' />
           </Typography>
         );
       } else if (
@@ -39,7 +39,7 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
           <Typography>
             {machTarget}
             &nbsp;
-            <QuestionMark fontSize='md' />
+            <QuestionMark fontSize='small' />
           </Typography>
         );
       }
@@ -64,14 +64,14 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
               return (
                 <>
                   &nbsp;
-                  <Download fontSize='md' />
+                  <Download fontSize='small' />
                 </>
               );
             else if (m.TargetOrder === 0)
               return (
                 <>
                   &nbsp;
-                  <QuestionMark fontSize='md' />
+                  <QuestionMark fontSize='small' />
                 </>
               );
           })()}

@@ -25,7 +25,7 @@ const insertDistr = require('./utils/queries/insertDistr');
 const getArticulo = require('./utils/queries/getArticulo.js');
 const getArticuloColorDistr = require('./utils/queries/getArticuloColorDistr.js');
 const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js');
-const insertArticuloWithColors = require('./utils/queries/insertArticuloWithColors.js');
+const insertArticulo = require('./utils/queries/insertArticulo.js');
 const getProgColorTable = require('./utils/queries/getProgColorTable.js');
 const updateProgColorDoc = require('./utils/queries/updateProgColorDoc.js');
 const getProgActualDate = require('./utils/queries/getProgActualDate.js');
@@ -49,6 +49,8 @@ const programadaAnteriorTestData = require('./utils/test-data/programadaAnterior
 const programadaTotalTestData = require('./utils/test-data/programadaTotalTestData.js');
 const insertProgStartDate = require('./utils/queries/insertProgStartDate.js');
 const insertColor = require('./utils/queries/insertColor.js');
+const getCurrArtColorDistr = require('./utils/queries/getCurrArtColorDistr.js');
+const updateArticuloTipo = require('./utils/test-data/updateArticulo.js');
 
 // Environment
 let isPackaged; //= false;
@@ -156,17 +158,56 @@ const startServer = () => {
     }
   });
 
+  app.get('/articulo/:articulo/currentColorDistr', async (req, res) => {
+    const { articulo } = req.params;
+    serverLog(`GET /articulo/${articulo}/currentColorDistr`);
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(getCurrArtColorDistr(articulo));
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(
+          `[ERROR] GET /articulo/${articulo}/currentColorDistr: ${err}`
+        );
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog(`Using test data for /articulo/${articulo}/currentColorDistr`);
+      res.json(articuloColorDistrTestData);
+    }
+  });
+
   app.post('/articulo/insertWithColors', async (req, res) => {
     serverLog('POST /articulo/insertWithColors');
     const data = req.body;
 
     try {
-      const query = insertArticuloWithColors(data);
+      let query = insertArticulo(data);
+      await sql.query(query);
+      serverLog(query);
+      // Insert colorDistrs
+      await insertColorDistrs(data);
+
+      res.status(204).end();
+    } catch (err) {
+      serverLog(`[ERROR] POST /articulo/insertWithColors: ${err}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post('/articulo/updateTipo', async (req, res) => {
+    serverLog('POST /articulo/updateTipo');
+    const { articulo, tipo } = req.body;
+
+    try {
+      const query = updateArticuloTipo(articulo, tipo);
       serverLog(query);
       await sql.query(query);
       res.status(204).end();
     } catch (err) {
-      serverLog(`[ERROR] POST /articulo/insertWithColors: ${err}`);
+      serverLog(`[ERROR] POST /articulo/updateTipo: ${err}`);
       res.status(500).json({ error: err.message });
     }
   });
@@ -230,14 +271,23 @@ const startServer = () => {
     }
   });
 
+  async function insertColorDistrs(data) {
+    for (const row of data.colorDistr) {
+      const query = insertDistr(data.articulo, row);
+      serverLog(query);
+      await sql.query(query);
+      // Wait 1 second before next insert
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+
   app.post('/colorDistr/insert', async (req, res) => {
     serverLog('POST /colorDistr/insert');
     const data = req.body;
 
     try {
-      const query = insertDistr(data);
-      serverLog(query);
-      await sql.query(query);
+      await insertColorDistrs(data);
+
       res.status(204).end();
     } catch (err) {
       serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);

@@ -2,7 +2,7 @@ import { FormControl, FormLabel, Option } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import SelectClearable from './SelectClearable.jsx';
-import AddColorBtn from '../AddColorBtn.jsx';
+import AddColorBtn from './AddColorBtn.jsx';
 
 let apiUrl;
 
@@ -13,9 +13,10 @@ export default function ColorSelect({
   allowAdd = false,
   required = false,
   className = '',
+  val = null,
 }) {
   apiUrl = useConfig().apiUrl;
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(val);
   const [selectOpen, setSelectOpen] = useState(false);
   const [colors, setColors] = useState(
     Array.isArray(inheritedColors) ? inheritedColors : []

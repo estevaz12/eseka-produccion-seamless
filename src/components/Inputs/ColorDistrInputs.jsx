@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from 'react';
 import ColorSelect from './ColorSelect.jsx';
 import { useConfig } from '../../ConfigContext.jsx';
 import { ErrorOutline } from '@mui/icons-material';
-import { ErrorContext } from '../Forms/NewArticuloForm.jsx';
+import { ErrorContext } from '../../Contexts.js';
 
 let apiUrl;
 
@@ -19,8 +19,12 @@ export default function ColorDistrInputs({ formData, setFormData }) {
   apiUrl = useConfig().apiUrl;
   const error = useContext(ErrorContext);
   const [colors, setColors] = useState([]);
-  const [checked, setChecked] = useState(false);
-  const [numColors, setNumColors] = useState(2);
+  const [checked, setChecked] = useState(
+    formData?.colorDistr?.length > 1 ? true : false
+  );
+  const [numColors, setNumColors] = useState(
+    formData?.colorDistr?.length > 1 ? formData.colorDistr.length : 2
+  );
 
   useEffect(() => {
     let ignore = false;
@@ -43,7 +47,11 @@ export default function ColorDistrInputs({ formData, setFormData }) {
         <Typography level='title-md'>Distribución de Colores</Typography>
         <Switch
           checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
+          onChange={(e) => {
+            setChecked(e.target.checked);
+            setFormData({ ...formData, colorDistr: [] });
+            setNumColors(2);
+          }}
           endDecorator='Surtido'
         />
       </Stack>
@@ -56,8 +64,8 @@ export default function ColorDistrInputs({ formData, setFormData }) {
               type='number'
               value={numColors}
               onChange={(e) => {
-                if (e.target.value >= 2 && e.target.value <= colors.length)
-                  setNumColors(Number(e.target.value));
+                setFormData({ ...formData, colorDistr: [] });
+                setNumColors(Number(e.target.value));
               }}
               slotProps={{ input: { min: 2, max: colors.length } }}
               className='w-15'
@@ -75,6 +83,7 @@ export default function ColorDistrInputs({ formData, setFormData }) {
 
       {!checked ? (
         <ColorSelect
+          val={formData.colorDistr?.[0]?.color || null}
           onChange={(val) =>
             setFormData({
               ...formData,
@@ -95,12 +104,13 @@ export default function ColorDistrInputs({ formData, setFormData }) {
               Distribución
             </FormLabel>
           </Stack>
-          <Stack direction='column' className='gap-4'>
+          <Stack key={numColors} direction='column' className='gap-4'>
             {Array(numColors)
               .fill(0)
               .map((_, i) => (
                 <Stack direction='row' key={i} className='items-end gap-4'>
                   <ColorSelect
+                    val={formData.colorDistr?.[i]?.color || null}
                     onChange={(val) =>
                       setFormData((prev) => {
                         const colorDistr = [...(prev.colorDistr || [])];

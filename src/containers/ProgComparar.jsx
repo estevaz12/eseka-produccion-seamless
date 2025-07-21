@@ -639,6 +639,7 @@ export default function ProgComparar() {
         <ModalWrapper
           title='Agregar artículo nuevo'
           content='Por favor, ingrese los datos del siguiente artículo.'
+          handleClose={() => window.location.reload()}
           contentClassName='w-sm'
         >
           <NewArticuloForm

@@ -1,15 +1,12 @@
-const insertDistr = (data) => {
-  let query = '';
-  for (const row of data.colorDistr) {
-    query += `
-      INSERT INTO SEA_COLOR_DISTR (Articulo, Color, Porcentaje)
-      VALUES (${data.articulo}, ${row.color}, ${
-      row.porcentaje && row.porcentaje !== '0' ? row.porcentaje : null
-    });\n
-    `;
-  }
-
-  return query;
+const insertDistr = (articulo, colorDistr) => {
+  return `
+    INSERT INTO SEA_COLOR_DISTR (Articulo, Color, Porcentaje)
+    VALUES (${articulo}, ${colorDistr.color}, ${
+    colorDistr.porcentaje && colorDistr.porcentaje !== '0'
+      ? colorDistr.porcentaje
+      : null
+  });\n
+  `;
 };
 
 module.exports = insertDistr;

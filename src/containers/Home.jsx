@@ -82,15 +82,12 @@ export default function Home() {
       {newColorCodes.length > 0 && (
         <ModalWrapper
           title={
-            <Stack
-              direction='row'
-              className='items-center justify-between size-full'
-            >
-              <Typography>Agregar código de color</Typography>
+            <Typography>
+              Agregar código de color&nbsp;&nbsp;
               <Typography variant='solid' color='primary'>
                 {newColorCodes[newColorCodes.length - 1].StyleCode.styleCode}
               </Typography>
-            </Stack>
+            </Typography>
           }
           content={
             <Typography>
