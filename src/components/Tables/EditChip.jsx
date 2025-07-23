@@ -41,7 +41,7 @@ export default function EditChip({ articulo, tipo }) {
   }
 
   return (
-    <Box className='hidden ml-2 group-hover:inline'>
+    <Box className='absolute hidden -right-2 group-hover:inline'>
       <Chip size='md' variant='outlined' color='neutral' onClick={handleClick}>
         <Edit fontSize='inherit' />
       </Chip>

@@ -318,9 +318,53 @@ export default function ProgComparar() {
       .then((data) => setNewTargets(data))
       .catch((err) => console.error('[CLIENT] Error fetching data:', err));
   }
+  // Progaramada and diff table
+  const progCols = [
+    { id: 'articulo', label: 'Artículo' },
+    { id: 'talle', label: 'Talle' },
+    { id: 'aProducir', label: 'A Producir' },
+  ];
+
+  function progRenderRow(row, i) {
+    return [
+      null,
+      <>
+        <td>{row.articulo}</td>
+        <td>{row.talle}</td>
+        <td>{row.aProducir}</td>
+      </>,
+    ];
+  }
+
+  // New Targets table
+  const newTargetsCols = [
+    { id: 'machCode', label: 'Máquina' },
+    { id: 'styleCode', label: 'StyleCode' },
+    { id: 'machTarget', label: 'MachTarget' },
+    { id: 'prevProgTarget', label: 'ProgTarget Previo' },
+    { id: 'newProgTarget', label: 'ProgTarget Nuevo' },
+    { id: 'monthProduction', label: 'Producción Mes' },
+    { id: 'machPieces', label: 'MachPieces' },
+    { id: 'sendTarget', label: 'Enviar Target' },
+  ];
+  function newTargetsRenderRow(row, i) {
+    return [
+      null,
+      <>
+        <td>{row.machCode}</td>
+        <td>{row.styleCode}</td>
+        <td>{row.machTarget}</td>
+        <td>{row.prevProgTarget}</td>
+        <td>{row.newProgTarget}</td>
+        <td>{row.monthProduction}</td>
+        <td>{row.machPieces}</td>
+        <td>{row.sendTarget}</td>
+      </>,
+    ];
+  }
 
   return (
-    <Stack direction='column' className='gap-4'>
+    <Stack direction='column' className='gap-4 py-4'>
       {/* Collapsible instructions */}
       <Card variant='soft' color='neutral' className='p-2 pl-8'>
         <List
@@ -507,17 +551,12 @@ export default function ProgComparar() {
       {/* New programada table */}
       {programada && !diff && !newTargets && (
         <DataTable
-          cols={['Artículo', 'Talle', 'A Producir']}
+          cols={progCols}
+          rows={programada.rows}
+          renderRow={progRenderRow}
+          selectable={false}
           className={stripedTableRows}
-        >
-          {programada.rows.map((row, i) => (
-            <tr key={i}>
-              <td>{row.articulo}</td>
-              <td>{row.talle}</td>
-              <td>{row.aProducir}</td>
-            </tr>
-          ))}
-        </DataTable>
+        />
       )}
 
       {/* diff table */}
@@ -553,53 +592,38 @@ export default function ProgComparar() {
             >
               <Box className='overflow-auto max-h-[440px]'>
                 <DataTable
-                  cols={['Artículo', 'Talle', 'A Producir']}
+                  cols={progCols}
+                  rows={added}
+                  renderRow={progRenderRow}
+                  selectable={false}
                   className={stripedTableRows}
                   titleHeader='Agregado'
                   titleHeaderColor='bg-[var(--joy-palette-success-softBg)]'
-                >
-                  {added.map((row, i) => (
-                    <tr key={i}>
-                      <td>{row.articulo}</td>
-                      <td>{row.talle}</td>
-                      <td>{row.aProducir}</td>
-                    </tr>
-                  ))}
-                </DataTable>
+                />
               </Box>
 
               <Box className='overflow-auto max-h-[440px]'>
                 <DataTable
-                  cols={['Articulo', 'Talle', 'A Producir']}
+                  cols={progCols}
+                  rows={modified}
+                  renderRow={progRenderRow}
+                  selectable={false}
                   className={stripedTableRows}
                   titleHeader='Modificado'
                   titleHeaderColor='bg-[var(--joy-palette-warning-softBg)]'
-                >
-                  {modified.map((row, i) => (
-                    <tr key={i}>
-                      <td>{row.articulo}</td>
-                      <td>{row.talle}</td>
-                      <td>{row.aProducir}</td>
-                    </tr>
-                  ))}
-                </DataTable>
+                />
               </Box>
 
               <Box className='overflow-auto max-h-[440px]'>
                 <DataTable
-                  cols={['Articulo', 'Talle', 'A Producir']}
+                  cols={progCols}
+                  rows={deleted}
+                  renderRow={progRenderRow}
+                  selectable={false}
                   className={stripedTableRows}
                   titleHeader='Eliminado'
                   titleHeaderColor='bg-[var(--joy-palette-danger-softBg)]'
-                >
-                  {deleted.map((row, i) => (
-                    <tr key={i}>
-                      <td>{row.articulo}</td>
-                      <td>{row.talle}</td>
-                      <td>{row.aProducir}</td>
-                    </tr>
-                  ))}
-                </DataTable>
+                />
               </Box>
             </Stack>
           );
@@ -607,31 +631,12 @@ export default function ProgComparar() {
 
       {newTargets && (
         <DataTable
-          cols={[
-            'Máquina',
-            'StyleCode',
-            'MachTarget',
-            'ProgTarget Previo',
-            'ProgTarget Nuevo',
-            'Producción Mes',
-            'MachPieces',
-            'Enviar Target',
-          ]}
+          cols={newTargetsCols}
+          rows={newTargets}
+          renderRow={newTargetsRenderRow}
+          selectable={false}
           className={stripedTableRows}
-        >
-          {newTargets.map((row, i) => (
-            <tr key={i}>
-              <td>{row.machCode}</td>
-              <td>{row.styleCode}</td>
-              <td>{row.machTarget}</td>
-              <td>{row.prevProgTarget}</td>
-              <td>{row.newProgTarget}</td>
-              <td>{row.monthProduction}</td>
-              <td>{row.machPieces}</td>
-              <td>{row.sendTarget}</td>
-            </tr>
-          ))}
-        </DataTable>
+        />
       )}
 
       {/* render one Modal at a time */}

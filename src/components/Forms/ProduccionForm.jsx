@@ -38,7 +38,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
-      className='sticky top-0 bg-[var(--joy-palette-background-body)] pb-4'
+      className='sticky z-10 top-0 bg-[var(--joy-palette-background-body)] py-4'
     >
       {/* <FormControl>
           <FormLabel>Room</FormLabel>

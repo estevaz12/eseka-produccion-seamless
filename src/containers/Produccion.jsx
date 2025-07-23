@@ -88,12 +88,75 @@ export default function Produccion() {
     };
   }, [url]);
 
+  const cols = [
+    {
+      id: 'Articulo',
+      label: 'Artículo',
+    },
+    {
+      id: 'Talle',
+      label: 'Talle',
+    },
+    {
+      id: 'Color',
+      label: 'Color',
+    },
+    {
+      id: 'Unidades',
+      label: 'Unidades',
+    },
+    {
+      id: 'Unidades',
+      label: 'Docenas',
+    },
+  ];
+
   function calcProducido(row) {
     return row.Tipo === null
       ? row.Unidades
       : row.Tipo === '#'
       ? row.Unidades * 2
       : row.Unidades / 2;
+  }
+
+  function renderRow(row, i) {
+    const producido = calcProducido(row);
+    return [
+      null, // rowClassName
+      <>
+        {/* Articulo */}
+        <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
+        {/* Talle */}
+        <td>{row.Talle}</td>
+        {/* Color */}
+        <td>{row.Color}</td>
+        {/* Unidades */}
+        <td>
+          {row.Tipo === null ? producido : `${producido} (${row.Unidades})`}
+        </td>
+        {/* Docenas */}
+        <td>
+          {row.Tipo === null
+            ? (producido / 12).toFixed(1)
+            : `${(producido / 12).toFixed(1)} (${(row.Unidades / 12).toFixed(
+                1
+              )})`}
+        </td>
+        {/* Maquinas */}
+        {/* <td>
+                {machines
+                  .filter(
+                    // match machines with articulo
+                    (m) =>
+                      m.StyleCode.articulo === row.Articulo &&
+                      m.StyleCode.talle === row.Talle &&
+                      m.StyleCode.colorId === row.ColorId
+                  )
+                  .map((m) => m.MachCode) // display all machines with articulo
+                  .join(' - ')}
+              </td> */}
+      </>,
+    ];
   }
 
   // Memoized totals
@@ -116,60 +179,21 @@ export default function Produccion() {
       />
 
       <DataTable
-        cols={[
-          'Artículo',
-          'Talle',
-          'Color',
-          'Unidades',
-          'Docenas',
-          // 'Máquinas'
+        cols={cols}
+        rows={data}
+        renderRow={renderRow}
+        initOrder='asc'
+        initOrderBy='Articulo'
+        tfoot={[
+          false,
+          true,
+          'Total',
+          totalUnidades || '0',
+          totalDocenas || '0',
         ]}
-        tfoot={[true, true, 'Total', totalUnidades || '0', totalDocenas || '0']}
         className={stripedTableRows}
-        headerTop='top-16'
-      >
-        {data.map((row, i) => {
-          const producido = calcProducido(row);
-
-          return (
-            <tr key={i}>
-              {/* Articulo */}
-              <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
-              {/* Talle */}
-              <td>{row.Talle}</td>
-              {/* Color */}
-              <td>{row.Color}</td>
-              {/* Unidades */}
-              <td>
-                {row.Tipo === null
-                  ? producido
-                  : `${producido} (${row.Unidades})`}
-              </td>
-              {/* Docenas */}
-              <td>
-                {row.Tipo === null
-                  ? (producido / 12).toFixed(1)
-                  : `${(producido / 12).toFixed(1)} (${(
-                      row.Unidades / 12
-                    ).toFixed(1)})`}
-              </td>
-              {/* Maquinas */}
-              {/* <td>
-                {machines
-                  .filter(
-                    // match machines with articulo
-                    (m) =>
-                      m.StyleCode.articulo === row.Articulo &&
-                      m.StyleCode.talle === row.Talle &&
-                      m.StyleCode.colorId === row.ColorId
-                  )
-                  .map((m) => m.MachCode) // display all machines with articulo
-                  .join(' - ')}
-              </td> */}
-            </tr>
-          );
-        })}
-      </DataTable>
+        headerTop='top-[94px]'
+      />
     </Box>
   );
 }

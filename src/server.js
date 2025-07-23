@@ -415,10 +415,23 @@ const startServer = () => {
           !req.query.startMonth ? getParsedMachines(true) : null, // get Machines
         ]);
 
-        res.json({
-          progColor: progColor.recordset,
-          machines: machines,
-        });
+        // match machines with rows
+        let rows = progColor.recordset;
+        if (machines) {
+          rows = [...rows].map((row) => {
+            const matchingMachines = machines.filter(
+              // match machines with articulo
+              (m) =>
+                m.StyleCode.articulo === row.Articulo &&
+                m.StyleCode.talle === row.Talle &&
+                m.StyleCode.colorId === row.ColorId
+            );
+
+            return { ...row, Machines: matchingMachines.sort() };
+          });
+        }
+
+        res.json(rows);
       } catch (err) {
         serverLog(`[ERROR] GET /programada: ${err}`);
         res.status(500).json({ error: err.message });

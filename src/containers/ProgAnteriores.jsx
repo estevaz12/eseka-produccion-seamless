@@ -43,7 +43,7 @@ export default function ProgAnteriores() {
     fetch(`${apiUrl}/programada?${params}`)
       .then((res) => res.json())
       .then((data) => {
-        setProgColor(data.progColor);
+        setProgColor(data);
       });
   }
 
@@ -51,7 +51,7 @@ export default function ProgAnteriores() {
     <Box>
       <Stack
         direction='row'
-        className='items-end justify-between top-0 bg-[var(--joy-palette-background-body)] pb-4 sticky'
+        className='items-end justify-between top-0 bg-[var(--joy-palette-background-body)] sticky z-10 py-4'
       >
         <FormControl className='min-w-48'>
           <FormLabel>Fecha</FormLabel>

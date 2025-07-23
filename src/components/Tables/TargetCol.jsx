@@ -3,11 +3,11 @@ import { Typography } from '@mui/joy';
 import { roundUpEven } from '../../utils/progTableUtils';
 
 // TODO: reset counter for multiple machines and for incomplete articulos
-export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
-  if (matchingMachines.length <= 1) {
+export default function TargetCol({ row, faltaUnidades }) {
+  if (row.Machines.length <= 1) {
     // if one machine, just add pieces to remaining
     // if no machines, just show remaining
-    const machPieces = matchingMachines[0]?.Pieces;
+    const machPieces = row.Machines[0]?.Pieces;
     const machTarget = roundUpEven(faltaUnidades + (machPieces || 0));
 
     if (machPieces) {
@@ -18,7 +18,7 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
           <Typography>
             {row.Target}
             &nbsp;
-            <Download fontSize='small' />
+            <Download fontSize='inherit' />
           </Typography>
         );
       } else if (machTarget > row.Target) {
@@ -27,19 +27,19 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
           <Typography>
             {machTarget}
             &nbsp;
-            <SyncProblem fontSize='small' />
+            <SyncProblem fontSize='inherit' />
           </Typography>
         );
       } else if (
         machTarget < row.Target && // means articulo is incomplete
-        matchingMachines[0].TargetOrder === 0
+        row.Machines[0].TargetOrder === 0
       ) {
         // verify target
         return (
           <Typography>
             {machTarget}
             &nbsp;
-            <QuestionMark fontSize='small' />
+            <QuestionMark fontSize='inherit' />
           </Typography>
         );
       }
@@ -47,13 +47,13 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
 
     return machTarget;
   } else {
-    return matchingMachines.map((m) => {
+    return row.Machines.map((m) => {
       // if multiple machines, calculate target per machine
       // divide remaining pieces by number of machines
       let machineTarget = roundUpEven(
         m.Pieces +
           (row.Producido === 0 ? row.Target : faltaUnidades) /
-            matchingMachines.length
+            row.Machines.length
       );
 
       return (
@@ -64,14 +64,14 @@ export default function TargetCol({ row, faltaUnidades, matchingMachines }) {
               return (
                 <>
                   &nbsp;
-                  <Download fontSize='small' />
+                  <Download fontSize='inherit' />
                 </>
               );
             else if (m.TargetOrder === 0)
               return (
                 <>
                   &nbsp;
-                  <QuestionMark fontSize='small' />
+                  <QuestionMark fontSize='inherit' />
                 </>
               );
           })()}

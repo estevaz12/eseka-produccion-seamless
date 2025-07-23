@@ -13,7 +13,6 @@ export default function AProducirCol({
   startDate,
   setProgColor,
   setFilteredProgColor,
-  setMachines,
 }) {
   apiUrl = useConfig().apiUrl;
   const [editProducir, setEditProducir] = useState(false);
@@ -54,9 +53,8 @@ export default function AProducirCol({
       const res = await fetch(`${apiUrl}/programada?${params}`);
       const data = await res.json();
 
-      setProgColor(data.progColor);
-      setFilteredProgColor(data.progColor);
-      setMachines(data.machines);
+      setProgColor(data);
+      setFilteredProgColor(data);
       setEditProducir(false);
     } catch (err) {
       console.error('[CLIENT] Error fetching /programada/updateDocenas:', err);

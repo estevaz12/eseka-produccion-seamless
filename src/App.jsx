@@ -15,7 +15,10 @@ import ProgAnteriores from './containers/ProgAnteriores.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import Maquinas from './containers/Maquinas.jsx';
-import { CssVarsProvider as JoyCssVarsProvider } from '@mui/joy/styles';
+import {
+  extendTheme,
+  CssVarsProvider as JoyCssVarsProvider,
+} from '@mui/joy/styles';
 import {
   createTheme,
   ThemeProvider,
@@ -37,12 +40,26 @@ const config = {
 
 const materialTheme = createTheme();
 
+const joyTheme = extendTheme({
+  components: {
+    // The component identifier always start with `Joy${ComponentName}`.
+    JoyCheckbox: {
+      styleOverrides: {
+        input: {
+          // theme.vars.* return the CSS variables.
+          position: 'relative',
+        },
+      },
+    },
+  },
+});
+
 root.render(
   <StyledEngineProvider enableCssLayer>
     <ThemeProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
       {/* For tailwind */}
       <GlobalStyles styles='@layer theme, base, mui, components, utilities;' />
-      <JoyCssVarsProvider>
+      <JoyCssVarsProvider theme={joyTheme}>
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
           <ConfigProvider config={config}>

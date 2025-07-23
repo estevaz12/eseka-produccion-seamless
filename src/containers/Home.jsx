@@ -73,7 +73,7 @@ export default function Home() {
           <NavBar />
         </aside>
 
-        <Box className='w-full p-4 ml-40'>
+        <Box className='w-full px-4 ml-40'>
           <Outlet context={setNewColorCodes} />
         </Box>
       </Stack>
