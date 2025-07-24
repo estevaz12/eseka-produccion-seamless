@@ -19,10 +19,6 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   apiUrl = useConfig().apiUrl;
   const [colors, setColors] = useState([]);
   const [formData, setFormData] = useState({
-    articulo: newColorCode.StyleCode.articulo,
-    tipo: newColorCode.StyleCode.tipo,
-    talle: newColorCode.StyleCode.talle,
-    styleCode: newColorCode.StyleCode.styleCode,
     colorCodes: [],
   });
 
@@ -44,12 +40,21 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   function handleSubmit(e) {
     e.preventDefault();
 
+    const data = {
+      ...formData,
+      articulo: newColorCode.StyleCode.articulo,
+      punto: formData.punto ?? newColorCode.StyleCode.punto,
+      tipo: formData.tipo ?? newColorCode.StyleCode.tipo,
+      talle: newColorCode.StyleCode.talle,
+      styleCode: newColorCode.StyleCode.styleCode,
+    };
+
     fetch(`${apiUrl}/colorCodes/insert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(data),
     }).catch((err) =>
       console.error('[CLIENT] Error fetching /colorCodes/insert:', err)
     );
@@ -71,61 +76,59 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
       className='w-xs'
     >
       <Stack direction='column' className='gap-4'>
-        {newColorCode.StyleCode.articulo % 1 === 0 && (
-          <Stack direction='column' className='gap-1.5'>
-            <Stack direction='row' className='items-start gap-4'>
-              <FormControl>
-                <FloatingLabelInput
-                  inputProps={{
-                    label: 'Artículo',
-                    value: newColorCode.StyleCode.articulo,
-                    type: 'number',
-                  }}
-                  className='w-24'
-                  disabled
-                />
-              </FormControl>
-              <Typography
-                level='h1'
-                color='primary'
-                variant='outlined'
-                className='rounded-md h-14'
-              >
-                .
-              </Typography>
-              <FormControl className='grow'>
-                <FloatingLabelInput
-                  inputProps={{
-                    label: 'Punto (si aplica)',
-                    type: 'number',
-                    min: 0,
-                    max: 99,
-                    placeholder: 'Sin "."',
-                    onChange: (e) =>
-                      setFormData({
-                        ...formData,
-                        articulo:
-                          newColorCode.StyleCode.articulo +
-                          '.' +
-                          e.target.value,
-                      }),
-                  }}
-                />
-              </FormControl>
-            </Stack>
-            <FormHelperText>
-              <Typography
-                variant='soft'
-                level='body-sm'
-                color='warning'
-                className='mx-0'
-              >
-                PARCHES:
-              </Typography>
-              &nbsp;ingresar punto "9".
-            </FormHelperText>
+        <Stack direction='column' className='gap-1.5'>
+          <Stack direction='row' className='items-start gap-4'>
+            <FormControl>
+              <FloatingLabelInput
+                inputProps={{
+                  label: 'Artículo',
+                  value: newColorCode.StyleCode.articulo,
+                  type: 'number',
+                }}
+                className='w-24'
+                disabled
+              />
+            </FormControl>
+            <Typography
+              level='h1'
+              color='primary'
+              variant='outlined'
+              className='rounded-md h-14'
+            >
+              .
+            </Typography>
+            <FormControl className='grow'>
+              <FloatingLabelInput
+                disabled={newColorCode.StyleCode.punto}
+                inputProps={{
+                  value: formData.punto ?? newColorCode.StyleCode.punto ?? '',
+                  label: 'Punto (si aplica)',
+                  type: 'number',
+                  min: 0,
+                  max: 99,
+                  placeholder: 'Sin "."',
+                  onChange: (e) =>
+                    setFormData({
+                      ...formData,
+                      punto: e.target.value,
+                    }),
+                }}
+              />
+            </FormControl>
           </Stack>
-        )}
+          <FormHelperText>
+            <Typography
+              variant='soft'
+              level='body-sm'
+              color='warning'
+              className='mx-0'
+            >
+              PARCHES:
+            </Typography>
+            &nbsp;ingresar punto "9".
+          </FormHelperText>
+        </Stack>
+
         <FormControl>
           <FormLabel>Tipo (si aplica)</FormLabel>
           <Stack direction='row' className='gap-2'>

@@ -98,6 +98,11 @@ export default function Home() {
               &nbsp;para el art.&nbsp;
               <Typography variant='soft'>
                 {newColorCodes[newColorCodes.length - 1].StyleCode.articulo}
+                {newColorCodes[newColorCodes.length - 1].StyleCode.punto
+                  ? `.${
+                      newColorCodes[newColorCodes.length - 1].StyleCode.punto
+                    }`
+                  : ''}
               </Typography>
               &nbsp;talle&nbsp;
               <Typography variant='soft'>

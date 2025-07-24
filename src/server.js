@@ -363,7 +363,12 @@ const startServer = () => {
               .filter((m) => m.StyleCode.colorId === null)
               // makes the entries unique by articulo and colorCode
               // 2+ machines can have the same articulo and color
-              .map((m) => [`${m.StyleCode.articulo}_${m.StyleCode.color}`, m])
+              .map((m) => [
+                `${m.StyleCode.articulo}${`.${m.StyleCode.punto}` || ''}_${
+                  m.StyleCode.color
+                }`,
+                m,
+              ])
           ).values()
         );
         res.json(machines);
@@ -421,10 +426,16 @@ const startServer = () => {
           rows = [...rows].map((row) => {
             const matchingMachines = machines.filter(
               // match machines with articulo
-              (m) =>
-                m.StyleCode.articulo === row.Articulo &&
-                m.StyleCode.talle === row.Talle &&
-                m.StyleCode.colorId === row.ColorId
+              (m) => {
+                const machArticulo = m.StyleCode.punto
+                  ? parseFloat(`${m.StyleCode.articulo}.${m.StyleCode.punto}`)
+                  : m.StyleCode.articulo;
+                return (
+                  machArticulo === row.Articulo &&
+                  m.StyleCode.talle === row.Talle &&
+                  m.StyleCode.colorId === row.ColorId
+                );
+              }
             );
 
             return { ...row, Machines: matchingMachines.sort() };

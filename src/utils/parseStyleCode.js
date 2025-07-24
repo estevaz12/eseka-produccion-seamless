@@ -6,6 +6,7 @@ const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode.js');
 const parseStyleCode = async (styleCode) => {
   styleCode = styleCode.trim().substring(0, 8);
   let articulo = styleCode.substring(0, 5);
+  let punto = null;
   let tipo = null;
   let talle = parseInt(styleCode.substring(5, 6));
   const color = styleCode.substring(6, 8);
@@ -18,7 +19,9 @@ const parseStyleCode = async (styleCode) => {
       // will be undefined if not there
       // undefined means that it is not in COLOR_CODES
       // if articulo null, then just use the styleCode
-      articulo = res.recordset[0]?.Articulo ?? parseInt(articulo);
+      articulo = res.recordset[0]?.Articulo ?? articulo;
+      punto =
+        typeof articulo !== 'string' ? Math.round((articulo % 1) * 100) : null;
       colorId = res.recordset[0]?.Color ?? null;
     } catch (err) {
       serverLog(
@@ -26,7 +29,8 @@ const parseStyleCode = async (styleCode) => {
       );
     }
 
-    // Check if talle is a PARCHE and set correct talle and punto
+    // Check if talle is a PARCHE and set correct talle and punto to retrieve
+    // proper articulo data
     if (talle === 9) {
       // set correct talle
       const color1 = parseInt(color[0]);
@@ -39,27 +43,45 @@ const parseStyleCode = async (styleCode) => {
         talle = 1;
       }
 
-      // set correct punto if articulo is an Int
-      if (Number.isInteger(articulo)) {
-        // if aticulo is int, then it came from the styleCode and we need to
-        // assign correct punto. otherwise, the result of getArticulo below
-        // will be incorrect
-        articulo += 0.9;
-        // needed for correct tipo, e.g. 5223% vs 5223.9
+      // set correct punto if articulo is string because not found
+      // if aticulo is string, then it came from the styleCode and we need to
+      // assign correct punto. otherwise, the result of getArticulo below
+      // will be incorrect
+      // needed for correct tipo, e.g. 5223% vs 5223.9
+      if (typeof articulo === 'string') {
+        // if articulo is not string it already has .9, otherwise we need to
+        // assign it if talle is 9
+        punto = 9;
+      }
+    } else if (typeof articulo === 'string') {
+      // if articulo is string, then .0 was not found, check for .1
+      try {
+        const res = await sql.query(getArticulo(`${articulo}.1`));
+        articulo = res.recordset[0]?.Articulo ?? articulo;
+        punto = typeof articulo !== 'string' ? 1 : null;
+      } catch (err) {
+        serverLog(
+          `[ERROR] [parseStyleCode] ${articulo}.1 not in SEA_ARTICULOS`
+        );
       }
     }
 
     try {
-      const res = await sql.query(getArticulo(articulo));
+      const res = await sql.query(
+        getArticulo(punto ? `${parseInt(articulo)}.${punto}` : articulo)
+      );
       tipo = res.recordset[0]?.Tipo ?? null;
     } catch (err) {
-      serverLog(`[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo}`);
+      serverLog(
+        `[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo} - ${err.message}`
+      );
     }
 
     return {
       styleCode,
       // need to clear punto for proper form entry
-      articulo: talle === 9 ? parseInt(articulo) : articulo,
+      articulo: parseInt(articulo),
+      punto,
       tipo,
       talle,
       color,
@@ -69,6 +91,7 @@ const parseStyleCode = async (styleCode) => {
     return {
       styleCode,
       articulo, // will be string of non-digit chars
+      punto: null,
       tipo: null,
       talle: null,
       color: null,
