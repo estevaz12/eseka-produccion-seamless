@@ -261,7 +261,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      const query = insertColorCodes(data);
+      const query = await insertColorCodes(data);
       serverLog(query);
       await sql.query(query);
       res.status(204).end();

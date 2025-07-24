@@ -18,7 +18,13 @@ let apiUrl;
 export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   apiUrl = useConfig().apiUrl;
   const [colors, setColors] = useState([]);
-  const [formData, setFormData] = useState({ colorCodes: [] });
+  const [formData, setFormData] = useState({
+    articulo: newColorCode.StyleCode.articulo,
+    tipo: newColorCode.StyleCode.tipo,
+    talle: newColorCode.StyleCode.talle,
+    styleCode: newColorCode.StyleCode.styleCode,
+    colorCodes: [],
+  });
 
   useEffect(() => {
     let ignore = false;
@@ -38,29 +44,12 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    // formData = {
-    //  colorCodes: [{color, code}]
-    // }
-    const data = {
-      ...formData,
-      articulo: !formData.articulo
-        ? newColorCode.StyleCode.articulo
-        : formData.articulo,
-      talle: newColorCode.StyleCode.talle,
-      styleCode: newColorCode.StyleCode.styleCode,
-    };
-
     fetch(`${apiUrl}/colorCodes/insert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        articulo: data.articulo,
-        colorCodes: data.colorCodes, // [{color, code}]
-        talle: data.talle,
-        styleCode: data.styleCode,
-      }),
+      body: JSON.stringify(formData),
     }).catch((err) =>
       console.error('[CLIENT] Error fetching /colorCodes/insert:', err)
     );
