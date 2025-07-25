@@ -101,6 +101,7 @@ export default function Programada() {
           progColor={progColor}
           filteredProgColor={filteredProgColor}
           setFilteredProgColor={setFilteredProgColor}
+          live={true}
         />
       </Stack>
 

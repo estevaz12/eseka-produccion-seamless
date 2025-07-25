@@ -82,6 +82,7 @@ export default function ProgAnteriores() {
             progColor={progColor}
             filteredProgColor={filteredProgColor}
             setFilteredProgColor={setFilteredProgColor}
+            live={false}
           />
         )}
       </Stack>

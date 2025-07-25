@@ -10,6 +10,7 @@ export default function ArtColorTalleInputs({
   btnText,
   btnOnKeyDown,
   inheritedColors,
+  children,
 }) {
   const [selectVal, setSelectVal] = useState(null);
   const [selectOpen, setSelectOpen] = useState(false);
@@ -53,6 +54,9 @@ export default function ArtColorTalleInputs({
         onChange={(color) => setFormData({ ...formData, colorId: color })}
         inheritedColors={inheritedColors}
       />
+
+      {children}
+
       <Button type={btnType} onKeyDown={btnOnKeyDown}>
         {btnText}
       </Button>
