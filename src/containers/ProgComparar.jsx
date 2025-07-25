@@ -19,6 +19,7 @@ import { useOutletContext } from 'react-router';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
 import { KeyboardArrowDownTwoTone } from '@mui/icons-material';
+import RefreshBtn from '../components/RefreshBtn.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -439,6 +440,10 @@ export default function ProgComparar() {
       {/* buttons */}
       <Stack direction='row' className='items-end justify-between gap-4'>
         <Stack direction='row' className='items-end gap-2'>
+          <RefreshBtn
+            handleRefresh={() => window.location.reload()}
+            dangerousRefresh={!!newTargets}
+          />
           <StyledDatePicker
             label='Fecha de inicio'
             value={startDate ? dayjs(startDate) : null}
@@ -522,9 +527,10 @@ export default function ProgComparar() {
             variant='outlined'
             color='neutral'
             noWrap
-            className='rounded-[var(--joy-radius-sm)] w-56 py-1.5 px-4 mx-0'
+            className={`rounded-[var(--joy-radius-sm)] w-40 py-1.5 px-4 mx-0 ${
+              !filePath && 'text-[var(--joy-palette-neutral-400)]'
+            }`}
           >
-            Archivo:{' '}
             {filePath
               ? filePath.slice(
                   Math.max(
@@ -532,7 +538,7 @@ export default function ProgComparar() {
                     filePath.lastIndexOf('\\')
                   )
                 )
-              : '(.pdf)'}
+              : 'Programada.pdf'}
           </Typography>
           <InputFileUpload onClick={handleUpload} />
         </Stack>
