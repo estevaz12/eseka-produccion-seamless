@@ -134,7 +134,7 @@ export default function ProgramadaTable({
           const faltaUn = row.Target - row.Producido;
           // send to bottom if falta is negative
           if (faltaUn <= 0) {
-            return order === 'asc' ? Number.POSITIVE_INFINITY : 0;
+            return order === 'asc' ? Infinity : 0;
           }
           return faltaUn;
         };
@@ -153,10 +153,10 @@ export default function ProgramadaTable({
         let aMachine = a.Machines[0]?.MachCode;
         let bMachine = b.Machines[0]?.MachCode;
 
-        // send articulos with no machines to the bottom depending on order
-        if (!aMachine && !bMachine) return 0;
-        if (!aMachine) return order === 'asc' ? 1 : -1;
-        if (!bMachine) return order === 'asc' ? 1 : -1;
+        // // send articulos with no machines to the bottom depending on order
+        if (!aMachine) aMachine = order === 'asc' ? Infinity : -Infinity;
+        if (!bMachine) bMachine = order === 'asc' ? Infinity : -Infinity;
+
         return bMachine - aMachine;
       },
     },
