@@ -5,10 +5,10 @@ import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/Tables/DataTable.jsx';
 import ProduccionForm from '../components/Forms/ProduccionForm.jsx';
 
-let apiUrl, sqlDateFormat, stripedTableRows;
+let apiUrl, sqlDateFormat;
 
 export default function Produccion() {
-  ({ apiUrl, sqlDateFormat, stripedTableRows } = useConfig());
+  ({ apiUrl, sqlDateFormat } = useConfig());
   const [url, setUrl] = useState();
   // const [machines, setMachines] = useState([]);
   const [data, setData] = useState([]);
@@ -191,7 +191,6 @@ export default function Produccion() {
           totalUnidades || '0',
           totalDocenas || '0',
         ]}
-        className={stripedTableRows}
         headerTop='top-[94px]'
       />
     </Box>

@@ -21,6 +21,7 @@ export default function DataTable({
   titleHeaderColor = 'bg-[var(--joy-palette-primary-softBg)]',
   className = '',
   headerTop = '',
+  checkboxVariant = 'outlined',
 }) {
   // State for current sort order ('asc' or 'desc')
   const [order, setOrder] = useState(initOrder);
@@ -28,6 +29,11 @@ export default function DataTable({
   const [orderBy, setOrderBy] = useState(initOrderBy);
   // State for currently selected rows
   const [selected, setSelected] = useState([]);
+
+  const stripeClass =
+    stripe !== ''
+      ? '[&_tbody_tr:nth-of-type(even)]:bg-[var(--joy-palette-background-level1)]'
+      : '';
 
   const sortedRows = useMemo(() => {
     if (order !== initOrder || orderBy !== initOrderBy) {
@@ -101,7 +107,7 @@ export default function DataTable({
       stickyFooter
       variant='outlined'
       hoverRow
-      className={`**:text-center rounded-md ${className}`}
+      className={`**:text-center rounded-md ${className} ${stripeClass}`}
       sx={{
         '--TableCell-selectedBackground': (theme) =>
           theme.vars.palette.primary.softHoverBg,
@@ -155,6 +161,7 @@ export default function DataTable({
                 >
                   <Checkbox
                     checked={isItemSelected}
+                    variant={isItemSelected ? 'solid' : checkboxVariant}
                     sx={{ verticalAlign: 'top' }}
                   />
                 </td>

@@ -21,11 +21,11 @@ import ProgTotal from '../components/ProgTotal.jsx';
 import { KeyboardArrowDownTwoTone } from '@mui/icons-material';
 
 // to avoid useEffect dependency issues
-let apiUrl, sqlDateFormat, stripedTableRows;
+let apiUrl, sqlDateFormat;
 
 export default function ProgComparar() {
   // context
-  ({ apiUrl, sqlDateFormat, stripedTableRows } = useConfig());
+  ({ apiUrl, sqlDateFormat } = useConfig());
   const setNewColorCodes = useOutletContext();
   // load, file upload and reading
   const [startDate, setStartDate] = useState();
@@ -555,7 +555,6 @@ export default function ProgComparar() {
           rows={programada.rows}
           renderRow={progRenderRow}
           selectable={false}
-          className={stripedTableRows}
         />
       )}
 
@@ -596,7 +595,6 @@ export default function ProgComparar() {
                   rows={added}
                   renderRow={progRenderRow}
                   selectable={false}
-                  className={stripedTableRows}
                   titleHeader='Agregado'
                   titleHeaderColor='bg-[var(--joy-palette-success-softBg)]'
                 />
@@ -608,7 +606,6 @@ export default function ProgComparar() {
                   rows={modified}
                   renderRow={progRenderRow}
                   selectable={false}
-                  className={stripedTableRows}
                   titleHeader='Modificado'
                   titleHeaderColor='bg-[var(--joy-palette-warning-softBg)]'
                 />
@@ -620,7 +617,6 @@ export default function ProgComparar() {
                   rows={deleted}
                   renderRow={progRenderRow}
                   selectable={false}
-                  className={stripedTableRows}
                   titleHeader='Eliminado'
                   titleHeaderColor='bg-[var(--joy-palette-danger-softBg)]'
                 />
@@ -635,7 +631,6 @@ export default function ProgComparar() {
           rows={newTargets}
           renderRow={newTargetsRenderRow}
           selectable={false}
-          className={stripedTableRows}
         />
       )}
 

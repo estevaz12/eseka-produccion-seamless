@@ -34,8 +34,6 @@ const root = createRoot(rootElement);
 const config = {
   apiUrl: process.env.EXPRESS_URL,
   sqlDateFormat: 'MM-DD-YYYY HH:mm:ss',
-  stripedTableRows:
-    '[&_tbody_tr:nth-of-type(even)]:bg-[var(--joy-palette-background-level1)]',
 };
 
 const materialTheme = createTheme();

@@ -278,6 +278,7 @@ export default function ProgramadaTable({
       ]}
       headerTop='top-[94px]'
       stripe=''
+      checkboxVariant='soft'
     />
   );
 }
