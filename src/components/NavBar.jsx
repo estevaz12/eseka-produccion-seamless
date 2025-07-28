@@ -1,7 +1,7 @@
 import {
-  CompareArrowsTwoTone,
+  CompareArrowsRounded,
   FactoryTwoTone,
-  HistoryTwoTone,
+  HistoryRounded,
   PrecisionManufacturingTwoTone,
   TableChartTwoTone,
 } from '@mui/icons-material';
@@ -29,7 +29,7 @@ export default function NavBar() {
               {({ isActive }) => (
                 <ListItem>
                   <ListItemButton selected={isActive}>
-                    <HistoryTwoTone />
+                    <HistoryRounded />
                     Anteriores
                   </ListItemButton>
                 </ListItem>
@@ -39,7 +39,7 @@ export default function NavBar() {
               {({ isActive }) => (
                 <ListItem>
                   <ListItemButton selected={isActive}>
-                    <CompareArrowsTwoTone />
+                    <CompareArrowsRounded />
                     Comparar
                   </ListItemButton>
                 </ListItem>

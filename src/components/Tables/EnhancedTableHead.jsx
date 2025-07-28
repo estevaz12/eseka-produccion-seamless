@@ -1,5 +1,5 @@
-import { Box, Checkbox, Link, Typography } from '@mui/joy';
-import { ArrowDownward } from '@mui/icons-material';
+import { Box, Checkbox, Link } from '@mui/joy';
+import { ArrowDownwardRounded } from '@mui/icons-material';
 import { visuallyHidden } from '@mui/utils';
 
 /**
@@ -18,14 +18,11 @@ export default function EnhancedTableHead({
   cols,
   order,
   orderBy,
-  selectable = true,
   onSelectAllClick,
   numSelected,
   rowCount,
   onRequestSort,
   headerTop = '',
-  titleHeader = undefined,
-  titleHeaderColor = 'bg-[var(--joy-palette-primary-softBg)]',
 }) {
   /**
    * Returns a function that handles sorting when a column header is clicked.
@@ -38,33 +35,21 @@ export default function EnhancedTableHead({
 
   return (
     <thead className={`sticky z-10 ${headerTop}`}>
-      {titleHeader && (
-        <tr>
-          <th colSpan={cols.length} className={titleHeaderColor}>
-            <Typography level='title-md' className='font-semibold'>
-              {titleHeader}
-            </Typography>
-          </th>
-        </tr>
-      )}
-
       <tr>
-        {selectable && (
-          <th className='w-10'>
-            {/* 
+        <th className='w-10'>
+          {/* 
             Checkbox for selecting all rows.
             - indeterminate: true if some but not all rows are selected.
             - checked: true if all rows are selected.
             - onChange: triggers onSelectAllClick handler.
           */}
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              sx={{ verticalAlign: 'sub' }}
-            />
-          </th>
-        )}
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            sx={{ verticalAlign: 'sub' }}
+          />
+        </th>
 
         {/* Render a header cell for each column */}
         {cols.filter(Boolean).map((col) => {
@@ -94,7 +79,8 @@ export default function EnhancedTableHead({
                 startDecorator={
                   order &&
                   orderBy && (
-                    <ArrowDownward
+                    <ArrowDownwardRounded
+                      fontSize='small'
                       sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                       // className='position-absolute right-[100%]'
                     />

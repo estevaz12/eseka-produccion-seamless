@@ -18,7 +18,7 @@ import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useOutletContext } from 'react-router';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
-import { KeyboardArrowDownTwoTone } from '@mui/icons-material';
+import { KeyboardArrowDownRounded } from '@mui/icons-material';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 
 // to avoid useEffect dependency issues
@@ -319,50 +319,6 @@ export default function ProgComparar() {
       .then((data) => setNewTargets(data))
       .catch((err) => console.error('[CLIENT] Error fetching data:', err));
   }
-  // Progaramada and diff table
-  const progCols = [
-    { id: 'articulo', label: 'Artículo' },
-    { id: 'talle', label: 'Talle' },
-    { id: 'aProducir', label: 'A Producir' },
-  ];
-
-  function progRenderRow(row, i) {
-    return [
-      null,
-      <>
-        <td>{row.articulo}</td>
-        <td>{row.talle}</td>
-        <td>{row.aProducir}</td>
-      </>,
-    ];
-  }
-
-  // New Targets table
-  const newTargetsCols = [
-    { id: 'machCode', label: 'Máquina' },
-    { id: 'styleCode', label: 'StyleCode' },
-    { id: 'machTarget', label: 'MachTarget' },
-    { id: 'prevProgTarget', label: 'ProgTarget Previo' },
-    { id: 'newProgTarget', label: 'ProgTarget Nuevo' },
-    { id: 'monthProduction', label: 'Producción Mes' },
-    { id: 'machPieces', label: 'MachPieces' },
-    { id: 'sendTarget', label: 'Enviar Target' },
-  ];
-  function newTargetsRenderRow(row, i) {
-    return [
-      null,
-      <>
-        <td>{row.machCode}</td>
-        <td>{row.styleCode}</td>
-        <td>{row.machTarget}</td>
-        <td>{row.prevProgTarget}</td>
-        <td>{row.newProgTarget}</td>
-        <td>{row.monthProduction}</td>
-        <td>{row.machPieces}</td>
-        <td>{row.sendTarget}</td>
-      </>,
-    ];
-  }
 
   return (
     <Stack direction='column' className='gap-4 py-4'>
@@ -387,12 +343,12 @@ export default function ProgComparar() {
                 color='neutral'
                 onClick={() => setOpenInstr(!openInstr)}
               >
-                <KeyboardArrowDownTwoTone
-                  sx={[
-                    openInstr
-                      ? { transform: 'initial' }
-                      : { transform: 'rotate(-90deg)' },
-                  ]}
+                <KeyboardArrowDownRounded
+                  sx={{
+                    transition: '0.2s',
+                    // Rotate icon depending on sort order
+                    transform: openInstr ? 'rotate(0deg)' : 'rotate(-90deg)',
+                  }}
                 />
               </IconButton>
             }
@@ -556,12 +512,11 @@ export default function ProgComparar() {
       )}
       {/* New programada table */}
       {programada && !diff && !newTargets && (
-        <DataTable
-          cols={progCols}
-          rows={programada.rows}
-          renderRow={progRenderRow}
-          selectable={false}
-        />
+        <DataTable cols={['Artículo', 'Talle', 'A Producir']}>
+          {programada.rows.map((row, i) => (
+            <ProgRow key={i} row={row} />
+          ))}
+        </DataTable>
       )}
 
       {/* diff table */}
@@ -597,35 +552,38 @@ export default function ProgComparar() {
             >
               <Box className='overflow-auto max-h-[440px]'>
                 <DataTable
-                  cols={progCols}
-                  rows={added}
-                  renderRow={progRenderRow}
-                  selectable={false}
+                  cols={['Artículo', 'Talle', 'A Producir']}
                   titleHeader='Agregado'
                   titleHeaderColor='bg-[var(--joy-palette-success-softBg)]'
-                />
+                >
+                  {added.map((row, i) => (
+                    <ProgRow key={i} row={row} />
+                  ))}
+                </DataTable>
               </Box>
 
               <Box className='overflow-auto max-h-[440px]'>
                 <DataTable
-                  cols={progCols}
-                  rows={modified}
-                  renderRow={progRenderRow}
-                  selectable={false}
+                  cols={['Articulo', 'Talle', 'A Producir']}
                   titleHeader='Modificado'
                   titleHeaderColor='bg-[var(--joy-palette-warning-softBg)]'
-                />
+                >
+                  {modified.map((row, i) => (
+                    <ProgRow key={i} row={row} />
+                  ))}
+                </DataTable>
               </Box>
 
               <Box className='overflow-auto max-h-[440px]'>
                 <DataTable
-                  cols={progCols}
-                  rows={deleted}
-                  renderRow={progRenderRow}
-                  selectable={false}
+                  cols={['Articulo', 'Talle', 'A Producir']}
                   titleHeader='Eliminado'
                   titleHeaderColor='bg-[var(--joy-palette-danger-softBg)]'
-                />
+                >
+                  {deleted.map((row, i) => (
+                    <ProgRow key={i} row={row} />
+                  ))}
+                </DataTable>
               </Box>
             </Stack>
           );
@@ -633,11 +591,30 @@ export default function ProgComparar() {
 
       {newTargets && (
         <DataTable
-          cols={newTargetsCols}
-          rows={newTargets}
-          renderRow={newTargetsRenderRow}
-          selectable={false}
-        />
+          cols={[
+            'Máquina',
+            'StyleCode',
+            'MachTarget',
+            'ProgTarget Previo',
+            'ProgTarget Nuevo',
+            'Producción Mes',
+            'MachPieces',
+            'Enviar Target',
+          ]}
+        >
+          {newTargets.map((row, i) => (
+            <tr key={i}>
+              <td>{row.machCode}</td>
+              <td>{row.styleCode}</td>
+              <td>{row.machTarget}</td>
+              <td>{row.prevProgTarget}</td>
+              <td>{row.newProgTarget}</td>
+              <td>{row.monthProduction}</td>
+              <td>{row.machPieces}</td>
+              <td>{row.sendTarget}</td>
+            </tr>
+          ))}
+        </DataTable>
       )}
 
       {/* render one Modal at a time */}
@@ -655,5 +632,15 @@ export default function ProgComparar() {
         </ModalWrapper>
       )}
     </Stack>
+  );
+}
+
+function ProgRow({ row, i }) {
+  return (
+    <tr key={i}>
+      <td>{row.articulo}</td>
+      <td>{row.talle}</td>
+      <td>{row.aProducir}</td>
+    </tr>
   );
 }

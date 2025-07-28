@@ -1,11 +1,10 @@
 import { Edit } from '@mui/icons-material';
-import { Box, Chip } from '@mui/joy';
 import { useState } from 'react';
 import EditArticuloForm from '../Forms/EditArticuloForm.jsx';
 import ModalWrapper from '../ModalWrapper.jsx';
 import { useConfig } from '../../ConfigContext.jsx';
 
-export default function EditChip({ articulo, tipo }) {
+export default function EditArtBtn({ articulo, tipo }) {
   const apiUrl = useConfig().apiUrl;
   const [openForm, setOpenForm] = useState(false);
   const [articuloData, setArticuloData] = useState({});
@@ -41,10 +40,12 @@ export default function EditChip({ articulo, tipo }) {
   }
 
   return (
-    <Box className='absolute hidden -right-2 group-hover:inline'>
-      <Chip size='md' variant='outlined' color='neutral' onClick={handleClick}>
-        <Edit fontSize='inherit' />
-      </Chip>
+    <>
+      <Edit
+        size='small'
+        onClick={handleClick}
+        className='invisible group-hover/art:visible'
+      />
 
       {openForm && (
         <ModalWrapper
@@ -56,6 +57,6 @@ export default function EditChip({ articulo, tipo }) {
           <EditArticuloForm articuloData={articuloData} />
         </ModalWrapper>
       )}
-    </Box>
+    </>
   );
 }

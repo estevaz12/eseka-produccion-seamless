@@ -1,0 +1,65 @@
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+// TODO: fix date timezone and stuff for entire app
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const getProductionsMonitor = (
+  articulo,
+  talle,
+  color,
+  startDate,
+  fromMonthStart = true,
+  endDate = null
+) => {
+  fromMonthStart = fromMonthStart === 'true' ? true : false;
+  endDate = endDate === 'null' ? null : endDate;
+  let prodStartDate, prodEndDate;
+
+  // month starts first day of month at 6am + 1 second
+  prodStartDate = fromMonthStart
+    ? dayjs
+        .tz(startDate, 'America/Buenos_Aires')
+        .startOf('month')
+        .set('hour', 6)
+        .set('minute', 0)
+        .set('second', 1)
+        .format(process.env.SQL_DATE_FORMAT)
+    : dayjs(startDate)
+        .tz('America/Buenos_Aires')
+        .format(process.env.SQL_DATE_FORMAT);
+
+  // month always ends on the first day of the next month at 6am
+  prodEndDate = endDate
+    ? dayjs(endDate)
+        .tz('America/Buenos_Aires')
+        .format(process.env.SQL_DATE_FORMAT)
+    : dayjs
+        .tz(startDate, 'America/Buenos_Aires')
+        .endOf('month')
+        .add(1, 'day')
+        .set('hour', 6)
+        .set('minute', 0)
+        .set('second', 0)
+        .format(process.env.SQL_DATE_FORMAT);
+
+  return `
+    SELECT TOP(5) pm.DateRec, pm.Shift, pm.MachCode, pm.StyleCode, pm.Pieces, 
+            pm.OrderPieces, pm.TargetPieces, pm.Discards
+    FROM PRODUCTIONS_MONITOR as pm
+    WHERE SUBSTRING(pm.StyleCode, 1, 8) IN (
+        SELECT cc.StyleCode
+        FROM SEA_COLOR_CODES AS cc
+        WHERE cc.Articulo = ${articulo} 
+              AND cc.Talle = ${talle} 
+              AND cc.Color = ${color}
+        )
+        AND pm.DateRec BETWEEN '${prodStartDate}' AND '${prodEndDate}'
+        AND pm.Pieces > 0
+    ORDER BY DateRec DESC;
+  `;
+};
+
+module.exports = getProductionsMonitor;

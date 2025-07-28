@@ -2,8 +2,10 @@ import { Box } from '@mui/joy';
 import dayjs from 'dayjs';
 import { useState, useEffect, useMemo } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import DataTable from '../components/Tables/DataTable.jsx';
 import ProduccionForm from '../components/Forms/ProduccionForm.jsx';
+import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
+import ArticuloCol from '../components/Tables/ArticuloCol.jsx';
+import { DatesContext } from '../Contexts.js';
 
 let apiUrl, sqlDateFormat;
 
@@ -119,13 +121,13 @@ export default function Produccion() {
       : row.Unidades / 2;
   }
 
-  function renderRow(row, i) {
+  function renderRow(row, i, handleClick) {
     const producido = calcProducido(row);
     return [
       null, // rowClassName
       <>
         {/* Articulo */}
-        <td>{`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}</td>
+        <ArticuloCol row={row} editable={false} handleRowClick={handleClick} />
         {/* Talle */}
         <td>{row.Talle}</td>
         {/* Color */}
@@ -178,21 +180,29 @@ export default function Produccion() {
         setUrl={setUrl}
       />
 
-      <DataTable
-        cols={cols}
-        rows={data}
-        renderRow={renderRow}
-        initOrder='asc'
-        initOrderBy='Articulo'
-        tfoot={[
-          false,
-          true,
-          'Total',
-          totalUnidades || '0',
-          totalDocenas || '0',
-        ]}
-        headerTop='top-[94px]'
-      />
+      <DatesContext
+        value={{
+          startDate: formData.startDate,
+          fromMonthStart: false,
+          endDate: formData.endDate,
+        }}
+      >
+        <EnhancedTable
+          cols={cols}
+          rows={data}
+          renderRow={renderRow}
+          initOrder='asc'
+          initOrderBy='Articulo'
+          tfoot={[
+            false,
+            true,
+            'Total',
+            totalUnidades || '0',
+            totalDocenas || '0',
+          ]}
+          headerTop='top-[94px]'
+        />
+      </DatesContext>
     </Box>
   );
 }

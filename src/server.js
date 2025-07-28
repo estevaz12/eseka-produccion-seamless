@@ -51,6 +51,8 @@ const insertProgStartDate = require('./utils/queries/insertProgStartDate.js');
 const insertColor = require('./utils/queries/insertColor.js');
 const getCurrArtColorDistr = require('./utils/queries/getCurrArtColorDistr.js');
 const updateArticuloTipo = require('./utils/test-data/updateArticulo.js');
+const getProductionsMonitor = require('./utils/queries/getProductionsMonitor.js');
+const historialTestData = require('./utils/test-data/historialTestData.js');
 
 // Environment
 let isPackaged; //= false;
@@ -295,6 +297,39 @@ const startServer = () => {
     }
   });
 
+  app.get('/historial', async (req, res) => {
+    const { articulo, talle, color, startDate, fromMonthStart, endDate } =
+      req.query;
+    serverLog(
+      `GET /historial for ${articulo} ${talle} ${color} ${startDate} ${fromMonthStart} ${endDate}`
+    );
+
+    if (isPackaged) {
+      try {
+        const query = getProductionsMonitor(
+          articulo,
+          talle,
+          color,
+          startDate,
+          fromMonthStart,
+          endDate
+        );
+        serverLog(query);
+        const result = await sql.query(query);
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(
+          `[ERROR] GET /historial for ${articulo} ${talle} ${color} ${startDate}: ${err}`
+        );
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /historial');
+      res.json(historialTestData);
+    }
+  });
+
   async function getParsedMachines(producing = false) {
     let machines = await sql.query(getMachines());
     machines = machines.recordset;
@@ -422,25 +457,26 @@ const startServer = () => {
 
         // match machines with rows
         let rows = progColor.recordset;
-        if (machines) {
-          rows = [...rows].map((row) => {
-            const matchingMachines = machines.filter(
-              // match machines with articulo
-              (m) => {
-                const machArticulo = m.StyleCode.punto
-                  ? parseFloat(`${m.StyleCode.articulo}.${m.StyleCode.punto}`)
-                  : m.StyleCode.articulo;
-                return (
-                  machArticulo === row.Articulo &&
-                  m.StyleCode.talle === row.Talle &&
-                  m.StyleCode.colorId === row.ColorId
-                );
-              }
-            );
+        rows = [...rows].map((row) => {
+          // add empty array to avoid errors in ProgAnteriores view
+          if (!machines) return { ...row, Machines: [] };
 
-            return { ...row, Machines: matchingMachines.sort() };
-          });
-        }
+          const matchingMachines = machines.filter(
+            // match machines with articulo
+            (m) => {
+              const machArticulo = m.StyleCode.punto
+                ? parseFloat(`${m.StyleCode.articulo}.${m.StyleCode.punto}`)
+                : m.StyleCode.articulo;
+              return (
+                machArticulo === row.Articulo &&
+                m.StyleCode.talle === row.Talle &&
+                m.StyleCode.colorId === row.ColorId
+              );
+            }
+          );
+
+          return { ...row, Machines: matchingMachines.sort() };
+        });
 
         res.json(rows);
       } catch (err) {

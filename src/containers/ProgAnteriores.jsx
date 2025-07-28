@@ -94,6 +94,7 @@ export default function ProgAnteriores() {
           setProgColor={setProgColor}
           filteredProgColor={filteredProgColor}
           setFilteredProgColor={setFilteredProgColor}
+          editable={false}
           live={false}
         />
       )}

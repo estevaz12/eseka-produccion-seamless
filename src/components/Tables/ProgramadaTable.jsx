@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
-import DataTable from './DataTable.jsx';
 import { Typography } from '@mui/joy';
 import TargetCol from './TargetCol.jsx';
 import {
@@ -10,7 +9,9 @@ import {
   roundUpEven,
 } from '../../utils/progTableUtils.js';
 import AProducirCol from './AProducirCol.jsx';
-import EditChip from './EditChip.jsx';
+import EnhancedTable from './EnhancedTable.jsx';
+import ArticuloCol from './ArticuloCol.jsx';
+import { DatesContext } from '../../Contexts.js';
 
 let apiUrl;
 
@@ -20,6 +21,7 @@ export default function ProgramadaTable({
   setProgColor,
   filteredProgColor,
   setFilteredProgColor,
+  editable = true,
   live = true,
 }) {
   apiUrl = useConfig().apiUrl;
@@ -162,7 +164,7 @@ export default function ProgramadaTable({
     },
   ];
 
-  function renderRow(row, i) {
+  function renderRow(row, i, handleClick) {
     const aProducir = formatNum(calcAProducir(row));
     const producido = formatNum(calcProducido(row));
     const falta = formatNum(calcAProducir(row) - calcProducido(row));
@@ -194,10 +196,12 @@ export default function ProgramadaTable({
       // Render each cell in the row
       <>
         {/* Articulo */}
-        <td className='relative group'>
-          {`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}
-          <EditChip articulo={row.Articulo} tipo={row.Tipo} />
-        </td>
+        <ArticuloCol
+          row={row}
+          handleRowClick={handleClick}
+          rowColor={rowClassName}
+          editable={editable}
+        />
         {/* Talle */}
         <td>{row.Talle}</td>
         {/* Color + Porcentaje */}
@@ -255,30 +259,32 @@ export default function ProgramadaTable({
   );
 
   return (
-    <DataTable
-      cols={cols}
-      rows={
-        startDate && progColor && filteredProgColor.length === 0
-          ? progColor
-          : filteredProgColor
-      }
-      renderRow={renderRow}
-      initOrder='asc'
-      initOrderBy='Articulo'
-      tfoot={[
-        false, // for selected count
-        true,
-        'Total',
-        Math.round(totalAProducir) || '0', // Total A Producir
-        Math.round(totalProducido) || '0', // Total Producido
-        Math.round(totalFalta) || '0', // Total Falta
-        true,
-        true,
-        live && true,
-      ]}
-      headerTop='top-[94px]'
-      stripe=''
-      checkboxVariant='soft'
-    />
+    <DatesContext value={{ startDate, fromMonthStart: true, endDate: null }}>
+      <EnhancedTable
+        cols={cols}
+        rows={
+          startDate && progColor && filteredProgColor.length === 0
+            ? progColor
+            : filteredProgColor
+        }
+        renderRow={renderRow}
+        initOrder='asc'
+        initOrderBy='Articulo'
+        tfoot={[
+          false, // for selected count
+          true,
+          'Total',
+          Math.round(totalAProducir) || '0', // Total A Producir
+          Math.round(totalProducido) || '0', // Total Producido
+          Math.round(totalFalta) || '0', // Total Falta
+          true,
+          true,
+          live && true,
+        ]}
+        headerTop='top-[94px]'
+        stripe=''
+        checkboxVariant='soft'
+      />
+    </DatesContext>
   );
 }
