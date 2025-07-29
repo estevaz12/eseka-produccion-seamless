@@ -26,7 +26,7 @@ export default function EnhancedTable({
   // State for currently selected rows
   const [selected, setSelected] = useState([]);
   // State for currently opened rows
-  const [opened, setOpened] = useState([]);
+  const [opened, setOpened] = useState(null);
 
   const sortedRows = useMemo(() => {
     if (order !== initOrder || orderBy !== initOrderBy) {
@@ -70,7 +70,7 @@ export default function EnhancedTable({
    * Handles clicking on a row to perform function.
    * Adds or removes the row from the array.
    */
-  const handleClick = (row, arr, setArr) => {
+  const handleClickMany = (row, arr, setArr) => {
     const arrIdx = arr.indexOf(`${row.Articulo}-${row.Talle}-${row.ColorId}`);
     let newArr = [];
     if (arrIdx === -1) {
@@ -90,6 +90,11 @@ export default function EnhancedTable({
       newArr = newArr.concat(arr.slice(0, arrIdx), arr.slice(arrIdx + 1));
     }
     setArr(newArr);
+  };
+
+  const handleClickSingle = (row, val, setVal) => {
+    if (val === `${row.Articulo}-${row.Talle}-${row.ColorId}`) setVal(null);
+    else setVal(`${row.Articulo}-${row.Talle}-${row.ColorId}`);
   };
 
   return (
@@ -121,14 +126,11 @@ export default function EnhancedTable({
       <tbody>
         {/* Sort rows before rendering */}
         {sortedRows.map((row, i) => {
-          const isOpened = opened.includes(
-            `${row.Articulo}-${row.Talle}-${row.ColorId}`
-          );
           const isItemSelected = selected.includes(
             `${row.Articulo}-${row.Talle}-${row.ColorId}`
           );
-          const [rowClassName, renderedRow] = renderRow(row, i, () =>
-            handleClick(row, opened, setOpened)
+          const [rowClassName, renderedRow] = renderRow(row, i, opened, () =>
+            handleClickSingle(row, opened, setOpened)
           );
 
           return (
@@ -154,7 +156,7 @@ export default function EnhancedTable({
                   aria-checked={isItemSelected}
                   tabIndex={-1}
                   className='w-10'
-                  onClick={() => handleClick(row, selected, setSelected)}
+                  onClick={() => handleClickMany(row, selected, setSelected)}
                 >
                   <Checkbox
                     checked={isItemSelected}
@@ -166,7 +168,7 @@ export default function EnhancedTable({
                 {/* Row data cells */}
                 {renderedRow}
               </tr>
-              {isOpened && (
+              {opened === `${row.Articulo}-${row.Talle}-${row.ColorId}` && (
                 <ExpandedRow
                   row={row}
                   numCols={cols.filter(Boolean).length + 1} // +1 for checkbox

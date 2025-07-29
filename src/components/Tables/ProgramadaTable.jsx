@@ -164,7 +164,7 @@ export default function ProgramadaTable({
     },
   ];
 
-  function renderRow(row, i, handleClick) {
+  function renderRow(row, i, opened, handleClick) {
     const aProducir = formatNum(calcAProducir(row));
     const producido = formatNum(calcProducido(row));
     const falta = formatNum(calcAProducir(row) - calcProducido(row));
@@ -198,6 +198,7 @@ export default function ProgramadaTable({
         {/* Articulo */}
         <ArticuloCol
           row={row}
+          isOpen={opened === `${row.Articulo}-${row.Talle}-${row.ColorId}`}
           handleRowClick={handleClick}
           rowColor={rowClassName}
           editable={editable}

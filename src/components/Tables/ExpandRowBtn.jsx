@@ -1,19 +1,13 @@
 import { KeyboardArrowDownRounded } from '@mui/icons-material';
-import { useState } from 'react';
 
-export default function ExpandRowBtn({ handleClick, ...props }) {
-  const [open, setOpen] = useState(false);
-
+export default function ExpandRowBtn({ isOpen, handleClick, ...props }) {
   return (
     <KeyboardArrowDownRounded
-      onClick={() => {
-        handleClick();
-        setOpen(!open);
-      }}
+      onClick={handleClick}
       sx={{
         transition: 'transform 0.2s',
         // Rotate icon depending on sort order
-        transform: open ? 'rotate(-180deg)' : 'rotate(0deg)',
+        transform: isOpen ? 'rotate(-180deg)' : 'rotate(0deg)',
       }}
       className={`invisible group-hover/row:visible ${props.className}`}
     />

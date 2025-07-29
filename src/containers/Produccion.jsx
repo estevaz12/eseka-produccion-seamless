@@ -123,13 +123,18 @@ export default function Produccion() {
       : row.Unidades / 2;
   }
 
-  function renderRow(row, i, handleClick) {
+  function renderRow(row, i, opened, handleClick) {
     const producido = calcProducido(row);
     return [
       null, // rowClassName
       <>
         {/* Articulo */}
-        <ArticuloCol row={row} editable={false} handleRowClick={handleClick} />
+        <ArticuloCol
+          row={row}
+          isOpen={opened === `${row.Articulo}-${row.Talle}-${row.ColorId}`}
+          editable={false}
+          handleRowClick={handleClick}
+        />
         {/* Talle */}
         <td>{row.Talle}</td>
         {/* Color */}

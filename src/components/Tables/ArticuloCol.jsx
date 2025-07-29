@@ -2,18 +2,13 @@ import { Typography } from '@mui/joy';
 import EditArtBtn from './EditArtBtn.jsx';
 import ExpandRowBtn from './ExpandRowBtn.jsx';
 
-export default function ArticuloCol({
-  row,
-  handleRowClick,
-  editable,
-  rowColor = '',
-}) {
+export default function ArticuloCol({ row, isOpen, handleRowClick, editable }) {
   return (
     <td className='relative group/art'>
       <Typography
         {...(editable && {
           startDecorator: (
-            <ExpandRowBtn handleClick={handleRowClick} rowColor={rowColor} />
+            <ExpandRowBtn isOpen={isOpen} handleClick={handleRowClick} />
           ),
           endDecorator: <EditArtBtn articulo={row.Articulo} tipo={row.Tipo} />,
         })}
@@ -26,8 +21,8 @@ export default function ArticuloCol({
         ) : (
           <>
             <ExpandRowBtn
+              isOpen={isOpen}
               handleClick={handleRowClick}
-              rowColor={rowColor}
               className='absolute -left-1'
             />
             {`${row.Articulo}${row.Tipo ? row.Tipo : ''}`}
