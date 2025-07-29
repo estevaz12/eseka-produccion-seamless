@@ -46,7 +46,7 @@ export default function EditArticuloForm({ articuloData }) {
     if (formData.tipo !== articuloData.tipo) {
       // edit articulo
       try {
-        fetch(`${apiUrl}/articulo/updateTipo`, {
+        await fetch(`${apiUrl}/articulo/updateTipo`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -61,10 +61,7 @@ export default function EditArticuloForm({ articuloData }) {
       }
     }
 
-    if (
-      JSON.stringify(formData.colorDistr) !==
-      JSON.stringify(articuloData.colorDistr)
-    ) {
+    if (!colorDistrEqual(formData.colorDistr, articuloData.colorDistr)) {
       try {
         await fetch(`${apiUrl}/colorDistr/insert`, {
           method: 'POST',
@@ -156,5 +153,18 @@ export default function EditArticuloForm({ articuloData }) {
         <Button type='submit'>Guardar cambios</Button>
       </Stack>
     </form>
+  );
+}
+
+function colorDistrEqual(a, b) {
+  if (a.length !== b.length) return false;
+  // Sort both arrays by color (or another unique key)
+  const aSorted = [...a].sort((x, y) => x.color.localeCompare(y.color));
+  const bSorted = [...b].sort((x, y) => x.color.localeCompare(y.color));
+  // Compare each entry
+  return aSorted.every(
+    (item, i) =>
+      item.color === bSorted[i].color &&
+      item.porcentaje === bSorted[i].porcentaje
   );
 }
