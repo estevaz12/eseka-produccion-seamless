@@ -1,4 +1,8 @@
-import { Download, QuestionMark, SyncProblem } from '@mui/icons-material';
+import {
+  DownloadRounded,
+  QuestionMarkRounded,
+  SyncProblemRounded,
+} from '@mui/icons-material';
 import { Typography } from '@mui/joy';
 import { roundUpEven } from '../../utils/progTableUtils';
 
@@ -18,7 +22,7 @@ export default function TargetCol({ row, faltaUnidades }) {
           <Typography>
             {row.Target}
             &nbsp;
-            <Download fontSize='inherit' />
+            <DownloadRounded fontSize='small' />
           </Typography>
         );
       } else if (machTarget > row.Target) {
@@ -27,7 +31,7 @@ export default function TargetCol({ row, faltaUnidades }) {
           <Typography>
             {machTarget}
             &nbsp;
-            <SyncProblem fontSize='inherit' />
+            <SyncProblemRounded fontSize='small' />
           </Typography>
         );
       } else if (
@@ -39,7 +43,7 @@ export default function TargetCol({ row, faltaUnidades }) {
           <Typography>
             {machTarget}
             &nbsp;
-            <QuestionMark fontSize='inherit' />
+            <QuestionMarkRounded fontSize='small' />
           </Typography>
         );
       }
@@ -64,14 +68,14 @@ export default function TargetCol({ row, faltaUnidades }) {
               return (
                 <>
                   &nbsp;
-                  <Download fontSize='inherit' />
+                  <DownloadRounded fontSize='small' />
                 </>
               );
             else if (m.TargetOrder === 0)
               return (
                 <>
                   &nbsp;
-                  <QuestionMark fontSize='inherit' />
+                  <QuestionMarkRounded fontSize='small' />
                 </>
               );
           })()}

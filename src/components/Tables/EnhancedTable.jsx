@@ -1,7 +1,8 @@
 import { Checkbox, Table } from '@mui/joy';
-import EnhancedTableHead from './EnhancedTableHead.jsx';
+import EnhancedHead from './EnhancedHead.jsx';
 import React, { useMemo, useState } from 'react';
 import ExpandedRow from './ExpandedRow.jsx';
+import EnhancedFooter from './EnhancedFooter.jsx';
 
 /**
  * SortedSelectedTable
@@ -13,7 +14,7 @@ export default function EnhancedTable({
   renderRow,
   initOrder,
   initOrderBy,
-  tfoot,
+  footer,
   stripe = 'even',
   className = '',
   headerTop = '',
@@ -112,7 +113,7 @@ export default function EnhancedTable({
       }}
     >
       {/* Table header with sorting and select-all functionality */}
-      <EnhancedTableHead
+      <EnhancedHead
         cols={cols}
         order={order}
         orderBy={orderBy}
@@ -179,22 +180,7 @@ export default function EnhancedTable({
         })}
       </tbody>
 
-      {tfoot && (
-        <tfoot className='sticky bottom-0 z-10 font-semibold'>
-          <tr>
-            {/* Selected */}
-            <td
-              colSpan={2}
-              className='text-[var(--joy-palette-text-tertiary)] font-normal'
-            >
-              {selected.length > 0 ? `${selected.length} seleccionadas` : ''}
-            </td>
-            {tfoot.filter(Boolean).map((foot, i) => (
-              <td key={i}>{foot}</td>
-            ))}
-          </tr>
-        </tfoot>
-      )}
+      <EnhancedFooter footer={footer} selected={selected} />
     </Table>
   );
 }

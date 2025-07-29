@@ -200,13 +200,7 @@ export default function Produccion() {
           renderRow={renderRow}
           initOrder='asc'
           initOrderBy='Articulo'
-          tfoot={[
-            false,
-            true,
-            'Total',
-            totalUnidades || '0',
-            totalDocenas || '0',
-          ]}
+          footer={['Total', totalUnidades || '0', totalDocenas || '0']}
           headerTop='top-[94px]'
         />
       </DatesContext>

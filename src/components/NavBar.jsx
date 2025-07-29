@@ -11,9 +11,10 @@ import { NavLink } from 'react-router';
 export default function NavBar() {
   return (
     <nav className='h-full w-full bg-neutral-100 [&_.Mui-selected]:bg-neutral-300 [&_.MuiListItemButton-root]:not-[.Mui-selected]:hover:bg-neutral-200'>
-      <List className=''>
+      {/* nav list */}
+      <List>
         <ListItem nested>
-          <ListSubheader>Programada</ListSubheader>
+          <ListSubheader className='font-bold'>Programada</ListSubheader>
           <List>
             <NavLink to='/'>
               {({ isActive }) => (
@@ -48,7 +49,7 @@ export default function NavBar() {
           </List>
         </ListItem>
         <ListItem nested>
-          <ListSubheader>Herramientas</ListSubheader>
+          <ListSubheader className='font-bold'>Herramientas</ListSubheader>
           <List>
             <NavLink to='/produccion'>
               {({ isActive }) => (

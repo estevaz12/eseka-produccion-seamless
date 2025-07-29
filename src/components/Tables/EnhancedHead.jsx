@@ -14,7 +14,7 @@ import { visuallyHidden } from '@mui/utils';
  * - rowCount: Total number of rows.
  * - onRequestSort: Handler to request sorting by a column.
  */
-export default function EnhancedTableHead({
+export default function EnhancedHead({
   cols,
   order,
   orderBy,

@@ -12,6 +12,7 @@ import AProducirCol from './AProducirCol.jsx';
 import EnhancedTable from './EnhancedTable.jsx';
 import ArticuloCol from './ArticuloCol.jsx';
 import { DatesContext } from '../../Contexts.js';
+import ProgLegend from './ProgLegend.jsx';
 
 let apiUrl;
 
@@ -271,16 +272,14 @@ export default function ProgramadaTable({
         renderRow={renderRow}
         initOrder='asc'
         initOrderBy='Articulo'
-        tfoot={[
-          false, // for selected count
-          true,
+        footer={[
           'Total',
           Math.round(totalAProducir) || '0', // Total A Producir
           Math.round(totalProducido) || '0', // Total Producido
           Math.round(totalFalta) || '0', // Total Falta
           true,
-          true,
-          live && true,
+          !live ? <ProgLegend live={live} /> : true,
+          live && <ProgLegend live={live} />,
         ]}
         headerTop='top-[94px]'
         stripe=''
