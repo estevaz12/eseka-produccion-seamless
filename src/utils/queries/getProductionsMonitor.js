@@ -42,7 +42,7 @@ const getProductionsMonitor = (
         .format(process.env.SQL_DATE_FORMAT);
 
   return `
-    SELECT TOP(5) pm.DateRec, pm.Shift, pm.MachCode, pm.StyleCode, pm.Pieces, 
+    SELECT pm.DateRec, pm.Shift, pm.MachCode, pm.StyleCode, pm.Pieces, 
             pm.OrderPieces, pm.TargetPieces, pm.Discards
     FROM PRODUCTIONS_MONITOR as pm
     WHERE SUBSTRING(pm.StyleCode, 1, 8) IN (

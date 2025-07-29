@@ -1,14 +1,20 @@
-import { Sheet, Table, Typography } from '@mui/joy';
+import { IconButton, Sheet, Stack, Table, Typography } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import dayjs from 'dayjs';
 import { DatesContext } from '../../Contexts.js';
+import {
+  KeyboardArrowLeftRounded,
+  KeyboardArrowRightRounded,
+} from '@mui/icons-material';
 
 let apiUrl;
 export default function ExpandedRow({ numCols, row }) {
   apiUrl = useConfig().apiUrl;
   const { startDate, fromMonthStart, endDate } = useContext(DatesContext);
   const [history, setHistory] = useState([]);
+  const [page, setPage] = useState(1);
+  const PAGE_LENGTH = 5; // each page will have 5 rows
 
   useEffect(() => {
     const params = new URLSearchParams({
@@ -40,6 +46,14 @@ export default function ExpandedRow({ numCols, row }) {
     endDate,
   ]);
 
+  const pageStart = (currPage) => {
+    return currPage * PAGE_LENGTH - (PAGE_LENGTH - 1);
+  };
+
+  const pageEnd = (currPage) => {
+    return currPage * PAGE_LENGTH;
+  };
+
   return (
     <tr>
       <td style={{ height: 0, padding: 0 }} colSpan={numCols}>
@@ -51,9 +65,44 @@ export default function ExpandedRow({ numCols, row }) {
             boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)',
           }}
         >
-          <Typography level='body-lg' component='div' className='text-left!'>
-            Historial
-          </Typography>
+          <Stack direction='row' className='justify-between'>
+            <Typography level='body-lg' component='div' className='text-left!'>
+              Historial
+            </Typography>
+            {history.length > 5 && (
+              <Stack direction='row' className='items-center gap-2'>
+                <Typography level='body-sm' className='text-right!'>
+                  {pageStart(page) === history.length
+                    ? ''
+                    : `${pageStart(page)}-`}
+                  {pageEnd(page) < history.length
+                    ? pageEnd(page)
+                    : history.length}{' '}
+                  de {history.length}
+                </Typography>
+                <Stack direction='row' className='items-center'>
+                  <IconButton
+                    variant='soft'
+                    size='sm'
+                    onClick={() => {
+                      if (page > 1) setPage(page - 1);
+                    }}
+                  >
+                    <KeyboardArrowLeftRounded />
+                  </IconButton>
+                  <IconButton
+                    variant='soft'
+                    size='sm'
+                    onClick={() => {
+                      if (pageEnd(page) < history.length) setPage(page + 1);
+                    }}
+                  >
+                    <KeyboardArrowRightRounded />
+                  </IconButton>
+                </Stack>
+              </Stack>
+            )}
+          </Stack>
           <Table
             borderAxis='bothBetween'
             size='sm'
@@ -81,20 +130,24 @@ export default function ExpandedRow({ numCols, row }) {
               </tr>
             </thead>
             <tbody>
-              {history.map((historyRow) => (
-                <tr key={historyRow.DateRec}>
-                  <td>
-                    {dayjs.tz(historyRow.DateRec).format('DD-MM-YYYY HH:mm:ss')}
-                  </td>
-                  <td>{historyRow.Shift}</td>
-                  <td>{historyRow.MachCode}</td>
-                  <td>{historyRow.StyleCode}</td>
-                  <td>{historyRow.Pieces}</td>
-                  <td>{historyRow.OrderPieces}</td>
-                  <td>{historyRow.TargetPieces}</td>
-                  <td>{historyRow.Discards}</td>
-                </tr>
-              ))}
+              {history
+                .slice(pageStart(page) - 1, pageEnd(page))
+                .map((historyRow) => (
+                  <tr key={`${historyRow.MachCode}-${historyRow.DateRec}`}>
+                    <td>
+                      {dayjs
+                        .tz(historyRow.DateRec)
+                        .format('DD-MM-YYYY HH:mm:ss')}
+                    </td>
+                    <td>{historyRow.Shift}</td>
+                    <td>{historyRow.MachCode}</td>
+                    <td>{historyRow.StyleCode}</td>
+                    <td>{historyRow.Pieces}</td>
+                    <td>{historyRow.OrderPieces}</td>
+                    <td>{historyRow.TargetPieces}</td>
+                    <td>{historyRow.Discards}</td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
         </Sheet>
