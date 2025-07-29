@@ -4,6 +4,8 @@ const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 
 // Utils
 const serverLog = require('./utils/serverLog.js');
@@ -66,6 +68,10 @@ process.parentPort.once('message', (e) => {
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Buenos_Aires');
 
 const config = {
   port: 3001,
@@ -573,7 +579,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const now = dayjs();
+        const now = dayjs.tz();
         await sql.query(insertProgramada(data, 'inserted', now));
         serverLog('POST /programada/insertAll - SUCCESS');
         // return inserted rows to calculate new targets
@@ -651,7 +657,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const now = dayjs();
+        const now = dayjs.tz();
         await sql.query(updateProgramada(data, now));
         serverLog('POST /programada/update - SUCCESS');
         // return inserted rows to calculate new targets

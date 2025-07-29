@@ -14,6 +14,7 @@ import ProgComparar from './containers/ProgComparar.jsx';
 import ProgAnteriores from './containers/ProgAnteriores.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import Maquinas from './containers/Maquinas.jsx';
 import {
   extendTheme,
@@ -27,6 +28,8 @@ import {
 import CssBaseline from '@mui/joy/CssBaseline';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Buenos_Aires');
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);

@@ -125,12 +125,14 @@ const calculateNewTargets = async (progUpdates, machines) => {
 module.exports = calculateNewTargets;
 
 async function getMonthProduction(newRecord) {
-  const startDate = dayjs()
+  const startDate = dayjs
+    .tz()
     .startOf('month')
     .hour(6)
+    .minute(0)
     .second(1)
     .format(process.env.SQL_DATE_FORMAT);
-  const endDate = dayjs().format(process.env.SQL_DATE_FORMAT);
+  const endDate = dayjs.tz().format(process.env.SQL_DATE_FORMAT);
   let monthProduction = 0;
 
   try {

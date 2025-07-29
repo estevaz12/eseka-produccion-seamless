@@ -15,7 +15,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
     // make sure endDate is the latest date
     const updatedFormData = {
       ...formData,
-      endDate: formData.actual ? dayjs() : formData.endDate,
+      endDate: formData.actual ? dayjs.tz() : formData.endDate,
     };
     // update the view
     setFormData(updatedFormData);
@@ -59,19 +59,25 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
             <StyledDateTimePicker
               value={formData.startDate}
               onChange={(date) => {
-                const hour = dayjs(date).hour();
+                const hour = dayjs.tz(date).hour();
 
                 if (hour === 6 || hour === 14 || hour === 22) {
                   // add a second when hour is 6, 14, 22 to exclude data from
                   // previous turn
                   setFormData({
                     ...formData,
-                    startDate: dayjs(date).set('minutes', 0).set('seconds', 1),
+                    startDate: dayjs
+                      .tz(date)
+                      .set('minutes', 0)
+                      .set('seconds', 1),
                   });
                 } else {
                   setFormData({
                     ...formData,
-                    startDate: dayjs(date).set('seconds', 0),
+                    startDate: dayjs
+                      .tz(date)
+                      .set('minutes', 0)
+                      .set('seconds', 0),
                   });
                 }
               }}
@@ -89,7 +95,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
             <StyledDateTimePicker
               value={formData.endDate}
               onChange={(date) => {
-                const newEndDate = dayjs(date);
+                const newEndDate = dayjs.tz(date);
 
                 if (
                   !formData.actual &&
@@ -125,7 +131,7 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
               setFormData({
                 ...formData,
                 actual: isChecked,
-                endDate: isChecked ? dayjs() : formData.endDate,
+                endDate: isChecked ? dayjs.tz() : formData.endDate,
               });
             }}
             className='self-end'

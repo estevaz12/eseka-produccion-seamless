@@ -10,29 +10,36 @@ const getProgColorTable = (
   let prodStartDate, prodEndDate;
   if (startMonth && startYear) {
     // month starts first day of month at 6am + 1 second
-    prodStartDate = dayjs()
+    prodStartDate = dayjs
+      .tz()
       .month(startMonth - 1)
       .year(startYear)
       .startOf('month')
-      .add(6, 'hour')
-      .add(1, 'second')
+      .hour(6)
+      .minute(0)
+      .second(1)
       .format(process.env.SQL_DATE_FORMAT);
     // month always ends on the first day of the next month at 6am
-    prodEndDate = dayjs()
+    prodEndDate = dayjs
+      .tz()
       .month(startMonth - 1)
       .year(startYear)
-      .endOf('month')
-      .add(6, 'hour')
-      .add(1, 'second')
+      .endOf('month') // 30th or 31st at 11:59:59
+      .add(1, 'day')
+      .hour(6)
+      .minute(0)
+      .second(0)
       .format(process.env.SQL_DATE_FORMAT);
   } else {
     // current date
-    prodStartDate = dayjs()
+    prodStartDate = dayjs
+      .tz()
       .startOf('month')
-      .add(6, 'hour')
-      .add(1, 'second')
+      .hour(6)
+      .minute(0)
+      .second(1)
       .format(process.env.SQL_DATE_FORMAT);
-    prodEndDate = dayjs().format(process.env.SQL_DATE_FORMAT);
+    prodEndDate = dayjs.tz().format(process.env.SQL_DATE_FORMAT);
   }
 
   // get Month Production

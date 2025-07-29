@@ -254,9 +254,9 @@ export default function ProgComparar() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              date: dayjs().format(sqlDateFormat),
-              month: dayjs().month() + 1, // month is 0-indexed in dayjs
-              year: dayjs().year(),
+              date: dayjs.tz().format(sqlDateFormat),
+              month: dayjs.tz().month() + 1, // month is 0-indexed in dayjs
+              year: dayjs.tz().year(),
             }),
           }).catch((err) => {
             console.error('[CLIENT] Error inserting start date:', err);
@@ -267,7 +267,7 @@ export default function ProgComparar() {
             fetchNewTargets(data);
           }, 30000); // update every 30 seconds
 
-          setStartDate(dayjs().format(sqlDateFormat));
+          setStartDate(dayjs.tz().format(sqlDateFormat));
           // currTotal auto-updates on startDate change
         } catch (err) {
           console.error('[CLIENT] Error fetching data:', err);
@@ -402,8 +402,7 @@ export default function ProgComparar() {
           />
           <StyledDatePicker
             label='Fecha de inicio'
-            value={startDate ? dayjs(startDate) : null}
-            timezone='UTC'
+            value={startDate ? dayjs.tz(startDate) : null}
             onChange={(newValue) => {
               if (newValue) {
                 setStartDate(newValue.format(sqlDateFormat));

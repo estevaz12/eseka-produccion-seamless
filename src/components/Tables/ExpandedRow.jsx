@@ -2,12 +2,7 @@ import { Sheet, Table, Typography } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import { DatesContext } from '../../Contexts.js';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 let apiUrl;
 export default function ExpandedRow({ numCols, row }) {
@@ -89,9 +84,7 @@ export default function ExpandedRow({ numCols, row }) {
               {history.map((historyRow) => (
                 <tr key={historyRow.DateRec}>
                   <td>
-                    {dayjs
-                      .tz(historyRow.DateRec, 'America/Buenos_Aires')
-                      .format('DD-MM-YYYY HH:mm:ss')}
+                    {dayjs.tz(historyRow.DateRec).format('DD-MM-YYYY HH:mm:ss')}
                   </td>
                   <td>{historyRow.Shift}</td>
                   <td>{historyRow.MachCode}</td>

@@ -68,7 +68,8 @@ export default function ProgAnteriores() {
                 key={i}
                 value={`${row.Date}|${row.Month}|${row.Year}|${i + 1}`}
               >
-                {`${dayjs()
+                {`${dayjs
+                  .tz()
                   .month(row.Month - 1)
                   .locale('es')
                   .format('MMMM')} ${row.Year}`}

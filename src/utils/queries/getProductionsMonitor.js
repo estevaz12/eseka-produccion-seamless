@@ -21,28 +21,24 @@ const getProductionsMonitor = (
   // month starts first day of month at 6am + 1 second
   prodStartDate = fromMonthStart
     ? dayjs
-        .tz(startDate, 'America/Buenos_Aires')
+        .tz(startDate)
         .startOf('month')
-        .set('hour', 6)
-        .set('minute', 0)
-        .set('second', 1)
+        .hour(6)
+        .minute(0)
+        .second(1)
         .format(process.env.SQL_DATE_FORMAT)
-    : dayjs(startDate)
-        .tz('America/Buenos_Aires')
-        .format(process.env.SQL_DATE_FORMAT);
+    : dayjs(startDate).tz().format(process.env.SQL_DATE_FORMAT);
 
   // month always ends on the first day of the next month at 6am
   prodEndDate = endDate
-    ? dayjs(endDate)
-        .tz('America/Buenos_Aires')
-        .format(process.env.SQL_DATE_FORMAT)
+    ? dayjs(endDate).tz().format(process.env.SQL_DATE_FORMAT)
     : dayjs
-        .tz(startDate, 'America/Buenos_Aires')
+        .tz(startDate)
         .endOf('month')
         .add(1, 'day')
-        .set('hour', 6)
-        .set('minute', 0)
-        .set('second', 0)
+        .hour(6)
+        .minute(0)
+        .second(0)
         .format(process.env.SQL_DATE_FORMAT);
 
   return `

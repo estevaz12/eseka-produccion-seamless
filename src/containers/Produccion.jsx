@@ -16,8 +16,8 @@ export default function Produccion() {
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
     room: 'SEAMLESS',
-    startDate: dayjs().startOf('month').add(6, 'hour').add(1, 'second'),
-    endDate: dayjs(),
+    startDate: dayjs.tz().startOf('month').hour(6).minute(0).second(1),
+    endDate: dayjs.tz(),
     actual: true,
     articulo: '',
     talle: '',
@@ -29,12 +29,14 @@ export default function Produccion() {
     let ignore = false;
     const params = new URLSearchParams({
       room: 'SEAMLESS',
-      startDate: dayjs()
+      startDate: dayjs
+        .tz()
         .startOf('month')
-        .add(6, 'hour')
-        .add(1, 'second')
+        .hour(6)
+        .minute(0)
+        .second(1)
         .format(sqlDateFormat),
-      endDate: dayjs().format(sqlDateFormat),
+      endDate: dayjs.tz().format(sqlDateFormat),
       actual: true,
       articulo: '',
       talle: '',
