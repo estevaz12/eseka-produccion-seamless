@@ -3,6 +3,7 @@ import EnhancedHead from './EnhancedHead.jsx';
 import React, { useMemo, useState } from 'react';
 import ExpandedRow from './ExpandedRow.jsx';
 import EnhancedFooter from './EnhancedFooter.jsx';
+import TableSkeleton from './TableSkeleton.jsx';
 
 /**
  * SortedSelectedTable
@@ -28,6 +29,8 @@ export default function EnhancedTable({
   const [selected, setSelected] = useState([]);
   // State for currently opened rows
   const [opened, setOpened] = useState(null);
+  // loading state
+  const loading = rows.length === 0;
 
   const sortedRows = useMemo(() => {
     if (order !== initOrder || orderBy !== initOrderBy) {
@@ -125,59 +128,63 @@ export default function EnhancedTable({
       />
 
       <tbody>
-        {/* Sort rows before rendering */}
-        {sortedRows.map((row, i) => {
-          const isItemSelected = selected.includes(
-            `${row.Articulo}-${row.Talle}-${row.ColorId}`
-          );
-          const [rowClassName, renderedRow] = renderRow(row, i, opened, () =>
-            handleClickSingle(row, opened, setOpened)
-          );
+        {loading ? (
+          <TableSkeleton numCols={cols.length + 1} />
+        ) : (
+          // Sort rows before rendering
+          sortedRows.map((row, i) => {
+            const isItemSelected = selected.includes(
+              `${row.Articulo}-${row.Talle}-${row.ColorId}`
+            );
+            const [rowClassName, renderedRow] = renderRow(row, i, opened, () =>
+              handleClickSingle(row, opened, setOpened)
+            );
 
-          return (
-            <React.Fragment key={i}>
-              <tr
-                key={i}
-                className={`group/row ${rowClassName}`}
-                // Apply custom background if selected
-                style={
-                  isItemSelected
-                    ? {
-                        '--TableCell-dataBackground':
-                          'var(--TableCell-selectedBackground)',
-                        '--TableCell-headBackground':
-                          'var(--TableCell-selectedBackground)',
-                      }
-                    : {}
-                }
-              >
-                {/* Selection checkbox for the row */}
-                <td
-                  role='checkbox'
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  className='w-10'
-                  onClick={() => handleClickMany(row, selected, setSelected)}
+            return (
+              <React.Fragment key={i}>
+                <tr
+                  key={i}
+                  className={`group/row ${rowClassName}`}
+                  // Apply custom background if selected
+                  style={
+                    isItemSelected
+                      ? {
+                          '--TableCell-dataBackground':
+                            'var(--TableCell-selectedBackground)',
+                          '--TableCell-headBackground':
+                            'var(--TableCell-selectedBackground)',
+                        }
+                      : {}
+                  }
                 >
-                  <Checkbox
-                    checked={isItemSelected}
-                    variant={isItemSelected ? 'solid' : checkboxVariant}
-                    sx={{ verticalAlign: 'top' }}
-                  />
-                </td>
+                  {/* Selection checkbox for the row */}
+                  <td
+                    role='checkbox'
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    className='w-10'
+                    onClick={() => handleClickMany(row, selected, setSelected)}
+                  >
+                    <Checkbox
+                      checked={isItemSelected}
+                      variant={isItemSelected ? 'solid' : checkboxVariant}
+                      sx={{ verticalAlign: 'top' }}
+                    />
+                  </td>
 
-                {/* Row data cells */}
-                {renderedRow}
-              </tr>
-              {opened === `${row.Articulo}-${row.Talle}-${row.ColorId}` && (
-                <ExpandedRow
-                  row={row}
-                  numCols={cols.filter(Boolean).length + 1} // +1 for checkbox
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
+                  {/* Row data cells */}
+                  {renderedRow}
+                </tr>
+                {opened === `${row.Articulo}-${row.Talle}-${row.ColorId}` && (
+                  <ExpandedRow
+                    row={row}
+                    numCols={cols.filter(Boolean).length + 1} // +1 for checkbox
+                  />
+                )}
+              </React.Fragment>
+            );
+          })
+        )}
       </tbody>
 
       <EnhancedFooter footer={footer} selected={selected} />

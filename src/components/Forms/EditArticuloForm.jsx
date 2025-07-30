@@ -12,15 +12,18 @@ import {
 import { useConfig } from '../../ConfigContext.jsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
 import { ErrorContext } from '../../Contexts.js';
+import { SaveOutlined } from '@mui/icons-material';
 
 // TODO: loading indicator
 export default function EditArticuloForm({ articuloData }) {
   const { apiUrl } = useConfig();
   const [formData, setFormData] = useState(articuloData);
   const [error, setError] = useState(false); // 'color' || 'distr' || false
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
     // validate colorDistr
     if (formData.colorDistr.length > 1) {
@@ -79,6 +82,7 @@ export default function EditArticuloForm({ articuloData }) {
     }
 
     setError(false);
+    setLoading(false);
     window.location.reload();
   }
 
@@ -150,7 +154,13 @@ export default function EditArticuloForm({ articuloData }) {
           <ColorDistrInputs formData={formData} setFormData={setFormData} />
         </ErrorContext>
         {/* submit btn */}
-        <Button type='submit'>Guardar cambios</Button>
+        <Button
+          type='submit'
+          loading={loading}
+          startDecorator={!loading && <SaveOutlined />}
+        >
+          Guardar cambios
+        </Button>
       </Stack>
     </form>
   );

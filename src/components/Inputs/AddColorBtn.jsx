@@ -1,4 +1,4 @@
-import { Add, Check, Close } from '@mui/icons-material';
+import { AddRounded, Check, Close } from '@mui/icons-material';
 import {
   Button,
   FormControl,
@@ -63,7 +63,7 @@ export default function AddColorBtn({
             className='w-44'
             disabled={!editing && value !== ''}
           >
-            <Add />
+            <AddRounded />
             &nbsp;Agregar color
           </Button>
         ) : (

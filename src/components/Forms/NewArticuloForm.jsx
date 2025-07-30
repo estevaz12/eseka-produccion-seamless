@@ -12,6 +12,7 @@ import {
 import { useConfig } from '../../ConfigContext.jsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
 import { ErrorContext } from '../../Contexts.js';
+import { AddRounded } from '@mui/icons-material';
 
 export default function NewArticuloForm({
   newArticuloData,
@@ -20,10 +21,12 @@ export default function NewArticuloForm({
   const { apiUrl } = useConfig();
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false); // 'color' || 'distr' || false
+  const [loading, setLoading] = useState(false);
 
   // TODO: loading indicator
   async function handleSubmit(e, articulo, articuloExists) {
     e.preventDefault();
+    setLoading(true);
 
     if (formData.colorDistr.length > 1) {
       const distrSum = formData.colorDistr.reduce(
@@ -78,6 +81,7 @@ export default function NewArticuloForm({
       }
     }
 
+    setLoading(false);
     setNewArticuloData((prev) => prev.slice(1)); // Remove first ite
     setFormData({});
     setError(false);
@@ -156,7 +160,13 @@ export default function NewArticuloForm({
           <ColorDistrInputs formData={formData} setFormData={setFormData} />
         </ErrorContext>
         {/* submit btn */}
-        <Button type='submit'>Agregar artículo</Button>
+        <Button
+          type='submit'
+          loading={loading}
+          startDecorator={!loading && <AddRounded />}
+        >
+          Agregar artículo
+        </Button>
       </Stack>
     </form>
   );

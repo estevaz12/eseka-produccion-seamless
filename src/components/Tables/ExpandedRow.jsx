@@ -7,6 +7,7 @@ import {
   KeyboardArrowLeftRounded,
   KeyboardArrowRightRounded,
 } from '@mui/icons-material';
+import TableSkeleton from './TableSkeleton.jsx';
 
 let apiUrl;
 export default function ExpandedRow({ numCols, row }) {
@@ -130,24 +131,28 @@ export default function ExpandedRow({ numCols, row }) {
               </tr>
             </thead>
             <tbody>
-              {history
-                .slice(pageStart(page) - 1, pageEnd(page))
-                .map((historyRow) => (
-                  <tr key={`${historyRow.MachCode}-${historyRow.DateRec}`}>
-                    <td>
-                      {dayjs
-                        .tz(historyRow.DateRec)
-                        .format('DD-MM-YYYY HH:mm:ss')}
-                    </td>
-                    <td>{historyRow.Shift}</td>
-                    <td>{historyRow.MachCode}</td>
-                    <td>{historyRow.StyleCode}</td>
-                    <td>{historyRow.Pieces}</td>
-                    <td>{historyRow.OrderPieces}</td>
-                    <td>{historyRow.TargetPieces}</td>
-                    <td>{historyRow.Discards}</td>
-                  </tr>
-                ))}
+              {history.length === 0 ? (
+                <TableSkeleton numCols={8} numRows={5} />
+              ) : (
+                history
+                  .slice(pageStart(page) - 1, pageEnd(page))
+                  .map((historyRow) => (
+                    <tr key={`${historyRow.MachCode}-${historyRow.DateRec}`}>
+                      <td>
+                        {dayjs
+                          .tz(historyRow.DateRec)
+                          .format('DD-MM-YYYY HH:mm:ss')}
+                      </td>
+                      <td>{historyRow.Shift}</td>
+                      <td>{historyRow.MachCode}</td>
+                      <td>{historyRow.StyleCode}</td>
+                      <td>{historyRow.Pieces}</td>
+                      <td>{historyRow.OrderPieces}</td>
+                      <td>{historyRow.TargetPieces}</td>
+                      <td>{historyRow.Discards}</td>
+                    </tr>
+                  ))
+              )}
             </tbody>
           </Table>
         </Sheet>

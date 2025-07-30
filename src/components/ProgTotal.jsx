@@ -1,4 +1,4 @@
-import { Typography } from '@mui/joy';
+import { Skeleton, Typography } from '@mui/joy';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 
@@ -29,9 +29,24 @@ export default function ProgTotal({ startDate, currTotal = undefined }) {
   }, [startDate, currTotal]);
 
   return (
-    <Typography level='body-lg'>
+    <Typography
+      level='body-lg'
+      className={!total && startDate && 'flex items-end gap-1'}
+    >
       Total actual:{' '}
-      {total !== undefined ? total : startDate ? 'Cargando...' : 0}
+      {total !== undefined ? (
+        total
+      ) : startDate ? (
+        <Skeleton
+          animation='wave'
+          variant='text'
+          level='body-lg'
+          width={70}
+          className='inline-block pb-1'
+        />
+      ) : (
+        0
+      )}
     </Typography>
   );
 }

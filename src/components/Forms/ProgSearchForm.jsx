@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ArtTalleColorInputs from '../Inputs/ArtTalleColorInputs.jsx';
 import { FormControl, FormLabel, Input } from '@mui/joy';
+import { SearchOffRounded } from '@mui/icons-material';
 
 export default function ProgSearchForm({
   progColor,
@@ -46,8 +47,12 @@ export default function ProgSearchForm({
       <ArtTalleColorInputs
         formData={formData}
         setFormData={setFormData}
-        btnType='reset'
-        btnText='Limpiar'
+        btnProps={{
+          type: 'reset',
+          icon: <SearchOffRounded />,
+          color: 'danger',
+          variant: 'soft',
+        }}
         inheritedColors={Array.from(
           new Map(
             filteredProgColor.map((row) => [

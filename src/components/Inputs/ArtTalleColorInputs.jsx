@@ -1,4 +1,11 @@
-import { Button, FormControl, FormLabel, Input, Option, Stack } from '@mui/joy';
+import {
+  FormControl,
+  FormLabel,
+  IconButton,
+  Input,
+  Option,
+  Stack,
+} from '@mui/joy';
 import ColorSelect from './ColorSelect.jsx';
 import SelectClearable from './SelectClearable.jsx';
 import { useState } from 'react';
@@ -6,9 +13,7 @@ import { useState } from 'react';
 export default function ArtColorTalleInputs({
   formData,
   setFormData,
-  btnType,
-  btnText,
-  btnOnKeyDown,
+  btnProps,
   inheritedColors,
   children,
 }) {
@@ -57,9 +62,14 @@ export default function ArtColorTalleInputs({
 
       {children}
 
-      <Button type={btnType} onKeyDown={btnOnKeyDown}>
-        {btnText}
-      </Button>
+      <IconButton
+        color={btnProps.color}
+        variant={btnProps.variant}
+        type={btnProps.type}
+        onKeyDown={btnProps.onKeyDown}
+      >
+        {btnProps.icon}
+      </IconButton>
     </Stack>
   );
 }

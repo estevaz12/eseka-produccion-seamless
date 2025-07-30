@@ -18,7 +18,13 @@ import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useOutletContext } from 'react-router';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
-import { KeyboardArrowDownRounded } from '@mui/icons-material';
+import {
+  ChangeCircleOutlined,
+  CompareArrowsRounded,
+  KeyboardArrowDownRounded,
+  LibraryAddOutlined,
+  RestartAltRounded,
+} from '@mui/icons-material';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 
 // to avoid useEffect dependency issues
@@ -363,7 +369,11 @@ export default function ProgComparar() {
               <ListItem>
                 <Typography>
                   Oprima{' '}
-                  <Typography variant='solid' color='primary'>
+                  <Typography
+                    variant='solid'
+                    color='primary'
+                    className='font-bold'
+                  >
                     Comparar
                   </Typography>{' '}
                   para ver los cambios.
@@ -372,7 +382,11 @@ export default function ProgComparar() {
               <ListItem>
                 <Typography>
                   Para cargar los cambios, oprima{' '}
-                  <Typography variant='solid' color='primary'>
+                  <Typography
+                    variant='solid'
+                    color='primary'
+                    className='font-bold'
+                  >
                     Cargar cambios
                   </Typography>
                 </Typography>
@@ -381,10 +395,14 @@ export default function ProgComparar() {
                 <Typography>
                   Para cargar programada nueva del mes, oprima{' '}
                   <Typography variant='solid' color='danger'>
-                    Reset
+                    <RestartAltRounded className='pb-1' />
                   </Typography>{' '}
-                  y luego{' '}
-                  <Typography variant='solid' color='primary'>
+                  para resetear y luego{' '}
+                  <Typography
+                    variant='solid'
+                    color='primary'
+                    className='font-bold'
+                  >
                     Cargar todo
                   </Typography>
                 </Typography>
@@ -413,8 +431,9 @@ export default function ProgComparar() {
             className='max-w-[150px]'
           />
 
-          <Button
+          <IconButton
             color='danger'
+            variant='solid'
             disabled={
               !(
                 diff &&
@@ -430,11 +449,11 @@ export default function ProgComparar() {
               setCurrTotal(0); // to trigger a re-render
             }}
           >
-            Reset
-          </Button>
+            <RestartAltRounded />
+          </IconButton>
         </Stack>
 
-        <Stack direction='row' className='items-end justify-between w-md'>
+        <Stack direction='row' className='items-end justify-between w-[500px]'>
           <ProgTotal startDate={startDate} currTotal={currTotal} />
 
           {programada && !diff && !newTargets && (
@@ -442,6 +461,7 @@ export default function ProgComparar() {
               onClick={handleCompare}
               // can compare only if there is reference date
               disabled={startDate === null}
+              startDecorator={<CompareArrowsRounded />}
             >
               Comparar
             </Button>
@@ -460,6 +480,7 @@ export default function ProgComparar() {
                     handleProgramadaUpdate();
                   }}
                   disabled={startDate === null}
+                  startDecorator={<ChangeCircleOutlined />}
                 >
                   Cargar cambios
                 </Button>
@@ -470,6 +491,7 @@ export default function ProgComparar() {
                     handleProgramadaUpdate();
                   }}
                   disabled={startDate !== null}
+                  startDecorator={<LibraryAddOutlined />}
                 >
                   Cargar todo
                 </Button>

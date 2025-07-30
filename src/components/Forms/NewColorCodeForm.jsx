@@ -12,6 +12,7 @@ import {
 import { useConfig } from '../../ConfigContext.jsx';
 import FloatingLabelInput from '../Inputs/FloatingLabelInput.jsx';
 import ColorSelect from '../Inputs/ColorSelect.jsx';
+import { AddRounded } from '@mui/icons-material';
 
 let apiUrl;
 
@@ -21,6 +22,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   const [formData, setFormData] = useState({
     colorCodes: [],
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -39,6 +41,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
     const data = {
       ...formData,
@@ -63,6 +66,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     localStorage.setItem('newColorCodes', JSON.stringify(codes));
     setNewColorCodes(codes);
     setFormData({ colorCodes: [] });
+    setLoading(false);
 
     if (codes.length === 0) {
       window.location.reload();
@@ -213,7 +217,13 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
           />
         </Stack>
 
-        <Button type='submit'>Agregar código</Button>
+        <Button
+          type='submit'
+          loading={loading}
+          startDecorator={!loading && <AddRounded />}
+        >
+          Agregar código
+        </Button>
       </Stack>
     </form>
   );
