@@ -7,15 +7,17 @@ import {
   ListItem,
   Option,
 } from '@mui/joy';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
+import { ToastsContext } from '../../Contexts.js';
 
 export default function AddColorBtn({
   setSelectVal,
   setSelectOpen,
   setFormData,
 }) {
-  const apiUrl = useConfig().apiUrl;
+  const { apiUrl } = useConfig();
+  const { addToast } = useContext(ToastsContext);
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState('');
   const [newColor, setNewColor] = useState();
@@ -30,19 +32,25 @@ export default function AddColorBtn({
     }
   }, [newColor, setSelectVal, setSelectOpen, setFormData]);
 
-  function handleSubmit() {
-    fetch(`${apiUrl}/colors/insert`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ color: value }),
-    })
-      .then((res) => res.json())
-      .then((data) => setNewColor(data[0])) // single-record object
-      .catch((err) => {
-        console.error('[CLIENT] Error fetching /colors/insert:', err);
+  async function handleSubmit() {
+    try {
+      const res = await fetch(`${apiUrl}/colors/insert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ color: value }),
       });
+
+      const data = await res.json();
+      setNewColor(data.data[0]); // single-record object
+      addToast({
+        type: res.status === 500 ? 'danger' : 'success',
+        message: data.message,
+      });
+    } catch (err) {
+      console.error('[CLIENT] Error fetching /colors/insert:', err);
+    }
 
     setEditing(false);
   }

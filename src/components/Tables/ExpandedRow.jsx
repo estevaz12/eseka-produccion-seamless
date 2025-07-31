@@ -14,6 +14,7 @@ export default function ExpandedRow({ numCols, row }) {
   apiUrl = useConfig().apiUrl;
   const { startDate, fromMonthStart, endDate } = useContext(DatesContext);
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const PAGE_LENGTH = 5; // each page will have 5 rows
 
@@ -30,6 +31,7 @@ export default function ExpandedRow({ numCols, row }) {
       .then((res) => res.json())
       .then((data) => {
         setHistory(data);
+        setLoading(false);
       })
       .catch((err) =>
         console.error(
@@ -131,7 +133,7 @@ export default function ExpandedRow({ numCols, row }) {
               </tr>
             </thead>
             <tbody>
-              {history.length === 0 ? (
+              {loading ? (
                 <TableSkeleton numCols={8} numRows={5} />
               ) : (
                 history

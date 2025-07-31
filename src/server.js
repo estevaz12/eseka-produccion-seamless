@@ -198,10 +198,15 @@ const startServer = () => {
       // Insert colorDistrs
       await insertColorDistrs(data);
 
-      res.status(204).end();
+      res
+        .status(200)
+        .json({ message: `Art. ${data.articulo} agregado con éxito.` });
     } catch (err) {
       serverLog(`[ERROR] POST /articulo/insertWithColors: ${err}`);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        message: `No se pudo agregar el art. ${data.articulo}.`,
+        error: err.message,
+      });
     }
   });
 
@@ -213,10 +218,15 @@ const startServer = () => {
       const query = updateArticuloTipo(articulo, tipo);
       serverLog(query);
       await sql.query(query);
-      res.status(204).end();
+      res
+        .status(200)
+        .json({ message: `Tipo del art. ${articulo} modificado con éxito.` });
     } catch (err) {
       serverLog(`[ERROR] POST /articulo/updateTipo: ${err}`);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        message: `No se pudo modificar el tipo del art. ${articulo}.`,
+        error: err.message,
+      });
     }
   });
 
@@ -252,10 +262,16 @@ const startServer = () => {
         const result = await sql.query(
           `SELECT TOP(1) * FROM SEA_COLORES ORDER BY Id DESC`
         );
-        res.json(result.recordset);
+        res.status(201).json({
+          message: `Color ${data.color} agregado con éxito.`,
+          data: result.recordset,
+        });
       } catch (err) {
         serverLog(`[ERROR] POST /colors/insert: ${err}`);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({
+          message: `No se pudo agregar el color ${data.color}.`,
+          error: err.message,
+        });
       }
     } else {
       // test data
@@ -272,10 +288,15 @@ const startServer = () => {
       const query = await insertColorCodes(data);
       serverLog(query);
       await sql.query(query);
-      res.status(204).end();
+      res
+        .status(201)
+        .json({ message: `Código ${data.styleCode} agregado con éxito.` });
     } catch (err) {
       serverLog(`[ERROR] POST /colorCodes/insert: ${err}`);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        message: `No se pudo agregar el código ${data.styleCode}.`,
+        error: err.message,
+      });
     }
   });
 
@@ -296,10 +317,15 @@ const startServer = () => {
     try {
       await insertColorDistrs(data);
 
-      res.status(204).end();
+      res.status(201).json({
+        message: `Distribución para el art. ${data.articulo} agregada con éxito.`,
+      });
     } catch (err) {
       serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        message: `No se pudo agregar la distribución para el art. ${data.articulo}.`,
+        error: err.message,
+      });
     }
   });
 
@@ -584,10 +610,16 @@ const startServer = () => {
         serverLog('POST /programada/insertAll - SUCCESS');
         // return inserted rows to calculate new targets
         const result = await sql.query(getProgColor(now));
-        res.json(result.recordset);
+        res.status(201).json({
+          message: `Programada nueva cargada con éxito.`,
+          inserted: result.recordset,
+        });
       } catch (err) {
         serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({
+          message: `No se pudo cargar la programada correctamente.`,
+          error: err.message,
+        });
       }
     } else {
       // test
@@ -606,7 +638,10 @@ const startServer = () => {
         res.status(204).end();
       } catch (err) {
         serverLog(`[ERROR] POST /programada/insertStartDate: ${err}`);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({
+          message: `No se pudo cargar la fecha de inicio de programada correctamente.`,
+          error: err.message,
+        });
       }
     } else {
       // test data
@@ -663,10 +698,16 @@ const startServer = () => {
         // return inserted rows to calculate new targets
         // include deleted articulos to stop machines
         const result = await sql.query(getProgColor(now, true));
-        res.json(result.recordset);
+        res.status(201).json({
+          message: `Cambios cargados con éxito.`,
+          inserted: result.recordset,
+        });
       } catch (err) {
         serverLog(`[ERROR] POST /programada/update: ${err}`);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({
+          message: `No se pudieron cargar los cambios correctamente.`,
+          error: err.message,
+        });
       }
     } else {
       // test data
@@ -682,10 +723,19 @@ const startServer = () => {
     try {
       await sql.query(updateProgColorDoc(data));
       serverLog('POST /programada/updateDocenas - SUCCESS');
-      res.status(204).end();
+      res
+        .status(201)
+        .json({
+          message: `Docenas agregadas con éxito para el art. ${data.articulo} T${data.talle} ${data.color}.`,
+        });
     } catch (err) {
       serverLog(`[ERROR] POST /programada/updateDocenas: ${err}`);
-      res.status(500).json({ error: err.message });
+      res
+        .status(500)
+        .json({
+          message: `No se pudo agregar las docenas para el art. ${data.articulo} T${data.talle} ${data.color}.`,
+          error: err.message,
+        });
     }
   });
 };

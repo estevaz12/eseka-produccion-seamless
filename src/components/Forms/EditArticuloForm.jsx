@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -13,10 +13,11 @@ import { useConfig } from '../../ConfigContext.jsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
 import { ErrorContext } from '../../Contexts.js';
 import { SaveOutlined } from '@mui/icons-material';
+import { ToastsContext } from '../../Contexts.js';
 
-// TODO: loading indicator
 export default function EditArticuloForm({ articuloData }) {
   const { apiUrl } = useConfig();
+  const { addToast } = useContext(ToastsContext);
   const [formData, setFormData] = useState(articuloData);
   const [error, setError] = useState(false); // 'color' || 'distr' || false
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ export default function EditArticuloForm({ articuloData }) {
     if (formData.tipo !== articuloData.tipo) {
       // edit articulo
       try {
-        await fetch(`${apiUrl}/articulo/updateTipo`, {
+        const res = await fetch(`${apiUrl}/articulo/updateTipo`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -59,6 +60,12 @@ export default function EditArticuloForm({ articuloData }) {
             tipo: formData.tipo,
           }),
         });
+
+        const resData = await res.json();
+        addToast({
+          type: res.status === 500 ? 'danger' : 'success',
+          message: resData.message,
+        });
       } catch (err) {
         console.error(`[CLIENT] Error fetching /articulo/updateTipo:`, err);
       }
@@ -66,7 +73,7 @@ export default function EditArticuloForm({ articuloData }) {
 
     if (!colorDistrEqual(formData.colorDistr, articuloData.colorDistr)) {
       try {
-        await fetch(`${apiUrl}/colorDistr/insert`, {
+        const res = await fetch(`${apiUrl}/colorDistr/insert`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -75,6 +82,12 @@ export default function EditArticuloForm({ articuloData }) {
             articulo: formData.articulo,
             colorDistr: formData.colorDistr, // [{color, porcentaje}]
           }),
+        });
+
+        const data = await res.json();
+        addToast({
+          type: res.status === 500 ? 'danger' : 'success',
+          message: data.message,
         });
       } catch (err) {
         console.error('[CLIENT] Error fetching /colorDistr/insert:', err);

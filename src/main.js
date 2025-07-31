@@ -57,7 +57,11 @@ app.whenReady().then(() => {
   serverProcess.postMessage(app.isPackaged);
   // when server sends a message
   serverProcess.on('message', (msg) => {
-    console.log(`[SERVER] ${msg}`);
+    console.log(
+      `[${new Date().toLocaleString('es-AR', {
+        timeZone: 'America/Buenos_Aires',
+      })}] ${msg}`
+    );
   });
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {

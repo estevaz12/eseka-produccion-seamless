@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import { Check, Close, Edit } from '@mui/icons-material';
 import { Button, Input } from '@mui/joy';
+import { ToastsContext } from '../../Contexts.js';
 
 let apiUrl;
 
@@ -15,6 +16,7 @@ export default function AProducirCol({
   setFilteredProgColor,
 }) {
   apiUrl = useConfig().apiUrl;
+  const { addToast } = useContext(ToastsContext);
   const [editProducir, setEditProducir] = useState(false);
   const [docenas, setDocenas] = useState();
   const inputRef = useRef(null);
@@ -34,7 +36,7 @@ export default function AProducirCol({
     e.preventDefault();
 
     try {
-      await fetch(`${apiUrl}/programada/updateDocenas`, {
+      const docRes = await fetch(`${apiUrl}/programada/updateDocenas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,8 +44,17 @@ export default function AProducirCol({
         body: JSON.stringify({
           programadaId: row.Programada,
           colorDistrId: row.ColorDistr,
+          articulo: row.Articulo,
+          talle: row.Talle,
+          color: row.Color,
           docenas,
         }),
+      });
+
+      const docData = await docRes.json();
+      addToast({
+        type: docRes.status === 500 ? 'danger' : 'success',
+        message: docData.message,
       });
 
       // update programada view

@@ -9,7 +9,7 @@ import {
   Box,
 } from '@mui/joy';
 import InputFileUpload from '../components/Inputs/InputFileUpload.jsx';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import DataTable from '../components/Tables/DataTable.jsx';
 import dayjs from 'dayjs';
@@ -26,6 +26,7 @@ import {
   RestartAltRounded,
 } from '@mui/icons-material';
 import RefreshBtn from '../components/RefreshBtn.jsx';
+import { ToastsContext } from '../Contexts.js';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -33,7 +34,8 @@ let apiUrl, sqlDateFormat;
 export default function ProgComparar() {
   // context
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const setNewColorCodes = useOutletContext();
+  const { addColorCodes } = useOutletContext();
+  const { addToast } = useContext(ToastsContext);
   // load, file upload and reading
   const [startDate, setStartDate] = useState();
   const [currTotal, setCurrTotal] = useState();
@@ -124,19 +126,7 @@ export default function ProgComparar() {
     try {
       const res = await fetch(`${apiUrl}/machines/newColorCodes`);
       const newCodes = await res.json();
-      const currCodes = JSON.parse(
-        localStorage.getItem('newColorCodes') || '[]'
-      );
-      // Deduplicate by StyleCode.styleCode
-      const uniqueNewCodes = newCodes.filter(
-        (newCode) =>
-          !currCodes.some(
-            (curr) => curr.StyleCode.styleCode === newCode.StyleCode.styleCode
-          )
-      );
-      const updatedCodes = [...currCodes, ...uniqueNewCodes];
-      localStorage.setItem('newColorCodes', JSON.stringify(updatedCodes));
-      setNewColorCodes(updatedCodes);
+      addColorCodes(newCodes);
     } catch (err) {
       console.error('[CLIENT] Error fetching /machines/newColorCodes:', err);
     }
@@ -223,7 +213,14 @@ export default function ProgComparar() {
           },
           body: JSON.stringify(diff),
         });
-        const data = await res.json();
+
+        const resData = await res.json();
+        addToast({
+          type: res.status === 500 ? 'danger' : 'success',
+          message: resData.message,
+        });
+
+        const data = resData.inserted;
         // fetch and repeat every 30 seconds
         fetchNewTargets(data);
         intervalRef.current = setInterval(() => {
@@ -252,7 +249,15 @@ export default function ProgComparar() {
             },
             body: JSON.stringify(programada.rows),
           });
-          const data = await res.json();
+
+          const resData = await res.json();
+          addToast({
+            type: res.status === 500 ? 'danger' : 'success',
+            message: resData.message,
+          });
+
+          const data = resData.inserted;
+
           // insert programada start date to db
           fetch(`${apiUrl}/programada/insertStartDate`, {
             method: 'POST',
@@ -264,9 +269,18 @@ export default function ProgComparar() {
               month: dayjs.tz().month() + 1, // month is 0-indexed in dayjs
               year: dayjs.tz().year(),
             }),
-          }).catch((err) => {
-            console.error('[CLIENT] Error inserting start date:', err);
-          });
+          })
+            .then(async (res) => {
+              const resData = await res.json();
+              addToast({
+                type: res.status === 500 ? 'danger' : 'success',
+                message: resData.message,
+              });
+            })
+            .catch((err) => {
+              console.error('[CLIENT] Error inserting start date:', err);
+            });
+
           // fetch and repeat every 30 seconds
           fetchNewTargets(data);
           intervalRef.current = setInterval(() => {
@@ -311,7 +325,7 @@ export default function ProgComparar() {
       }
       ignore = true;
     };
-  }, [diff, newArticuloData, programada, startDate]);
+  }, [diff, newArticuloData, programada, startDate, addToast]);
 
   function fetchNewTargets(inserted) {
     fetch(`${apiUrl}/programada/calculateNewTargets`, {

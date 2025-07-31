@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -13,17 +13,18 @@ import { useConfig } from '../../ConfigContext.jsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
 import { ErrorContext } from '../../Contexts.js';
 import { AddRounded } from '@mui/icons-material';
+import { ToastsContext } from '../../Contexts.js';
 
 export default function NewArticuloForm({
   newArticuloData,
   setNewArticuloData,
 }) {
   const { apiUrl } = useConfig();
+  const { addToast } = useContext(ToastsContext);
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false); // 'color' || 'distr' || false
   const [loading, setLoading] = useState(false);
 
-  // TODO: loading indicator
   async function handleSubmit(e, articulo, articuloExists) {
     e.preventDefault();
     setLoading(true);
@@ -51,12 +52,18 @@ export default function NewArticuloForm({
     const data = { articulo, ...formData };
     if (!articuloExists) {
       try {
-        await fetch(`${apiUrl}/articulo/insertWithColors`, {
+        const res = await fetch(`${apiUrl}/articulo/insertWithColors`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(data),
+        });
+
+        const resData = await res.json();
+        addToast({
+          type: res.status === 500 ? 'danger' : 'success',
+          message: resData.message,
         });
       } catch (err) {
         console.error(
@@ -66,7 +73,7 @@ export default function NewArticuloForm({
       }
     } else if (formData.colorDistr) {
       try {
-        await fetch(`${apiUrl}/colorDistr/insert`, {
+        const res = await fetch(`${apiUrl}/colorDistr/insert`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -75,6 +82,12 @@ export default function NewArticuloForm({
             articulo: data.articulo,
             colorDistr: data.colorDistr,
           }),
+        });
+
+        const resData = await res.json();
+        addToast({
+          type: res.status === 500 ? 'danger' : 'success',
+          message: resData.message,
         });
       } catch (err) {
         console.error(`[CLIENT] Error fetching /colorDistr/insert:`, err);

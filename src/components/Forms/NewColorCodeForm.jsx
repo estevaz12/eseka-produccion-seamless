@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -13,11 +13,13 @@ import { useConfig } from '../../ConfigContext.jsx';
 import FloatingLabelInput from '../Inputs/FloatingLabelInput.jsx';
 import ColorSelect from '../Inputs/ColorSelect.jsx';
 import { AddRounded } from '@mui/icons-material';
+import { ToastsContext } from '../../Contexts.js';
 
 let apiUrl;
 
 export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   apiUrl = useConfig().apiUrl;
+  const { addToast } = useContext(ToastsContext);
   const [colors, setColors] = useState([]);
   const [formData, setFormData] = useState({
     colorCodes: [],
@@ -39,7 +41,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     };
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
@@ -52,15 +54,22 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
       styleCode: newColorCode.StyleCode.styleCode,
     };
 
-    fetch(`${apiUrl}/colorCodes/insert`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    }).catch((err) =>
-      console.error('[CLIENT] Error fetching /colorCodes/insert:', err)
-    );
+    try {
+      const res = await fetch(`${apiUrl}/colorCodes/insert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      const resData = await res.json();
+      addToast({
+        type: res.status === 500 ? 'danger' : 'success',
+        message: resData.message,
+      });
+    } catch (err) {
+      console.error('[CLIENT] Error fetching /colorCodes/insert:', err);
+    }
     const codes = JSON.parse(localStorage.getItem('newColorCodes'));
     codes.pop();
     localStorage.setItem('newColorCodes', JSON.stringify(codes));

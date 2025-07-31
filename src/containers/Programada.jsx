@@ -14,7 +14,7 @@ let apiUrl;
 
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
-  const setNewColorCodes = useOutletContext();
+  const { addColorCodes } = useOutletContext();
   const [startDate, setStartDate] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
@@ -59,19 +59,7 @@ export default function Programada() {
     fetch(`${apiUrl}/machines/newColorCodes`)
       .then((res) => res.json())
       .then((newCodes) => {
-        const currCodes = JSON.parse(
-          localStorage.getItem('newColorCodes') || '[]'
-        );
-        // Deduplicate by StyleCode.styleCode
-        const uniqueNewCodes = newCodes.filter(
-          (newCode) =>
-            !currCodes.some(
-              (curr) => curr.StyleCode.styleCode === newCode.StyleCode.styleCode
-            )
-        );
-        const updatedCodes = [...currCodes, ...uniqueNewCodes];
-        localStorage.setItem('newColorCodes', JSON.stringify(updatedCodes));
-        setNewColorCodes(updatedCodes);
+        addColorCodes(newCodes);
       })
       .catch((err) =>
         console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)

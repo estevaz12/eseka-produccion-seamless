@@ -5,14 +5,52 @@ import ModalWrapper from '../components/ModalWrapper.jsx';
 import NewColorCodeForm from '../components/Forms/NewColorCodeForm.jsx';
 import { Outlet } from 'react-router';
 import NavBar from '../components/NavBar.jsx';
+import Toast from '../components/Toast.jsx';
+import { ToastsContext } from '../Contexts.js';
 
 let apiUrl;
 
 export default function Home() {
   apiUrl = useConfig().apiUrl;
+
   const [newColorCodes, setNewColorCodes] = useState(() =>
     JSON.parse(localStorage.getItem('newColorCodes') || '[]')
   );
+
+  // using localStorage so toasts persist through refresh
+  const [toasts, setToasts] = useState(() =>
+    JSON.parse(localStorage.getItem('toasts') || '[]')
+  );
+
+  function addColorCodes(newCodes) {
+    const currCodes = JSON.parse(localStorage.getItem('newColorCodes') || '[]');
+    // Make sure codes in localStorage are unique. Otherwise, the same
+    // codes will be added every hour
+    const uniqueNewCodes = newCodes.filter(
+      (newCode) =>
+        !currCodes.some(
+          (curr) => curr.StyleCode.styleCode === newCode.StyleCode.styleCode
+        )
+    );
+
+    const updatedCodes = [...currCodes, ...uniqueNewCodes];
+    localStorage.setItem('newColorCodes', JSON.stringify(updatedCodes));
+    setNewColorCodes(updatedCodes);
+  }
+
+  const addToast = (toast) => {
+    const newToast = {
+      ...toast,
+      id: crypto.randomUUID(),
+      timestamp: Date.now(),
+    };
+
+    setToasts((prev) => {
+      const updated = [...prev, newToast];
+      localStorage.setItem('toasts', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   // check for newColorCodes on load and then every hour
   useEffect(() => {
@@ -23,29 +61,7 @@ export default function Home() {
         .then((newCodes) => {
           if (!ignore) {
             // Whenever you update localStorage, also update state:
-            const currCodes = JSON.parse(
-              localStorage.getItem('newColorCodes') || '[]'
-            );
-            // Make sure codes in localStorage are unique. Otherwise, the same
-            // codes will be added every hour
-            const uniqueNewCodes = newCodes.filter(
-              (newCode) =>
-                !currCodes.some(
-                  (curr) =>
-                    curr.StyleCode.styleCode === newCode.StyleCode.styleCode
-                )
-            );
-            if (uniqueNewCodes.length > 0) {
-              const updatedCodes = [...currCodes, ...uniqueNewCodes];
-              localStorage.setItem(
-                'newColorCodes',
-                JSON.stringify(updatedCodes)
-              );
-              setNewColorCodes(updatedCodes);
-            } else {
-              // If no new codes, just update the state with the same codes
-              setNewColorCodes(currCodes);
-            }
+            addColorCodes(newCodes);
           }
         })
         .catch((err) =>
@@ -67,14 +83,14 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <ToastsContext value={{ addToast }}>
       <Stack direction='row' className='items-stretch justify-start size-full'>
         <aside className='fixed top-0 bottom-0 left-0 w-40 h-screen'>
           <NavBar />
         </aside>
 
         <Box className='w-full px-4 ml-40'>
-          <Outlet context={setNewColorCodes} />
+          <Outlet context={{ addColorCodes }} />
         </Box>
       </Stack>
 
@@ -123,6 +139,17 @@ export default function Home() {
           />
         </ModalWrapper>
       )}
-    </>
+
+      {toasts.length > 0 && (
+        <Stack
+          direction='column'
+          className='fixed bottom-2 right-2 z-[var(--joy-zIndex-snackbar)] gap-2'
+        >
+          {toasts.map((toast) => (
+            <Toast key={toast.id} toast={toast} setToasts={setToasts} />
+          ))}
+        </Stack>
+      )}
+    </ToastsContext>
   );
 }
