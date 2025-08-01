@@ -592,6 +592,7 @@ const startServer = () => {
 
     try {
       const data = await processPDF(path);
+      serverLog(JSON.stringify(data, null, 2));
       res.json(data);
     } catch (err) {
       serverLog(`[ERROR] PDF Error: ${err}`);
@@ -723,19 +724,15 @@ const startServer = () => {
     try {
       await sql.query(updateProgColorDoc(data));
       serverLog('POST /programada/updateDocenas - SUCCESS');
-      res
-        .status(201)
-        .json({
-          message: `Docenas agregadas con éxito para el art. ${data.articulo} T${data.talle} ${data.color}.`,
-        });
+      res.status(201).json({
+        message: `Docenas agregadas con éxito para el art. ${data.articulo} T${data.talle} ${data.color}.`,
+      });
     } catch (err) {
       serverLog(`[ERROR] POST /programada/updateDocenas: ${err}`);
-      res
-        .status(500)
-        .json({
-          message: `No se pudo agregar las docenas para el art. ${data.articulo} T${data.talle} ${data.color}.`,
-          error: err.message,
-        });
+      res.status(500).json({
+        message: `No se pudo agregar las docenas para el art. ${data.articulo} T${data.talle} ${data.color}.`,
+        error: err.message,
+      });
     }
   });
 };

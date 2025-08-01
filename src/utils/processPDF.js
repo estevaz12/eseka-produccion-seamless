@@ -31,7 +31,13 @@ const processPDF = async (path) => {
               ?.map((cell) => cell.text)
               .join('')
               .trim() || '';
-          if (articulo !== '') {
+          // Skip header/footer/totals rows
+          if (
+            articulo !== '' &&
+            articulo.toLowerCase() !== 'articulo' &&
+            articulo.toLowerCase() !== 'totales' &&
+            !isNaN(parseFloat(articulo.replace(',', '.')))
+          ) {
             articulo = articulo.replace(',', '.');
             // const desc =
             //   row[1]
