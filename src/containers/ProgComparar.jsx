@@ -156,6 +156,7 @@ export default function ProgComparar() {
             },
           ]);
         } else {
+          // FIXME - talle and colorDistr
           // If articulo exists, check if color distr exists
           let colorDistr;
           try {

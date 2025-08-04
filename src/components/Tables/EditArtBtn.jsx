@@ -4,7 +4,7 @@ import EditArticuloForm from '../Forms/EditArticuloForm.jsx';
 import ModalWrapper from '../ModalWrapper.jsx';
 import { useConfig } from '../../ConfigContext.jsx';
 
-export default function EditArtBtn({ articulo, tipo }) {
+export default function EditArtBtn({ articulo, tipo, talle }) {
   const apiUrl = useConfig().apiUrl;
   const [openForm, setOpenForm] = useState(false);
   const [articuloData, setArticuloData] = useState({});
@@ -12,7 +12,7 @@ export default function EditArtBtn({ articulo, tipo }) {
   async function handleClick() {
     try {
       const res = await fetch(
-        `${apiUrl}/articulo/${articulo}/currentColorDistr`,
+        `${apiUrl}/articulo/${articulo}/${talle}/currentColorDistr`,
         {
           method: 'GET',
           headers: {
@@ -29,11 +29,11 @@ export default function EditArtBtn({ articulo, tipo }) {
           porcentaje: row.Porcentaje,
         });
       });
-      setArticuloData({ articulo, tipo, colorDistr });
+      setArticuloData({ articulo, tipo, talle, colorDistr });
       setOpenForm(true);
     } catch (err) {
       console.error(
-        `[CLIENT] Error fetching /articulo/${articulo}/currentColorDistr:`,
+        `[CLIENT] Error fetching /articulo/${articulo}/${talle}/currentColorDistr:`,
         err
       );
     }
@@ -49,7 +49,7 @@ export default function EditArtBtn({ articulo, tipo }) {
 
       {openForm && (
         <ModalWrapper
-          title='Editar artículo'
+          title={`Editar art. ${articulo} T${talle}`}
           content='Para editar otros datos, pida las modificaciones a la programada y carguela de nuevo.'
           handleClose={() => setOpenForm(false)}
           contentClassName='w-sm'

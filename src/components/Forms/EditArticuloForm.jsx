@@ -80,6 +80,7 @@ export default function EditArticuloForm({ articuloData }) {
           },
           body: JSON.stringify({
             articulo: formData.articulo,
+            talle: formData.talle,
             colorDistr: formData.colorDistr, // [{color, porcentaje}]
           }),
         });
@@ -103,7 +104,7 @@ export default function EditArticuloForm({ articuloData }) {
     <form
       key={articuloData.articulo}
       onSubmit={(e) => {
-        handleSubmit(e, articuloData.articulo);
+        handleSubmit(e);
       }}
       className='w-sm'
     >
@@ -181,13 +182,17 @@ export default function EditArticuloForm({ articuloData }) {
 
 function colorDistrEqual(a, b) {
   if (a.length !== b.length) return false;
-  // Sort both arrays by color (or another unique key)
-  const aSorted = [...a].sort((x, y) => x.color.localeCompare(y.color));
-  const bSorted = [...b].sort((x, y) => x.color.localeCompare(y.color));
-  // Compare each entry
+  // Ensure color is always a string for sorting
+  const safeColor = (x) => (x.color ?? '').toString();
+  const aSorted = [...a].sort((x, y) =>
+    safeColor(x).localeCompare(safeColor(y))
+  );
+  const bSorted = [...b].sort((x, y) =>
+    safeColor(x).localeCompare(safeColor(y))
+  );
   return aSorted.every(
     (item, i) =>
-      item.color === bSorted[i].color &&
+      safeColor(item) === safeColor(bSorted[i]) &&
       item.porcentaje === bSorted[i].porcentaje
   );
 }

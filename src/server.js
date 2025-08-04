@@ -128,6 +128,7 @@ const startServer = () => {
     }
   });
 
+  // FIXME - talle and colorDistr
   app.get('/articulo/:articulo/colorDistr', async (req, res) => {
     const { articulo } = req.params;
     serverLog(`GET /articulo/${articulo}/colorDistr`);
@@ -166,23 +167,25 @@ const startServer = () => {
     }
   });
 
-  app.get('/articulo/:articulo/currentColorDistr', async (req, res) => {
-    const { articulo } = req.params;
-    serverLog(`GET /articulo/${articulo}/currentColorDistr`);
+  app.get('/articulo/:articulo/:talle/currentColorDistr', async (req, res) => {
+    const { articulo, talle } = req.params;
+    serverLog(`GET /articulo/${articulo}/${talle}/currentColorDistr`);
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getCurrArtColorDistr(articulo));
+        const result = await sql.query(getCurrArtColorDistr(articulo, talle));
         res.json(result.recordset);
       } catch (err) {
         serverLog(
-          `[ERROR] GET /articulo/${articulo}/currentColorDistr: ${err}`
+          `[ERROR] GET /articulo/${articulo}/${talle}/currentColorDistr: ${err}`
         );
         res.status(500).json({ error: err.message });
       }
     } else {
       // test data
-      serverLog(`Using test data for /articulo/${articulo}/currentColorDistr`);
+      serverLog(
+        `Using test data for /articulo/${articulo}/${talle}/currentColorDistr`
+      );
       res.json(articuloColorDistrTestData);
     }
   });
@@ -196,6 +199,8 @@ const startServer = () => {
       await sql.query(query);
       serverLog(query);
       // Insert colorDistrs
+      // FIXME - now we have to insert per talle when inserting from
+      // newArticuloForm
       await insertColorDistrs(data);
 
       res
@@ -302,7 +307,7 @@ const startServer = () => {
 
   async function insertColorDistrs(data) {
     for (const row of data.colorDistr) {
-      const query = insertDistr(data.articulo, row);
+      const query = insertDistr(data.articulo, data.talle, row);
       serverLog(query);
       await sql.query(query);
       // Wait 1 second before next insert
@@ -318,12 +323,12 @@ const startServer = () => {
       await insertColorDistrs(data);
 
       res.status(201).json({
-        message: `Distribución para el art. ${data.articulo} agregada con éxito.`,
+        message: `Distribución para el art. ${data.articulo} T${data.talle} agregada con éxito.`,
       });
     } catch (err) {
       serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
       res.status(500).json({
-        message: `No se pudo agregar la distribución para el art. ${data.articulo}.`,
+        message: `No se pudo agregar la distribución para el art. ${data.articulo} T${data.talle}.`,
         error: err.message,
       });
     }
@@ -592,7 +597,6 @@ const startServer = () => {
 
     try {
       const data = await processPDF(path);
-      serverLog(JSON.stringify(data, null, 2));
       res.json(data);
     } catch (err) {
       serverLog(`[ERROR] PDF Error: ${err}`);
@@ -636,7 +640,9 @@ const startServer = () => {
       try {
         await sql.query(insertProgStartDate(data));
         serverLog('POST /programada/insertStartDate - SUCCESS');
-        res.status(204).end();
+        res.status(200).json({
+          message: `Fecha de inicio de programada cargada con éxito.`,
+        });
       } catch (err) {
         serverLog(`[ERROR] POST /programada/insertStartDate: ${err}`);
         res.status(500).json({

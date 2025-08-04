@@ -10,7 +10,13 @@ export default function ArticuloCol({ row, isOpen, handleRowClick, editable }) {
           startDecorator: (
             <ExpandRowBtn isOpen={isOpen} handleClick={handleRowClick} />
           ),
-          endDecorator: <EditArtBtn articulo={row.Articulo} tipo={row.Tipo} />,
+          endDecorator: (
+            <EditArtBtn
+              articulo={row.Articulo}
+              tipo={row.Tipo}
+              talle={row.Talle}
+            />
+          ),
         })}
         className={!editable && 'relative'}
       >

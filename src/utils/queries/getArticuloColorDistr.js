@@ -1,3 +1,4 @@
+// FIXME - talle and colordistr
 const getArticuloColorDistr = (articulo) => {
   return `
     SELECT *

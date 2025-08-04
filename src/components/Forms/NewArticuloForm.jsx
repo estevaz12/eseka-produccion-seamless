@@ -72,6 +72,7 @@ export default function NewArticuloForm({
         );
       }
     } else if (formData.colorDistr) {
+      // FIXME - talle and colordistr
       try {
         const res = await fetch(`${apiUrl}/colorDistr/insert`, {
           method: 'POST',
