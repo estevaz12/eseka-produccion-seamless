@@ -1,4 +1,5 @@
 import { PrintRounded } from '@mui/icons-material';
+import { IconButton } from '@mui/joy';
 
 export default function EnhancedFooter({ footer, selected }) {
   return (
@@ -11,9 +12,17 @@ export default function EnhancedFooter({ footer, selected }) {
         >
           {selected.length > 0 && `${selected.length} seleccionadas`}
         </td>
-        <td>{selected.length > 0 && <PrintRounded />}</td>
+        <td className='text-center'>
+          {selected.length > 0 && (
+            <IconButton variant='soft'>
+              <PrintRounded className='text-(--joy-palette-primary-500)' />
+            </IconButton>
+          )}
+        </td>
         {footer.filter(Boolean).map((foot, i) => (
-          <td key={i}>{foot}</td>
+          <td key={i} className='text-right'>
+            {foot}
+          </td>
         ))}
       </tr>
     </tfoot>

@@ -187,7 +187,7 @@ export default function EnhancedTable({
         )}
       </tbody>
 
-      <EnhancedFooter footer={footer} selected={selected} />
+      <EnhancedFooter cols={cols} footer={footer} selected={selected} />
     </Table>
   );
 }
