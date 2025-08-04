@@ -1,9 +1,10 @@
 import { Checkbox, Table } from '@mui/joy';
 import EnhancedHead from './EnhancedHead.jsx';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ExpandedRow from './ExpandedRow.jsx';
 import EnhancedFooter from './EnhancedFooter.jsx';
 import TableSkeleton from './TableSkeleton.jsx';
+import { useLocation } from 'react-router';
 
 /**
  * SortedSelectedTable
@@ -21,6 +22,7 @@ export default function EnhancedTable({
   headerTop = '',
   checkboxVariant = 'outlined',
 }) {
+  const location = useLocation();
   // State for current sort order ('asc' or 'desc')
   const [order, setOrder] = useState(initOrder);
   // State for current column to sort by
@@ -31,6 +33,28 @@ export default function EnhancedTable({
   const [opened, setOpened] = useState(null);
   // loading state
   const loading = rows.length === 0;
+
+  // Load saved sort on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(location.pathname);
+    if (saved) {
+      const { order, orderBy } = JSON.parse(saved);
+      if (order && orderBy) {
+        setOrder(order);
+        setOrderBy(orderBy);
+      }
+    }
+  }, [location.pathname]);
+
+  // Save sort on change
+  useEffect(() => {
+    if (orderBy) {
+      localStorage.setItem(
+        location.pathname,
+        JSON.stringify({ order, orderBy })
+      );
+    }
+  }, [order, orderBy, location.pathname]);
 
   const sortedRows = useMemo(() => {
     if (order !== initOrder || orderBy !== initOrderBy) {

@@ -85,7 +85,7 @@ export default function Home() {
   return (
     <ToastsContext value={{ addToast }}>
       <Stack direction='row' className='items-stretch justify-start size-full'>
-        <aside className='fixed top-0 bottom-0 left-0 w-40 h-screen'>
+        <aside className='fixed top-0 bottom-0 left-0 z-20 w-40 h-screen'>
           <NavBar />
         </aside>
 
