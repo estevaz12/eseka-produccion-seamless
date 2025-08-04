@@ -11,18 +11,13 @@ export default function DataTable({
   headerTop = '',
   stripe = 'even',
 }) {
-  const stripeClass =
-    stripe !== ''
-      ? '[&_tbody_tr:nth-of-type(even)]:bg-[var(--joy-palette-background-level1)]'
-      : '';
-
   return (
     <Table
       aria-label='simple table'
       stripe={stripe}
       stickyHeader
       stickyFooter
-      className={`**:text-center rounded-md ${className} ${stripeClass}`}
+      className={`**:text-center rounded-md ${className}`}
       variant='outlined'
       hoverRow
       sx={{

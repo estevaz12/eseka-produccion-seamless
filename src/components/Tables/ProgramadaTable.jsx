@@ -13,6 +13,7 @@ import EnhancedTable from './EnhancedTable.jsx';
 import ArticuloCol from './ArticuloCol.jsx';
 import { DatesContext } from '../../Contexts.js';
 import ProgLegend from './ProgLegend.jsx';
+import EditArtBtn from './EditArtBtn.jsx';
 
 let apiUrl;
 
@@ -64,10 +65,12 @@ export default function ProgramadaTable({
     {
       id: 'Articulo',
       label: 'Artículo',
+      align: 'right',
     },
     {
       id: 'Talle',
       label: 'Talle',
+      align: 'center',
       width: 'w-[7%]',
     },
     {
@@ -78,14 +81,17 @@ export default function ProgramadaTable({
     {
       id: 'Docenas',
       label: 'A Producir',
+      align: 'right',
     },
     {
       id: 'Producido',
       label: 'Producido',
+      align: 'right',
     },
     {
       id: 'falta',
       label: 'Falta',
+      align: 'right',
       sortFn: (a, b, order) => {
         const faltaCalc = (row, order) => {
           const falta = row.Docenas - row.Producido / 12 / 1.01;
@@ -104,6 +110,7 @@ export default function ProgramadaTable({
     {
       id: 'target',
       label: 'Target (un)',
+      align: 'right',
       sortFn: (a, b, order) => {
         // TODO: test for multiple machines
         const targetCalc = (row, order) => {
@@ -132,6 +139,7 @@ export default function ProgramadaTable({
     {
       id: 'faltaUnidades',
       label: 'Falta (un)',
+      align: 'right',
       sortFn: (a, b, order) => {
         const faltaCalc = (row, order) => {
           const faltaUn = row.Target - row.Producido;
@@ -203,15 +211,27 @@ export default function ProgramadaTable({
           handleRowClick={handleClick}
           rowColor={rowClassName}
           editable={editable}
+          className='font-semibold'
         />
         {/* Talle */}
-        <td>{row.Talle}</td>
+        <td className='font-semibold text-center'>{row.Talle}</td>
         {/* Color + Porcentaje */}
-        <td>{`${row.Color} ${
-          row.Porcentaje && row.Porcentaje < 100 ? `(${row.Porcentaje}%)` : ''
-        }`}</td>
+        <td className='font-semibold group/color'>
+          <Typography
+            className='relative w-fit'
+            endDecorator={
+              <EditArtBtn articulo={row.Articulo} tipo={row.Tipo} />
+            }
+          >
+            {`${row.Color} ${
+              row.Porcentaje && row.Porcentaje < 100
+                ? `(${row.Porcentaje}%)`
+                : ''
+            }`}
+          </Typography>
+        </td>
         {/* A Producir */}
-        <td>
+        <td className='text-right'>
           <AProducirCol
             row={row}
             aProducir={aProducir}
@@ -221,15 +241,17 @@ export default function ProgramadaTable({
           />
         </td>
         {/* Producido */}
-        <td>
+        <td className='text-right'>
           {row.Tipo === null
             ? producido
             : `${producido} (${formatNum(row.Producido / 12 / 1.01)})`}
         </td>
         {/* Falta */}
-        <td>{row.Tipo == null ? falta : `${falta} (${faltaFisico})`}</td>
+        <td className='text-right'>
+          {row.Tipo == null ? falta : `${falta} (${faltaFisico})`}
+        </td>
         {/* Target (un.) */}
-        <td>
+        <td className='text-right'>
           {faltaUnidades <= 0 ? (
             'LLEGÓ'
           ) : (
@@ -237,7 +259,7 @@ export default function ProgramadaTable({
           )}
         </td>
         {/* Falta (un.) */}
-        <td>{faltaUnidades}</td>
+        <td className='text-right'>{faltaUnidades}</td>
         {/* Maquinas */}
         {live && <td>{machinesList}</td>}
       </>,

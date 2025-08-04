@@ -67,6 +67,9 @@ export default function ArtColorTalleInputs({
         variant={btnProps.variant}
         type={btnProps.type}
         onKeyDown={btnProps.onKeyDown}
+        disabled={Object.values(formData).every(
+          (val) => val === undefined || val === ''
+        )}
       >
         {btnProps.icon}
       </IconButton>

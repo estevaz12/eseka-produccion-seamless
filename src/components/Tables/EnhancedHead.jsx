@@ -53,6 +53,7 @@ export default function EnhancedHead({
 
         {/* Render a header cell for each column */}
         {cols.filter(Boolean).map((col) => {
+          const alignment = `text-${col.align || 'left'}`;
           // Determine if this column is currently sorted
           const active = orderBy === col.id;
           return (
@@ -63,7 +64,7 @@ export default function EnhancedHead({
                   ? { asc: 'ascending', desc: 'descending' }[order]
                   : undefined
               }
-              className={`${col.width || ''}`}
+              className={`${col.width || ''} ${alignment}`}
             >
               {/* 
                 Link acts as a button to trigger sorting.
@@ -77,12 +78,18 @@ export default function EnhancedHead({
                 component='button'
                 onClick={order && orderBy && createSortHandler(col.id)}
                 startDecorator={
-                  order &&
-                  orderBy && (
+                  col.align && (
                     <ArrowDownwardRounded
                       fontSize='small'
                       sx={[active ? { opacity: 1 } : { opacity: 0 }]}
-                      // className='position-absolute right-[100%]'
+                    />
+                  )
+                }
+                endDecorator={
+                  !col.align && (
+                    <ArrowDownwardRounded
+                      fontSize='small'
+                      sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                     />
                   )
                 }
@@ -91,6 +98,11 @@ export default function EnhancedHead({
                     margin: 0,
                     position: 'absolute',
                     right: '100%',
+                  },
+                  '& .MuiLink-endDecorator': {
+                    margin: 0,
+                    position: 'absolute',
+                    left: '100%',
                   },
                   '& svg': {
                     transition: '0.2s',

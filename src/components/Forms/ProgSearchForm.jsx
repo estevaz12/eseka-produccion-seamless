@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ArtTalleColorInputs from '../Inputs/ArtTalleColorInputs.jsx';
 import { FormControl, FormLabel, Input } from '@mui/joy';
-import { SearchOffRounded } from '@mui/icons-material';
+import { FilterAltOffRounded } from '@mui/icons-material';
 
 export default function ProgSearchForm({
   progColor,
@@ -49,7 +49,7 @@ export default function ProgSearchForm({
         setFormData={setFormData}
         btnProps={{
           type: 'reset',
-          icon: <SearchOffRounded />,
+          icon: <FilterAltOffRounded />,
           color: 'danger',
           variant: 'soft',
         }}

@@ -107,7 +107,7 @@ export default function EnhancedTable({
       stripe={stripe}
       variant='outlined'
       hoverRow
-      className={`**:text-center rounded-md ${className}`}
+      className={`rounded-md ${className}`}
       sx={{
         '--TableCell-selectedBackground': (theme) =>
           theme.vars.palette.primary.softHoverBg,

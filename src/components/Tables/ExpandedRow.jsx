@@ -115,8 +115,10 @@ export default function ExpandedRow({ numCols, row }) {
               '& tr > *:nth-of-type(1)': {
                 textAlign: 'left !important',
               },
-              '& > thead > tr > th:nth-of-type(n + 5), & > tbody > tr > td:nth-of-type(n + 5)':
-                { textAlign: 'right !important' },
+              '& tr > *:nth-of-type(n + 2)': {
+                textAlign: 'center !important',
+              },
+              '& tr > *:nth-of-type(n + 5)': { textAlign: 'right !important' },
               '--TableCell-paddingX': '0.5rem',
             }}
           >

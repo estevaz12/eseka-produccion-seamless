@@ -44,7 +44,7 @@ export default function EditArtBtn({ articulo, tipo, talle }) {
       <Edit
         size='small'
         onClick={handleClick}
-        className='invisible group-hover/art:visible'
+        className='absolute top-0 left-[100%] invisible group-hover/color:visible'
       />
 
       {openForm && (

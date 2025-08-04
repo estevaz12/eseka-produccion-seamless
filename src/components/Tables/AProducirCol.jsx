@@ -95,7 +95,9 @@ export default function AProducirCol({
     <form onSubmit={handleProducirEdit} className='grid grid-cols-2 gap-1'>
       <Input
         type='number'
-        slotProps={{ input: { ref: inputRef, min: 0 } }}
+        slotProps={{
+          input: { ref: inputRef, min: 0, sx: { textAlign: 'right' } },
+        }}
         onChange={(e) => setDocenas(e.target.value)}
         className='col-span-2'
         required

@@ -96,10 +96,12 @@ export default function Produccion() {
     {
       id: 'Articulo',
       label: 'Artículo',
+      align: 'right',
     },
     {
       id: 'Talle',
       label: 'Talle',
+      align: 'center',
     },
     {
       id: 'Color',
@@ -108,10 +110,12 @@ export default function Produccion() {
     {
       id: 'Unidades',
       label: 'Unidades',
+      align: 'right',
     },
     {
       id: 'Unidades',
       label: 'Docenas',
+      align: 'right',
     },
   ];
 
@@ -136,15 +140,15 @@ export default function Produccion() {
           handleRowClick={handleClick}
         />
         {/* Talle */}
-        <td>{row.Talle}</td>
+        <td className='text-center'>{row.Talle}</td>
         {/* Color */}
         <td>{row.Color}</td>
         {/* Unidades */}
-        <td>
+        <td className='text-right'>
           {row.Tipo === null ? producido : `${producido} (${row.Unidades})`}
         </td>
         {/* Docenas */}
-        <td>
+        <td className='text-right'>
           {row.Tipo === null
             ? (producido / 12).toFixed(1)
             : `${(producido / 12).toFixed(1)} (${(row.Unidades / 12).toFixed(
