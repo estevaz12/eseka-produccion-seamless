@@ -220,7 +220,11 @@ export default function ProgramadaTable({
           <Typography
             className='relative w-fit'
             endDecorator={
-              <EditArtBtn articulo={row.Articulo} tipo={row.Tipo} />
+              <EditArtBtn
+                articulo={row.Articulo}
+                tipo={row.Tipo}
+                talle={row.Talle}
+              />
             }
           >
             {`${row.Color} ${

@@ -7,7 +7,7 @@ const getProgramada = (startDate) => {
                       WHERE p2.Articulo = p.Articulo 
                             AND p2.Talle = p.Talle)
           AND p.Fecha >= '${startDate}'
-          AND p.Docenas > 0
+          --AND p.Docenas > 0
     ORDER BY p.Articulo, p.Talle;
   `;
 };

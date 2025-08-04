@@ -19,7 +19,7 @@ const compareProgramada = (oldProg, newProg) => {
       (newRow) =>
         newRow.articulo === oldRow.Articulo && newRow.talle === oldRow.Talle
     );
-    if (!found)
+    if (!found && oldRow.Docenas > 0)
       deleted.push({
         articulo: oldRow.Articulo,
         talle: oldRow.Talle,
