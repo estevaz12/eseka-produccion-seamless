@@ -220,11 +220,13 @@ export default function ProgramadaTable({
           <Typography
             className='relative w-fit'
             endDecorator={
-              <EditArtBtn
-                articulo={row.Articulo}
-                tipo={row.Tipo}
-                talle={row.Talle}
-              />
+              live && (
+                <EditArtBtn
+                  articulo={row.Articulo}
+                  tipo={row.Tipo}
+                  talle={row.Talle}
+                />
+              )
             }
           >
             {`${row.Color} ${
@@ -235,13 +237,14 @@ export default function ProgramadaTable({
           </Typography>
         </td>
         {/* A Producir */}
-        <td className='text-right'>
+        <td className='text-right group/prod'>
           <AProducirCol
             row={row}
             aProducir={aProducir}
             startDate={startDate}
             setProgColor={setProgColor}
             setFilteredProgColor={setFilteredProgColor}
+            live={live}
           />
         </td>
         {/* Producido */}

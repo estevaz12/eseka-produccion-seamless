@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import { Check, Close, Edit } from '@mui/icons-material';
-import { Button, Input } from '@mui/joy';
+import { Button, Input, Typography } from '@mui/joy';
 import { ToastsContext } from '../../Contexts.js';
 
 let apiUrl;
@@ -14,12 +14,21 @@ export default function AProducirCol({
   startDate,
   setProgColor,
   setFilteredProgColor,
+  live,
 }) {
   apiUrl = useConfig().apiUrl;
   const { addToast } = useContext(ToastsContext);
   const [editProducir, setEditProducir] = useState(false);
   const [docenas, setDocenas] = useState();
   const inputRef = useRef(null);
+
+  const aProducirStr = (aProducir, row) => {
+    if (row.Tipo === null) {
+      return aProducir;
+    } else {
+      return `${aProducir} (${row.Docenas})`;
+    }
+  };
 
   useEffect(() => {
     let timeoutId;
@@ -80,16 +89,28 @@ export default function AProducirCol({
 
   return !editProducir ? (
     <span>
-      {
-        // if docenas is null, show edit icon, otherwise show docenas
-        !row.Docenas && row.Docenas !== 0 ? (
-          <Edit onClick={() => setEditProducir(true)} />
-        ) : row.Tipo === null ? (
-          aProducir
-        ) : (
-          `${aProducir} (${row.Docenas})`
-        )
-      }
+      {(() => {
+        if (!row.Docenas && row.Docenas !== 0) {
+          return live && <Edit onClick={() => setEditProducir(true)} />;
+        } else {
+          return (
+            <Typography
+              className='justify-end'
+              startDecorator={
+                live &&
+                row.Porcentaje === null && (
+                  <Edit
+                    className='invisible group-hover/prod:visible'
+                    onClick={() => setEditProducir(true)}
+                  />
+                )
+              }
+            >
+              {aProducirStr(aProducir, row)}
+            </Typography>
+          );
+        }
+      })()}
     </span>
   ) : (
     <form onSubmit={handleProducirEdit} className='grid grid-cols-2 gap-1'>
