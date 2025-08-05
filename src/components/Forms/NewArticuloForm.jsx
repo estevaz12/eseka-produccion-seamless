@@ -25,7 +25,7 @@ export default function NewArticuloForm({
   const [error, setError] = useState(false); // 'color' || 'distr' || false
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e, articulo, articuloExists) {
+  async function handleSubmit(e, articulo, articuloExists, talles) {
     e.preventDefault();
     setLoading(true);
 
@@ -49,15 +49,14 @@ export default function NewArticuloForm({
       }
     }
 
-    const data = { articulo, ...formData };
     if (!articuloExists) {
       try {
-        const res = await fetch(`${apiUrl}/articulo/insertWithColors`, {
+        const res = await fetch(`${apiUrl}/articulo/insert`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({ articulo, tipo: formData.tipo }),
         });
 
         const resData = await res.json();
@@ -66,22 +65,21 @@ export default function NewArticuloForm({
           message: resData.message,
         });
       } catch (err) {
-        console.error(
-          `[CLIENT] Error fetching /articulo/insertWithColors:`,
-          err
-        );
+        console.error(`[CLIENT] Error fetching /articulo/insert:`, err);
       }
-    } else if (formData.colorDistr) {
-      // FIXME - talle and colordistr
+    }
+
+    if (formData.colorDistr) {
       try {
-        const res = await fetch(`${apiUrl}/colorDistr/insert`, {
+        const res = await fetch(`${apiUrl}/colorDistr/insertAllTalles`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            articulo: data.articulo,
-            colorDistr: data.colorDistr,
+            articulo,
+            talles,
+            colorDistr: formData.colorDistr,
           }),
         });
 
@@ -96,7 +94,7 @@ export default function NewArticuloForm({
     }
 
     setLoading(false);
-    setNewArticuloData((prev) => prev.slice(1)); // Remove first ite
+    setNewArticuloData((prev) => prev.slice(1)); // Remove first item
     setFormData({});
     setError(false);
   }
@@ -108,7 +106,8 @@ export default function NewArticuloForm({
         handleSubmit(
           e,
           newArticuloData.articulo,
-          newArticuloData.articuloExists
+          newArticuloData.articuloExists,
+          newArticuloData.talles
         );
       }}
       className='w-sm'

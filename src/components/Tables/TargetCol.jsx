@@ -1,5 +1,7 @@
 import {
+  CrisisAlertRounded,
   DownloadRounded,
+  FlagRounded,
   QuestionMarkRounded,
   SyncProblemRounded,
 } from '@mui/icons-material';
@@ -8,6 +10,14 @@ import { roundUpEven } from '../../utils/progTableUtils';
 
 // TODO: reset counter for multiple machines and for incomplete articulos
 export default function TargetCol({ row, faltaUnidades }) {
+  const iconFontSize = 'small';
+
+  const TargetData = ({ target, icon }) => (
+    <Typography className='justify-end' endDecorator={icon}>
+      {target}
+    </Typography>
+  );
+
   if (row.Machines.length <= 1) {
     // if one machine, just add pieces to remaining
     // if no machines, just show remaining
@@ -19,32 +29,55 @@ export default function TargetCol({ row, faltaUnidades }) {
       if (row.Producido === 0) {
         // Download production record
         return (
-          <Typography>
-            {row.Target}
-            &nbsp;
-            <DownloadRounded fontSize='small' />
-          </Typography>
+          <TargetData
+            target={row.Target}
+            icon={<DownloadRounded fontSize={iconFontSize} />}
+          />
         );
       } else if (machTarget > row.Target) {
         // Reset counter
         return (
-          <Typography>
-            {machTarget}
-            &nbsp;
-            <SyncProblemRounded fontSize='small' />
-          </Typography>
+          <TargetData
+            target={machTarget}
+            icon={<SyncProblemRounded fontSize={iconFontSize} />}
+          />
         );
       } else if (
         machTarget < row.Target && // means articulo is incomplete
         row.Machines[0].TargetOrder === 0
       ) {
-        // verify target
+        // verify counter
         return (
-          <Typography>
-            {machTarget}
-            &nbsp;
-            <QuestionMarkRounded fontSize='small' />
-          </Typography>
+          <TargetData
+            target={machTarget}
+            icon={<QuestionMarkRounded fontSize={iconFontSize} />}
+          />
+        );
+      } else if (
+        row.Machines[0].TargetOrder !== 0 &&
+        row.Machines[0].TargetOrder !== machTarget
+      ) {
+        // Target is different from expected
+        return (
+          <TargetData
+            target={
+              <>
+                <Typography component='div'>{machTarget}</Typography>
+                <Typography component='div'>
+                  (M: {row.Machines[0].TargetOrder})
+                </Typography>
+              </>
+            }
+            icon={<CrisisAlertRounded fontSize={iconFontSize} />}
+          />
+        );
+      } else if (row.Machines[0].TargetOrder === 0) {
+        // no target
+        return (
+          <TargetData
+            target={machTarget}
+            icon={<FlagRounded fontSize={iconFontSize} />}
+          />
         );
       }
     }
@@ -61,25 +94,17 @@ export default function TargetCol({ row, faltaUnidades }) {
       );
 
       return (
-        <Typography key={m.MachCode}>
-          {`${m.MachCode} -> ${machineTarget}`}
-          {(() => {
-            if (row.Producido === 0)
-              return (
-                <>
-                  &nbsp;
-                  <DownloadRounded fontSize='small' />
-                </>
-              );
-            else if (m.TargetOrder === 0)
-              return (
-                <>
-                  &nbsp;
-                  <QuestionMarkRounded fontSize='small' />
-                </>
-              );
-          })()}
-        </Typography>
+        <TargetData
+          key={m.MachCode}
+          target={`${m.MachCode} -> ${machineTarget}`}
+          icon={
+            row.Producido === 0 ? (
+              <DownloadRounded fontSize={iconFontSize} />
+            ) : m.TargetOrder === 0 ? (
+              <QuestionMarkRounded fontSize={iconFontSize} />
+            ) : null
+          }
+        />
       );
     });
   }

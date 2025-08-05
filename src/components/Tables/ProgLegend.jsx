@@ -1,5 +1,7 @@
 import {
+  CrisisAlertRounded,
   DownloadRounded,
+  FlagRounded,
   ListAltRounded,
   QuestionMarkRounded,
   SyncProblemRounded,
@@ -84,6 +86,18 @@ export default function ProgLegend({ live }) {
                 <QuestionMarkRounded fontSize='small' />
               </ListItemDecorator>{' '}
               Verificar counter
+            </ListItem>
+            <ListItem>
+              <ListItemDecorator>
+                <CrisisAlertRounded fontSize='small' />
+              </ListItemDecorator>{' '}
+              Verificar target máq.
+            </ListItem>
+            <ListItem>
+              <ListItemDecorator>
+                <FlagRounded fontSize='small' />
+              </ListItemDecorator>{' '}
+              Sin target
             </ListItem>
           </>
         )}

@@ -190,24 +190,19 @@ const startServer = () => {
     }
   });
 
-  app.post('/articulo/insertWithColors', async (req, res) => {
-    serverLog('POST /articulo/insertWithColors');
+  app.post('/articulo/insert', async (req, res) => {
+    serverLog('POST /articulo/insert');
     const data = req.body;
 
     try {
       let query = insertArticulo(data);
       await sql.query(query);
       serverLog(query);
-      // Insert colorDistrs
-      // FIXME - now we have to insert per talle when inserting from
-      // newArticuloForm
-      await insertColorDistrs(data);
-
       res
         .status(200)
         .json({ message: `Art. ${data.articulo} agregado con éxito.` });
     } catch (err) {
-      serverLog(`[ERROR] POST /articulo/insertWithColors: ${err}`);
+      serverLog(`[ERROR] POST /articulo/insert: ${err}`);
       res.status(500).json({
         message: `No se pudo agregar el art. ${data.articulo}.`,
         error: err.message,
@@ -329,6 +324,27 @@ const startServer = () => {
       serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
       res.status(500).json({
         message: `No se pudo agregar la distribución para el art. ${data.articulo} T${data.talle}.`,
+        error: err.message,
+      });
+    }
+  });
+
+  app.post('/colorDistr/insertAllTalles', async (req, res) => {
+    serverLog('POST /colorDistr/insertAllTalles');
+    const { articulo, talles, colorDistr } = req.body;
+
+    try {
+      for (const talle of talles) {
+        await insertColorDistrs({ articulo, talle, colorDistr });
+      }
+
+      res.status(201).json({
+        message: `Distribución para el art. ${articulo} agregada con éxito.`,
+      });
+    } catch (err) {
+      serverLog(`[ERROR] POST /colorDistr/insertAllTalles: ${err}`);
+      res.status(500).json({
+        message: `No se pudo agregar la distribución para el art. ${articulo}.`,
         error: err.message,
       });
     }

@@ -1,7 +1,6 @@
-// FIXME - talle and colordistr
 const getArticuloColorDistr = (articulo) => {
   return `
-    SELECT *
+    SELECT DISTINCT Talle
     FROM SEA_COLOR_DISTR
     WHERE Articulo = ${articulo};
   `;

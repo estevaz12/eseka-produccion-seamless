@@ -131,60 +131,81 @@ export default function ProgComparar() {
       console.error('[CLIENT] Error fetching /machines/newColorCodes:', err);
     }
 
-    let prevArticulo; // to avoid duplicate fetches
+    let prevArt = null; // to avoid duplicate fetches
+    let prevArtTalles = [];
 
-    for (const row of diff.added) {
-      if (prevArticulo !== row.articulo) {
-        let articulo;
-        try {
-          let res = await fetch(`${apiUrl}/articulo/${row.articulo}`);
-          articulo = await res.json();
-        } catch (err) {
-          console.error('[CLIENT] Error fetching articulo:', err);
-        }
+    // Add a dummy item to trigger processing of the final real item
+    const addedItems = [...diff.added, { articulo: null }];
 
-        // if else to avoid making unnecessary fetches if articulo doesn't exist
-        if (!articulo || articulo.length === 0) {
-          // ask for Tipo, ColorDistr
-          setNewArticuloData((prev) => [
-            ...prev,
-            {
-              articuloExists: false, // to know if an articulo insert is needed
-              articulo: row.articulo,
-              tipo: null,
-              colorDistr: null,
-            },
-          ]);
-        } else {
-          // FIXME - talle and colorDistr
-          // If articulo exists, check if color distr exists
-          let colorDistr;
+    for (const row of addedItems) {
+      if (prevArt === row.articulo) {
+        // same articulo, different talle
+        // gather all the talles first
+        prevArtTalles.push(row.talle);
+      } else {
+        if (prevArt !== null) {
+          // we've gathered all the talles, now we insert
+          let articulo;
           try {
-            const res = await fetch(
-              `${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`
-            );
-            colorDistr = await res.json();
+            let res = await fetch(`${apiUrl}/articulo/${prevArt}`);
+            articulo = await res.json();
           } catch (err) {
-            console.error('[CLIENT] Error fetching colorDistr:', err);
+            console.error('[CLIENT] Error fetching articulo:', err);
           }
 
-          // if color distr exists, don't add to newArticuloData
-          if (!(colorDistr?.length > 0)) {
+          // if else to avoid making unnecessary fetches if articulo doesn't exist
+          if (!articulo || articulo.length === 0) {
+            // capture the current values
+            const artToInsert = prevArt;
+            const talles = prevArtTalles;
+            // ask for Tipo, ColorDistr
             setNewArticuloData((prev) => [
               ...prev,
               {
-                articuloExists: true, // no need to insert articulo
-                articulo: articulo[0].Articulo,
-                tipo: articulo[0].Tipo,
-                // if undefined or length 0, results in null
-                colorDistr: colorDistr?.length > 0 ? colorDistr : null,
+                articuloExists: false, // to know if an articulo insert is needed
+                articulo: artToInsert,
+                tipo: null,
+                talles,
+                colorDistr: null,
               },
             ]);
+          } else {
+            // If articulo exists, check if color distr exists for all talles
+            let missingTalles = [];
+            try {
+              const res = await fetch(
+                `${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`
+              );
+              const colorDistrTalles = await res.json();
+              missingTalles = prevArtTalles.filter(
+                (talle) => !colorDistrTalles.find((cd) => cd.Talle === talle)
+              );
+            } catch (err) {
+              console.error('[CLIENT] Error fetching colorDistr:', err);
+            }
+
+            // if color distr exists, don't add to newArticuloData
+            if (missingTalles.length > 0) {
+              setNewArticuloData((prev) => [
+                ...prev,
+                {
+                  articuloExists: true, // no need to insert articulo
+                  articulo: articulo[0].Articulo,
+                  tipo: articulo[0].Tipo,
+                  talles: missingTalles,
+                  colorDistr: null,
+                },
+              ]);
+            }
           }
         }
-      }
 
-      prevArticulo = row.articulo;
+        // Set up for next iteration (skip for dummy item)
+        if (row.articulo !== null) {
+          prevArt = row.articulo;
+          prevArtTalles = [row.talle];
+        }
+      }
     }
 
     // move from added to modified to trigger useEffect after inserting new articulos
