@@ -61,7 +61,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         return (
           <TargetData
             target={
-              <Stack direction='column'>
+              <Stack component='span' direction='column'>
                 <Typography>{machTarget}</Typography>
                 <Typography>(M: {row.Machines[0].TargetOrder})</Typography>
               </Stack>

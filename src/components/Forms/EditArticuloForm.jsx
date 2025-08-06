@@ -15,7 +15,6 @@ import { ErrorContext } from '../../Contexts.js';
 import { SaveOutlined } from '@mui/icons-material';
 import { ToastsContext } from '../../Contexts.js';
 
-// TODO: all talles option
 export default function EditArticuloForm({ articuloData }) {
   const { apiUrl } = useConfig();
   const { addToast } = useContext(ToastsContext);
