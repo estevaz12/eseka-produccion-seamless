@@ -6,6 +6,7 @@ import {
   Typography,
   Input,
   FormHelperText,
+  Checkbox,
 } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import ColorSelect from './ColorSelect.jsx';
@@ -19,7 +20,7 @@ export default function ColorDistrInputs({ formData, setFormData }) {
   apiUrl = useConfig().apiUrl;
   const error = useContext(ErrorContext);
   const [colors, setColors] = useState([]);
-  const [checked, setChecked] = useState(
+  const [switched, setSwitched] = useState(
     formData?.colorDistr?.length > 1 ? true : false
   );
   const [numColors, setNumColors] = useState(
@@ -43,12 +44,22 @@ export default function ColorDistrInputs({ formData, setFormData }) {
 
   return (
     <Stack direction='column' className='gap-4'>
+      <Typography level='title-md'>Distribución de Colores</Typography>
+
       <Stack direction='row' className='justify-between'>
-        <Typography level='title-md'>Distribución de Colores</Typography>
+        <Checkbox
+          label='Todos los talles'
+          checked={formData?.allTalles ?? true}
+          disabled={formData.allTalles === undefined}
+          onChange={(e) =>
+            setFormData({ ...formData, allTalles: e.target.checked })
+          }
+        />
+
         <Switch
-          checked={checked}
+          checked={switched}
           onChange={(e) => {
-            setChecked(e.target.checked);
+            setSwitched(e.target.checked);
             setFormData({ ...formData, colorDistr: [] });
             setNumColors(2);
           }}
@@ -56,7 +67,7 @@ export default function ColorDistrInputs({ formData, setFormData }) {
         />
       </Stack>
 
-      {checked && (
+      {switched && (
         <Stack direction='row' className='items-end justify-between'>
           <FormControl required>
             <FormLabel>Cant. Colores</FormLabel>
@@ -81,7 +92,7 @@ export default function ColorDistrInputs({ formData, setFormData }) {
         </Stack>
       )}
 
-      {!checked ? (
+      {!switched ? (
         <ColorSelect
           val={formData.colorDistr?.[0]?.color || null}
           onChange={(val) =>

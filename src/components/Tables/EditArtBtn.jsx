@@ -12,13 +12,7 @@ export default function EditArtBtn({ articulo, tipo, talle }) {
   async function handleClick() {
     try {
       const res = await fetch(
-        `${apiUrl}/articulo/${articulo}/${talle}/currentColorDistr`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        `${apiUrl}/articulo/${articulo}/${talle}/currentColorDistr`
       );
       const data = await res.json();
 

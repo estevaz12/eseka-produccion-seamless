@@ -5,7 +5,7 @@ import {
   QuestionMarkRounded,
   SyncProblemRounded,
 } from '@mui/icons-material';
-import { Typography } from '@mui/joy';
+import { Stack, Typography } from '@mui/joy';
 import { roundUpEven } from '../../utils/progTableUtils';
 
 // TODO: reset counter for multiple machines and for incomplete articulos
@@ -61,12 +61,10 @@ export default function TargetCol({ row, faltaUnidades }) {
         return (
           <TargetData
             target={
-              <>
-                <Typography component='div'>{machTarget}</Typography>
-                <Typography component='div'>
-                  (M: {row.Machines[0].TargetOrder})
-                </Typography>
-              </>
+              <Stack direction='column'>
+                <Typography>{machTarget}</Typography>
+                <Typography>(M: {row.Machines[0].TargetOrder})</Typography>
+              </Stack>
             }
             icon={<CrisisAlertRounded fontSize={iconFontSize} />}
           />

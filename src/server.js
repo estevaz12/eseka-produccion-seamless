@@ -167,6 +167,27 @@ const startServer = () => {
     }
   });
 
+  app.get('/articulo/:articulo/currentColorDistr', async (req, res) => {
+    const { articulo } = req.params;
+    serverLog(`GET /articulo/${articulo}/currentColorDistr`);
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(getCurrArtColorDistr(articulo, null));
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(
+          `[ERROR] GET /articulo/${articulo}/currentColorDistr: ${err}`
+        );
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog(`Using test data for /articulo/${articulo}/currentColorDistr`);
+      res.json(articuloColorDistrTestData);
+    }
+  });
+
   app.get('/articulo/:articulo/:talle/currentColorDistr', async (req, res) => {
     const { articulo, talle } = req.params;
     serverLog(`GET /articulo/${articulo}/${talle}/currentColorDistr`);

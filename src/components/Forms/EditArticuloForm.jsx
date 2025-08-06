@@ -19,7 +19,10 @@ import { ToastsContext } from '../../Contexts.js';
 export default function EditArticuloForm({ articuloData }) {
   const { apiUrl } = useConfig();
   const { addToast } = useContext(ToastsContext);
-  const [formData, setFormData] = useState(articuloData);
+  const [formData, setFormData] = useState({
+    ...articuloData,
+    allTalles: false,
+  });
   const [error, setError] = useState(false); // 'color' || 'distr' || false
   const [loading, setLoading] = useState(false);
 
@@ -74,21 +77,45 @@ export default function EditArticuloForm({ articuloData }) {
 
     if (!colorDistrEqual(formData.colorDistr, articuloData.colorDistr)) {
       try {
-        const res = await fetch(`${apiUrl}/colorDistr/insert`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            articulo: formData.articulo,
-            talle: formData.talle,
-            colorDistr: formData.colorDistr, // [{color, porcentaje}]
-          }),
-        });
+        let insertRes;
+        if (!formData.allTalles) {
+          // insert for single talle
+          insertRes = await fetch(`${apiUrl}/colorDistr/insert`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              articulo: formData.articulo,
+              talle: formData.talle,
+              colorDistr: formData.colorDistr, // [{color, porcentaje}]
+            }),
+          });
+        } else {
+          // get all talles for current colorDistr
+          const res = await fetch(
+            `${apiUrl}/articulo/${articuloData.articulo}/currentColorDistr`
+          );
+          const data = await res.json();
+          const talles = [...new Set(data.map((row) => row.Talle))];
 
-        const data = await res.json();
+          // insert for all talles
+          insertRes = await fetch(`${apiUrl}/colorDistr/insertAllTalles`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              articulo: formData.articulo,
+              talles,
+              colorDistr: formData.colorDistr, // [{color, porcentaje}]
+            }),
+          });
+        }
+
+        const data = await insertRes.json();
         addToast({
-          type: res.status === 500 ? 'danger' : 'success',
+          type: insertRes.status === 500 ? 'danger' : 'success',
           message: data.message,
         });
       } catch (err) {

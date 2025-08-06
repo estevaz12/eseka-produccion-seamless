@@ -45,7 +45,7 @@ module.exports = [
           colorId: 2,
         },
         Pieces: 933,
-        TargetOrder: 1092,
+        TargetOrder: 1085,
         State: 0,
       },
     ],
