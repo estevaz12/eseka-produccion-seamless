@@ -41,6 +41,16 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  // for window.open()
+  mainWindow.webContents.setWindowOpenHandler(() => ({
+    action: 'allow',
+    overrideBrowserWindowOptions: {
+      width: 1366,
+      height: 727,
+      autoHideMenuBar: true,
+    },
+  }));
+
   // Open the DevTools.
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
