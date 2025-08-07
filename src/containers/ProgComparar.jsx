@@ -15,7 +15,7 @@ import DataTable from '../components/Tables/DataTable.jsx';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/Forms/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
-import { useOutletContext } from 'react-router';
+import { useLocation, useOutletContext } from 'react-router';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
 import {
@@ -51,6 +51,7 @@ export default function ProgComparar() {
   const diffMounted = useRef(false);
   const loadType = useRef('');
   const intervalRef = useRef();
+  useIntervalCleanup(intervalRef);
 
   // get current programada total on load
   useEffect(() => {
@@ -218,11 +219,6 @@ export default function ProgComparar() {
 
   // Insert diff updates after validating new articulos
   useEffect(() => {
-    // Always clear any previous interval
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
     let ignore = false;
 
     // just inserts updates
@@ -243,7 +239,6 @@ export default function ProgComparar() {
         });
 
         const data = resData.inserted;
-        // FIXME fetch and repeat every 30 seconds
         fetchNewTargets(data);
         intervalRef.current = setInterval(() => {
           fetchNewTargets(data);
@@ -252,7 +247,6 @@ export default function ProgComparar() {
         console.error('[CLIENT] Error fetching data:', err);
       }
 
-      // TODO: total actual is not updating view when programada is updated
       fetch(`${apiUrl}/programada/total/${startDate}`)
         .then((res) => res.json())
         .then((data) => setCurrTotal(data[0].Total)) // single-record object
@@ -341,10 +335,6 @@ export default function ProgComparar() {
     }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
       ignore = true;
     };
   }, [diff, newArticuloData, programada, startDate, addToast]);
@@ -360,6 +350,30 @@ export default function ProgComparar() {
       .then((res) => res.json())
       .then((data) => setNewTargets(data))
       .catch((err) => console.error('[CLIENT] Error fetching data:', err));
+  }
+
+  function useIntervalCleanup(intervalRef) {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+      const handleUnload = () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      };
+
+      window.addEventListener('beforeunload', handleUnload);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleUnload);
+
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      };
+    }, [pathname, intervalRef]);
   }
 
   return (

@@ -1,4 +1,4 @@
-import { IconButton, Sheet, Stack, Table, Typography } from '@mui/joy';
+import { IconButton, Sheet, Stack, Switch, Table, Typography } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import dayjs from 'dayjs';
@@ -14,6 +14,8 @@ export default function ExpandedRow({ numCols, row }) {
   apiUrl = useConfig().apiUrl;
   const { startDate, fromMonthStart, endDate } = useContext(DatesContext);
   const [history, setHistory] = useState([]);
+  const [filteredHistory, setFilteredHistory] = useState([]);
+  const [checked, setChecked] = useState(true);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const PAGE_LENGTH = 5; // each page will have 5 rows
@@ -31,6 +33,7 @@ export default function ExpandedRow({ numCols, row }) {
       .then((res) => res.json())
       .then((data) => {
         setHistory(data);
+        setFilteredHistory(data.filter((h) => h.Pieces > 0));
         setLoading(false);
       })
       .catch((err) =>
@@ -72,40 +75,73 @@ export default function ExpandedRow({ numCols, row }) {
             <Typography level='body-lg' component='div' className='text-left!'>
               Historial
             </Typography>
+
             {history.length > 5 && (
-              <Stack direction='row' className='items-center gap-2'>
-                <Typography level='body-sm' className='text-right!'>
-                  {pageStart(page) === history.length
-                    ? ''
-                    : `${pageStart(page)}-`}
-                  {pageEnd(page) < history.length
-                    ? pageEnd(page)
-                    : history.length}{' '}
-                  de {history.length}
+              // pagination controls
+              <Stack direction='row' className='items-center gap-8'>
+                {/* filter zeroes */}
+                <Typography
+                  level='body-sm'
+                  component='label'
+                  endDecorator={
+                    <Switch
+                      sx={{ ml: 0.5 }}
+                      size='sm'
+                      checked={checked}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setFilteredHistory(
+                            history.filter((h) => h.Pieces > 0)
+                          );
+                        } else {
+                          setFilteredHistory([]);
+                        }
+
+                        setChecked(e.target.checked);
+                      }}
+                    />
+                  }
+                >
+                  Ocultar registros vacíos
                 </Typography>
-                <Stack direction='row' className='items-center'>
-                  <IconButton
-                    variant='soft'
-                    size='sm'
-                    onClick={() => {
-                      if (page > 1) setPage(page - 1);
-                    }}
-                  >
-                    <KeyboardArrowLeftRounded />
-                  </IconButton>
-                  <IconButton
-                    variant='soft'
-                    size='sm'
-                    onClick={() => {
-                      if (pageEnd(page) < history.length) setPage(page + 1);
-                    }}
-                  >
-                    <KeyboardArrowRightRounded />
-                  </IconButton>
+
+                <Stack direction='row' className='items-center gap-2'>
+                  <Typography level='body-sm' className='text-right!'>
+                    {pageStart(page) === history.length
+                      ? ''
+                      : `${pageStart(page)}-`}
+                    {pageEnd(page) < history.length
+                      ? pageEnd(page)
+                      : history.length}{' '}
+                    de {history.length}
+                  </Typography>
+
+                  <Stack direction='row' className='items-center'>
+                    <IconButton
+                      variant='soft'
+                      size='sm'
+                      onClick={() => {
+                        if (page > 1) setPage(page - 1);
+                      }}
+                    >
+                      <KeyboardArrowLeftRounded />
+                    </IconButton>
+
+                    <IconButton
+                      variant='soft'
+                      size='sm'
+                      onClick={() => {
+                        if (pageEnd(page) < history.length) setPage(page + 1);
+                      }}
+                    >
+                      <KeyboardArrowRightRounded />
+                    </IconButton>
+                  </Stack>
                 </Stack>
               </Stack>
             )}
           </Stack>
+
           <Table
             borderAxis='bothBetween'
             size='sm'
@@ -138,7 +174,7 @@ export default function ExpandedRow({ numCols, row }) {
               {loading ? (
                 <TableSkeleton numCols={8} numRows={5} />
               ) : (
-                history
+                (filteredHistory.length > 0 ? filteredHistory : history)
                   .slice(pageStart(page) - 1, pageEnd(page))
                   .map((historyRow) => (
                     <tr key={`${historyRow.MachCode}-${historyRow.DateRec}`}>

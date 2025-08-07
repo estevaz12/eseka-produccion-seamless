@@ -128,7 +128,6 @@ const startServer = () => {
     }
   });
 
-  // FIXME - talle and colorDistr
   app.get('/articulo/:articulo/colorDistr', async (req, res) => {
     const { articulo } = req.params;
     serverLog(`GET /articulo/${articulo}/colorDistr`);

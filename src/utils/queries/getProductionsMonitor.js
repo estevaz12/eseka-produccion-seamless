@@ -1,9 +1,4 @@
 const dayjs = require('dayjs');
-const utc = require('dayjs/plugin/utc');
-const timezone = require('dayjs/plugin/timezone');
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 const getProductionsMonitor = (
   articulo,
@@ -52,7 +47,6 @@ const getProductionsMonitor = (
               AND cc.Color = ${color}
         )
         AND pm.DateRec BETWEEN '${prodStartDate}' AND '${prodEndDate}'
-        AND pm.Pieces > 0
     ORDER BY DateRec DESC;
   `;
 };

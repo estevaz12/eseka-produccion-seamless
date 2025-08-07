@@ -7,6 +7,12 @@ const {
   ipcMain,
 } = require('electron');
 const path = require('path');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 app.commandLine.appendSwitch('lang', 'es-419');
 
@@ -68,9 +74,9 @@ app.whenReady().then(() => {
   // when server sends a message
   serverProcess.on('message', (msg) => {
     console.log(
-      `[${new Date().toLocaleString('es-AR', {
-        timeZone: 'America/Buenos_Aires',
-      })}] ${msg}`
+      `[${dayjs()
+        .tz('America/Buenos_Aires')
+        .format('DD/MM/YYYY HH:mm:ss')}] ${msg}`
     );
   });
 

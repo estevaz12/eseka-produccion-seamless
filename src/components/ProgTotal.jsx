@@ -11,7 +11,10 @@ export default function ProgTotal({ startDate, currTotal = undefined }) {
   // get current programada total on load
   useEffect(() => {
     let ignore = false;
-    if (startDate && currTotal === undefined) {
+
+    if (currTotal !== undefined) {
+      if (!ignore) setTotal(currTotal);
+    } else if (startDate) {
       // fetch total of current programada
       fetch(`${apiUrl}/programada/total/${startDate}`)
         .then((res) => res.json())

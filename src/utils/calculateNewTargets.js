@@ -53,9 +53,8 @@ const calculateNewTargets = async (progUpdates, machines) => {
               // articulo is done, no need to sum pieces or calculate new target.
               newTargetObj = {
                 ...newTargetObj,
-                sendTarget: newRecord.Target - monthProduction,
+                sendTarget: `PARAR (${newRecord.Target - monthProduction})`,
               };
-              // TODO: warn articulo is done
 
               serverLog(
                 `New target for ${
