@@ -326,8 +326,8 @@ const startServer = () => {
       const query = insertDistr(data.articulo, data.talle, row);
       serverLog(query);
       await sql.query(query);
-      // Wait 1 second before next insert
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Wait before next insert
+      await new Promise((resolve) => setTimeout(resolve, 1));
     }
   }
 

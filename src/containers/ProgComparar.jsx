@@ -243,7 +243,7 @@ export default function ProgComparar() {
         });
 
         const data = resData.inserted;
-        // fetch and repeat every 30 seconds
+        // FIXME fetch and repeat every 30 seconds
         fetchNewTargets(data);
         intervalRef.current = setInterval(() => {
           fetchNewTargets(data);
