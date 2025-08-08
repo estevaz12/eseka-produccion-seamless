@@ -1,138 +1,242 @@
 module.exports = [
   {
-      "Id": 17,
-      "Color": "AZUL ROJO"
+    Id: 50,
+    Color: '*PENDIENTE*',
+    Hex: null,
+    WhiteText: null,
   },
   {
-      "Id": 3,
-      "Color": "CORAZONES"
+    Id: 17,
+    Color: 'AZUL ROJO',
+    Hex: '#DF2935',
+    WhiteText: true,
   },
   {
-      "Id": 35,
-      "Color": "CRUDO BLANCO"
+    Id: 3,
+    Color: 'BLANCO CORAZONES',
+    Hex: '#F1F1F8',
+    WhiteText: null,
   },
   {
-      "Id": 2,
-      "Color": "CRUDO CRUDO"
+    Id: 35,
+    Color: 'CRUDO BLANCO',
+    Hex: '#F1F1F8',
+    WhiteText: null,
   },
   {
-      "Id": 22,
-      "Color": "CRUDO FRANCIA"
+    Id: 2,
+    Color: 'CRUDO CRUDO',
+    Hex: '#FDC372',
+    WhiteText: null,
   },
   {
-      "Id": 1,
-      "Color": "CRUDO GRIS"
+    Id: 22,
+    Color: 'CRUDO FRANCIA',
+    Hex: '#083D77',
+    WhiteText: true,
   },
   {
-      "Id": 24,
-      "Color": "CRUDO MELANGE"
+    Id: 1,
+    Color: 'CRUDO GRIS',
+    Hex: '#BEB1B0',
+    WhiteText: null,
   },
   {
-      "Id": 5,
-      "Color": "CRUDO NEGRO"
+    Id: 24,
+    Color: 'CRUDO MELANGE',
+    Hex: '#BEB1B0',
+    WhiteText: null,
   },
   {
-      "Id": 38,
-      "Color": "GRIS BORDO"
+    Id: 5,
+    Color: 'CRUDO NEGRO',
+    Hex: '#272727',
+    WhiteText: true,
   },
   {
-      "Id": 28,
-      "Color": "GRIS FRANCIA"
+    Id: 42,
+    Color: 'D1 FRANCIA',
+    Hex: '#083D77',
+    WhiteText: true,
   },
   {
-      "Id": 39,
-      "Color": "GRIS GRIS"
+    Id: 43,
+    Color: 'D2 BLANCO',
+    Hex: '#F1F1F8',
+    WhiteText: null,
   },
   {
-      "Id": 32,
-      "Color": "GRIS MARINO"
+    Id: 44,
+    Color: 'D3 NEGRO',
+    Hex: '#272727',
+    WhiteText: true,
   },
   {
-      "Id": 33,
-      "Color": "GRIS MOSTAZA"
+    Id: 38,
+    Color: 'GRIS BORDO',
+    Hex: '#7B2339',
+    WhiteText: true,
   },
   {
-      "Id": 34,
-      "Color": "GRIS ROJO"
+    Id: 28,
+    Color: 'GRIS FRANCIA',
+    Hex: '#083D77',
+    WhiteText: true,
   },
   {
-      "Id": 4,
-      "Color": "MARIPOSAS"
+    Id: 39,
+    Color: 'GRIS GRIS',
+    Hex: '#BEB1B0',
+    WhiteText: null,
   },
   {
-      "Id": 11,
-      "Color": "MELANGE AERO"
+    Id: 32,
+    Color: 'GRIS MARINO',
+    Hex: '#3173AF',
+    WhiteText: true,
   },
   {
-      "Id": 19,
-      "Color": "MELANGE BLANCO"
+    Id: 33,
+    Color: 'GRIS MOSTAZA',
+    Hex: '#D59502',
+    WhiteText: null,
   },
   {
-      "Id": 9,
-      "Color": "MELANGE BORDO"
+    Id: 34,
+    Color: 'GRIS ROJO',
+    Hex: '#DF2935',
+    WhiteText: true,
   },
   {
-      "Id": 8,
-      "Color": "MELANGE FRANCIA"
+    Id: 11,
+    Color: 'MELANGE AERO',
+    Hex: '#6B9AC4',
+    WhiteText: null,
   },
   {
-      "Id": 31,
-      "Color": "MELANGE GRIS"
+    Id: 41,
+    Color: 'MELANGE AZUL',
+    Hex: '#3173AF',
+    WhiteText: true,
   },
   {
-      "Id": 7,
-      "Color": "MELANGE MARINO"
+    Id: 19,
+    Color: 'MELANGE BLANCO',
+    Hex: '#F1F1F8',
+    WhiteText: null,
   },
   {
-      "Id": 13,
-      "Color": "MELANGE MELANGE"
+    Id: 9,
+    Color: 'MELANGE BORDO',
+    Hex: '#7B2339',
+    WhiteText: true,
   },
   {
-      "Id": 12,
-      "Color": "MELANGE NEGRO"
+    Id: 8,
+    Color: 'MELANGE FRANCIA',
+    Hex: '#083D77',
+    WhiteText: true,
   },
   {
-      "Id": 20,
-      "Color": "MELANGE ROJO"
+    Id: 31,
+    Color: 'MELANGE GRIS',
+    Hex: '#BEB1B0',
+    WhiteText: null,
   },
   {
-      "Id": 10,
-      "Color": "MELANGE VERDE"
+    Id: 7,
+    Color: 'MELANGE MARINO',
+    Hex: '#3173AF',
+    WhiteText: true,
   },
   {
-      "Id": 15,
-      "Color": "NEGRO AZUL"
+    Id: 13,
+    Color: 'MELANGE MELANGE',
+    Hex: '#BEB1B0',
+    WhiteText: null,
   },
   {
-      "Id": 14,
-      "Color": "NEGRO BLANCO"
+    Id: 12,
+    Color: 'MELANGE NEGRO',
+    Hex: '#272727',
+    WhiteText: true,
   },
   {
-      "Id": 18,
-      "Color": "NEGRO FRANCIA"
+    Id: 20,
+    Color: 'MELANGE ROJO',
+    Hex: '#DF2935',
+    WhiteText: true,
   },
   {
-      "Id": 6,
-      "Color": "NEGRO GRIS"
+    Id: 10,
+    Color: 'MELANGE VERDE',
+    Hex: '#7EAD4A',
+    WhiteText: null,
   },
   {
-      "Id": 37,
-      "Color": "NEGRO NARANJA"
+    Id: 15,
+    Color: 'NEGRO AZUL',
+    Hex: '#3173AF',
+    WhiteText: true,
   },
   {
-      "Id": 23,
-      "Color": "NEGRO NEGRO"
+    Id: 14,
+    Color: 'NEGRO BLANCO',
+    Hex: '#F1F1F8',
+    WhiteText: null,
   },
   {
-      "Id": 16,
-      "Color": "NEGRO ROJO"
+    Id: 18,
+    Color: 'NEGRO FRANCIA',
+    Hex: '#083D77',
+    WhiteText: true,
   },
   {
-      "Id": 36,
-      "Color": "NEGRO TURQUESA"
+    Id: 6,
+    Color: 'NEGRO GRIS',
+    Hex: '#BEB1B0',
+    WhiteText: null,
   },
   {
-      "Id": 21,
-      "Color": "POAL BLANCO"
-  }
-]
+    Id: 37,
+    Color: 'NEGRO NARANJA',
+    Hex: '#F88B32',
+    WhiteText: null,
+  },
+  {
+    Id: 23,
+    Color: 'NEGRO NEGRO',
+    Hex: '#272727',
+    WhiteText: true,
+  },
+  {
+    Id: 16,
+    Color: 'NEGRO ROJO',
+    Hex: '#DF2935',
+    WhiteText: true,
+  },
+  {
+    Id: 36,
+    Color: 'NEGRO TURQUESA',
+    Hex: '#2ABDBF',
+    WhiteText: null,
+  },
+  {
+    Id: 21,
+    Color: 'POAL BLANCO',
+    Hex: '#F1F1F8',
+    WhiteText: null,
+  },
+  {
+    Id: 49,
+    Color: 'POAL GRIS',
+    Hex: '#BEB1B0',
+    WhiteText: null,
+  },
+  {
+    Id: 4,
+    Color: 'ROSA MARIPOSAS',
+    Hex: '#F8B2B8',
+    WhiteText: null,
+  },
+];

@@ -83,6 +83,8 @@ const produccion = (
             cc.Talle,
             c.Color,
             c.Id AS ColorId,
+            c.Hex,
+            c.WhiteText,
             p.Unidades
         FROM Produccion AS p
             JOIN SEA_COLOR_CODES AS cc
@@ -93,10 +95,10 @@ const produccion = (
                 ON a.Articulo = cc.Articulo
     ),
     ProdColor AS (
-        SELECT Articulo, Tipo, Talle, Color, ColorId, SUM(Unidades) AS Unidades
+        SELECT Articulo, Tipo, Talle, Color, ColorId, Hex, WhiteText, SUM(Unidades) AS Unidades
         FROM ProdColorUngrouped
         WHERE Unidades > 0 ${whereClause}
-        GROUP BY Articulo, Tipo, Talle, Color, ColorId
+        GROUP BY Articulo, Tipo, Talle, Color, ColorId, Hex, WhiteText
     )
     ${
       showResults

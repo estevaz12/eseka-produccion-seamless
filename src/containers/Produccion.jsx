@@ -143,7 +143,15 @@ export default function Produccion() {
         {/* Talle */}
         <td className='text-center'>{row.Talle}</td>
         {/* Color */}
-        <td>{row.Color}</td>
+        <td
+          className='border-x'
+          style={{
+            backgroundColor: row.Hex,
+            color: row.WhiteText ? 'white' : 'black',
+          }}
+        >
+          {row.Color}
+        </td>
         {/* Unidades */}
         <td className='text-right'>
           {row.Tipo === null ? producido : `${producido} (${row.Unidades})`}

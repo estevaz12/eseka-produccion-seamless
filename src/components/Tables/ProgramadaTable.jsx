@@ -217,7 +217,13 @@ export default function ProgramadaTable({
         {/* Talle */}
         <td className='font-semibold text-center'>{row.Talle}</td>
         {/* Color + Porcentaje */}
-        <td className='font-semibold group/color'>
+        <td
+          className='font-semibold border-x group/color'
+          style={{
+            backgroundColor: row.Hex,
+            color: row.WhiteText ? 'white' : 'black',
+          }}
+        >
           <Typography
             className='relative w-fit'
             endDecorator={
