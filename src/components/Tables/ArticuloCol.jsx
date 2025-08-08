@@ -1,9 +1,9 @@
 import { Typography } from '@mui/joy';
 import ExpandRowBtn from './ExpandRowBtn.jsx';
 
-export default function ArticuloCol({ row, isOpen, handleRowClick, ...props }) {
+export default function ArticuloCol({ row, isOpen, handleRowClick }) {
   return (
-    <td className={`${props.className}`}>
+    <td className='font-semibold'>
       <Typography
         className='justify-between'
         startDecorator={

@@ -212,7 +212,6 @@ export default function ProgramadaTable({
           handleRowClick={handleClick}
           rowColor={rowClassName}
           editable={editable}
-          className='font-semibold'
         />
         {/* Talle */}
         <td className='font-semibold text-center'>{row.Talle}</td>

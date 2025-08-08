@@ -141,10 +141,10 @@ export default function Produccion() {
           handleRowClick={handleClick}
         />
         {/* Talle */}
-        <td className='text-center'>{row.Talle}</td>
+        <td className='font-semibold text-center'>{row.Talle}</td>
         {/* Color */}
         <td
-          className='border-x'
+          className='font-semibold border-x'
           style={{
             backgroundColor: row.Hex,
             color: row.WhiteText ? 'white' : 'black',
