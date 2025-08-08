@@ -153,7 +153,7 @@ export default function EnhancedTable({
 
       <tbody>
         {loading ? (
-          <TableSkeleton numCols={cols.length + 1} />
+          <TableSkeleton numCols={cols.filter(Boolean).length + 1} />
         ) : (
           // Sort rows before rendering
           sortedRows.map((row, i) => {

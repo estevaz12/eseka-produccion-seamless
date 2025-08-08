@@ -75,6 +75,7 @@ export default function EnhancedHead({
                 underline='none'
                 color='neutral'
                 textColor={active ? 'primary.plainColor' : undefined}
+                className={col.labelWidth || ''}
                 component='button'
                 onClick={order && orderBy && createSortHandler(col.id)}
                 startDecorator={

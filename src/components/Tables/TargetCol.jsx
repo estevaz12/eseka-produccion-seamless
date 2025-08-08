@@ -55,7 +55,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         );
       } else if (
         row.Machines[0].TargetOrder !== 0 &&
-        row.Machines[0].TargetOrder !== machTarget
+        Math.abs(machTarget - row.Machines[0].TargetOrder) > 2
       ) {
         // Target is different from expected
         return (
@@ -97,9 +97,9 @@ export default function TargetCol({ row, faltaUnidades }) {
           target={`${m.MachCode} -> ${machineTarget}`}
           icon={
             row.Producido === 0 ? (
-              <DownloadRounded fontSize={iconFontSize} />
+              <DownloadRounded fontSize='inherit' />
             ) : m.TargetOrder === 0 ? (
-              <QuestionMarkRounded fontSize={iconFontSize} />
+              <QuestionMarkRounded fontSize='inherit' />
             ) : null
           }
         />

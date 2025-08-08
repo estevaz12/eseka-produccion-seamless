@@ -66,6 +66,7 @@ export default function ProgramadaTable({
       id: 'Articulo',
       label: 'Artículo',
       align: 'right',
+      labelWidth: 'min-w-16',
     },
     {
       id: 'Talle',
