@@ -10,52 +10,16 @@ const timezone = require('dayjs/plugin/timezone');
 // Utils
 const serverLog = require('./utils/serverLog.js');
 const processPDF = require('./utils/processPDF.js');
+const compareProgramada = require('./utils/compareProgramada.js');
 const calculateNewTargets = require('./utils/calculateNewTargets.js');
 const parseMachines = require('./utils/parseMachines.js');
+const exportTablePDF = require('./utils/exportTablePDF.js');
 
 // Queries
-const produccion = require('./utils/queries/produccion');
-const insertProgramada = require('./utils/queries/insertProgramada');
-const compareProgramada = require('./utils/compareProgramada.js');
-const getProgramada = require('./utils/queries/getProgramada.js');
-const updateProgramada = require('./utils/queries/updateProgramada.js');
-const getProgramadaTotal = require('./utils/queries/getProgramadaTotal.js');
-const getProgColor = require('./utils/queries/getProgColor.js');
-const getMachines = require('./utils/queries/getMachines.js');
-const insertColorCodes = require('./utils/queries/insertColorCodes.js');
-const insertDistr = require('./utils/queries/insertDistr');
-const getArticulo = require('./utils/queries/getArticulo.js');
-const getArticuloColorDistr = require('./utils/queries/getArticuloColorDistr.js');
-const getArticuloColorCodes = require('./utils/queries/getArticuloColorCodes.js');
-const insertArticulo = require('./utils/queries/insertArticulo.js');
-const getProgColorTable = require('./utils/queries/getProgColorTable.js');
-const updateProgColorDoc = require('./utils/queries/updateProgColorDoc.js');
-const getProgActualDate = require('./utils/queries/getProgActualDate.js');
-const getProgLoadDates = require('./utils/queries/getProgLoadDates.js');
+const queries = require('./utils/queries');
 
 // test data
-const actualDateTestData = require('./utils/test-data/actualDateTestData.js');
-const articuloTestData = require('./utils/test-data/articuloTestData.js');
-const articuloColorDistrTestData = require('./utils/test-data/articuloColorDistrTestData.js');
-const articuloColorCodesTestData = require('./utils/test-data/articuloColorCodesTestData.js');
-const calculateNewTargetsTestData = require('./utils/test-data/calculateNewTargetsTestData.js');
-const colorsTestData = require('./utils/test-data/colorsTestData.js');
-const compareTestData = require('./utils/test-data/compareTestData.js');
-const loadDatesTestData = require('./utils/test-data/loadDatesTestData.js');
-const newColorCodesTestData = require('./utils/test-data/newColorCodesTestData.js');
-const previousRecordTestData = require('./utils/test-data/previousRecordTestData.js');
-const produccionTestData = require('./utils/test-data/produccionTestData.js');
-const producingTestData = require('./utils/test-data/producingTestData.js');
-const programadaTestData = require('./utils/test-data/programadaTestData.js');
-const programadaAnteriorTestData = require('./utils/test-data/programadaAnteriorTestData.js');
-const programadaTotalTestData = require('./utils/test-data/programadaTotalTestData.js');
-const insertProgStartDate = require('./utils/queries/insertProgStartDate.js');
-const insertColor = require('./utils/queries/insertColor.js');
-const getCurrArtColorDistr = require('./utils/queries/getCurrArtColorDistr.js');
-const updateArticuloTipo = require('./utils/test-data/updateArticulo.js');
-const getProductionsMonitor = require('./utils/queries/getProductionsMonitor.js');
-const historialTestData = require('./utils/test-data/historialTestData.js');
-const { exportTablePDF } = require('./utils/exportTablePDF.js');
+const testData = require('./utils/test-data');
 
 // Environment
 let isPackaged; //= false;
@@ -116,7 +80,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getArticulo(articulo));
+        const result = await sql.query(queries.getArticulo(articulo));
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /articulo/${articulo}: ${err}`);
@@ -125,7 +89,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /articulo/:articulo');
-      res.json(articuloTestData);
+      res.json(testData.articulo);
     }
   });
 
@@ -135,7 +99,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getArticuloColorDistr(articulo));
+        const result = await sql.query(queries.getArticuloColorDistr(articulo));
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /articulo/${articulo}/colorDistr: ${err}`);
@@ -144,7 +108,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /articulo/:articulo/colorDistr');
-      res.json(articuloColorDistrTestData);
+      res.json(testData.articuloColorDistr);
     }
   });
 
@@ -154,7 +118,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getArticuloColorCodes(articulo));
+        const result = await sql.query(queries.getArticuloColorCodes(articulo));
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /articulo/${articulo}/colorCodes: ${err}`);
@@ -163,7 +127,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /articulo/:articulo/colorCodes');
-      res.json(articuloColorCodesTestData);
+      res.json(testData.articuloColorCodes);
     }
   });
 
@@ -173,7 +137,9 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getCurrArtColorDistr(articulo, null));
+        const result = await sql.query(
+          queries.getCurrArtColorDistr(articulo, null)
+        );
         res.json(result.recordset);
       } catch (err) {
         serverLog(
@@ -184,7 +150,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog(`Using test data for /articulo/${articulo}/currentColorDistr`);
-      res.json(articuloColorDistrTestData);
+      res.json(testData.articuloColorDistr);
     }
   });
 
@@ -194,7 +160,9 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getCurrArtColorDistr(articulo, talle));
+        const result = await sql.query(
+          queries.getCurrArtColorDistr(articulo, talle)
+        );
         res.json(result.recordset);
       } catch (err) {
         serverLog(
@@ -207,7 +175,7 @@ const startServer = () => {
       serverLog(
         `Using test data for /articulo/${articulo}/${talle}/currentColorDistr`
       );
-      res.json(articuloColorDistrTestData);
+      res.json(testData.articuloColorDistr);
     }
   });
 
@@ -216,7 +184,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      let query = insertArticulo(data);
+      let query = queries.insertArticulo(data);
       await sql.query(query);
       serverLog(query);
       res
@@ -236,7 +204,7 @@ const startServer = () => {
     const { articulo, tipo } = req.body;
 
     try {
-      const query = updateArticuloTipo(articulo, tipo);
+      const query = queries.updateArticuloTipo(articulo, tipo);
       serverLog(query);
       await sql.query(query);
       res
@@ -267,7 +235,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /colors');
-      res.json(colorsTestData);
+      res.json(testData.colors);
     }
   });
 
@@ -277,7 +245,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const query = insertColor(data);
+        const query = queries.insertColor(data);
         serverLog(query);
         await sql.query(query);
         const result = await sql.query(
@@ -306,7 +274,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      const query = await insertColorCodes(data);
+      const query = await queries.insertColorCodes(data);
       serverLog(query);
       await sql.query(query);
       res
@@ -323,7 +291,7 @@ const startServer = () => {
 
   async function insertColorDistrs(data) {
     for (const row of data.colorDistr) {
-      const query = insertDistr(data.articulo, data.talle, row);
+      const query = queries.insertDistr(data.articulo, data.talle, row);
       serverLog(query);
       await sql.query(query);
       // Wait before next insert
@@ -396,7 +364,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const query = getProductionsMonitor(
+        const query = queries.getProductionsMonitor(
           articulo,
           talle,
           color,
@@ -416,12 +384,12 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /historial');
-      res.json(historialTestData);
+      res.json(testData.historial);
     }
   });
 
   async function getParsedMachines(producing = false) {
-    let machines = await sql.query(getMachines());
+    let machines = await sql.query(queries.getMachines());
     machines = machines.recordset;
     await parseMachines(machines);
 
@@ -472,7 +440,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /machines/producing');
-      res.json(producingTestData);
+      res.json(testData.producing);
     }
   });
 
@@ -504,7 +472,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /machines/newColorCodes');
-      res.json(newColorCodesTestData);
+      res.json(testData.newColorCodes);
     }
   });
 
@@ -517,7 +485,15 @@ const startServer = () => {
         const { room, startDate, endDate, actual, articulo, talle, colorId } =
           req.query;
         const result = await sql.query(
-          produccion(room, startDate, endDate, actual, articulo, talle, colorId)
+          queries.produccion(
+            room,
+            startDate,
+            endDate,
+            actual,
+            articulo,
+            talle,
+            colorId
+          )
         );
         res.json(result.recordset);
       } catch (err) {
@@ -527,7 +503,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /produccion');
-      res.json(produccionTestData);
+      res.json(testData.produccion);
     }
   });
 
@@ -540,7 +516,7 @@ const startServer = () => {
         const [progColor, machines] = await Promise.all([
           // get Programada with Color, month production, and docenas by art.
           sql.query(
-            getProgColorTable(startDate, startMonth, startYear, endDate)
+            queries.getProgColorTable(startDate, startMonth, startYear, endDate)
           ),
           !req.query.startMonth ? getParsedMachines(true) : null, // get Machines
         ]);
@@ -576,11 +552,11 @@ const startServer = () => {
     } else if (!req.query.endMonth) {
       // test data
       serverLog('Using test data for /programada');
-      res.json(programadaTestData);
+      res.json(testData.programada);
     } else {
       // test data for month
       serverLog('Using test data for /programada (anterior)');
-      res.json(programadaAnteriorTestData);
+      res.json(testData.programadaAnterior);
     }
   });
 
@@ -589,7 +565,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getProgActualDate());
+        const result = await sql.query(queries.getProgActualDate());
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /programada/actualDate: ${err}`);
@@ -598,7 +574,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /programada/actualDate');
-      res.json(actualDateTestData);
+      res.json(testData.actualDate);
     }
   });
 
@@ -619,7 +595,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /programada/calculateNewTargets');
-      res.json(calculateNewTargetsTestData);
+      res.json(testData.calculateNewTargets);
     }
   });
 
@@ -629,7 +605,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const currProg = await sql.query(getProgramada(data.startDate));
+        const currProg = await sql.query(queries.getProgramada(data.startDate));
         const diff = compareProgramada(currProg.recordset, data.new);
         res.json(diff);
         // const result = await sql.query(query);
@@ -640,7 +616,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /programada/compare');
-      res.json(compareTestData);
+      res.json(testData.compare);
     }
   });
 
@@ -664,10 +640,10 @@ const startServer = () => {
     if (isPackaged) {
       try {
         const now = dayjs.tz();
-        await sql.query(insertProgramada(data, 'inserted', now));
+        await sql.query(queries.insertProgramada(data, 'inserted', now));
         serverLog('POST /programada/insertAll - SUCCESS');
         // return inserted rows to calculate new targets
-        const result = await sql.query(getProgColor(now));
+        const result = await sql.query(queries.getProgColor(now));
         res.status(201).json({
           message: `Programada nueva cargada con éxito.`,
           inserted: result.recordset,
@@ -691,7 +667,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        await sql.query(insertProgStartDate(data));
+        await sql.query(queries.insertProgStartDate(data));
         serverLog('POST /programada/insertStartDate - SUCCESS');
         res.status(200).json({
           message: `Fecha de inicio de programada cargada con éxito.`,
@@ -714,7 +690,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getProgLoadDates());
+        const result = await sql.query(queries.getProgLoadDates());
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /programada/loadDates: ${err}`);
@@ -723,7 +699,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /programada/loadDates');
-      res.json(loadDatesTestData);
+      res.json(testData.loadDates);
     }
   });
 
@@ -733,7 +709,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(getProgramadaTotal(startDate));
+        const result = await sql.query(queries.getProgramadaTotal(startDate));
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /programada/total: ${err}`);
@@ -742,7 +718,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /programada/total');
-      res.json(programadaTotalTestData);
+      res.json(testData.programadaTotal);
     }
   });
 
@@ -753,11 +729,11 @@ const startServer = () => {
     if (isPackaged) {
       try {
         const now = dayjs.tz();
-        await sql.query(updateProgramada(data, now));
+        await sql.query(queries.updateProgramada(data, now));
         serverLog('POST /programada/update - SUCCESS');
         // return inserted rows to calculate new targets
         // include deleted articulos to stop machines
-        const result = await sql.query(getProgColor(now, true));
+        const result = await sql.query(queries.getProgColor(now, true));
         res.status(201).json({
           message: `Cambios cargados con éxito.`,
           inserted: result.recordset,
@@ -772,7 +748,7 @@ const startServer = () => {
     } else {
       // test data
       serverLog('Using test data for /programada/update');
-      res.json(previousRecordTestData);
+      res.json(testData.previousRecord);
     }
   });
 
@@ -781,7 +757,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      await sql.query(updateProgColorDoc(data));
+      await sql.query(queries.updateProgColorDoc(data));
       serverLog('POST /programada/updateDocenas - SUCCESS');
       res.status(201).json({
         message: `Docenas agregadas con éxito para el art. ${data.articulo} T${data.talle} ${data.color}.`,

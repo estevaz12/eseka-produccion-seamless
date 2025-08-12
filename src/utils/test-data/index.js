@@ -1,0 +1,18 @@
+module.exports = {
+  actualDate: require('./actualDateTestData.js'),
+  articulo: require('./articuloTestData.js'),
+  articuloColorDistr: require('./articuloColorDistrTestData.js'),
+  articuloColorCodes: require('./articuloColorCodesTestData.js'),
+  calculateNewTargets: require('./calculateNewTargetsTestData.js'),
+  colors: require('./colorsTestData.js'),
+  compare: require('./compareTestData.js'),
+  loadDates: require('./loadDatesTestData.js'),
+  newColorCodes: require('./newColorCodesTestData.js'),
+  previousRecord: require('./previousRecordTestData.js'),
+  produccion: require('./produccionTestData.js'),
+  producing: require('./producingTestData.js'),
+  programada: require('./programadaTestData.js'),
+  programadaAnterior: require('./programadaAnteriorTestData.js'),
+  programadaTotal: require('./programadaTotalTestData.js'),
+  historial: require('./historialTestData.js'),
+};

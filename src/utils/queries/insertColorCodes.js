@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const updateArticuloTipo = require('../test-data/updateArticulo');
+const updateArticuloTipo = require('./updateArticulo');
 const serverLog = require('../serverLog');
 const getArticulo = require('./getArticulo');
 const insertArticulo = require('./insertArticulo');

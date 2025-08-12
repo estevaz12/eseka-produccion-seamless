@@ -444,4 +444,4 @@ function autoColWidths(doc, cfg) {
   return widths;
 }
 
-module.exports = { exportTablePDF };
+module.exports = exportTablePDF;
