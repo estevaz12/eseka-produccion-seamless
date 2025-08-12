@@ -34,6 +34,8 @@ export default function EnhancedTable({
   // loading state
   const loading = rows.length === 0;
 
+  const filteredCols = cols.filter(Boolean);
+
   // Load saved sort on mount
   useEffect(() => {
     const saved = localStorage.getItem(location.pathname);
@@ -58,11 +60,11 @@ export default function EnhancedTable({
 
   const sortedRows = useMemo(() => {
     if (order !== initOrder || orderBy !== initOrderBy) {
-      return [...rows].sort(getComparator(order, orderBy, cols));
+      return [...rows].sort(getComparator(order, orderBy, filteredCols));
     }
 
     return rows;
-  }, [rows, order, orderBy, initOrder, initOrderBy, cols]);
+  }, [rows, order, orderBy, initOrder, initOrderBy, filteredCols]);
 
   /**
    * Handles sorting when a column header is clicked.
@@ -141,7 +143,7 @@ export default function EnhancedTable({
     >
       {/* Table header with sorting and select-all functionality */}
       <EnhancedHead
-        cols={cols}
+        cols={filteredCols}
         order={order}
         orderBy={orderBy}
         numSelected={selected.length}
@@ -153,7 +155,7 @@ export default function EnhancedTable({
 
       <tbody>
         {loading ? (
-          <TableSkeleton numCols={cols.filter(Boolean).length + 1} />
+          <TableSkeleton numCols={filteredCols.length + 1} />
         ) : (
           // Sort rows before rendering
           sortedRows.map((row, i) => {
@@ -202,7 +204,7 @@ export default function EnhancedTable({
                 {opened === `${row.Articulo}-${row.Talle}-${row.ColorId}` && (
                   <ExpandedRow
                     row={row}
-                    numCols={cols.filter(Boolean).length + 1} // +1 for checkbox
+                    numCols={filteredCols.length + 1} // +1 for checkbox
                   />
                 )}
               </React.Fragment>
@@ -211,7 +213,12 @@ export default function EnhancedTable({
         )}
       </tbody>
 
-      <EnhancedFooter cols={cols} footer={footer} selected={selected} />
+      <EnhancedFooter
+        cols={filteredCols}
+        rows={sortedRows}
+        footer={footer}
+        selected={selected}
+      />
     </Table>
   );
 }

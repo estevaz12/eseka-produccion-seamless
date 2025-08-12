@@ -3,9 +3,13 @@ import { useConfig } from '../../ConfigContext.jsx';
 import { Typography } from '@mui/joy';
 import TargetCol from './TargetCol.jsx';
 import {
+  aProducirStr,
   calcAProducir,
+  calcFaltaUnidades,
   calcProducido,
-  formatNum,
+  colorStr,
+  faltaStr,
+  producidoStr,
   roundUpEven,
 } from '../../utils/progTableUtils.js';
 import AProducirCol from './AProducirCol.jsx';
@@ -67,6 +71,8 @@ export default function ProgramadaTable({
       label: 'Artículo',
       align: 'right',
       labelWidth: 'min-w-16',
+      pdfAlign: 'left',
+      pdfRender: (row) => `${row.Articulo}${row.Tipo ? row.Tipo : ''}`,
     },
     {
       id: 'Talle',
@@ -78,21 +84,28 @@ export default function ProgramadaTable({
       id: 'Color',
       label: 'Color',
       width: 'w-[18%]',
+      pdfRender: (row) => colorStr(row),
     },
     {
       id: 'Docenas',
       label: 'A Producir',
       align: 'right',
+      pdfValue: (row) => calcAProducir(row),
+      pdfRender: (row) => aProducirStr(row),
     },
     {
       id: 'Producido',
       label: 'Producido',
       align: 'right',
+      pdfValue: (row) => calcProducido(row),
+      pdfRender: (row) => producidoStr(row),
     },
     {
       id: 'falta',
       label: 'Falta',
       align: 'right',
+      pdfValue: (row) => calcAProducir(row) - calcProducido(row),
+      pdfRender: (row) => faltaStr(row),
       sortFn: (a, b, order) => {
         const faltaCalc = (row, order) => {
           const falta = row.Docenas - row.Producido / 12 / 1.01;
@@ -112,8 +125,16 @@ export default function ProgramadaTable({
       id: 'target',
       label: 'Target (un)',
       align: 'right',
+      pdfRender: (row) => {
+        const faltaUnidades = calcFaltaUnidades(row);
+        if (faltaUnidades <= 0) return 'LLEGÓ';
+
+        if (row.Producido === 0 || row.Machines.length > 1) return row.Target;
+
+        if (row.Machines.length <= 1)
+          return roundUpEven(faltaUnidades + (row.Machines[0]?.Pieces || 0));
+      },
       sortFn: (a, b, order) => {
-        // TODO: test for multiple machines
         const targetCalc = (row, order) => {
           const faltaUn = row.Target - row.Producido;
           // send to bottom if target was met
@@ -141,6 +162,7 @@ export default function ProgramadaTable({
       id: 'faltaUnidades',
       label: 'Falta (un)',
       align: 'right',
+      pdfRender: (row) => row.Target - row.Producido,
       sortFn: (a, b, order) => {
         const faltaCalc = (row, order) => {
           const faltaUn = row.Target - row.Producido;
@@ -160,6 +182,11 @@ export default function ProgramadaTable({
       id: 'machines',
       label: 'Máquinas',
       width: 'w-[11%]',
+      pdfRender: (row) => {
+        if (row.Machines.length <= 5)
+          return row.Machines.map((m) => m.MachCode).join(', ');
+        else return `${row.Machines.length} mqs.`;
+      },
       sortFn: (a, b, order) => {
         // machines is sorted, so compare only first machine if multiple
         let aMachine = a.Machines[0]?.MachCode;
@@ -175,11 +202,7 @@ export default function ProgramadaTable({
   ];
 
   function renderRow(row, i, opened, handleClick) {
-    const aProducir = formatNum(calcAProducir(row));
-    const producido = formatNum(calcProducido(row));
-    const falta = formatNum(calcAProducir(row) - calcProducido(row));
-    const faltaFisico = formatNum((row.Target - row.Producido) / 12 / 1.01);
-    const faltaUnidades = row.Target - row.Producido;
+    const faltaUnidades = calcFaltaUnidades(row);
 
     const machinesList = row.Machines.map((m) => {
       return (
@@ -211,7 +234,6 @@ export default function ProgramadaTable({
           isOpen={opened === `${row.Articulo}-${row.Talle}-${row.ColorId}`}
           handleRowClick={handleClick}
           rowColor={rowClassName}
-          editable={editable}
         />
         {/* Talle */}
         <td className='font-semibold text-center'>{row.Talle}</td>
@@ -235,18 +257,13 @@ export default function ProgramadaTable({
               )
             }
           >
-            {`${row.Color} ${
-              row.Porcentaje && row.Porcentaje < 100
-                ? `(${row.Porcentaje}%)`
-                : ''
-            }`}
+            {colorStr(row)}
           </Typography>
         </td>
         {/* A Producir */}
         <td className='text-right group/prod'>
           <AProducirCol
             row={row}
-            aProducir={aProducir}
             startDate={startDate}
             setProgColor={setProgColor}
             setFilteredProgColor={setFilteredProgColor}
@@ -254,15 +271,9 @@ export default function ProgramadaTable({
           />
         </td>
         {/* Producido */}
-        <td className='text-right'>
-          {row.Tipo === null
-            ? producido
-            : `${producido} (${formatNum(row.Producido / 12 / 1.01)})`}
-        </td>
+        <td className='text-right'>{producidoStr(row)}</td>
         {/* Falta */}
-        <td className='text-right'>
-          {row.Tipo == null ? falta : `${falta} (${faltaFisico})`}
-        </td>
+        <td className='text-right'>{faltaStr(row)}</td>
         {/* Target (un.) */}
         <td className='text-right'>
           {faltaUnidades <= 0 ? (

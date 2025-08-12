@@ -55,6 +55,7 @@ const getCurrArtColorDistr = require('./utils/queries/getCurrArtColorDistr.js');
 const updateArticuloTipo = require('./utils/test-data/updateArticulo.js');
 const getProductionsMonitor = require('./utils/queries/getProductionsMonitor.js');
 const historialTestData = require('./utils/test-data/historialTestData.js');
+const { exportTablePDF } = require('./utils/exportTablePDF.js');
 
 // Environment
 let isPackaged; //= false;
@@ -367,6 +368,22 @@ const startServer = () => {
         message: `No se pudo agregar la distribución para el art. ${articulo}.`,
         error: err.message,
       });
+    }
+  });
+
+  app.post('/export/pdf', async (req, res) => {
+    serverLog('POST /export/pdf');
+
+    try {
+      const pdf = await exportTablePDF(req.body);
+      res
+        .status(200)
+        .json({ message: `PDF exportado a ${pdf}.`, filePath: pdf });
+    } catch (err) {
+      serverLog(`[ERROR] POST /export/pdf: ${err}`);
+      res
+        .status(500)
+        .json({ message: 'Error exportando PDF.', error: err.message });
     }
   });
 

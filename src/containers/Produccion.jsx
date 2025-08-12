@@ -98,6 +98,8 @@ export default function Produccion() {
       label: 'Artículo',
       align: 'right',
       labelWidth: 'min-w-16',
+      pdfAlign: 'left',
+      pdfRender: (row) => `${row.Articulo}${row.Tipo ? row.Tipo : ''}`,
     },
     {
       id: 'Talle',
@@ -112,11 +114,15 @@ export default function Produccion() {
       id: 'Unidades',
       label: 'Unidades',
       align: 'right',
+      pdfValue: (row) => calcProducido(row),
+      pdfRender: (row) => unidadesStr(row),
     },
     {
-      id: 'Unidades',
+      id: 'Docenas',
       label: 'Docenas',
       align: 'right',
+      pdfValue: (row) => calcProducido(row) / 12,
+      pdfRender: (row) => docenasStr(row),
     },
   ];
 
@@ -128,8 +134,19 @@ export default function Produccion() {
       : row.Unidades / 2;
   }
 
-  function renderRow(row, i, opened, handleClick) {
+  function unidadesStr(row) {
     const producido = calcProducido(row);
+    return row.Tipo === null ? producido : `${producido} (${row.Unidades})`;
+  }
+
+  function docenasStr(row) {
+    const producido = calcProducido(row);
+    return row.Tipo === null
+      ? (producido / 12).toFixed(1)
+      : `${(producido / 12).toFixed(1)} (${(row.Unidades / 12).toFixed(1)})`;
+  }
+
+  function renderRow(row, i, opened, handleClick) {
     return [
       null, // rowClassName
       <>
@@ -153,17 +170,9 @@ export default function Produccion() {
           {row.Color}
         </td>
         {/* Unidades */}
-        <td className='text-right'>
-          {row.Tipo === null ? producido : `${producido} (${row.Unidades})`}
-        </td>
+        <td className='text-right'>{unidadesStr(row)}</td>
         {/* Docenas */}
-        <td className='text-right'>
-          {row.Tipo === null
-            ? (producido / 12).toFixed(1)
-            : `${(producido / 12).toFixed(1)} (${(row.Unidades / 12).toFixed(
-                1
-              )})`}
-        </td>
+        <td className='text-right'>{docenasStr(row)}</td>
         {/* Maquinas */}
         {/* <td>
                 {machines
@@ -183,12 +192,11 @@ export default function Produccion() {
 
   // Memoized totals
   const totalUnidades = useMemo(
-    () => data.reduce((acc, row) => acc + Math.round(calcProducido(row)), 0),
+    () => data.reduce((acc, row) => acc + calcProducido(row), 0),
     [data]
   );
   const totalDocenas = useMemo(
-    () =>
-      data.reduce((acc, row) => acc + Math.round(calcProducido(row) / 12), 0),
+    () => data.reduce((acc, row) => acc + calcProducido(row) / 12, 0),
     [data]
   );
 
@@ -213,7 +221,11 @@ export default function Produccion() {
           renderRow={renderRow}
           initOrder='asc'
           initOrderBy='Articulo'
-          footer={['Total', totalUnidades || '0', totalDocenas || '0']}
+          footer={[
+            'Total',
+            Math.round(totalUnidades) || '0',
+            Math.round(totalDocenas) || '0',
+          ]}
           headerTop='top-[94px]'
         />
       </DatesContext>

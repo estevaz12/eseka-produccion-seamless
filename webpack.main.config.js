@@ -21,5 +21,6 @@ module.exports = {
   },
   externals: {
     pdfreader: 'pdfreader',
+    pdfkit: 'pdfkit',
   },
 };

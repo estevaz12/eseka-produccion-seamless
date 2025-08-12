@@ -13,7 +13,11 @@ export default function TargetCol({ row, faltaUnidades }) {
   const iconFontSize = 'small';
 
   const TargetData = ({ target, icon }) => (
-    <Typography className='justify-end' endDecorator={icon}>
+    <Typography
+      className='justify-end'
+      endDecorator={icon}
+      sx={{ '& .MuiTypography-endDecorator': { m: 0 } }}
+    >
       {target}
     </Typography>
   );

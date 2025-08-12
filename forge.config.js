@@ -51,7 +51,7 @@ module.exports = {
     {
       name: '@timfish/forge-externals-plugin',
       config: {
-        externals: ['pdfreader'],
+        externals: ['pdfreader', 'pdfkit'],
         includeDeps: true,
       },
     },

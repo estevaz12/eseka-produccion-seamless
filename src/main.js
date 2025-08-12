@@ -5,6 +5,7 @@ const {
   utilityProcess,
   dialog,
   ipcMain,
+  shell,
 } = require('electron');
 const path = require('path');
 const dayjs = require('dayjs');
@@ -95,6 +96,11 @@ app.whenReady().then(() => {
   setTimeout(() => {
     // file uploading
     ipcMain.handle('dialog:openFile', handleFileOpen);
+    ipcMain.handle(
+      'shell:openPath',
+      async (event, path) => await shell.openPath(path)
+    );
+
     createWindow();
   }, 1000);
 

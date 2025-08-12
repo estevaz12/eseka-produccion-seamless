@@ -3,6 +3,7 @@ import { useConfig } from '../../ConfigContext.jsx';
 import { Check, Close, Edit } from '@mui/icons-material';
 import { Button, Input, Typography } from '@mui/joy';
 import { ToastsContext } from '../../Contexts.js';
+import { aProducirStr } from '../../utils/progTableUtils.js';
 
 let apiUrl;
 
@@ -10,7 +11,6 @@ let apiUrl;
 // This lets the user input the docenas value and update the programada.
 export default function AProducirCol({
   row,
-  aProducir,
   startDate,
   setProgColor,
   setFilteredProgColor,
@@ -21,14 +21,6 @@ export default function AProducirCol({
   const [editProducir, setEditProducir] = useState(false);
   const [docenas, setDocenas] = useState();
   const inputRef = useRef(null);
-
-  const aProducirStr = (aProducir, row) => {
-    if (row.Tipo === null) {
-      return aProducir;
-    } else {
-      return `${aProducir} (${row.Docenas})`;
-    }
-  };
 
   useEffect(() => {
     let timeoutId;
@@ -106,7 +98,7 @@ export default function AProducirCol({
                 )
               }
             >
-              {aProducirStr(aProducir, row)}
+              {aProducirStr(row)}
             </Typography>
           );
         }

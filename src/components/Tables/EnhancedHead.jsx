@@ -52,7 +52,7 @@ export default function EnhancedHead({
         </th>
 
         {/* Render a header cell for each column */}
-        {cols.filter(Boolean).map((col) => {
+        {cols.map((col) => {
           const alignment = `text-${col.align || 'left'}`;
           // Determine if this column is currently sorted
           const active = orderBy === col.id;

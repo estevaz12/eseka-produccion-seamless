@@ -10,6 +10,10 @@ function calcProducido(row) {
   return row.Producido / 2 / 12 / 1.01;
 }
 
+function calcFaltaUnidades(row) {
+  return row.Target - row.Producido;
+}
+
 function formatNum(num) {
   if (!num) return num;
   else if (num % 1 < 0.1) return num.toFixed(); // No decimals for whole numbers
@@ -21,4 +25,42 @@ function roundUpEven(num) {
   return num % 2 === 0 ? num : num + 1;
 }
 
-export { calcAProducir, calcProducido, formatNum, roundUpEven };
+const aProducirStr = (row) => {
+  const aProducir = formatNum(calcAProducir(row));
+  if (row.Tipo === null) {
+    return aProducir;
+  } else {
+    return `${aProducir} (${row.Docenas})`;
+  }
+};
+
+const colorStr = (row) => {
+  return `${row.Color} ${
+    row.Porcentaje && row.Porcentaje < 100 ? `(${row.Porcentaje}%)` : ''
+  }`;
+};
+
+const producidoStr = (row) => {
+  const producido = formatNum(calcProducido(row));
+  return row.Tipo === null
+    ? producido
+    : `${producido} (${formatNum(row.Producido / 12 / 1.01)})`;
+};
+
+const faltaStr = (row) => {
+  const falta = formatNum(calcAProducir(row) - calcProducido(row));
+  const faltaFisico = formatNum((row.Docenas - row.Producido) / 12 / 1.01);
+  return row.Tipo == null ? falta : `${falta} (${faltaFisico})`;
+};
+
+export {
+  calcAProducir,
+  calcProducido,
+  calcFaltaUnidades,
+  formatNum,
+  roundUpEven,
+  aProducirStr,
+  colorStr,
+  producidoStr,
+  faltaStr,
+};
