@@ -1,18 +1,16 @@
+import Box from '@mui/joy/Box';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import FormHelperText from '@mui/joy/FormHelperText';
+import Typography from '@mui/joy/Typography';
+import Button from '@mui/joy/Button';
+import Stack from '@mui/joy/Stack';
 import { useContext, useState } from 'react';
-import {
-  Box,
-  FormControl,
-  FormLabel,
-  Input,
-  FormHelperText,
-  Typography,
-  Button,
-  Stack,
-} from '@mui/joy';
 import { useConfig } from '../../ConfigContext.jsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
 import { ErrorContext } from '../../Contexts.js';
-import { AddRounded } from '@mui/icons-material';
+import AddRounded from '@mui/icons-material/AddRounded';
 import { ToastsContext } from '../../Contexts.js';
 
 export default function NewArticuloForm({

@@ -1,12 +1,12 @@
-import { AddRounded, Check, Close } from '@mui/icons-material';
-import {
-  Button,
-  FormControl,
-  Input,
-  ListDivider,
-  ListItem,
-  Option,
-} from '@mui/joy';
+import AddRounded from '@mui/icons-material/AddRounded';
+import Check from '@mui/icons-material/Check';
+import Close from '@mui/icons-material/Close';
+import Button from '@mui/joy/Button';
+import FormControl from '@mui/joy/FormControl';
+import Input from '@mui/joy/Input';
+import ListDivider from '@mui/joy/ListDivider';
+import ListItem from '@mui/joy/ListItem';
+import Option from '@mui/joy/Option';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import { ToastsContext } from '../../Contexts.js';

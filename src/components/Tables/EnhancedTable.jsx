@@ -1,4 +1,5 @@
-import { Checkbox, Table } from '@mui/joy';
+import Checkbox from '@mui/joy/Checkbox';
+import Table from '@mui/joy/Table';
 import EnhancedHead from './EnhancedHead.jsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import ExpandedRow from './ExpandedRow.jsx';

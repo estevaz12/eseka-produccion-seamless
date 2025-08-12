@@ -1,11 +1,12 @@
-import {
-  CompareArrowsRounded,
-  FactoryTwoTone,
-  HistoryRounded,
-  PrecisionManufacturingTwoTone,
-  TableChartTwoTone,
-} from '@mui/icons-material';
-import { List, ListItem, ListItemButton, ListSubheader } from '@mui/joy';
+import CompareArrowsRounded from '@mui/icons-material/CompareArrowsRounded';
+import FactoryTwoTone from '@mui/icons-material/FactoryTwoTone';
+import HistoryRounded from '@mui/icons-material/HistoryRounded';
+import PrecisionManufacturingTwoTone from '@mui/icons-material/PrecisionManufacturingTwoTone';
+import TableChartTwoTone from '@mui/icons-material/TableChartTwoTone';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import ListItemButton from '@mui/joy/ListItemButton';
+import ListSubheader from '@mui/joy/ListSubheader';
 import { NavLink } from 'react-router';
 
 const navItems = [

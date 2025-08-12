@@ -1,11 +1,9 @@
-import {
-  FormControl,
-  FormLabel,
-  IconButton,
-  Input,
-  Option,
-  Stack,
-} from '@mui/joy';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import IconButton from '@mui/joy/IconButton';
+import Input from '@mui/joy/Input';
+import Option from '@mui/joy/Option';
+import Stack from '@mui/joy/Stack';
 import ColorSelect from './ColorSelect.jsx';
 import SelectClearable from './SelectClearable.jsx';
 import { useState } from 'react';

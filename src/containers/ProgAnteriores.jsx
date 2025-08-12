@@ -1,4 +1,9 @@
-import { Box, FormControl, FormLabel, Option, Select, Stack } from '@mui/joy';
+import Box from '@mui/joy/Box';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Option from '@mui/joy/Option';
+import Select from '@mui/joy/Select';
+import Stack from '@mui/joy/Stack';
 import ProgramadaTable from '../components/Tables/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/Forms/ProgSearchForm.jsx';
 import { useEffect, useState } from 'react';

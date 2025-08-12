@@ -1,4 +1,4 @@
-import { UploadFileOutlined } from '@mui/icons-material';
+import UploadFileOutlined from '@mui/icons-material/UploadFileOutlined';
 import Button from '@mui/joy/Button';
 
 export default function InputFileUpload({ onClick }) {

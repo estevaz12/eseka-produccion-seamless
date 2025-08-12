@@ -1,5 +1,7 @@
-import { Box, Checkbox, Link } from '@mui/joy';
-import { ArrowDownwardRounded } from '@mui/icons-material';
+import Box from '@mui/joy/Box';
+import Checkbox from '@mui/joy/Checkbox';
+import Link from '@mui/joy/Link';
+import ArrowDownwardRounded from '@mui/icons-material/ArrowDownwardRounded';
 import { visuallyHidden } from '@mui/utils';
 
 /**

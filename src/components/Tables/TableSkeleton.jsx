@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/joy';
+import Skeleton from '@mui/joy/Skeleton';
 
 export default function TableSkeleton({ numCols, numRows = 20 }) {
   return Array.from({ length: numRows }, (_, i) => (

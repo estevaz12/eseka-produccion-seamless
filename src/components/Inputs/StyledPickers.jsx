@@ -1,5 +1,5 @@
 import { styled } from '@mui/joy/styles';
-import { Paper } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import {
   DatePicker,
   DateTimePicker,

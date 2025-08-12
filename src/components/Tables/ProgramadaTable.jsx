@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
-import { Typography } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
 import TargetCol from './TargetCol.jsx';
 import {
   aProducirStr,

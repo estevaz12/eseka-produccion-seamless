@@ -1,7 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
-import { Check, Close, Edit } from '@mui/icons-material';
-import { Button, Input, Typography } from '@mui/joy';
+import Check from '@mui/icons-material/Check';
+import Close from '@mui/icons-material/Close';
+import Edit from '@mui/icons-material/Edit';
+import Button from '@mui/joy/Button';
+import Input from '@mui/joy/Input';
+import Typography from '@mui/joy/Typography';
 import { ToastsContext } from '../../Contexts.js';
 import { aProducirStr } from '../../utils/progTableUtils.js';
 

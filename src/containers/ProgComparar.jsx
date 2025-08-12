@@ -1,13 +1,11 @@
-import {
-  Typography,
-  Button,
-  Stack,
-  List,
-  ListItem,
-  Card,
-  IconButton,
-  Box,
-} from '@mui/joy';
+import Typography from '@mui/joy/Typography';
+import Button from '@mui/joy/Button';
+import Stack from '@mui/joy/Stack';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import Card from '@mui/joy/Card';
+import IconButton from '@mui/joy/IconButton';
+import Box from '@mui/joy/Box';
 import InputFileUpload from '../components/Inputs/InputFileUpload.jsx';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
@@ -18,13 +16,11 @@ import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useLocation, useOutletContext } from 'react-router';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
-import {
-  ChangeCircleOutlined,
-  CompareArrowsRounded,
-  KeyboardArrowDownRounded,
-  LibraryAddOutlined,
-  RestartAltRounded,
-} from '@mui/icons-material';
+import ChangeCircleOutlined from '@mui/icons-material/ChangeCircleOutlined';
+import CompareArrowsRounded from '@mui/icons-material/CompareArrowsRounded';
+import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
+import LibraryAddOutlined from '@mui/icons-material/LibraryAddOutlined';
+import RestartAltRounded from '@mui/icons-material/RestartAltRounded';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 import { ToastsContext } from '../Contexts.js';
 

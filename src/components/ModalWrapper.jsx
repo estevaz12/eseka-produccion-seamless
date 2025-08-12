@@ -1,11 +1,9 @@
-import {
-  Modal,
-  ModalDialog,
-  ModalOverflow,
-  DialogTitle,
-  DialogContent,
-  ModalClose,
-} from '@mui/joy';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import ModalOverflow from '@mui/joy/ModalOverflow';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+import ModalClose from '@mui/joy/ModalClose';
 import { useState } from 'react';
 
 export default function ModalWrapper({

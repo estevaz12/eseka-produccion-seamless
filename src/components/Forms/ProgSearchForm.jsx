@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import ArtTalleColorInputs from '../Inputs/ArtTalleColorInputs.jsx';
-import { FormControl, FormLabel, Input } from '@mui/joy';
-import { FilterAltOffRounded } from '@mui/icons-material';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import FilterAltOffRounded from '@mui/icons-material/FilterAltOffRounded';
 
 export default function ProgSearchForm({
   progColor,

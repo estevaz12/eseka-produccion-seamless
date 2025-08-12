@@ -1,4 +1,6 @@
-import { FormControl, FormLabel, Option } from '@mui/joy';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Option from '@mui/joy/Option';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import SelectClearable from './SelectClearable.jsx';

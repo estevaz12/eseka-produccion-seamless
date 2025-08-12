@@ -1,12 +1,15 @@
-import { IconButton, Sheet, Stack, Switch, Table, Typography } from '@mui/joy';
+import IconButton from '@mui/joy/IconButton';
+import Sheet from '@mui/joy/Sheet';
+import Stack from '@mui/joy/Stack';
+import Switch from '@mui/joy/Switch';
+import Table from '@mui/joy/Table';
+import Typography from '@mui/joy/Typography';
 import { useContext, useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import dayjs from 'dayjs';
 import { DatesContext } from '../../Contexts.js';
-import {
-  KeyboardArrowLeftRounded,
-  KeyboardArrowRightRounded,
-} from '@mui/icons-material';
+import KeyboardArrowLeftRounded from '@mui/icons-material/KeyboardArrowLeftRounded';
+import KeyboardArrowRightRounded from '@mui/icons-material/KeyboardArrowRightRounded';
 import TableSkeleton from './TableSkeleton.jsx';
 
 let apiUrl;

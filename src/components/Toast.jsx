@@ -1,9 +1,8 @@
-import {
-  CheckCircleRounded,
-  CloseRounded,
-  ErrorRounded,
-} from '@mui/icons-material';
-import { IconButton, Snackbar } from '@mui/joy';
+import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
+import CloseRounded from '@mui/icons-material/CloseRounded';
+import ErrorRounded from '@mui/icons-material/ErrorRounded';
+import IconButton from '@mui/joy/IconButton';
+import Snackbar from '@mui/joy/Snackbar';
 import { useState } from 'react';
 
 export default function Toast({ toast, setToasts }) {

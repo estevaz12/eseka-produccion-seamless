@@ -1,4 +1,4 @@
-import { Edit } from '@mui/icons-material';
+import Edit from '@mui/icons-material/Edit';
 import { useState } from 'react';
 import EditArticuloForm from '../Forms/EditArticuloForm.jsx';
 import ModalWrapper from '../ModalWrapper.jsx';

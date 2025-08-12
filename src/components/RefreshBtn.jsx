@@ -1,5 +1,6 @@
-import { CloseRounded, RefreshRounded } from '@mui/icons-material';
-import { IconButton } from '@mui/joy';
+import CloseRounded from '@mui/icons-material/CloseRounded';
+import RefreshRounded from '@mui/icons-material/RefreshRounded';
+import IconButton from '@mui/joy/IconButton';
 
 export default function RefreshBtn({
   handleRefresh,

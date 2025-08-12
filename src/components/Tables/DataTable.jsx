@@ -1,4 +1,5 @@
-import { Table, Typography } from '@mui/joy';
+import Table from '@mui/joy/Table';
+import Typography from '@mui/joy/Typography';
 
 export default function DataTable({
   cols,

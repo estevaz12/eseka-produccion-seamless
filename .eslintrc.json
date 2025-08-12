@@ -1,3 +1,12 @@
 {
-  "extends": "react-app"
+  "extends": "react-app",
+  // .eslintrc
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [{ "regex": "^@mui/[^/]+$" }]
+      }
+    ]
+  }
 }

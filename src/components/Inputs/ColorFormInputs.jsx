@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Typography,
-} from '@mui/joy';
+import Box from '@mui/joy/Box';
+import Button from '@mui/joy/Button';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Typography from '@mui/joy/Typography';
 import ColorSelect from './ColorSelect.jsx';
 import { useConfig } from '../../ConfigContext.jsx';
 

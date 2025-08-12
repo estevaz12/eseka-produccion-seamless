@@ -1,4 +1,4 @@
-import { Typography } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
 import ExpandRowBtn from './ExpandRowBtn.jsx';
 
 export default function ArticuloCol({ row, isOpen, handleRowClick }) {

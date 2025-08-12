@@ -1,4 +1,4 @@
-import { KeyboardArrowDownRounded } from '@mui/icons-material';
+import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
 
 export default function ExpandRowBtn({ isOpen, handleClick, ...props }) {
   return (

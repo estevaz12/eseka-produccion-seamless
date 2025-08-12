@@ -1,17 +1,15 @@
-import {
-  FormControl,
-  FormLabel,
-  Stack,
-  Switch,
-  Typography,
-  Input,
-  FormHelperText,
-  Checkbox,
-} from '@mui/joy';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Stack from '@mui/joy/Stack';
+import Switch from '@mui/joy/Switch';
+import Typography from '@mui/joy/Typography';
+import Input from '@mui/joy/Input';
+import FormHelperText from '@mui/joy/FormHelperText';
+import Checkbox from '@mui/joy/Checkbox';
 import { useContext, useEffect, useState } from 'react';
 import ColorSelect from './ColorSelect.jsx';
 import { useConfig } from '../../ConfigContext.jsx';
-import { ErrorOutline } from '@mui/icons-material';
+import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import { ErrorContext } from '../../Contexts.js';
 
 let apiUrl;

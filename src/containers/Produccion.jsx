@@ -1,4 +1,4 @@
-import { Box } from '@mui/joy';
+import Box from '@mui/joy/Box';
 import dayjs from 'dayjs';
 import { useState, useEffect, useMemo } from 'react';
 import { useConfig } from '../ConfigContext.jsx';

@@ -1,4 +1,5 @@
-import { Box, Stack } from '@mui/joy';
+import Box from '@mui/joy/Box';
+import Stack from '@mui/joy/Stack';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ProgramadaTable from '../components/Tables/ProgramadaTable.jsx';

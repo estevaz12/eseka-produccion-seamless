@@ -1,20 +1,16 @@
-import {
-  CrisisAlertRounded,
-  DownloadRounded,
-  FlagRounded,
-  ListAltRounded,
-  QuestionMarkRounded,
-  SyncProblemRounded,
-} from '@mui/icons-material';
-import {
-  Box,
-  Dropdown,
-  ListDivider,
-  ListItem,
-  ListItemDecorator,
-  Menu,
-  MenuButton,
-} from '@mui/joy';
+import CrisisAlertRounded from '@mui/icons-material/CrisisAlertRounded';
+import DownloadRounded from '@mui/icons-material/DownloadRounded';
+import FlagRounded from '@mui/icons-material/FlagRounded';
+import ListAltRounded from '@mui/icons-material/ListAltRounded';
+import QuestionMarkRounded from '@mui/icons-material/QuestionMarkRounded';
+import SyncProblemRounded from '@mui/icons-material/SyncProblemRounded';
+import Box from '@mui/joy/Box';
+import Dropdown from '@mui/joy/Dropdown';
+import ListDivider from '@mui/joy/ListDivider';
+import ListItem from '@mui/joy/ListItem';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import Menu from '@mui/joy/Menu';
+import MenuButton from '@mui/joy/MenuButton';
 
 export default function ProgLegend({ live }) {
   return (

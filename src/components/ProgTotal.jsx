@@ -1,4 +1,5 @@
-import { Skeleton, Typography } from '@mui/joy';
+import Skeleton from '@mui/joy/Skeleton';
+import Typography from '@mui/joy/Typography';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 

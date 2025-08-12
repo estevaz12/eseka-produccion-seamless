@@ -1,11 +1,10 @@
-import {
-  CrisisAlertRounded,
-  DownloadRounded,
-  FlagRounded,
-  QuestionMarkRounded,
-  SyncProblemRounded,
-} from '@mui/icons-material';
-import { Stack, Typography } from '@mui/joy';
+import CrisisAlertRounded from '@mui/icons-material/CrisisAlertRounded';
+import DownloadRounded from '@mui/icons-material/DownloadRounded';
+import FlagRounded from '@mui/icons-material/FlagRounded';
+import QuestionMarkRounded from '@mui/icons-material/QuestionMarkRounded';
+import SyncProblemRounded from '@mui/icons-material/SyncProblemRounded';
+import Stack from '@mui/joy/Stack';
+import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
 
 // TODO: reset counter for multiple machines and for incomplete articulos

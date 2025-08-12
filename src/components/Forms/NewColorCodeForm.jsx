@@ -1,18 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Stack,
-  Typography,
-} from '@mui/joy';
+import React, { useContext, useEffect, useState } from 'react';
+import Box from '@mui/joy/Box';
+import Button from '@mui/joy/Button';
+import FormControl from '@mui/joy/FormControl';
+import FormHelperText from '@mui/joy/FormHelperText';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
+import Typography from '@mui/joy/Typography';
 import { useConfig } from '../../ConfigContext.jsx';
 import FloatingLabelInput from '../Inputs/FloatingLabelInput.jsx';
 import ColorSelect from '../Inputs/ColorSelect.jsx';
-import { AddRounded } from '@mui/icons-material';
+import AddRounded from '@mui/icons-material/AddRounded';
 import { ToastsContext } from '../../Contexts.js';
 
 let apiUrl;

@@ -1,4 +1,6 @@
-import { Box, Stack, Typography } from '@mui/joy';
+import Box from '@mui/joy/Box';
+import Stack from '@mui/joy/Stack';
+import Typography from '@mui/joy/Typography';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';

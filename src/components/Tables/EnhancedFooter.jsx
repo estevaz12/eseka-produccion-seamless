@@ -1,5 +1,5 @@
-import { PrintRounded } from '@mui/icons-material';
-import { IconButton } from '@mui/joy';
+import PrintRounded from '@mui/icons-material/PrintRounded';
+import IconButton from '@mui/joy/IconButton';
 import { useConfig } from '../../ConfigContext.jsx';
 import { useLocation } from 'react-router';
 import { useContext } from 'react';
