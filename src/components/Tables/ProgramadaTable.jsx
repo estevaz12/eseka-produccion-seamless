@@ -182,6 +182,7 @@ export default function ProgramadaTable({
       id: 'machines',
       label: 'Máquinas',
       width: 'w-[11%]',
+      pdfAlign: 'center',
       pdfRender: (row) => {
         if (row.Machines.length <= 5)
           return row.Machines.map((m) => m.MachCode).join(', ');

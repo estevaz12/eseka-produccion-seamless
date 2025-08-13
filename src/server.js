@@ -6,7 +6,6 @@ const cors = require('cors');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
-
 // Utils
 const serverLog = require('./utils/serverLog.js');
 const processPDF = require('./utils/processPDF.js');
@@ -14,10 +13,8 @@ const compareProgramada = require('./utils/compareProgramada.js');
 const calculateNewTargets = require('./utils/calculateNewTargets.js');
 const parseMachines = require('./utils/parseMachines.js');
 const exportTablePDF = require('./utils/exportTablePDF.js');
-
 // Queries
 const queries = require('./utils/queries');
-
 // test data
 const testData = require('./utils/test-data');
 
@@ -388,6 +385,25 @@ const startServer = () => {
     }
   });
 
+  app.get('/machines', async (req, res) => {
+    serverLog('GET /machines');
+
+    if (isPackaged) {
+      try {
+        const machines = await sql.query(queries.getMachines());
+        res.json(machines.recordset);
+      } catch (err) {
+        serverLog(`[ERROR] GET /machines: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // use test data
+      serverLog('Using test data for /machines');
+      res.json(testData.machines);
+    }
+  });
+
+  // get machines and parse to match with production data
   async function getParsedMachines(producing = false) {
     let machines = await sql.query(queries.getMachines());
     machines = machines.recordset;
@@ -414,17 +430,6 @@ const startServer = () => {
 
     return machines;
   }
-
-  app.get('/machines', async (req, res) => {
-    serverLog('GET /machines');
-    try {
-      const machines = await getParsedMachines();
-      res.json(machines);
-    } catch (err) {
-      serverLog(`[ERROR] GET /machines: ${err}`);
-      res.status(500).json({ error: err.message });
-    }
-  });
 
   app.get('/machines/producing', async (req, res) => {
     serverLog('GET /machines/producing');

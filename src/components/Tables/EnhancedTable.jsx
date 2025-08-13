@@ -214,12 +214,14 @@ export default function EnhancedTable({
         )}
       </tbody>
 
-      <EnhancedFooter
-        cols={filteredCols}
-        rows={sortedRows}
-        footer={footer}
-        selected={selected}
-      />
+      {footer && (
+        <EnhancedFooter
+          cols={filteredCols}
+          rows={sortedRows}
+          footer={footer}
+          selected={selected}
+        />
+      )}
     </Table>
   );
 }

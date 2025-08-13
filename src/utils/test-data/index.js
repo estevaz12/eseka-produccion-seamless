@@ -15,4 +15,5 @@ module.exports = {
   programadaAnterior: require('./programadaAnteriorTestData.js'),
   programadaTotal: require('./programadaTotalTestData.js'),
   historial: require('./historialTestData.js'),
+  machines: require('./machinesTestData.js'),
 };
