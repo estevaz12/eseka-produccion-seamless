@@ -12,7 +12,15 @@ import { useConfig } from '../../ConfigContext.jsx';
 import FloatingLabelInput from '../Inputs/FloatingLabelInput.jsx';
 import ColorSelect from '../Inputs/ColorSelect.jsx';
 import AddRounded from '@mui/icons-material/AddRounded';
+import DeleteRounded from '@mui/icons-material/DeleteRounded';
 import { ToastsContext } from '../../Contexts.js';
+import DialogActions from '@mui/joy/DialogActions';
+import DialogContent from '@mui/joy/DialogContent';
+import DialogTitle from '@mui/joy/DialogTitle';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import WarningRounded from '@mui/icons-material/WarningRounded';
+import Divider from '@mui/joy/Divider';
 
 let apiUrl;
 
@@ -24,6 +32,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     colorCodes: [],
   });
   const [loading, setLoading] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -81,110 +90,125 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     }
   }
 
-  return (
-    <form
-      key={newColorCode.MachCode}
-      onSubmit={(e) => handleSubmit(e)}
-      className='w-xs'
-    >
-      <Stack direction='column' className='gap-4'>
-        <Stack direction='column' className='gap-1.5'>
-          <Stack direction='row' className='items-start gap-4'>
-            <FormControl>
-              <FloatingLabelInput
-                inputProps={{
-                  label: 'Artículo',
-                  value: newColorCode.StyleCode.articulo,
-                  type: 'number',
-                }}
-                className='w-24'
-                disabled
-              />
-            </FormControl>
-            <Typography
-              level='h1'
-              color='primary'
-              variant='outlined'
-              className='rounded-md h-14'
-            >
-              .
-            </Typography>
-            <FormControl className='grow'>
-              <FloatingLabelInput
-                disabled={newColorCode.StyleCode.punto}
-                inputProps={{
-                  value: formData.punto ?? newColorCode.StyleCode.punto ?? '',
-                  label: 'Punto (si aplica)',
-                  type: 'number',
-                  min: 0,
-                  max: 99,
-                  placeholder: 'Sin "."',
-                  onChange: (e) =>
-                    setFormData({
-                      ...formData,
-                      punto: e.target.value,
-                    }),
-                }}
-              />
-            </FormControl>
-          </Stack>
-          <FormHelperText>
-            <Typography
-              variant='soft'
-              level='body-sm'
-              color='warning'
-              className='mx-0'
-            >
-              PARCHES:
-            </Typography>
-            &nbsp;ingresar punto "9".
-          </FormHelperText>
-        </Stack>
+  function handleDelete() {
+    setDeleteOpen(false);
+    const codes = JSON.parse(localStorage.getItem('newColorCodes'));
+    codes.pop();
+    localStorage.setItem('newColorCodes', JSON.stringify(codes));
+    setNewColorCodes(codes);
+    setFormData({ colorCodes: [] });
 
-        <FormControl>
-          <FormLabel>Tipo (si aplica)</FormLabel>
-          <Stack direction='row' className='gap-2'>
-            <Input
-              value={formData.tipo ?? newColorCode.StyleCode.tipo ?? ''}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  tipo: e.target.value,
-                })
-              }
-              disabled={newColorCode.StyleCode.tipo}
-              type='text'
-              slotProps={{ input: { maxLength: 1, pattern: '[#$%]' } }}
-              className='w-10'
-            />
-            <FormHelperText className='mt-0'>
-              <Stack direction='column' className='justify-between size-full'>
-                <Box>
-                  <Typography level='body-sm'>
-                    <Typography variant='soft' color='warning'>
-                      #
-                    </Typography>
-                    &nbsp;si se divide a la mitad.&nbsp;
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography level='body-sm'>
-                    <Typography variant='soft' color='warning'>
-                      $
-                    </Typography>
-                    &nbsp;o&nbsp;
-                    <Typography variant='soft' color='warning'>
-                      %
-                    </Typography>
-                    &nbsp;si se duplica.
-                  </Typography>
-                </Box>
-              </Stack>
+    addToast({
+      type: 'success',
+      message: `Código de color ${newColorCode.StyleCode.styleCode} descartado.`,
+    });
+  }
+
+  return (
+    <>
+      <form
+        key={newColorCode.MachCode}
+        onSubmit={(e) => handleSubmit(e)}
+        className='w-xs'
+      >
+        <Stack direction='column' className='gap-4'>
+          <Stack direction='column' className='gap-1.5'>
+            <Stack direction='row' className='items-start gap-4'>
+              <FormControl>
+                <FloatingLabelInput
+                  inputProps={{
+                    label: 'Artículo',
+                    value: newColorCode.StyleCode.articulo,
+                    type: 'number',
+                  }}
+                  className='w-24'
+                  disabled
+                />
+              </FormControl>
+              <Typography
+                level='h1'
+                color='primary'
+                variant='outlined'
+                className='rounded-md h-14'
+              >
+                .
+              </Typography>
+              <FormControl className='grow'>
+                <FloatingLabelInput
+                  disabled={newColorCode.StyleCode.punto}
+                  inputProps={{
+                    value: formData.punto ?? newColorCode.StyleCode.punto ?? '',
+                    label: 'Punto (si aplica)',
+                    type: 'number',
+                    min: 0,
+                    max: 99,
+                    placeholder: 'Sin "."',
+                    onChange: (e) =>
+                      setFormData({
+                        ...formData,
+                        punto: e.target.value,
+                      }),
+                  }}
+                />
+              </FormControl>
+            </Stack>
+            <FormHelperText>
+              <Typography
+                variant='soft'
+                level='body-sm'
+                color='warning'
+                className='mx-0'
+              >
+                PARCHES:
+              </Typography>
+              &nbsp;ingresar punto "9".
             </FormHelperText>
           </Stack>
-        </FormControl>
 
-        {/* <ColorFormInputs
+          <FormControl>
+            <FormLabel>Tipo (si aplica)</FormLabel>
+            <Stack direction='row' className='gap-2'>
+              <Input
+                value={formData.tipo ?? newColorCode.StyleCode.tipo ?? ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    tipo: e.target.value,
+                  })
+                }
+                disabled={newColorCode.StyleCode.tipo}
+                type='text'
+                slotProps={{ input: { maxLength: 1, pattern: '[#$%]' } }}
+                className='w-10'
+              />
+              <FormHelperText className='mt-0'>
+                <Stack direction='column' className='justify-between size-full'>
+                  <Box>
+                    <Typography level='body-sm'>
+                      <Typography variant='soft' color='warning'>
+                        #
+                      </Typography>
+                      &nbsp;si se divide a la mitad.&nbsp;
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography level='body-sm'>
+                      <Typography variant='soft' color='warning'>
+                        $
+                      </Typography>
+                      &nbsp;o&nbsp;
+                      <Typography variant='soft' color='warning'>
+                        %
+                      </Typography>
+                      &nbsp;si se duplica.
+                    </Typography>
+                  </Box>
+                </Stack>
+              </FormHelperText>
+            </Stack>
+          </FormControl>
+
+          {/* <ColorFormInputs
         fieldName='colorCodes'
         title='Códigos de colores'
         label2='Código'
@@ -198,41 +222,102 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
         setFormData={setFormData}
       /> */}
 
-        <Stack direction='row' className='gap-2'>
-          <FormControl>
-            <FormLabel>Código</FormLabel>
-            <Input
-              value={newColorCode.StyleCode.color}
-              type='text'
-              disabled
-              className='*:text-center w-14'
+          <Stack direction='row' className='gap-2'>
+            <FormControl>
+              <FormLabel>Código</FormLabel>
+              <Input
+                value={newColorCode.StyleCode.color}
+                type='text'
+                disabled
+                className='*:text-center w-14'
+              />
+            </FormControl>
+
+            <ColorSelect
+              onChange={(color) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  colorCodes: [
+                    { color: color, code: newColorCode.StyleCode.color },
+                  ],
+                }));
+              }}
+              inheritedColors={colors}
+              required
+              allowAdd
+              className='grow'
             />
-          </FormControl>
+          </Stack>
 
-          <ColorSelect
-            onChange={(color) => {
-              setFormData((prev) => ({
-                ...prev,
-                colorCodes: [
-                  { color: color, code: newColorCode.StyleCode.color },
-                ],
-              }));
-            }}
-            inheritedColors={colors}
-            required
-            allowAdd
-            className='grow'
-          />
+          <Stack direction='row' className='gap-2'>
+            <Button
+              type='submit'
+              loading={loading}
+              startDecorator={!loading && <AddRounded />}
+              sx={{ '& .MuiButton-startDecorator': { mr: '2px' } }}
+              className='grow'
+            >
+              Agregar
+            </Button>
+            <Button
+              color='danger'
+              variant='outlined'
+              startDecorator={<DeleteRounded />}
+              sx={{ '& .MuiButton-startDecorator': { mr: '2px' } }}
+              className='grow'
+              onClick={() => setDeleteOpen(true)}
+            >
+              Descartar
+            </Button>
+          </Stack>
         </Stack>
+      </form>
 
-        <Button
-          type='submit'
-          loading={loading}
-          startDecorator={!loading && <AddRounded />}
-        >
-          Agregar código
-        </Button>
-      </Stack>
-    </form>
+      {deleteOpen && (
+        <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)}>
+          <ModalDialog variant='outlined' role='alertdialog'>
+            <DialogTitle>
+              <WarningRounded />
+              Confirmar
+            </DialogTitle>
+
+            <Divider />
+
+            <DialogContent>
+              <Stack direction='column' className='gap-2'>
+                <Typography>
+                  ¿Seguro que desea descartar el código{' '}
+                  <Typography variant='soft' color='warning'>
+                    {newColorCode.StyleCode.styleCode}
+                  </Typography>
+                  ?
+                </Typography>
+                <Typography>
+                  Solo debería descartar el código si es erróneo. De lo
+                  contrario, no se vinculará la producción correctamente.
+                </Typography>
+                <Typography>
+                  El código seguirá apareciendo hasta que se cambie la cadena en
+                  la máquina, se ponga en stop de producción o se apague.
+                </Typography>
+              </Stack>
+            </DialogContent>
+
+            <DialogActions>
+              <Button variant='solid' color='danger' onClick={handleDelete}>
+                Descartar
+              </Button>
+              <Button
+                variant='plain'
+                color='neutral'
+                onClick={() => setDeleteOpen(false)}
+              >
+                Cancelar
+              </Button>
+            </DialogActions>
+          </ModalDialog>
+        </Modal>
+      )}
+    </>
   );
 }
