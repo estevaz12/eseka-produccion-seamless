@@ -3,13 +3,16 @@ import { useConfig } from '../ConfigContext.jsx';
 import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
 import RefreshBtn from '../components/RefreshBtn.jsx';
-import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
+import MaquinasTable from '../components/Tables/MaquinasTable.jsx';
+import MachSearchForm from '../components/Forms/MachSearchForm.jsx';
 
 let apiUrl;
 
+// TODO: ROOM VIEW
 export default function Maquinas() {
   apiUrl = useConfig().apiUrl;
   const [machines, setMachines] = useState([]);
+  const [filteredMachines, setFilteredMachines] = useState([]);
 
   const getMachines = () => {
     fetch(`${apiUrl}/machines`)
@@ -22,64 +25,16 @@ export default function Maquinas() {
   useEffect(() => {
     let ignore = false;
     if (!ignore) getMachines();
+    // update every 30 seconds
+    const intervalId = setInterval(() => {
+      if (!ignore) getMachines();
+    }, 30000);
 
     return () => {
       ignore = true;
+      clearInterval(intervalId);
     };
   }, []);
-
-  const cols = [
-    {
-      id: 'MachCode',
-      label: 'Máquina',
-      align: 'center',
-    },
-    {
-      id: 'StyleCode',
-      label: 'Cadena',
-      align: 'center',
-    },
-    {
-      id: 'Pieces',
-      label: 'Un. Producidas',
-      align: 'right',
-    },
-    {
-      id: 'TargetOrder',
-      label: 'Target',
-      align: 'right',
-    },
-    {
-      id: 'IdealCycle',
-      label: 'Ciclo Ideal',
-      align: 'right',
-    },
-    {
-      id: 'WorkEfficiency',
-      label: 'Eff. %',
-      align: 'right',
-    },
-    {
-      id: 'State',
-      label: 'Estado',
-      align: 'center',
-    },
-  ];
-
-  function renderRow(row, i, opened, handleClick) {
-    return [
-      null,
-      <>
-        <td align='center'>{row.MachCode}</td>
-        <td align='center'>{row.StyleCode.substring(0, 8)}</td>
-        <td align='right'>{row.Pieces}</td>
-        <td align='right'>{row.TargetOrder}</td>
-        <td align='right'>{row.IdealCycle}</td>
-        <td align='right'>{row.WorkEfficiency}%</td>
-        <td align='center'>{row.State}</td>
-      </>,
-    ];
-  }
 
   return (
     <Box>
@@ -90,15 +45,15 @@ export default function Maquinas() {
         <RefreshBtn handleRefresh={getMachines} />
 
         {/* search inputs */}
+        <MachSearchForm
+          machines={machines}
+          setFilteredMachines={setFilteredMachines}
+        />
       </Stack>
 
-      <EnhancedTable
-        cols={cols}
-        rows={machines}
-        renderRow={renderRow}
-        initOrder='asc'
-        initOrderBy='MachCode'
-        headerTop='top-[68px]'
+      <MaquinasTable
+        machines={filteredMachines.length > 0 ? filteredMachines : machines}
+        pdfRows={machines}
       />
     </Box>
   );

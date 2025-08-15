@@ -27,7 +27,6 @@ export default function ProgramadaTable({
   setProgColor,
   filteredProgColor,
   setFilteredProgColor,
-  editable = true,
   live = true,
 }) {
   apiUrl = useConfig().apiUrl;
@@ -90,8 +89,8 @@ export default function ProgramadaTable({
       id: 'Docenas',
       label: 'A Producir',
       align: 'right',
-      pdfValue: (row) => calcAProducir(row),
-      pdfRender: (row) => aProducirStr(row),
+      pdfValue: (row) => calcAProducir(row), // for footer calc
+      pdfRender: (row) => aProducirStr(row), // for rendering
     },
     {
       id: 'Producido',
@@ -316,6 +315,7 @@ export default function ProgramadaTable({
             ? progColor
             : filteredProgColor
         }
+        pdfRows={progColor}
         renderRow={renderRow}
         initOrder='asc'
         initOrderBy='Articulo'

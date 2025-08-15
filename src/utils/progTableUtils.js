@@ -49,7 +49,7 @@ const producidoStr = (row) => {
 
 const faltaStr = (row) => {
   const falta = formatNum(calcAProducir(row) - calcProducido(row));
-  const faltaFisico = formatNum((row.Docenas - row.Producido) / 12 / 1.01);
+  const faltaFisico = formatNum(row.Docenas - row.Producido / 12 / 1.01);
   return row.Tipo == null ? falta : `${falta} (${faltaFisico})`;
 };
 

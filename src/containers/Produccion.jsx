@@ -218,6 +218,7 @@ export default function Produccion() {
         <EnhancedTable
           cols={cols}
           rows={data}
+          pdfRows={data}
           renderRow={renderRow}
           initOrder='asc'
           initOrderBy='Articulo'

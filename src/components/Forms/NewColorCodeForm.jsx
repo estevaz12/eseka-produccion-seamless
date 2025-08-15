@@ -251,15 +251,6 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
 
           <Stack direction='row' className='gap-2'>
             <Button
-              type='submit'
-              loading={loading}
-              startDecorator={!loading && <AddRounded />}
-              sx={{ '& .MuiButton-startDecorator': { mr: '2px' } }}
-              className='grow'
-            >
-              Agregar
-            </Button>
-            <Button
               color='danger'
               variant='outlined'
               startDecorator={<DeleteRounded />}
@@ -268,6 +259,15 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
               onClick={() => setDeleteOpen(true)}
             >
               Descartar
+            </Button>
+            <Button
+              type='submit'
+              loading={loading}
+              startDecorator={!loading && <AddRounded />}
+              sx={{ '& .MuiButton-startDecorator': { mr: '2px' } }}
+              className='grow'
+            >
+              Agregar
             </Button>
           </Stack>
         </Stack>

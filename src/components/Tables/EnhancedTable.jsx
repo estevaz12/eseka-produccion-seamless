@@ -14,6 +14,7 @@ import { useLocation } from 'react-router';
 export default function EnhancedTable({
   cols,
   rows,
+  pdfRows,
   renderRow,
   initOrder,
   initOrderBy,
@@ -22,6 +23,7 @@ export default function EnhancedTable({
   className = '',
   headerTop = '',
   checkboxVariant = 'outlined',
+  uniqueIds = ['Articulo', 'Talle', 'ColorId'],
 }) {
   const location = useLocation();
   // State for current sort order ('asc' or 'desc')
@@ -36,6 +38,8 @@ export default function EnhancedTable({
   const loading = rows.length === 0;
 
   const filteredCols = cols.filter(Boolean);
+
+  const uniqueId = (row) => uniqueIds.map((id) => row[id]).join('-');
 
   // Load saved sort on mount
   useEffect(() => {
@@ -59,13 +63,12 @@ export default function EnhancedTable({
     }
   }, [order, orderBy, location.pathname]);
 
-  const sortedRows = useMemo(() => {
-    if (order !== initOrder || orderBy !== initOrderBy) {
-      return [...rows].sort(getComparator(order, orderBy, filteredCols));
-    }
-
-    return rows;
-  }, [rows, order, orderBy, initOrder, initOrderBy, filteredCols]);
+  const [sortedRows, sortedPdfRows] = useMemo(() => {
+    return [
+      [...rows].sort(getComparator(order, orderBy, filteredCols)),
+      [...pdfRows].sort(getComparator(order, orderBy, filteredCols)),
+    ];
+  }, [rows, order, orderBy]);
 
   /**
    * Handles sorting when a column header is clicked.
@@ -87,9 +90,7 @@ export default function EnhancedTable({
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       // Select all rows
-      const newSelected = rows.map(
-        (row) => `${row.Articulo}-${row.Talle}-${row.ColorId}`
-      );
+      const newSelected = rows.map((row) => uniqueId(row));
       setSelected(newSelected);
       return;
     }
@@ -102,14 +103,11 @@ export default function EnhancedTable({
    * Adds or removes the row from the array.
    */
   const handleClickMany = (row, arr, setArr) => {
-    const arrIdx = arr.indexOf(`${row.Articulo}-${row.Talle}-${row.ColorId}`);
+    const arrIdx = arr.indexOf(uniqueId(row));
     let newArr = [];
     if (arrIdx === -1) {
       // Not in arr yet, add to arr
-      newArr = newArr.concat(
-        arr,
-        `${row.Articulo}-${row.Talle}-${row.ColorId}`
-      );
+      newArr = newArr.concat(arr, uniqueId(row));
     } else if (arrIdx === 0) {
       // First item, remove it
       newArr = newArr.concat(arr.slice(1));
@@ -124,8 +122,8 @@ export default function EnhancedTable({
   };
 
   const handleClickSingle = (row, val, setVal) => {
-    if (val === `${row.Articulo}-${row.Talle}-${row.ColorId}`) setVal(null);
-    else setVal(`${row.Articulo}-${row.Talle}-${row.ColorId}`);
+    if (val === uniqueId(row)) setVal(null);
+    else setVal(uniqueId(row));
   };
 
   return (
@@ -160,9 +158,7 @@ export default function EnhancedTable({
         ) : (
           // Sort rows before rendering
           sortedRows.map((row, i) => {
-            const isItemSelected = selected.includes(
-              `${row.Articulo}-${row.Talle}-${row.ColorId}`
-            );
+            const isItemSelected = selected.includes(uniqueId(row));
             const [rowClassName, renderedRow] = renderRow(row, i, opened, () =>
               handleClickSingle(row, opened, setOpened)
             );
@@ -202,7 +198,7 @@ export default function EnhancedTable({
                   {/* Row data cells */}
                   {renderedRow}
                 </tr>
-                {opened === `${row.Articulo}-${row.Talle}-${row.ColorId}` && (
+                {opened === uniqueId(row) && (
                   <ExpandedRow
                     row={row}
                     numCols={filteredCols.length + 1} // +1 for checkbox
@@ -214,14 +210,13 @@ export default function EnhancedTable({
         )}
       </tbody>
 
-      {footer && (
-        <EnhancedFooter
-          cols={filteredCols}
-          rows={sortedRows}
-          footer={footer}
-          selected={selected}
-        />
-      )}
+      <EnhancedFooter
+        cols={filteredCols}
+        rows={sortedPdfRows}
+        footer={footer}
+        selected={selected}
+        uniqueId={uniqueId}
+      />
     </Table>
   );
 }

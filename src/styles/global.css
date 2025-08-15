@@ -26,4 +26,17 @@
   --color-incomplete: #decccc;
   --color-dark-accent: #272727;
   --color-row-hover: #85c7f2;
+
+  /* Machine stops */
+  --color-stop-off: var(--color-incomplete);
+  --color-stop-general: #f7b5bd;
+  --color-stop-target: #6f2dbd;
+  --color-stop-electronico: var(--color-making);
+  --color-stop-mecanico: var(--color-done);
+  --color-stop-produccion: #8c2a3f;
+  --color-stop-hilado: #edbe66;
+  --color-stop-repuesto: #f88b32;
+  --color-stop-muestra: var(--color-todo);
+  --color-stop-cambio: #072ac8;
+  --color-stop-turbina: #79e0e2;
 }

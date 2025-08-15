@@ -390,8 +390,20 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const machines = await sql.query(queries.getMachines());
-        res.json(machines.recordset);
+        let machines = await sql.query(queries.getMachines());
+        machines = machines.recordset;
+        machines.forEach((m) => {
+          // if state is 1, 8, 11, 13, 56, or 65535, mach styleCode is PARADA
+          if ([1, 8, 11, 13, 56, 65535].includes(m.State)) {
+            m.StyleCode = 'PARADA';
+            m.Pieces = null;
+            m.TargetOrder = null;
+          } else {
+            m.StyleCode = m.StyleCode.slice(0, 8);
+          }
+        });
+
+        res.json(machines);
       } catch (err) {
         serverLog(`[ERROR] GET /machines: ${err}`);
         res.status(500).json({ error: err.message });

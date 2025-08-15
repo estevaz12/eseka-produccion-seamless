@@ -7,7 +7,13 @@ import { DatesContext, ToastsContext } from '../../Contexts.js';
 import { buildPdfPayload } from '../../utils/pdfPayload.js';
 import dayjs from 'dayjs';
 
-export default function EnhancedFooter({ footer, cols, rows, selected }) {
+export default function EnhancedFooter({
+  footer,
+  cols,
+  rows,
+  selected,
+  uniqueId,
+}) {
   const { apiUrl } = useConfig();
   const { pathname } = useLocation();
   const { addToast } = useContext(ToastsContext);
@@ -61,8 +67,7 @@ export default function EnhancedFooter({ footer, cols, rows, selected }) {
   };
 
   function getSelectedRows(rows, selected) {
-    const key = (row) => `${row.Articulo}-${row.Talle}-${row.ColorId}`;
-    return rows.filter((row) => selected.includes(key(row)));
+    return rows.filter((row) => selected.includes(uniqueId(row)));
   }
 
   const handlePDFExport = async () => {
@@ -83,7 +88,7 @@ export default function EnhancedFooter({ footer, cols, rows, selected }) {
         body: JSON.stringify({
           columns,
           rows: parsedRows,
-          footer,
+          footer: getPDFOpts().footerCols ? footer : null,
           ...getPDFOpts(),
         }),
       });
@@ -99,6 +104,10 @@ export default function EnhancedFooter({ footer, cols, rows, selected }) {
       }
     } catch (err) {
       console.error('[CLIENT] Error exporting PDF:', err);
+      addToast({
+        type: 'danger',
+        message: 'No se pudo exportar el PDF correctamente.',
+      });
     }
   };
 
@@ -120,7 +129,10 @@ export default function EnhancedFooter({ footer, cols, rows, selected }) {
           )}
         </td>
         {footer.filter(Boolean).map((foot, i) => (
-          <td key={i} className='text-right'>
+          <td
+            key={i}
+            align={foot === 'Total' ? 'right' : cols[i + 2].align || 'left'}
+          >
             {foot}
           </td>
         ))}

@@ -1,5 +1,3 @@
-import { formatNum } from './progTableUtils';
-
 function stringifyCell(v) {
   if (v == null) return '';
   if (typeof v === 'number') return String(v);
@@ -33,37 +31,41 @@ export function buildPdfPayload(cols, rows, footerCols) {
   });
 
   // build footer
-  const footer = {};
-  for (const col of cols) {
-    const isFooterCol = footerCols.includes(col.id);
-    const isNumeric = (val) => typeof val === 'number' || !isNaN(Number(val));
+  const footer = footerCols ? {} : null;
+  if (footer) {
+    for (const col of cols) {
+      const isFooterCol = footerCols.includes(col.id);
+      const isNumeric = (val) => typeof val === 'number' || !isNaN(Number(val));
 
-    let total = null;
+      let total = null;
 
-    if (isFooterCol) {
-      const rawValues = rows.map((row) => {
-        const val =
-          typeof col.pdfValue === 'function' ? col.pdfValue(row) : row[col.id];
+      if (isFooterCol) {
+        const rawValues = rows.map((row) => {
+          const val =
+            typeof col.pdfValue === 'function'
+              ? col.pdfValue(row)
+              : row[col.id];
 
-        return val;
-      });
+          return val;
+        });
 
-      const numericValues = rawValues
-        .map((v) => Number(v))
-        .filter((n) => isNumeric(n));
+        const numericValues = rawValues
+          .map((v) => Number(v))
+          .filter((n) => isNumeric(n));
 
-      if (numericValues.length) {
-        total = numericValues.reduce((a, b) => a + b, 0);
+        if (numericValues.length) {
+          total = numericValues.reduce((a, b) => a + b, 0);
+        }
       }
-    }
 
-    // Apply 'Total' label to third column
-    if (col.id === cols[2].id) {
-      footer[col.id] = 'Total';
-    } else if (total != null) {
-      footer[col.id] = String(Math.round(total));
-    } else {
-      footer[col.id] = '';
+      // Apply 'Total' label to third column
+      if (col.id === cols[2].id) {
+        footer[col.id] = 'Total';
+      } else if (total != null) {
+        footer[col.id] = String(Math.round(total));
+      } else {
+        footer[col.id] = '';
+      }
     }
   }
 
