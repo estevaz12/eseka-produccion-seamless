@@ -1,18 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 import MaquinasTable from '../components/Tables/MaquinasTable.jsx';
 import MachSearchForm from '../components/Forms/MachSearchForm.jsx';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import Tab, { tabClasses } from '@mui/joy/Tab';
+import TabList from '@mui/joy/TabList';
+import TabPanel from '@mui/joy/TabPanel';
+import Tabs from '@mui/joy/Tabs';
+import MapTwoTone from '@mui/icons-material/MapTwoTone';
+import TableChartTwoTone from '@mui/icons-material/TableChartTwoTone';
+import MaquinasMap from '../components/MaquinasMap.jsx';
 
 let apiUrl;
 
-// TODO: ROOM VIEW
 export default function Maquinas() {
   apiUrl = useConfig().apiUrl;
   const [machines, setMachines] = useState([]);
   const [filteredMachines, setFilteredMachines] = useState([]);
+
+  const sortedMachines = useMemo(
+    () => [...machines].sort((a, b) => a.MachCode - b.MachCode),
+    [machines]
+  );
+
+  const sortedFiltered = useMemo(
+    () => [...filteredMachines].sort((a, b) => a.MachCode - b.MachCode),
+    [filteredMachines]
+  );
 
   const getMachines = () => {
     fetch(`${apiUrl}/machines`)
@@ -37,12 +53,45 @@ export default function Maquinas() {
   }, []);
 
   return (
-    <Box>
+    <Tabs
+      aria-label='tabs'
+      defaultValue={0}
+      size='sm'
+      sx={{ bgcolor: 'transparent' }}
+      className='sticky top-0 z-10'
+    >
       <Stack
         direction='row'
-        className='sticky z-10 items-end justify-between gap-4 top-0 bg-[var(--joy-palette-background-body)] py-4'
+        className='sticky top-0 z-10 items-end justify-between gap-4 bg-[var(--joy-palette-background-body)] py-4'
       >
         <RefreshBtn handleRefresh={getMachines} />
+
+        <TabList
+          disableUnderline
+          sx={{
+            p: 0.5,
+            gap: 0.5,
+            borderRadius: 'lg',
+            bgcolor: 'background.level1',
+            [`& .${tabClasses.root}[aria-selected="true"]`]: {
+              boxShadow: 'sm',
+              bgcolor: 'background.surface',
+            },
+          }}
+        >
+          <Tab disableIndicator>
+            <ListItemDecorator>
+              <MapTwoTone />
+            </ListItemDecorator>
+            Mapa
+          </Tab>
+          <Tab disableIndicator>
+            <ListItemDecorator>
+              <TableChartTwoTone />
+            </ListItemDecorator>
+            Tabla
+          </Tab>
+        </TabList>
 
         {/* search inputs */}
         <MachSearchForm
@@ -51,10 +100,20 @@ export default function Maquinas() {
         />
       </Stack>
 
-      <MaquinasTable
-        machines={filteredMachines.length > 0 ? filteredMachines : machines}
-        pdfRows={machines}
-      />
-    </Box>
+      {/* table and map */}
+      <TabPanel value={0} className='p-0'>
+        <MaquinasMap
+          machines={
+            filteredMachines.length > 0 ? sortedFiltered : sortedMachines
+          }
+        />
+      </TabPanel>
+      <TabPanel value={1} className='p-0'>
+        <MaquinasTable
+          machines={filteredMachines.length > 0 ? filteredMachines : machines}
+          pdfRows={machines}
+        />
+      </TabPanel>
+    </Tabs>
   );
 }

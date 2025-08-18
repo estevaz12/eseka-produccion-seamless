@@ -24,7 +24,8 @@ const getMachines = () => {
            TargetOrder, 
            State, 
            IdealCycle, 
-           WorkEfficiency
+           WorkEfficiency,
+           RoomCode
     FROM [dbNautilus].[dbo].[MACHINES]
     WHERE RoomCode = 'SEAMLESS';
   `;

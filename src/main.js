@@ -86,7 +86,11 @@ app.whenReady().then(() => {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'; connect-src 'self' http://localhost:3001/ ws://localhost:3000; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval'",
+          "default-src 'self'; " +
+            "connect-src 'self' http://localhost:3001/ ws://localhost:3000; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "script-src 'self' 'unsafe-eval'; " +
+            "img-src 'self' data: blob: file:;",
         ],
       },
     });
