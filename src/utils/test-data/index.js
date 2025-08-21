@@ -16,4 +16,8 @@ module.exports = {
   programadaTotal: require('./programadaTotalTestData.js'),
   historial: require('./historialTestData.js'),
   machines: require('./machinesTestData.js'),
+  dailyProduction: require('./dailyProductionTestData.js'),
+  currWEff: require('./currWEffTestData.js'),
+  dailyWEff: require('./dailyWEffTestData.js'),
+  monthSaldo: require('./monthSaldoTestData.js'),
 };

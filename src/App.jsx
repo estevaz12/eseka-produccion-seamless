@@ -26,6 +26,7 @@ import {
   THEME_ID as MATERIAL_THEME_ID,
 } from '@mui/material/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
+import Dashboard from './containers/Dashboard.jsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -50,6 +51,11 @@ const joyTheme = extendTheme({
           // theme.vars.* return the CSS variables.
           position: 'relative',
         },
+      },
+    },
+    JoySkeleton: {
+      defaultProps: {
+        animation: 'wave',
       },
     },
   },
@@ -77,9 +83,9 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route path='/' element={<Home />}>
-          {/* Actual */}
-          <Route index element={<Programada />} />
+          <Route index element={<Dashboard />} />
           <Route path='programada'>
+            <Route path='actual' element={<Programada />} />
             <Route path='anteriores' element={<ProgAnteriores />} />
             <Route path='comparar' element={<ProgComparar />} />
           </Route>

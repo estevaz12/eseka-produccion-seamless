@@ -1,3 +1,5 @@
+const getMonthSaldo = require('./getMonthSaldo.js');
+
 module.exports = {
   produccion: require('./produccion.js'),
   insertProgramada: require('./insertProgramada.js'),
@@ -21,4 +23,8 @@ module.exports = {
   getCurrArtColorDistr: require('./getCurrArtColorDistr.js'),
   updateArticuloTipo: require('./updateArticulo.js'),
   getProductionsMonitor: require('./getProductionsMonitor.js'),
+  getDailyProduction: require('./getDailyProduction.js'),
+  getCurrWEff: require('./getCurrWEff.js'),
+  getDailyWEff: require('./getDailyWEff.js'),
+  getMonthSaldo: require('./getMonthSaldo.js'),
 };

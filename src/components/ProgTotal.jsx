@@ -42,7 +42,6 @@ export default function ProgTotal({ startDate, currTotal = undefined }) {
         total
       ) : startDate ? (
         <Skeleton
-          animation='wave'
           variant='text'
           level='body-lg'
           width={70}

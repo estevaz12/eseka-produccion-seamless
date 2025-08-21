@@ -4,6 +4,7 @@ import FlagRounded from '@mui/icons-material/FlagRounded';
 import ListAltRounded from '@mui/icons-material/ListAltRounded';
 import QuestionMarkRounded from '@mui/icons-material/QuestionMarkRounded';
 import SyncProblemRounded from '@mui/icons-material/SyncProblemRounded';
+import ReportRounded from '@mui/icons-material/ReportRounded';
 import Box from '@mui/joy/Box';
 import Dropdown from '@mui/joy/Dropdown';
 import ListDivider from '@mui/joy/ListDivider';
@@ -88,6 +89,12 @@ export default function ProgLegend({ live }) {
                 <CrisisAlertRounded fontSize='small' />
               </ListItemDecorator>{' '}
               Verificar target máq.
+            </ListItem>
+            <ListItem>
+              <ListItemDecorator>
+                <ReportRounded fontSize='small' />
+              </ListItemDecorator>{' '}
+              Parar máq.
             </ListItem>
             <ListItem>
               <ListItemDecorator>

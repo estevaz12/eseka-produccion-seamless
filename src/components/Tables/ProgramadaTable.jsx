@@ -276,11 +276,11 @@ export default function ProgramadaTable({
         <td className='text-right'>{faltaStr(row)}</td>
         {/* Target (un.) */}
         <td className='text-right'>
-          {faltaUnidades <= 0 ? (
+          <TargetCol row={row} faltaUnidades={faltaUnidades} />
+          {/* {faltaUnidades <= 0 ? (
             'LLEGÓ'
           ) : (
-            <TargetCol row={row} faltaUnidades={faltaUnidades} />
-          )}
+          )} */}
         </td>
         {/* Falta (un.) */}
         <td className='text-right'>{faltaUnidades}</td>

@@ -55,6 +55,7 @@
     "@mui/icons-material": "^7.0.2",
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^7.0.2",
+    "@mui/x-charts": "^8.10.1",
     "@mui/x-date-pickers": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.4",
     "cors": "^2.8.5",

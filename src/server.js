@@ -13,6 +13,7 @@ const compareProgramada = require('./utils/compareProgramada.js');
 const calculateNewTargets = require('./utils/calculateNewTargets.js');
 const parseMachines = require('./utils/parseMachines.js');
 const exportTablePDF = require('./utils/exportTablePDF.js');
+const calcEff = require('./utils/calcEff.js');
 // Queries
 const queries = require('./utils/queries');
 // test data
@@ -778,6 +779,102 @@ const startServer = () => {
         message: `No se pudo agregar las docenas para el art. ${data.articulo} T${data.talle} ${data.color}.`,
         error: err.message,
       });
+    }
+  });
+
+  // stats for dashboard
+  app.get('/stats/dailyProduction/:room', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /stats/dailyProduction/${room}`);
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(queries.getDailyProduction(room));
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(`[ERROR] GET /stats/dailyProduction/${room}: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /stats/dailyProduction');
+      res.json(testData.dailyProduction);
+    }
+  });
+
+  app.get('/stats/currentEfficiency/:room', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /stats/currentEfficiency/${room}`);
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(queries.getCurrWEff());
+        const groupEffs = calcEff(room, result.recordset);
+
+        res.json(groupEffs);
+      } catch (err) {
+        serverLog(`[ERROR] GET /stats/currentEfficiency/${room}: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /stats/currentEfficiency');
+      res.json(testData.currWEff);
+    }
+  });
+
+  app.get('/stats/dailyEfficiency/:room', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /stats/dailyEfficiency/${room}`);
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(queries.getDailyWEff(room));
+
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(`[ERROR] GET /stats/dailyEfficiency/${room}: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /stats/dailyEfficiency');
+      res.json(testData.dailyWEff);
+    }
+  });
+
+  app.get('/stats/monthSaldo/:room', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /stats/monthSaldo/${room}`);
+
+    const docenas = room === 'SEAMLESS' ? 12 : 24;
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(queries.getMonthSaldo(room));
+        const row = result.recordset[0]; // single-record
+        // prep data for chart
+        const saldo = {
+          porc: ((row.Saldo / (row.Pieces + row.Saldo)) * 100).toFixed(2),
+          data: [
+            { id: 0, value: Math.round(row.Saldo / docenas), label: 'Saldo' },
+            {
+              id: 1,
+              value: Math.round(row.Pieces / docenas),
+              label: 'Restante',
+            },
+          ],
+        };
+
+        res.json(saldo);
+      } catch (err) {
+        serverLog(`[ERROR] GET /stats/monthSaldo/${room}: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /stats/monthSaldo');
+      res.json(testData.monthSaldo);
     }
   });
 };

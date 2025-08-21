@@ -3,6 +3,7 @@ import DownloadRounded from '@mui/icons-material/DownloadRounded';
 import FlagRounded from '@mui/icons-material/FlagRounded';
 import QuestionMarkRounded from '@mui/icons-material/QuestionMarkRounded';
 import SyncProblemRounded from '@mui/icons-material/SyncProblemRounded';
+import ReportRounded from '@mui/icons-material/ReportRounded';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
@@ -72,6 +73,14 @@ export default function TargetCol({ row, faltaUnidades }) {
             icon={<CrisisAlertRounded fontSize={iconFontSize} />}
           />
         );
+      } else if (row.Machines[0].TargetOrder === 0 && faltaUnidades <= 0) {
+        // target met, stop machine
+        return (
+          <TargetData
+            target={'LLEGÓ'}
+            icon={<ReportRounded fontSize={iconFontSize} />}
+          />
+        );
       } else if (row.Machines[0].TargetOrder === 0) {
         // no target
         return (
@@ -81,6 +90,9 @@ export default function TargetCol({ row, faltaUnidades }) {
           />
         );
       }
+    } else if (faltaUnidades <= 0) {
+      // target met, no producing
+      return 'LLEGÓ';
     }
 
     return machTarget;

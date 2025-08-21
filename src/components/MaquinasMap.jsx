@@ -56,18 +56,12 @@ export default function MaquinasMap({ machines }) {
                           objectFit='contain'
                           variant='plain'
                         >
-                          <Skeleton
-                            animation='wave'
-                            loading={machines.length === 0}
-                          >
+                          <Skeleton loading={machines.length === 0}>
                             <img src={getIconFor(m)} />
                           </Skeleton>
                         </AspectRatio>
                         <Typography>
-                          <Skeleton
-                            animation='wave'
-                            loading={machines.length === 0}
-                          >
+                          <Skeleton loading={machines.length === 0}>
                             {m.MachCode}
                           </Skeleton>
                         </Typography>
@@ -104,7 +98,7 @@ export default function MaquinasMap({ machines }) {
         color='primary'
         variant='soft'
         className='fixed z-10 bottom-4 right-4 left-44'
-        sx={{ boxShadow: 'md' }}
+        sx={{ boxShadow: 'sm' }}
       >
         <Stack direction='row' className='items-center justify-between gap-4'>
           {[
@@ -133,7 +127,7 @@ export default function MaquinasMap({ machines }) {
                 variant='outlined'
                 className='bg-white rounded-md'
               >
-                <Skeleton animation='wave' loading={machines.length === 0}>
+                <Skeleton loading={machines.length === 0}>
                   {machines.length === 0 ? '00' : value}
                 </Skeleton>
               </Typography>
