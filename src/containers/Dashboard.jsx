@@ -7,12 +7,16 @@ import { useConfig } from '../ConfigContext.jsx';
 import CurrentEff from '../components/Dashboard/CurrentEff.jsx';
 import DailyEff from '../components/Dashboard/DailyEff.jsx';
 import MonthSaldo from '../components/Dashboard/MonthSaldo.jsx';
+import TotalEstimate from '../components/Dashboard/TotalEstimate.jsx';
+import dayjs from 'dayjs';
 
 let apiUrl;
 export default function Dashboard() {
   apiUrl = useConfig().apiUrl;
-  const [dataset, setDataset] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [dailyProd, setDailyProd] = useState([]);
+  const [holidays, setHolidays] = useState([]);
+  const [progTotal, setProgTotal] = useState(0);
+  const now = dayjs.tz();
 
   useEffect(() => {
     let ignored = false;
@@ -22,12 +26,44 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         if (!ignored) {
-          setDataset(data);
-          setLoading(false);
+          setDailyProd(data);
         }
       })
       .catch((err) =>
         console.error('[CLIENT] Error fetching /stats/dailyProduction:', err)
+      );
+
+    fetch(`https://api.argentinadatos.com/v1/feriados/${now.year()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const filtered = data.filter(
+          (d) =>
+            dayjs.tz(d.fecha).month() === now.month() && d.tipo !== 'puente'
+        );
+        const flat = filtered.map((d) => d.fecha);
+
+        if (!ignored) {
+          setHolidays(flat);
+        }
+      })
+      .catch((err) => console.error('[CLIENT] Error fetching holidays:', err));
+
+    fetch(`${apiUrl}/programada/actualDate`)
+      .then((res) => res.json())
+      .then((data) =>
+        fetch(`${apiUrl}/programada/total/${data[0].Date}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (!ignored) {
+              setProgTotal(data[0].Total);
+            }
+          })
+          .catch((err) =>
+            console.error('[CLIENT] Error fetching /programada/total:', err)
+          )
+      )
+      .catch((err) =>
+        console.error('[CLIENT] Error fetching /programada/actualDate:', err)
       );
 
     return () => {
@@ -39,9 +75,18 @@ export default function Dashboard() {
     <Box className='grid w-full h-screen grid-cols-4 gap-4 py-4 auto-rows-fr *:flex-none'>
       {/* Top */}
       <Card>
-        <TotalProduced dataset={dataset} loading={loading} />
+        <TotalProduced dataset={dailyProd} loading={dailyProd.length === 0} />
       </Card>
-      <Card></Card>
+      <Card>
+        <TotalEstimate
+          dataset={dailyProd}
+          progTotal={progTotal}
+          holidays={holidays}
+          loading={
+            dailyProd.length === 0 || holidays.length === 0 || progTotal === 0
+          }
+        />
+      </Card>
       <Card></Card>
       <Card></Card>
       {/* Center */}
@@ -56,7 +101,7 @@ export default function Dashboard() {
       </Card>
       {/* Bottom */}
       <Card className='col-span-4'>
-        <DailyProduction dataset={dataset} loading={loading} />
+        <DailyProduction dataset={dailyProd} loading={dailyProd.length === 0} />
       </Card>
     </Box>
   );

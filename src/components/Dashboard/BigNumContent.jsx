@@ -7,12 +7,24 @@ export default function BigNumContent({ loading, title, children, subtitle }) {
     <Stack direction='column' className='items-center h-full gap-2'>
       <Typography level='title-lg'>{title}</Typography>
 
-      <Typography level='h2' className='grow'>
+      <Typography
+        component={typeof children !== 'string' ? 'div' : 'h2'}
+        level='h2'
+        className='flex items-center grow'
+      >
         <Skeleton loading={loading} className='rounded-[var(--joy-radius-sm)]'>
           {children}
         </Skeleton>
       </Typography>
-      <Typography level='body-sm'>{subtitle}</Typography>
+
+      <Typography
+        component={typeof children !== 'string' ? 'div' : 'p'}
+        level='body-sm'
+        className='w-full'
+        textAlign='center'
+      >
+        {subtitle}
+      </Typography>
     </Stack>
   );
 }
