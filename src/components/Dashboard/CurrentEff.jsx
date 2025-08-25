@@ -1,13 +1,14 @@
-import Skeleton from '@mui/joy/Skeleton';
 import { BarChart } from '@mui/x-charts';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
+import ChartContent from './ChartContent.jsx';
+import ChartHeader from './ChartHeader.jsx';
 
 let apiUrl;
 export default function CurrentEff() {
   apiUrl = useConfig().apiUrl;
   const [loading, setLoading] = useState(true);
-  const [dataset, setDataset] = useState([]);
+  const [dataset, setDataset] = useState({ total: 0, groups: [] });
 
   useEffect(() => {
     let ignored = false;
@@ -39,23 +40,24 @@ export default function CurrentEff() {
   }, []);
 
   return (
-    <Skeleton
-      loading={loading}
-      variant='rectangle'
-      className='rounded-sm size-full'
-    >
+    <ChartContent loading={loading} direction='row' gap={8}>
+      <ChartHeader
+        title='Eficiencia Actual'
+        value={`${dataset.total}%`}
+        interval={'Total'}
+      />
       <BarChart
         loading={loading}
-        dataset={dataset}
+        dataset={dataset.groups}
         borderRadius={8}
         xAxis={[{ dataKey: 'GroupCode', scaleType: 'band' }]}
         yAxis={[
           {
-            width: 60,
             valueFormatter: (value) => `${value}%`,
+            min: 25,
             max: 100,
             scaleType: 'linear',
-            tickInterval: [0, 25, 40, 55, 70, 85, 100],
+            tickInterval: [0, 50, 60, 70, 85, 100],
           },
         ]}
         // dataKey: for y-axis
@@ -72,6 +74,6 @@ export default function CurrentEff() {
         grid={{ horizontal: true }}
         slotProps={{ legend: { hidden: true } }}
       />
-    </Skeleton>
+    </ChartContent>
   );
 }

@@ -36,7 +36,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <Box className='grid w-full h-screen grid-cols-4 gap-4 py-4'>
+    <Box className='grid w-full h-screen grid-cols-4 gap-4 py-4 auto-rows-fr *:flex-none'>
       {/* Top */}
       <Card>
         <TotalProduced dataset={dataset} loading={loading} />
@@ -44,7 +44,6 @@ export default function Dashboard() {
       <Card></Card>
       <Card></Card>
       <Card></Card>
-
       {/* Center */}
       <Card>
         <DailyEff />
@@ -55,7 +54,6 @@ export default function Dashboard() {
       <Card>
         <MonthSaldo />
       </Card>
-
       {/* Bottom */}
       <Card className='col-span-4'>
         <DailyProduction dataset={dataset} loading={loading} />

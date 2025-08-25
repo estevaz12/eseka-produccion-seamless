@@ -23,6 +23,8 @@ const parseStyleCode = async (styleCode) => {
       punto =
         typeof articulo !== 'string' ? Math.round((articulo % 1) * 100) : null;
       colorId = res.recordset[0]?.Color ?? null;
+      // if 9, preserve it for PARCHE processing
+      talle = talle !== 9 ? res.recordset[0]?.Talle ?? talle : talle;
     } catch (err) {
       serverLog(
         `[ERROR] [parseStyleCode] StyleCode not in COLOR_CODES: ${styleCode}`

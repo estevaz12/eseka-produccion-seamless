@@ -21,27 +21,25 @@ function calcEff(room, data) {
     return acc;
   }, {});
 
+  let totalEff = 0;
   groups = Object.keys(groups).map((groupCode) => {
     const { divisor, dividend } = groups[groupCode];
 
-    if (dividend > 0)
+    if (dividend > 0) {
+      // calculate total room efficiency
+      totalEff += Math.round(divisor / dividend);
+
       return {
         GroupCode: groupCode,
         GroupEff: Math.round(divisor / dividend),
       };
-    else return { GroupCode: groupCode, GroupEff: 0 };
+    } else return { GroupCode: groupCode, GroupEff: 0 };
   });
-  // calculate total room efficiency
-  // let effObj = {};
-  // let totalEff = 0;
-  // groups.forEach((row) => {
-  //   effObj[row.GroupCode] = row.GroupEff;
-  //   totalEff += row.GroupEff;
-  // });
 
-  // effObj = { ...effObj, TotalEff: totalEff / groups.length };
-
-  return groups.sort((a, b) => a.GroupCode.localeCompare(b.GroupCode));
+  return {
+    groups: groups.sort((a, b) => a.GroupCode.localeCompare(b.GroupCode)),
+    total: Math.round(totalEff / groups.length),
+  };
 }
 
 module.exports = calcEff;

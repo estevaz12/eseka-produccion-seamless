@@ -1,8 +1,10 @@
-import Skeleton from '@mui/joy/Skeleton';
-import { SparkLineChart } from '@mui/x-charts';
 import { useConfig } from '../../ConfigContext.jsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { dateFormatter } from '../../utils/chartUtils.js';
+import ChartContent from './ChartContent.jsx';
+import ChartHeader from './ChartHeader.jsx';
+import SparkLineOverflow from './SparkLineOverflow.jsx';
+import dayjs from 'dayjs';
 
 let apiUrl;
 export default function DailyEff() {
@@ -31,25 +33,32 @@ export default function DailyEff() {
     };
   }, []);
 
+  const avgEff = useMemo(() => {
+    if (dataset.length === 0) return 0;
+    const total = dataset.reduce((acc, row) => acc + row.WorkEfficiency, 0);
+    return Math.round(total / dataset.length);
+  }, [dataset]);
+
+  const dataSettings = {
+    data: dataset.map((row) => row.WorkEfficiency),
+    xAxis: {
+      data: dataset.map((row) => row.ProdDate),
+      valueFormatter: dateFormatter,
+    },
+    yAxis: { min: 60 },
+  };
+
   return (
-    <Skeleton
-      loading={loading}
-      variant='rectangle'
-      className='rounded-sm size-full'
-    >
-      <SparkLineChart
-        data={dataset.map((row) => row.WorkEfficiency)}
-        xAxis={{
-          data: dataset.map((row) => row.ProdDate),
-          valueFormatter: dateFormatter,
-        }}
-        yAxis={{
-          valueFormatter: (val) => `${val}%`,
-        }}
-        area
-        showTooltip
-        showHighlight
+    <ChartContent loading={loading}>
+      <ChartHeader
+        title='Eficiencia Promedio'
+        value={`${avgEff}%`}
+        interval={`Del ${dayjs.tz().startOf('month').format('D/M')} al ${dayjs
+          .tz()
+          .subtract(1, 'day')
+          .format('D/M')}`}
       />
-    </Skeleton>
+      <SparkLineOverflow dataSettings={dataSettings} />
+    </ChartContent>
   );
 }

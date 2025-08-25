@@ -1,9 +1,10 @@
-import Skeleton from '@mui/joy/Skeleton';
 import { PieChart } from '@mui/x-charts';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import { styled } from '@mui/joy/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
+import dayjs from 'dayjs';
+import BigNumContent from './BigNumContent.jsx';
 
 let apiUrl;
 export default function MonthSaldo() {
@@ -35,10 +36,13 @@ export default function MonthSaldo() {
   }, []);
 
   return (
-    <Skeleton
+    <BigNumContent
       loading={loading}
-      variant='rectangle'
-      className='rounded-sm size-full'
+      title='Saldo Mensual'
+      subtitle={`Del ${dayjs.tz().startOf('month').format('D/M')} al ${dayjs
+        .tz()
+        .subtract(1, 'day')
+        .format('D/M')}`}
     >
       <PieChart
         loading={loading}
@@ -50,8 +54,9 @@ export default function MonthSaldo() {
                 item.label === 'Saldo' ? item.value * saldoWidth : item.value,
             })),
             valueFormatter: (v) => {
-              if (v.label === 'Saldo') return v.value / saldoWidth;
-              else return v.value;
+              if (v.label === 'Saldo')
+                return (v.value / saldoWidth).toLocaleString();
+              else return v.value.toLocaleString();
             },
             highlightScope: { fade: 'global', highlight: 'item' },
             // faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
@@ -62,10 +67,11 @@ export default function MonthSaldo() {
         ]}
         margin={0}
         hideLegend
+        className='w-auto h-full max-w-full'
       >
         <PieCenterLabel>{dataset.porc}%</PieCenterLabel>
       </PieChart>
-    </Skeleton>
+    </BigNumContent>
   );
 }
 
@@ -73,7 +79,7 @@ const StyledText = styled('text')(({ theme }) => ({
   fill: theme.palette.text.primary,
   textAnchor: 'middle',
   dominantBaseline: 'central',
-  ...theme.typography.h2,
+  ...theme.typography.h3,
 }));
 
 function PieCenterLabel({ children }) {
