@@ -12,10 +12,9 @@ export default function DateEstimate({
 }) {
   const now = dayjs.tz();
 
-  const daysToTarget =
-    !dailyAverage || dailyAverage === 0
-      ? 0
-      : Math.max(0, Math.ceil((progTotal - totalProduced) / dailyAverage) - 1);
+  const daysToTarget = !dailyAverage
+    ? 0
+    : Math.max(0, Math.ceil((progTotal - totalProduced) / dailyAverage) - 1);
 
   let workdaysToTarget = daysToTarget;
   let current = now.clone();

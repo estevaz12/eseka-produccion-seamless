@@ -11,6 +11,7 @@ import TotalEstimate from '../components/Dashboard/TotalEstimate.jsx';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import DateEstimate from '../components/Dashboard/DateEstimate.jsx';
+import RequiredProd from '../components/Dashboard/RequiredProd.jsx';
 
 dayjs.extend(isSameOrBefore);
 
@@ -129,7 +130,16 @@ export default function Dashboard() {
           }
         />
       </Card>
-      <Card></Card>
+      <Card>
+        <RequiredProd
+          progTotal={progTotal}
+          totalProduced={totalProduced}
+          workdaysLeft={workdaysLeft}
+          loading={
+            dailyProd.length === 0 || holidays.length === 0 || progTotal === 0
+          }
+        />
+      </Card>
       {/* Center */}
       <Card>
         <DailyEff />
