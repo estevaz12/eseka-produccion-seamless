@@ -25,6 +25,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     let ignored = false;
+    let timeoutId;
     const room = 'SEAMLESS';
 
     fetch(`${apiUrl}/stats/dailyProduction/${room}`)
@@ -71,8 +72,19 @@ export default function Dashboard() {
         console.error('[CLIENT] Error fetching /programada/actualDate:', err)
       );
 
+    // on initial render, calculate time remaining until next 6:00:02 AM
+    // to reload data in case page remains open indefinitely
+    const currDate = dayjs.tz();
+    let nextDate = currDate.hour(6).minute(0).second(2);
+    if (nextDate.isBefore(currDate)) {
+      nextDate = nextDate.add(1, 'day');
+    }
+    const timeRemaining = nextDate.diff(currDate);
+    timeoutId = setTimeout(() => window.location.reload(), timeRemaining);
+
     return () => {
       ignored = true;
+      clearTimeout(timeoutId);
     };
   }, []);
 
