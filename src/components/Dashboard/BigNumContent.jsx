@@ -18,7 +18,7 @@ export default function BigNumContent({ loading, title, children, subtitle }) {
       </Typography>
 
       <Typography
-        component={typeof children !== 'string' ? 'div' : 'p'}
+        component={typeof subtitle !== 'string' ? 'div' : 'p'}
         level='body-sm'
         className='w-full'
         textAlign='center'

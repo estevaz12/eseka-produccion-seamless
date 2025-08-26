@@ -1,42 +1,16 @@
-import { useMemo } from 'react';
 import BigNumContent from './BigNumContent.jsx';
 import dayjs from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { Box, Stack, Typography } from '@mui/joy';
 
-dayjs.extend(isSameOrBefore);
-
 export default function TotalEstimate({
-  dataset,
+  totalProduced,
+  dailyAverage,
   progTotal,
-  holidays,
+  workdaysLeft,
   loading,
 }) {
-  const totalProduced = useMemo(() => {
-    return dataset.reduce((acc, row) => acc + row.Docenas, 0);
-  }, [dataset]);
-
-  const dailyAverage = useMemo(() => {
-    if (!dataset || dataset.length === 0) return 0;
-    const total = dataset.reduce((sum, item) => sum + item.Docenas, 0);
-    return Math.round(total / dataset.length);
-  }, [dataset]);
-
-  const now = dayjs.tz();
-  const monthEnd = dayjs.tz().endOf('month');
-  // Count non-holiday weekdays left including today
-  let weekdaysLeft = 0;
-  let current = now.clone();
-  while (current.isSameOrBefore(monthEnd, 'day')) {
-    const day = current.day(); // 0: Sunday, 1: Monday, ..., 6: Saturday
-    const currFmt = current.format('YYYY-MM-DD');
-    const isHoliday = holidays.includes(currFmt);
-    if (day >= 1 && day <= 5 && !isHoliday) weekdaysLeft++;
-    current = current.add(1, 'day');
-  }
-
-  const estimate = totalProduced + dailyAverage * weekdaysLeft;
+  const estimate = totalProduced + dailyAverage * workdaysLeft;
 
   return (
     <BigNumContent
