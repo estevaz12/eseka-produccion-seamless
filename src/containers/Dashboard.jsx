@@ -110,6 +110,10 @@ export default function Dashboard() {
     current = current.add(1, 'day');
   }
 
+  const estimate = totalProduced + dailyAverage * workdaysLeft;
+  const progress =
+    progTotal === 0 ? 0 : Math.round((estimate / progTotal) * 100);
+
   return (
     <Box className='grid w-full h-screen grid-cols-4 gap-4 py-4 auto-rows-fr *:flex-none'>
       {/* Top */}
@@ -117,15 +121,15 @@ export default function Dashboard() {
         <TotalProduced
           dataset={dailyProd}
           totalProduced={totalProduced}
+          progress={progress}
           loading={dailyProd.length === 0}
         />
       </Card>
       <Card>
         <TotalEstimate
-          totalProduced={totalProduced}
-          dailyAverage={dailyAverage}
+          estimate={estimate}
           progTotal={progTotal}
-          workdaysLeft={workdaysLeft}
+          progress={progress}
           loading={
             dailyProd.length === 0 || holidays.length === 0 || progTotal === 0
           }

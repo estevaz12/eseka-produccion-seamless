@@ -2,33 +2,38 @@ function calcEff(room, data) {
   // filter by room first
   const roomData = data.filter((row) => row.RoomCode.startsWith(room));
   // then calculate efficiency by group
+  let totalDivisor = 0;
+  let totalDividend = 0;
   let groups = roomData.reduce((acc, row) => {
     const wEff =
       row.WorkEfficiency > 100 ? row.TimeEfficiency : row.WorkEfficiency;
     const groupCode =
       room === 'SEAMLESS' ? seamlessGroups[row.MachCode] : row.GroupCode;
 
+    const divisor = wEff * (row.TimeOn + row.TimeOff);
+    const dividend = row.TimeOn + row.TimeOff;
+
+    totalDivisor += divisor;
+    totalDividend += dividend;
+
     if (acc[groupCode]) {
-      acc[groupCode].divisor += wEff * (row.TimeOn + row.TimeOff);
-      acc[groupCode].dividend += row.TimeOn + row.TimeOff;
+      acc[groupCode].divisor += divisor;
+      acc[groupCode].dividend += dividend;
     } else {
       acc[groupCode] = {
-        divisor: wEff * (row.TimeOn + row.TimeOff),
-        dividend: row.TimeOn + row.TimeOff,
+        divisor: divisor,
+        dividend: dividend,
       };
     }
 
     return acc;
   }, {});
 
-  let totalEff = 0;
   groups = Object.keys(groups).map((groupCode) => {
     const { divisor, dividend } = groups[groupCode];
 
     if (dividend > 0) {
       // calculate total room efficiency
-      totalEff += Math.round(divisor / dividend);
-
       return {
         GroupCode: groupCode,
         GroupEff: Math.round(divisor / dividend),
@@ -38,7 +43,7 @@ function calcEff(room, data) {
 
   return {
     groups: groups.sort((a, b) => a.GroupCode.localeCompare(b.GroupCode)),
-    total: Math.round(totalEff / groups.length),
+    total: Math.round(totalDivisor / totalDividend),
   };
 }
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
+import { colors } from '../../utils/chartUtils.js';
 
 let apiUrl;
 export default function CurrentEff() {
@@ -58,6 +59,11 @@ export default function CurrentEff() {
             max: 100,
             scaleType: 'linear',
             tickInterval: [0, 50, 60, 70, 85, 100],
+            colorMap: {
+              type: 'piecewise',
+              thresholds: [75, 80],
+              colors: [colors.red, colors.yellow, colors.green],
+            },
           },
         ]}
         // dataKey: for y-axis
@@ -66,7 +72,7 @@ export default function CurrentEff() {
         series={[
           {
             dataKey: 'GroupEff',
-            label: 'Efficiencia',
+            label: 'Eficiencia',
             valueFormatter: (value) => `${value}%`,
           },
         ]}

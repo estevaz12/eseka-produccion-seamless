@@ -5,6 +5,7 @@ import { styled } from '@mui/joy/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import dayjs from 'dayjs';
 import BigNumContent from './BigNumContent.jsx';
+import { colors } from '../../utils/chartUtils.js';
 
 let apiUrl;
 export default function MonthSaldo() {
@@ -52,6 +53,12 @@ export default function MonthSaldo() {
               ...item,
               value:
                 item.label === 'Saldo' ? item.value * saldoWidth : item.value,
+              color:
+                item.label === 'Saldo'
+                  ? dataset.porc > 1
+                    ? colors.red
+                    : colors.yellow
+                  : colors.gray,
             })),
             valueFormatter: (v) => {
               if (v.label === 'Saldo')

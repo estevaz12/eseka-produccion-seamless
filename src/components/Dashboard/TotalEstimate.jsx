@@ -4,28 +4,30 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import { Box, Stack, Typography } from '@mui/joy';
 
 export default function TotalEstimate({
-  totalProduced,
-  dailyAverage,
+  estimate,
   progTotal,
-  workdaysLeft,
+  progress,
   loading,
 }) {
-  const estimate = totalProduced + dailyAverage * workdaysLeft;
-
   return (
     <BigNumContent
       loading={loading}
       title='Producción Total Estimada'
-      subtitle={<Subtitle estimate={estimate} target={progTotal} />}
+      subtitle={<Subtitle target={progTotal} progress={progress} />}
     >
       {estimate.toLocaleString()} doc.
     </BigNumContent>
   );
 }
 
-function Subtitle({ estimate, target }) {
+function Subtitle({ target, progress }) {
   const monthEnd = dayjs.tz().endOf('month');
-  const progress = target === 0 ? 0 : Math.round((estimate / target) * 100);
+  const progressColor =
+    progress >= 100
+      ? 'text-chart-green'
+      : progress > 95
+      ? 'text-chart-yellow'
+      : 'text-chart-red';
 
   return (
     <Stack direction='column' className='gap-2'>
@@ -44,6 +46,8 @@ function Subtitle({ estimate, target }) {
               value={progress > 100 ? 100 : progress}
               size='lg'
               variant='solid'
+              color='neutral'
+              className={progressColor}
             />
           </Box>
           <Typography level='body-sm'>{progress}%</Typography>

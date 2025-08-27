@@ -39,4 +39,9 @@
   --color-stop-muestra: var(--color-todo);
   --color-stop-cambio: #072ac8;
   --color-stop-turbina: #79e0e2;
+
+  /* Charts */
+  --color-chart-green: #87cc3e;
+  --color-chart-yellow: #ffc000;
+  --color-chart-red: #ed3140;
 }

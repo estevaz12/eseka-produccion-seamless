@@ -17,6 +17,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import Maquinas from './containers/Maquinas.jsx';
 import {
+  useTheme as useJoyTheme,
   extendTheme,
   CssVarsProvider as JoyCssVarsProvider,
 } from '@mui/joy/styles';
@@ -27,6 +28,7 @@ import {
 } from '@mui/material/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Dashboard from './containers/Dashboard.jsx';
+import { getChartsCustomizations } from './theme/charts.js';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -40,43 +42,54 @@ const config = {
   sqlDateFormat: 'MM-DD-YYYY HH:mm:ss',
 };
 
-const materialTheme = createTheme();
+root.render(
+  <AppProviders>
+    <App />
+  </AppProviders>
+);
 
-const joyTheme = extendTheme({
-  components: {
-    // The component identifier always start with `Joy${ComponentName}`.
-    JoyCheckbox: {
-      styleOverrides: {
-        input: {
-          // theme.vars.* return the CSS variables.
-          position: 'relative',
+function AppProviders({ children }) {
+  let joyTheme = useJoyTheme();
+
+  const materialTheme = createTheme({
+    typography: { fontFamily: joyTheme.vars.fontFamily },
+    components: getChartsCustomizations(joyTheme),
+  });
+
+  joyTheme = extendTheme({
+    components: {
+      // The component identifier always start with `Joy${ComponentName}`.
+      JoyCheckbox: {
+        styleOverrides: {
+          input: {
+            // theme.vars.* return the CSS variables.
+            position: 'relative',
+          },
+        },
+      },
+      JoySkeleton: {
+        defaultProps: {
+          animation: 'wave',
         },
       },
     },
-    JoySkeleton: {
-      defaultProps: {
-        animation: 'wave',
-      },
-    },
-  },
-});
+  });
 
-root.render(
-  <StyledEngineProvider enableCssLayer>
-    <ThemeProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
-      {/* For tailwind */}
-      <GlobalStyles styles='@layer theme, base, mui, components, utilities;' />
-      <JoyCssVarsProvider theme={joyTheme}>
-        <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
-          <ConfigProvider config={config}>
-            <App />
-          </ConfigProvider>
-        </LocalizationProvider>
-      </JoyCssVarsProvider>
-    </ThemeProvider>
-  </StyledEngineProvider>
-);
+  return (
+    <StyledEngineProvider enableCssLayer>
+      <ThemeProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
+        {/* For tailwind */}
+        <GlobalStyles styles='@layer theme, base, mui, components, utilities;' />
+        <JoyCssVarsProvider theme={joyTheme}>
+          <CssBaseline />
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='es'>
+            <ConfigProvider config={config}>{children}</ConfigProvider>
+          </LocalizationProvider>
+        </JoyCssVarsProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  );
+}
 
 export default function App() {
   return (

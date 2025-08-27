@@ -7,4 +7,11 @@ function dateFormatter(date, context) {
     : dateObj.format('ddd DD/MM');
 }
 
-export { dateFormatter };
+const colors = {
+  green: '#87cc3e',
+  yellow: '#ffc000',
+  red: '#ed3140',
+  gray: '#decccc',
+};
+
+export { dateFormatter, colors };

@@ -1,8 +1,9 @@
-import { SparkLineChart } from '@mui/x-charts';
+import { areaElementClasses, SparkLineChart } from '@mui/x-charts';
 import CardOverflow from '@mui/joy/CardOverflow';
 import Box from '@mui/joy/Box';
+import AreaGradient from './AreaGradient.jsx';
 
-export default function SparkLineOverflow({ dataSettings }) {
+export default function SparkLineOverflow({ dataSettings, color, id }) {
   return (
     <Box className='relative w-full grow'>
       <CardOverflow className='absolute -bottom-4 left-0 right-0 p-0 [&_svg]:rounded-b-[var(--joy-radius-sm)] h-full'>
@@ -12,7 +13,14 @@ export default function SparkLineOverflow({ dataSettings }) {
           showTooltip
           showHighlight
           margin={0}
-        />
+          sx={{
+            [`& .${areaElementClasses.root}`]: {
+              fill: `url(#${id}-gradient)`,
+            },
+          }}
+        >
+          <AreaGradient color={color} id={id} />
+        </SparkLineChart>
       </CardOverflow>
     </Box>
   );

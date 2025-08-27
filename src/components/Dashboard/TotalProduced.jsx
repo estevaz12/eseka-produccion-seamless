@@ -1,17 +1,27 @@
 import ChartHeader from './ChartHeader.jsx';
 import ChartContent from './ChartContent.jsx';
 import SparkLineOverflow from './SparkLineOverflow.jsx';
-import { dateFormatter } from '../../utils/chartUtils.js';
+import { dateFormatter, colors } from '../../utils/chartUtils.js';
 import dayjs from 'dayjs';
 
-export default function TotalProduced({ dataset, totalProduced, loading }) {
+export default function TotalProduced({
+  dataset,
+  totalProduced,
+  progress,
+  loading,
+}) {
+  const progressColor =
+    progress >= 100 ? colors.green : progress > 90 ? colors.yellow : colors.red;
+
+  const data = dataset.map((row) => row.Docenas);
   const dataSettings = {
-    data: dataset.map((row) => row.Docenas),
+    data,
+    color: progressColor,
     xAxis: {
       data: dataset.map((row) => row.ProdDate),
       valueFormatter: dateFormatter,
     },
-    yAxis: { min: 500, max: 1500 },
+    yAxis: { min: Math.min(...data) - 100, max: Math.max(...data) + 100 },
   };
 
   return (
@@ -24,7 +34,11 @@ export default function TotalProduced({ dataset, totalProduced, loading }) {
           .subtract(1, 'day')
           .format('D/M')}`}
       />
-      <SparkLineOverflow dataSettings={dataSettings} />
+      <SparkLineOverflow
+        dataSettings={dataSettings}
+        color={progressColor}
+        id='produced'
+      />
     </ChartContent>
   );
 }

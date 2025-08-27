@@ -1,5 +1,5 @@
 import { BarChart } from '@mui/x-charts';
-import { dateFormatter } from '../../utils/chartUtils';
+import { dateFormatter, colors } from '../../utils/chartUtils';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 
@@ -22,7 +22,16 @@ export default function DailyProduction({ dataset, dailyAverage, loading }) {
             valueFormatter: dateFormatter,
           },
         ]}
-        yAxis={[{ max: 1500 }]}
+        yAxis={[
+          {
+            max: 1500,
+            colorMap: {
+              type: 'piecewise',
+              thresholds: [dailyAverage * 0.9, dailyAverage],
+              colors: [colors.red, colors.yellow, colors.green],
+            },
+          },
+        ]}
         // dataKey: for y-axis
         // label: for tooltip
         // valueFormatter: for tooltip

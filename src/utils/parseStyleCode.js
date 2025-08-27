@@ -24,6 +24,7 @@ const parseStyleCode = async (styleCode) => {
         typeof articulo !== 'string' ? Math.round((articulo % 1) * 100) : null;
       colorId = res.recordset[0]?.Color ?? null;
       // if 9, preserve it for PARCHE processing
+      // TODO: test
       talle = talle !== 9 ? res.recordset[0]?.Talle ?? talle : talle;
     } catch (err) {
       serverLog(

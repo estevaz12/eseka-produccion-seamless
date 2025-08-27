@@ -1,6 +1,6 @@
 import { useConfig } from '../../ConfigContext.jsx';
 import { useEffect, useMemo, useState } from 'react';
-import { dateFormatter } from '../../utils/chartUtils.js';
+import { dateFormatter, colors } from '../../utils/chartUtils.js';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 import SparkLineOverflow from './SparkLineOverflow.jsx';
@@ -39,13 +39,18 @@ export default function DailyEff() {
     return Math.round(total / dataset.length);
   }, [dataset]);
 
+  const effColor =
+    avgEff >= 80 ? colors.green : avgEff >= 75 ? colors.yellow : colors.red;
+
+  const data = dataset.map((row) => row.WorkEfficiency);
   const dataSettings = {
-    data: dataset.map((row) => row.WorkEfficiency),
+    data,
+    color: effColor,
     xAxis: {
       data: dataset.map((row) => row.ProdDate),
       valueFormatter: dateFormatter,
     },
-    yAxis: { min: 60 },
+    yAxis: { min: Math.min(...data) - 5, max: Math.max(...data) + 5 },
   };
 
   return (
@@ -58,7 +63,11 @@ export default function DailyEff() {
           .subtract(1, 'day')
           .format('D/M')}`}
       />
-      <SparkLineOverflow dataSettings={dataSettings} />
+      <SparkLineOverflow
+        dataSettings={dataSettings}
+        color={effColor}
+        id='eff'
+      />
     </ChartContent>
   );
 }
