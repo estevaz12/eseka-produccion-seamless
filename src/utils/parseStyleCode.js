@@ -20,11 +20,13 @@ const parseStyleCode = async (styleCode) => {
       // undefined means that it is not in COLOR_CODES
       // if articulo null, then just use the styleCode
       articulo = res.recordset[0]?.Articulo ?? articulo;
+
       punto =
         typeof articulo !== 'string' ? Math.round((articulo % 1) * 100) : null;
+
       colorId = res.recordset[0]?.Color ?? null;
+
       // if 9, preserve it for PARCHE processing
-      // TODO: test
       talle = talle !== 9 ? res.recordset[0]?.Talle ?? talle : talle;
     } catch (err) {
       serverLog(
@@ -78,6 +80,15 @@ const parseStyleCode = async (styleCode) => {
       serverLog(
         `[ERROR] [parseStyleCode] Articulo doesn't exist: ${articulo} - ${err.message}`
       );
+    }
+
+    // Final check for tipo - search for tipo in styleCode
+    if (tipo === null) {
+      // search for #, %, $
+      const tipoMatch = styleCode.match(/[#%$]/);
+      if (tipoMatch) {
+        tipo = tipoMatch[0];
+      }
     }
 
     return {

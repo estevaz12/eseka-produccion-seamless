@@ -544,6 +544,7 @@ const startServer = () => {
               const machArticulo = m.StyleCode.punto
                 ? parseFloat(`${m.StyleCode.articulo}.${m.StyleCode.punto}`)
                 : m.StyleCode.articulo;
+
               return (
                 machArticulo === row.Articulo &&
                 m.StyleCode.talle === row.Talle &&

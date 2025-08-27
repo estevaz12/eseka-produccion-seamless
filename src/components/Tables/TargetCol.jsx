@@ -47,6 +47,7 @@ export default function TargetCol({ row, faltaUnidades }) {
           />
         );
       } else if (
+        faltaUnidades > 0 &&
         machTarget < row.Target && // means articulo is incomplete
         row.Machines[0].TargetOrder === 0
       ) {
@@ -91,7 +92,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         );
       }
     } else if (faltaUnidades <= 0) {
-      // target met, no producing
+      // target met, not producing
       return 'LLEGÓ';
     }
 

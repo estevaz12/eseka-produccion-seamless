@@ -2,8 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 
-// TODO add footer row
-
 /**
  * Export rows to a table PDF.
  *
