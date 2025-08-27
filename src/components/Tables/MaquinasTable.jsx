@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import EnhancedTable from './EnhancedTable.jsx';
 import { DatesContext } from '../../Contexts.js';
 import dayjs from 'dayjs';
@@ -12,8 +12,33 @@ import {
   isParada,
   isProducing,
 } from '../../utils/maquinasUtils.js';
+import { useConfig } from '../../ConfigContext.jsx';
 
+let apiUrl;
 export default function MaquinasTable({ machines, pdfRows }) {
+  apiUrl = useConfig().apiUrl;
+  const [currEff, setCurrEff] = useState(null);
+
+  useEffect(() => {
+    let ignored = false;
+    const room = 'SEAMLESS';
+
+    fetch(`${apiUrl}/stats/currentEfficiency/${room}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignored) {
+          setCurrEff(data);
+        }
+      })
+      .catch((err) =>
+        console.error('[CLIENT] Error fetching /stats/currentEff:', err)
+      );
+
+    return () => {
+      ignored = true;
+    };
+  }, []);
+
   const cols = [
     {
       id: 'MachCode',
@@ -172,15 +197,6 @@ export default function MaquinasTable({ machines, pdfRows }) {
     ];
   }
 
-  // Memoized eff avg for footer
-  const getWorkEffAvg = useMemo(() => {
-    const producingMachs = machines.filter(isProducing);
-    return (
-      producingMachs.reduce((acc, row) => acc + row.WorkEfficiency, 0) /
-      producingMachs.length
-    );
-  }, [machines]);
-
   return (
     <DatesContext
       value={{ startDate: dayjs.tz(), fromMonthStart: false, endDate: null }}
@@ -198,7 +214,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
           true, // Target
           `Tejiendo: ${machines.filter((m) => m.State === 0).length}`, // Tiempo al 100%
           `Paradas: ${machines.filter((m) => m.State !== 0).length}`, // Tiempo Actual
-          `${Math.round(getWorkEffAvg)}%`, // Eff. %
+          `${currEff ? `${currEff.total}%` : '...'}`, // Eff. %
           `${machines.length} máquinas`, // Estado
         ]}
         uniqueIds={['MachCode']}

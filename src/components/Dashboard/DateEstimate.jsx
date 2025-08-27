@@ -28,6 +28,15 @@ export default function DateEstimate({
   }
 
   const targetDate = now.add(workdaysToTarget, 'day');
+  // Ensure targetDate is a workday (not weekend or holiday)
+  let adjustedTargetDate = targetDate.clone();
+  while (
+    adjustedTargetDate.day() === 0 || // Sunday
+    adjustedTargetDate.day() === 6 || // Saturday
+    holidays.includes(adjustedTargetDate.format('YYYY-MM-DD'))
+  ) {
+    adjustedTargetDate = adjustedTargetDate.add(1, 'day');
+  }
 
   return (
     <BigNumContent
@@ -35,7 +44,7 @@ export default function DateEstimate({
       title='Fecha Est. a la Programada'
       subtitle={<Subtitle dailyAverage={dailyAverage} />}
     >
-      {targetDate.locale('es').format('ddd DD/MM')}
+      {adjustedTargetDate.locale('es').format('ddd DD/MM')}
     </BigNumContent>
   );
 }

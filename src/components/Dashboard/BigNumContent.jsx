@@ -12,7 +12,10 @@ export default function BigNumContent({ loading, title, children, subtitle }) {
         level='h2'
         className='flex items-center grow'
       >
-        <Skeleton loading={loading} className='rounded-[var(--joy-radius-sm)]'>
+        <Skeleton
+          loading={loading}
+          className={`rounded-[var(--joy-radius-sm)] ${children?.props?.className}`}
+        >
           {children}
         </Skeleton>
       </Typography>
