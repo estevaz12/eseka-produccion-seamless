@@ -2,15 +2,35 @@ import { BarChart } from '@mui/x-charts';
 import { dateFormatter, colors } from '../../utils/chartUtils';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
+import Divider from '@mui/joy/Divider';
+import dayjs from 'dayjs';
+import Stack from '@mui/joy/Stack';
 
 export default function DailyProduction({ dataset, dailyAverage, loading }) {
   return (
     <ChartContent loading={loading} direction='row' gap={8}>
-      <ChartHeader
-        title='Producción Diaria'
-        value={`${dailyAverage.toLocaleString()} doc.`}
-        interval='Promedio por día'
-      />
+      <Stack direction='column' className='justify-between'>
+        <ChartHeader
+          title='Producción Diaria'
+          value={`${dailyAverage.toLocaleString()} doc.`}
+          interval='Promedio por día'
+        />
+        {!loading && (
+          <>
+            <Divider />
+            <ChartHeader
+              title='Producido Ayer'
+              value={`${dataset[
+                dataset.length - 1
+              ].Docenas.toLocaleString()} doc.`}
+              interval={dayjs
+                .tz(dataset[dataset.length - 1].ProdDate)
+                .locale('es')
+                .format('ddd DD/MM')}
+            />
+          </>
+        )}
+      </Stack>
       <BarChart
         loading={loading}
         dataset={dataset}

@@ -39,11 +39,11 @@ export default function MonthSaldo() {
   return (
     <BigNumContent
       loading={loading}
-      title='Saldo Mensual'
-      subtitle={`Del ${dayjs.tz().startOf('month').format('D/M')} al ${dayjs
+      title='Saldo Mensual Registrado'
+      subtitle={`en las máqs. del ${dayjs
         .tz()
-        .subtract(1, 'day')
-        .format('D/M')}`}
+        .startOf('month')
+        .format('D/M')} al ${dayjs.tz().subtract(1, 'day').format('D/M')}`}
     >
       <PieChart
         loading={loading}

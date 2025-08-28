@@ -40,7 +40,7 @@ function Subtitle({ target, progress }) {
 
       <Stack direction='column' className='gap-1'>
         <Stack direction='row' className='items-center justify-center gap-2'>
-          <Box className='w-2/3'>
+          <Box className='w-36'>
             <LinearProgress
               determinate
               value={progress > 100 ? 100 : progress}

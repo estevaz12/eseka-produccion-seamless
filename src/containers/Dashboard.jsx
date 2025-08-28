@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [dailyProd, setDailyProd] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [progTotal, setProgTotal] = useState(0);
+  const [yesterdayEff, setYesterdayEff] = useState({});
   const now = dayjs.tz();
 
   useEffect(() => {
@@ -158,10 +159,10 @@ export default function Dashboard() {
       </Card>
       {/* Center */}
       <Card>
-        <DailyEff />
+        <DailyEff setYesterdayEff={setYesterdayEff} />
       </Card>
       <Card className='col-span-2'>
-        <CurrentEff />
+        <CurrentEff yesterdayEff={yesterdayEff} />
       </Card>
       <Card>
         <MonthSaldo />

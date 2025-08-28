@@ -4,9 +4,12 @@ import { useConfig } from '../../ConfigContext.jsx';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 import { colors } from '../../utils/chartUtils.js';
+import Divider from '@mui/joy/Divider';
+import Stack from '@mui/joy/Stack';
+import dayjs from 'dayjs';
 
 let apiUrl;
-export default function CurrentEff() {
+export default function CurrentEff({ yesterdayEff }) {
   apiUrl = useConfig().apiUrl;
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState({ total: 0, groups: [] });
@@ -42,11 +45,26 @@ export default function CurrentEff() {
 
   return (
     <ChartContent loading={loading} direction='row' gap={8}>
-      <ChartHeader
-        title='Eficiencia Actual'
-        value={`${dataset.total}%`}
-        interval={'Total'}
-      />
+      <Stack direction='column' className='justify-between'>
+        <ChartHeader
+          title='Eficiencia Actual'
+          value={`${dataset.total}%`}
+          interval={'Total'}
+        />
+        {!loading && (
+          <>
+            <Divider />
+            <ChartHeader
+              title='Eficiencia Prom. Ayer'
+              value={`${yesterdayEff.WorkEfficiency}%`}
+              interval={`${dayjs
+                .tz(yesterdayEff.ProdDate)
+                .locale('es')
+                .format('ddd DD/MM')}`}
+            />
+          </>
+        )}
+      </Stack>
       <BarChart
         loading={loading}
         dataset={dataset.groups}

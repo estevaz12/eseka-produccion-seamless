@@ -7,7 +7,7 @@ import SparkLineOverflow from './SparkLineOverflow.jsx';
 import dayjs from 'dayjs';
 
 let apiUrl;
-export default function DailyEff() {
+export default function DailyEff({ setYesterdayEff }) {
   apiUrl = useConfig().apiUrl;
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState([]);
@@ -22,6 +22,7 @@ export default function DailyEff() {
         if (!ignored) {
           setDataset(data);
           setLoading(false);
+          setYesterdayEff(data[data.length - 1]);
         }
       })
       .catch((err) =>

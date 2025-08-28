@@ -24,7 +24,7 @@ export default function RequiredProd({
   );
 }
 
-function Subtitle({}) {
+function Subtitle() {
   return (
     <Stack direction='column' className='gap-2'>
       <Typography level='body-sm'>(sin sábados ni feriados)</Typography>
