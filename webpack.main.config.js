@@ -1,5 +1,6 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   /**
@@ -14,7 +15,12 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
-  plugins: [new Dotenv()],
+  plugins: [
+    new Dotenv(),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'src/assets/icons/icon.ico', to: 'assets/icons' }],
+    }),
+  ],
   output: {
     path: path.join(__dirname, '.webpack/main'),
     filename: '[name].js',

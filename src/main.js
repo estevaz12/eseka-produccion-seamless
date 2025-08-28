@@ -36,13 +36,15 @@ async function handleFileOpen() {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: 'Tejeduría Seamless',
     width: 1366,
     height: 727,
+    icon: path.join(__dirname, 'assets', 'icons', 'icon.ico'),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
     autoHideMenuBar: true,
-    fullscreen: app.isPackaged ? false : true,
+    menuBarVisible: false,
   });
 
   // and load the index.html of the app.
@@ -55,13 +57,16 @@ const createWindow = () => {
       width: 1366,
       height: 727,
       autoHideMenuBar: true,
+      menuBarVisible: false,
+      resizable: false,
     },
   }));
 
-  // Open the DevTools.
-  if (!app.isPackaged) {
-    // mainWindow.webContents.openDevTools();
-  }
+  mainWindow.maximize();
+
+  mainWindow.on('will-resize', (event) => {
+    event.preventDefault();
+  });
 };
 
 // This method will be called when Electron has finished
