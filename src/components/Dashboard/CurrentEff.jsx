@@ -7,6 +7,7 @@ import { colors } from '../../utils/chartUtils.js';
 import Divider from '@mui/joy/Divider';
 import Stack from '@mui/joy/Stack';
 import dayjs from 'dayjs';
+import { Skeleton } from '@mui/joy';
 
 let apiUrl;
 export default function CurrentEff({ yesterdayEff }) {
@@ -51,19 +52,21 @@ export default function CurrentEff({ yesterdayEff }) {
           value={`${dataset.total}%`}
           interval={'Total'}
         />
-        {!loading && (
-          <>
-            <Divider />
-            <ChartHeader
-              title='Eficiencia Prom. Ayer'
-              value={`${yesterdayEff.WorkEfficiency}%`}
-              interval={`${dayjs
-                .tz(yesterdayEff.ProdDate)
-                .locale('es')
-                .format('ddd DD/MM')}`}
-            />
-          </>
-        )}
+        <Divider />
+        <Skeleton
+          loading={!yesterdayEff}
+          variant='rectangle'
+          className='w-full rounded-[var(--joy-radius-sm)]'
+        >
+          <ChartHeader
+            title='Eficiencia Prom. Ayer'
+            value={`${yesterdayEff.WorkEfficiency}%`}
+            interval={`${dayjs
+              .tz(yesterdayEff.ProdDate)
+              .locale('es')
+              .format('ddd DD/MM')}`}
+          />
+        </Skeleton>
       </Stack>
       <BarChart
         loading={loading}
