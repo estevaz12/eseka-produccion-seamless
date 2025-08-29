@@ -12,12 +12,11 @@ import {
   producidoStr,
   roundUpEven,
 } from '../../utils/progTableUtils.js';
-import AProducirCol from './AProducirCol.jsx';
 import EnhancedTable from './EnhancedTable.jsx';
 import ArticuloCol from './ArticuloCol.jsx';
 import { DatesContext } from '../../Contexts.js';
 import ProgLegend from './ProgLegend.jsx';
-import EditArtBtn from './EditArtBtn.jsx';
+import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
 
 let apiUrl;
 
@@ -245,31 +244,10 @@ export default function ProgramadaTable({
             color: row.WhiteText ? 'white' : 'black',
           }}
         >
-          <Typography
-            className='relative w-fit'
-            endDecorator={
-              live && (
-                <EditArtBtn
-                  articulo={row.Articulo}
-                  tipo={row.Tipo}
-                  talle={row.Talle}
-                />
-              )
-            }
-          >
-            {colorStr(row)}
-          </Typography>
+          <Typography className='relative w-fit'>{colorStr(row)}</Typography>
         </td>
         {/* A Producir */}
-        <td className='text-right group/prod'>
-          <AProducirCol
-            row={row}
-            startDate={startDate}
-            setProgColor={setProgColor}
-            setFilteredProgColor={setFilteredProgColor}
-            live={live}
-          />
-        </td>
+        <td className='text-right group/prod'>{row.Docenas === null ? <PendingActionsRounded /> : aProducirStr(row)}</td>
         {/* Producido */}
         <td className='text-right'>{producidoStr(row)}</td>
         {/* Falta */}
@@ -277,10 +255,6 @@ export default function ProgramadaTable({
         {/* Target (un.) */}
         <td className='text-right'>
           <TargetCol row={row} faltaUnidades={faltaUnidades} />
-          {/* {faltaUnidades <= 0 ? (
-            'LLEGÓ'
-          ) : (
-          )} */}
         </td>
         {/* Falta (un.) */}
         <td className='text-right'>{faltaUnidades}</td>
@@ -325,8 +299,8 @@ export default function ProgramadaTable({
           Math.round(totalProducido) || '0', // Total Producido
           Math.round(totalFalta) || '0', // Total Falta
           true,
-          !live ? <ProgLegend live={live} /> : true,
-          live && <ProgLegend live={live} />,
+          !live ? <ProgLegend live={false} /> : true,
+          live && <ProgLegend live={false} />,
         ]}
         headerTop='top-[94px]'
         stripe=''

@@ -8,14 +8,12 @@ import dayjs from 'dayjs';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
 import RefreshBtn from '../components/RefreshBtn.jsx';
-import { useOutletContext } from 'react-router';
 
 // to avoid useEffect dependency issues
 let apiUrl;
 
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
-  const { addColorCodes } = useOutletContext();
   const [startDate, setStartDate] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
@@ -55,16 +53,6 @@ export default function Programada() {
           console.error('[CLIENT] Error fetching /programada:', err)
         );
     }
-
-    // fetch newColorCodes
-    fetch(`${apiUrl}/machines/newColorCodes`)
-      .then((res) => res.json())
-      .then((newCodes) => {
-        addColorCodes(newCodes);
-      })
-      .catch((err) =>
-        console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
-      );
   }
 
   return (

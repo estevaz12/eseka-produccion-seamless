@@ -13,13 +13,7 @@ export default function TargetCol({ row, faltaUnidades }) {
   const iconFontSize = 'small';
 
   const TargetData = ({ target, icon }) => (
-    <Typography
-      className='justify-end'
-      endDecorator={icon}
-      sx={{ '& .MuiTypography-endDecorator': { m: 0 } }}
-    >
-      {target}
-    </Typography>
+    <Typography className='justify-end'>{target}</Typography>
   );
 
   if (row.Machines.length <= 1) {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';

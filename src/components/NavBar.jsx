@@ -1,5 +1,4 @@
 import HomeRounded from '@mui/icons-material/HomeRounded';
-import CompareArrowsRounded from '@mui/icons-material/CompareArrowsRounded';
 import FactoryTwoTone from '@mui/icons-material/FactoryTwoTone';
 import HistoryRounded from '@mui/icons-material/HistoryRounded';
 import PrecisionManufacturingTwoTone from '@mui/icons-material/PrecisionManufacturingTwoTone';
@@ -33,11 +32,6 @@ const navItems = [
         to: '/programada/anteriores',
         icon: <HistoryRounded />,
         label: 'Anteriores',
-      },
-      {
-        to: '/programada/comparar',
-        icon: <CompareArrowsRounded />,
-        label: 'Comparar',
       },
     ],
   },

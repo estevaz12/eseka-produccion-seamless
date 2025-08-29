@@ -5,6 +5,7 @@ import ListAltRounded from '@mui/icons-material/ListAltRounded';
 import QuestionMarkRounded from '@mui/icons-material/QuestionMarkRounded';
 import SyncProblemRounded from '@mui/icons-material/SyncProblemRounded';
 import ReportRounded from '@mui/icons-material/ReportRounded';
+import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
 import Box from '@mui/joy/Box';
 import Dropdown from '@mui/joy/Dropdown';
 import ListDivider from '@mui/joy/ListDivider';
@@ -59,7 +60,7 @@ export default function ProgLegend({ live }) {
         </ListItem>
         <ListItem>
           <ListItemDecorator>
-            <Box className='size-4 bg-white border border-neutral-400 rounded-[var(--joy-radius-sm)]' />
+            <PendingActionsRounded className='size-4' />
           </ListItemDecorator>{' '}
           Distribución pendiente
         </ListItem>

@@ -10,7 +10,6 @@ import { HashRouter, Route, Routes } from 'react-router';
 import Home from './containers/Home.jsx';
 import Produccion from './containers/Produccion.jsx';
 import Programada from './containers/Programada.jsx';
-import ProgComparar from './containers/ProgComparar.jsx';
 import ProgAnteriores from './containers/ProgAnteriores.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -100,7 +99,6 @@ export default function App() {
           <Route path='programada'>
             <Route path='actual' element={<Programada />} />
             <Route path='anteriores' element={<ProgAnteriores />} />
-            <Route path='comparar' element={<ProgComparar />} />
           </Route>
           <Route path='produccion' element={<Produccion />} />
           <Route path='maquinas' element={<Maquinas />} />

@@ -9,8 +9,6 @@ const timezone = require('dayjs/plugin/timezone');
 // Utils
 const serverLog = require('./utils/serverLog.js');
 const processPDF = require('./utils/processPDF.js');
-const compareProgramada = require('./utils/compareProgramada.js');
-const calculateNewTargets = require('./utils/calculateNewTargets.js');
 const parseMachines = require('./utils/parseMachines.js');
 const exportTablePDF = require('./utils/exportTablePDF.js');
 const calcEff = require('./utils/calcEff.js');
@@ -177,46 +175,6 @@ const startServer = () => {
     }
   });
 
-  app.post('/articulo/insert', async (req, res) => {
-    serverLog('POST /articulo/insert');
-    const data = req.body;
-
-    try {
-      let query = queries.insertArticulo(data);
-      await sql.query(query);
-      serverLog(query);
-      res
-        .status(200)
-        .json({ message: `Art. ${data.articulo} agregado con éxito.` });
-    } catch (err) {
-      serverLog(`[ERROR] POST /articulo/insert: ${err}`);
-      res.status(500).json({
-        message: `No se pudo agregar el art. ${data.articulo}.`,
-        error: err.message,
-      });
-    }
-  });
-
-  app.post('/articulo/updateTipo', async (req, res) => {
-    serverLog('POST /articulo/updateTipo');
-    const { articulo, tipo } = req.body;
-
-    try {
-      const query = queries.updateArticuloTipo(articulo, tipo);
-      serverLog(query);
-      await sql.query(query);
-      res
-        .status(200)
-        .json({ message: `Tipo del art. ${articulo} modificado con éxito.` });
-    } catch (err) {
-      serverLog(`[ERROR] POST /articulo/updateTipo: ${err}`);
-      res.status(500).json({
-        message: `No se pudo modificar el tipo del art. ${articulo}.`,
-        error: err.message,
-      });
-    }
-  });
-
   app.get('/colors', async (req, res) => {
     serverLog('GET /colors');
 
@@ -237,56 +195,6 @@ const startServer = () => {
     }
   });
 
-  app.post('/colors/insert', async (req, res) => {
-    serverLog('POST /colors/insert');
-    const data = req.body;
-
-    if (isPackaged) {
-      try {
-        const query = queries.insertColor(data);
-        serverLog(query);
-        await sql.query(query);
-        const result = await sql.query(
-          `SELECT TOP(1) * FROM SEA_COLORES ORDER BY Id DESC`
-        );
-        res.status(201).json({
-          message: `Color ${data.color} agregado con éxito.`,
-          data: result.recordset,
-        });
-      } catch (err) {
-        serverLog(`[ERROR] POST /colors/insert: ${err}`);
-        res.status(500).json({
-          message: `No se pudo agregar el color ${data.color}.`,
-          error: err.message,
-        });
-      }
-    } else {
-      // test data
-      serverLog('Using test data for /colors/insert');
-      res.json([{ Id: 999, Color: 'TEST COLOR' }]);
-    }
-  });
-
-  app.post('/colorCodes/insert', async (req, res) => {
-    serverLog('POST /colorCodes/insert');
-    const data = req.body;
-
-    try {
-      const query = await queries.insertColorCodes(data);
-      serverLog(query);
-      await sql.query(query);
-      res
-        .status(201)
-        .json({ message: `Código ${data.styleCode} agregado con éxito.` });
-    } catch (err) {
-      serverLog(`[ERROR] POST /colorCodes/insert: ${err}`);
-      res.status(500).json({
-        message: `No se pudo agregar el código ${data.styleCode}.`,
-        error: err.message,
-      });
-    }
-  });
-
   async function insertColorDistrs(data) {
     for (const row of data.colorDistr) {
       const query = queries.insertDistr(data.articulo, data.talle, row);
@@ -296,46 +204,6 @@ const startServer = () => {
       await new Promise((resolve) => setTimeout(resolve, 1));
     }
   }
-
-  app.post('/colorDistr/insert', async (req, res) => {
-    serverLog('POST /colorDistr/insert');
-    const data = req.body;
-
-    try {
-      await insertColorDistrs(data);
-
-      res.status(201).json({
-        message: `Distribución para el art. ${data.articulo} T${data.talle} agregada con éxito.`,
-      });
-    } catch (err) {
-      serverLog(`[ERROR] POST /colorDistr/insert: ${err}`);
-      res.status(500).json({
-        message: `No se pudo agregar la distribución para el art. ${data.articulo} T${data.talle}.`,
-        error: err.message,
-      });
-    }
-  });
-
-  app.post('/colorDistr/insertAllTalles', async (req, res) => {
-    serverLog('POST /colorDistr/insertAllTalles');
-    const { articulo, talles, colorDistr } = req.body;
-
-    try {
-      for (const talle of talles) {
-        await insertColorDistrs({ articulo, talle, colorDistr });
-      }
-
-      res.status(201).json({
-        message: `Distribución para el art. ${articulo} agregada con éxito.`,
-      });
-    } catch (err) {
-      serverLog(`[ERROR] POST /colorDistr/insertAllTalles: ${err}`);
-      res.status(500).json({
-        message: `No se pudo agregar la distribución para el art. ${articulo}.`,
-        error: err.message,
-      });
-    }
-  });
 
   app.post('/export/pdf', async (req, res) => {
     serverLog('POST /export/pdf');
@@ -590,48 +458,6 @@ const startServer = () => {
     }
   });
 
-  app.post('/programada/calculateNewTargets', async (req, res) => {
-    serverLog('POST /programada/calculateNewTargets');
-    const progUpdates = req.body;
-
-    if (isPackaged) {
-      try {
-        const machines = await getParsedMachines(true);
-        const targets = await calculateNewTargets(progUpdates, machines);
-
-        res.json(targets);
-      } catch (err) {
-        serverLog(`[ERROR] POST /programada/calculateNewTargets: ${err}`);
-        res.status(500).json({ error: err.message });
-      }
-    } else {
-      // test data
-      serverLog('Using test data for /programada/calculateNewTargets');
-      res.json(testData.calculateNewTargets);
-    }
-  });
-
-  app.post('/programada/compare', async (req, res) => {
-    serverLog('POST /programada/compare');
-    const data = req.body;
-
-    if (isPackaged) {
-      try {
-        const currProg = await sql.query(queries.getProgramada(data.startDate));
-        const diff = compareProgramada(currProg.recordset, data.new);
-        res.json(diff);
-        // const result = await sql.query(query);
-      } catch (err) {
-        serverLog(`[ERROR] POST /programada/compare: ${err}`);
-        res.status(500).json({ error: err.message });
-      }
-    } else {
-      // test data
-      serverLog('Using test data for /programada/compare');
-      res.json(testData.compare);
-    }
-  });
-
   app.get('/programada/file', async (req, res) => {
     serverLog('GET /programada/file');
     const { path } = req.query;
@@ -642,58 +468,6 @@ const startServer = () => {
     } catch (err) {
       serverLog(`[ERROR] PDF Error: ${err}`);
       res.status(500).json({ error: err.message });
-    }
-  });
-
-  app.post('/programada/insertAll', async (req, res) => {
-    serverLog('POST /programada/insertAll');
-    const data = req.body;
-
-    if (isPackaged) {
-      try {
-        const now = dayjs.tz();
-        await sql.query(queries.insertProgramada(data, 'inserted', now));
-        serverLog('POST /programada/insertAll - SUCCESS');
-        // return inserted rows to calculate new targets
-        const result = await sql.query(queries.getProgColor(now));
-        res.status(201).json({
-          message: `Programada nueva cargada con éxito.`,
-          inserted: result.recordset,
-        });
-      } catch (err) {
-        serverLog(`[ERROR] POST /programada/insertAll: ${err}`);
-        res.status(500).json({
-          message: `No se pudo cargar la programada correctamente.`,
-          error: err.message,
-        });
-      }
-    } else {
-      // test
-      serverLog('Test for /programada/insertAll');
-    }
-  });
-
-  app.post('/programada/insertStartDate', async (req, res) => {
-    serverLog('POST /programada/insertStartDate');
-    const data = req.body;
-
-    if (isPackaged) {
-      try {
-        await sql.query(queries.insertProgStartDate(data));
-        serverLog('POST /programada/insertStartDate - SUCCESS');
-        res.status(200).json({
-          message: `Fecha de inicio de programada cargada con éxito.`,
-        });
-      } catch (err) {
-        serverLog(`[ERROR] POST /programada/insertStartDate: ${err}`);
-        res.status(500).json({
-          message: `No se pudo cargar la fecha de inicio de programada correctamente.`,
-          error: err.message,
-        });
-      }
-    } else {
-      // test data
-      serverLog('Test for /programada/insertStartDate');
     }
   });
 
@@ -731,55 +505,6 @@ const startServer = () => {
       // test data
       serverLog('Using test data for /programada/total');
       res.json(testData.programadaTotal);
-    }
-  });
-
-  app.post('/programada/update', async (req, res) => {
-    serverLog('POST /programada/update');
-    const data = req.body;
-
-    if (isPackaged) {
-      try {
-        const now = dayjs.tz();
-        await sql.query(queries.updateProgramada(data, now));
-        serverLog('POST /programada/update - SUCCESS');
-        // return inserted rows to calculate new targets
-        // include deleted articulos to stop machines
-        const result = await sql.query(queries.getProgColor(now, true));
-        res.status(201).json({
-          message: `Cambios cargados con éxito.`,
-          inserted: result.recordset,
-        });
-      } catch (err) {
-        serverLog(`[ERROR] POST /programada/update: ${err}`);
-        res.status(500).json({
-          message: `No se pudieron cargar los cambios correctamente.`,
-          error: err.message,
-        });
-      }
-    } else {
-      // test data
-      serverLog('Using test data for /programada/update');
-      res.json(testData.previousRecord);
-    }
-  });
-
-  app.post('/programada/updateDocenas', async (req, res) => {
-    serverLog('POST /programada/updateDocenas');
-    const data = req.body;
-
-    try {
-      await sql.query(queries.updateProgColorDoc(data));
-      serverLog('POST /programada/updateDocenas - SUCCESS');
-      res.status(201).json({
-        message: `Docenas agregadas con éxito para el art. ${data.articulo} T${data.talle} ${data.color}.`,
-      });
-    } catch (err) {
-      serverLog(`[ERROR] POST /programada/updateDocenas: ${err}`);
-      res.status(500).json({
-        message: `No se pudo agregar las docenas para el art. ${data.articulo} T${data.talle} ${data.color}.`,
-        error: err.message,
-      });
     }
   });
 
