@@ -217,8 +217,8 @@ export default function ProgramadaTable({
       rowClassName = ''; // NO TIENE DISTR, FALTA ASIGNAR
     else if (row.Machines.length > 0) rowClassName = 'bg-making'; // TEJIENDO
     else if (faltaUnidades <= 0) rowClassName = 'bg-done'; // LLEGÓ
-    else if (row.Machines.length === 0 && faltaUnidades <= 12)
-      rowClassName = 'bg-almost-done'; // CASI LLEGÓ - Menos de una docena
+    else if (row.Machines.length === 0 && faltaUnidades <= 24)
+      rowClassName = 'bg-almost-done'; // CASI LLEGÓ - Menos de dos docena
     else if (row.Machines.length === 0 && faltaUnidades < row.Target)
       rowClassName = 'bg-incomplete'; // INCOMPLETO
 
