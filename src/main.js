@@ -12,6 +12,11 @@ const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 
+// to avoid squirrel multiple app spawning
+if (require('electron-squirrel-startup')) app.quit();
+
+app.setAppUserModelId('com.squirrel.TejeduriaSeamless.TejeduriaSeamless');
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

@@ -1,8 +1,8 @@
 {
-  "name": "eseka-produccion-seamless",
-  "productName": "eseka-produccion-seamless",
+  "name": "tejeduria-seamless",
+  "productName": "Tejeduría Seamless",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "An app for tracking production data.",
   "main": ".webpack/main",
   "scripts": {
     "start:conc": "concurrently --kill-others -n SERVER,ELECTRON -c blue,cyan \"npm run start:server\" \"npm run start:electron\"",
