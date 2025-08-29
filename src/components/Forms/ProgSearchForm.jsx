@@ -23,7 +23,13 @@ export default function ProgSearchForm({
           colorId = '',
           machine = '',
         } = formData;
-        if (articulo !== '' && row.Articulo !== Number(articulo)) return false;
+        if (
+          articulo !== '' &&
+          (row.Articulo < Number(articulo) ||
+            row.Articulo >= Math.floor(Number(articulo)) + 1)
+        )
+          // includes puntos when searching for int
+          return false;
         if (talle !== '' && row.Talle !== Number(talle)) return false;
         if (colorId !== '' && row.ColorId !== colorId) return false;
         if (machine !== '') {
