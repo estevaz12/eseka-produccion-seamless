@@ -12,7 +12,6 @@ let apiUrl, sqlDateFormat;
 export default function Produccion() {
   ({ apiUrl, sqlDateFormat } = useConfig());
   const [url, setUrl] = useState();
-  // const [machines, setMachines] = useState([]);
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
     room: 'SEAMLESS',
@@ -43,15 +42,6 @@ export default function Produccion() {
       colorId: '',
     }).toString();
 
-    // fetch(`${apiUrl}/machines/producing`)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     if (!ignore) setMachines(data);
-    //   })
-    //   .catch((err) =>
-    //     console.log('[CLIENT] Error fetching /machines/producing:', err)
-    //   );
-
     fetch(`${apiUrl}/produccion?${params}`)
       .then((res) => res.json())
       .then((data) => {
@@ -68,19 +58,23 @@ export default function Produccion() {
   useEffect(() => {
     let ignore = false;
     if (url) {
-      // fetch(`${apiUrl}/machines/producing`)
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     if (!ignore) setMachines(data);
-      //   })
-      //   .catch((err) =>
-      //     console.log('[CLIENT] Error fetching /machines/producing:', err)
-      //   );
-
       fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          if (!ignore) setData(data);
+          if (!ignore)
+            setData(
+              data.length === 0
+                ? [
+                    {
+                      Articulo: 'No hay datos',
+                      Tipo: null,
+                      Talle: null,
+                      Color: null,
+                      Unidades: 0,
+                    },
+                  ]
+                : data
+            );
         })
         .catch((err) =>
           console.log('[CLIENT] Error fetching /produccion:', err)
@@ -173,19 +167,6 @@ export default function Produccion() {
         <td className='text-right'>{unidadesStr(row)}</td>
         {/* Docenas */}
         <td className='text-right'>{docenasStr(row)}</td>
-        {/* Maquinas */}
-        {/* <td>
-                {machines
-                  .filter(
-                    // match machines with articulo
-                    (m) =>
-                      m.StyleCode.articulo === row.Articulo &&
-                      m.StyleCode.talle === row.Talle &&
-                      m.StyleCode.colorId === row.ColorId
-                  )
-                  .map((m) => m.MachCode) // display all machines with articulo
-                  .join(' - ')}
-              </td> */}
       </>,
     ];
   }
