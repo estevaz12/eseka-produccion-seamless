@@ -1,7 +1,11 @@
 import ChartHeader from './ChartHeader.jsx';
 import ChartContent from './ChartContent.jsx';
 import SparkLineOverflow from './SparkLineOverflow.jsx';
-import { dateFormatter, colors } from '../../utils/chartUtils.js';
+import {
+  dateFormatter,
+  colors,
+  getIntervalDates,
+} from '../../utils/chartUtils.js';
 import dayjs from 'dayjs';
 
 export default function TotalProduced({
@@ -10,6 +14,7 @@ export default function TotalProduced({
   progress,
   loading,
 }) {
+  const { monthStart, yesterday } = getIntervalDates();
   const progressColor =
     progress >= 100 ? colors.green : progress > 90 ? colors.yellow : colors.red;
 
@@ -29,10 +34,9 @@ export default function TotalProduced({
       <ChartHeader
         title={'Producción Mensual'}
         value={`${totalProduced.toLocaleString()} doc.`}
-        interval={`Del ${dayjs.tz().startOf('month').format('D/M')} al ${dayjs
-          .tz()
-          .subtract(1, 'day')
-          .format('D/M')}`}
+        interval={`Del ${monthStart.format('D/M')} al ${yesterday.format(
+          'D/M'
+        )}`}
       />
       <SparkLineOverflow
         dataSettings={dataSettings}

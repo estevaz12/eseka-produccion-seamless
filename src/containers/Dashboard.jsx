@@ -33,7 +33,9 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         if (!ignored) {
-          setDailyProd(data);
+          setDailyProd(
+            data.length !== 0 ? data : [{ ProdDate: null, Docenas: null }]
+          );
         }
       })
       .catch((err) =>
@@ -132,7 +134,7 @@ export default function Dashboard() {
           progTotal={progTotal}
           progress={progress}
           loading={
-            dailyProd.length === 0 || holidays.length === 0 || progTotal === 0
+            dailyProd.length === 0 || progTotal === 0 //|| holidays.length === 0
           }
         />
       </Card>
@@ -143,7 +145,7 @@ export default function Dashboard() {
           progTotal={progTotal}
           holidays={holidays}
           loading={
-            dailyProd.length === 0 || holidays.length === 0 || progTotal === 0
+            dailyProd.length === 0 || progTotal === 0 //|| holidays.length === 0
           }
         />
       </Card>
@@ -153,7 +155,7 @@ export default function Dashboard() {
           totalProduced={totalProduced}
           workdaysLeft={workdaysLeft}
           loading={
-            dailyProd.length === 0 || holidays.length === 0 || progTotal === 0
+            dailyProd.length === 0 || progTotal === 0 //|| holidays.length === 0
           }
         />
       </Card>

@@ -1,6 +1,10 @@
 import { useConfig } from '../../ConfigContext.jsx';
 import { useEffect, useMemo, useState } from 'react';
-import { dateFormatter, colors } from '../../utils/chartUtils.js';
+import {
+  dateFormatter,
+  colors,
+  getIntervalDates,
+} from '../../utils/chartUtils.js';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 import SparkLineOverflow from './SparkLineOverflow.jsx';
@@ -11,6 +15,7 @@ export default function DailyEff({ setYesterdayEff }) {
   apiUrl = useConfig().apiUrl;
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState([]);
+  const { monthStart, yesterday } = getIntervalDates();
 
   useEffect(() => {
     let ignored = false;
@@ -22,7 +27,11 @@ export default function DailyEff({ setYesterdayEff }) {
         if (!ignored) {
           setDataset(data);
           setLoading(false);
-          setYesterdayEff(data[data.length - 1]);
+          setYesterdayEff(
+            data[data.length - 1]
+              ? data[data.length - 1]
+              : { WorkEfficiency: null, ProdDate: null }
+          );
         }
       })
       .catch((err) =>
@@ -59,10 +68,9 @@ export default function DailyEff({ setYesterdayEff }) {
       <ChartHeader
         title='Eficiencia Promedio'
         value={`${avgEff}%`}
-        interval={`Del ${dayjs.tz().startOf('month').format('D/M')} al ${dayjs
-          .tz()
-          .subtract(1, 'day')
-          .format('D/M')}`}
+        interval={`Del ${monthStart.format('D/M')} al ${yesterday.format(
+          'D/M'
+        )}`}
       />
       <SparkLineOverflow
         dataSettings={dataSettings}

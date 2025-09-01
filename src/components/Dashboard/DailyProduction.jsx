@@ -7,6 +7,9 @@ import dayjs from 'dayjs';
 import Stack from '@mui/joy/Stack';
 
 export default function DailyProduction({ dataset, dailyAverage, loading }) {
+  // will be {Docenas: null, ProdDate: null} if no data
+  const yesterdayProd = dataset[dataset.length - 1];
+
   return (
     <ChartContent loading={loading} direction='row' gap={8}>
       <Stack direction='column' className='justify-between'>
@@ -15,16 +18,14 @@ export default function DailyProduction({ dataset, dailyAverage, loading }) {
           value={`${dailyAverage.toLocaleString()} doc.`}
           interval='Promedio por día'
         />
-        {!loading && (
+        {!loading && yesterdayProd.Docenas && (
           <>
             <Divider />
             <ChartHeader
               title='Producido Ayer'
-              value={`${dataset[
-                dataset.length - 1
-              ].Docenas.toLocaleString()} doc.`}
+              value={`${yesterdayProd.Docenas.toLocaleString()} doc.`}
               interval={dayjs
-                .tz(dataset[dataset.length - 1].ProdDate)
+                .tz(yesterdayProd.ProdDate)
                 .locale('es')
                 .format('ddd DD/MM')}
             />
