@@ -52,21 +52,19 @@ export default function CurrentEff({ yesterdayEff }) {
           value={`${dataset.total}%`}
           interval={'Total'}
         />
-        <Divider />
-        <Skeleton
-          loading={!yesterdayEff}
-          variant='rectangle'
-          className='w-full rounded-[var(--joy-radius-sm)]'
-        >
-          <ChartHeader
-            title='Eficiencia Prom. Ayer'
-            value={`${yesterdayEff.WorkEfficiency}%`}
-            interval={`${dayjs
-              .tz(yesterdayEff.ProdDate)
-              .locale('es')
-              .format('ddd DD/MM')}`}
-          />
-        </Skeleton>
+        {!loading && yesterdayEff.WorkEfficiency && (
+          <>
+            <Divider />
+            <ChartHeader
+              title='Eficiencia Prom. Ayer'
+              value={`${yesterdayEff.WorkEfficiency}%`}
+              interval={`${dayjs
+                .tz(yesterdayEff.ProdDate)
+                .locale('es')
+                .format('ddd DD/MM')}`}
+            />
+          </>
+        )}
       </Stack>
       <BarChart
         loading={loading}

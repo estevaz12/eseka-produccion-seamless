@@ -855,8 +855,9 @@ const startServer = () => {
         const result = await sql.query(queries.getMonthSaldo(room));
         const row = result.recordset[0]; // single-record
         // prep data for chart
+        const porc = ((row.Saldo / (row.Pieces + row.Saldo)) * 100).toFixed(2);
         const saldo = {
-          porc: ((row.Saldo / (row.Pieces + row.Saldo)) * 100).toFixed(2),
+          porc: isNaN(porc) ? 0 : porc,
           data: [
             { id: 0, value: Math.round(row.Saldo / docenas), label: 'Saldo' },
             {

@@ -5,13 +5,14 @@ import { styled } from '@mui/joy/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import dayjs from 'dayjs';
 import BigNumContent from './BigNumContent.jsx';
-import { colors } from '../../utils/chartUtils.js';
+import { colors, getIntervalDates } from '../../utils/chartUtils.js';
 
 let apiUrl;
 export default function MonthSaldo() {
   apiUrl = useConfig().apiUrl;
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState({ porc: '0', data: [] });
+  const { monthStart, yesterday } = getIntervalDates();
   // for saldo width, since it's so small
   const saldoWidth = 20;
 
@@ -40,10 +41,9 @@ export default function MonthSaldo() {
     <BigNumContent
       loading={loading}
       title='Saldo Mensual Registrado'
-      subtitle={`en las máqs. del ${dayjs
-        .tz()
-        .startOf('month')
-        .format('D/M')} al ${dayjs.tz().subtract(1, 'day').format('D/M')}`}
+      subtitle={`en las máqs. del ${monthStart.format(
+        'D/M'
+      )} al ${yesterday.format('D/M')}`}
     >
       <PieChart
         loading={loading}
