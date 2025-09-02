@@ -5,14 +5,14 @@ module.exports = {
   packagerConfig: {
     asar: true,
     icon: './src/assets/icons/icon',
-    name: 'Tejeduría Seamless',
+    name: 'Tejeduría',
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'TejeduriaSeamless',
+        name: 'Tejeduria',
       },
     },
     // {
