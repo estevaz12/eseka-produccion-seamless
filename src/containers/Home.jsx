@@ -16,6 +16,7 @@ let apiUrl;
 
 export default function Home() {
   apiUrl = useConfig().apiUrl;
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const [newColorCodes, setNewColorCodes] = useState(() =>
     JSON.parse(localStorage.getItem('newColorCodes') || '[]')
@@ -40,6 +41,7 @@ export default function Home() {
     const updatedCodes = [...currCodes, ...uniqueNewCodes];
     localStorage.setItem('newColorCodes', JSON.stringify(updatedCodes));
     setNewColorCodes(updatedCodes);
+    if (updatedCodes.length > 0) setIsModalOpen(true);
   }
 
   const addToast = (toast) => {
@@ -140,6 +142,8 @@ export default function Home() {
               </Typography>
             }
             contentClassName='w-xs'
+            isOpen={isModalOpen}
+            handleClose={() => setIsModalOpen(false)}
           >
             <NewColorCodeForm
               newColorCode={newColorCodes[newColorCodes.length - 1]}
