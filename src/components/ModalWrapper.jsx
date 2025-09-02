@@ -10,13 +10,17 @@ export default function ModalWrapper({
   title,
   content,
   children,
+  isOpen,
   handleClose,
   contentClassName = '',
 }) {
   const [open, setOpen] = useState(true);
 
   return (
-    <Modal open={open} onClose={handleClose || (() => setOpen(false))}>
+    <Modal
+      open={isOpen !== undefined ? isOpen : open}
+      onClose={handleClose || (() => setOpen(false))}
+    >
       <ModalOverflow>
         <ModalDialog>
           <ModalClose />

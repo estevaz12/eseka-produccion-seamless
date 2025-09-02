@@ -16,6 +16,7 @@ let apiUrl;
 
 export default function Home() {
   apiUrl = useConfig().apiUrl;
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const [newColorCodes, setNewColorCodes] = useState(() =>
     JSON.parse(localStorage.getItem('newColorCodes') || '[]')
@@ -98,7 +99,7 @@ export default function Home() {
           </aside>
 
           <Box className='w-full px-4 ml-40'>
-            <Outlet context={{ addColorCodes }} />
+            <Outlet context={{ addColorCodes, setIsModalOpen }} />
           </Box>
         </Stack>
 
@@ -140,6 +141,8 @@ export default function Home() {
               </Typography>
             }
             contentClassName='w-xs'
+            isOpen={isModalOpen}
+            handleClose={() => setIsModalOpen(false)}
           >
             <NewColorCodeForm
               newColorCode={newColorCodes[newColorCodes.length - 1]}

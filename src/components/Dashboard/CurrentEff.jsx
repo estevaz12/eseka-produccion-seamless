@@ -7,7 +7,6 @@ import { colors } from '../../utils/chartUtils.js';
 import Divider from '@mui/joy/Divider';
 import Stack from '@mui/joy/Stack';
 import dayjs from 'dayjs';
-import Skeleton from '@mui/joy/Skeleton';
 
 let apiUrl;
 export default function CurrentEff({ yesterdayEff }) {
