@@ -15,7 +15,7 @@ let apiUrl;
 
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
-  const { addColorCodes, setIsModalOpen } = useOutletContext();
+  const { addColorCodes } = useOutletContext();
   const [startDate, setStartDate] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
@@ -61,9 +61,6 @@ export default function Programada() {
       .then((res) => res.json())
       .then((newCodes) => {
         addColorCodes(newCodes);
-        if (newCodes.length > 0) {
-          setIsModalOpen(true);
-        }
       })
       .catch((err) =>
         console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)

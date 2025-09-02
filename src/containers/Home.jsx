@@ -41,6 +41,7 @@ export default function Home() {
     const updatedCodes = [...currCodes, ...uniqueNewCodes];
     localStorage.setItem('newColorCodes', JSON.stringify(updatedCodes));
     setNewColorCodes(updatedCodes);
+    if (updatedCodes.length > 0) setIsModalOpen(true);
   }
 
   const addToast = (toast) => {
@@ -99,7 +100,7 @@ export default function Home() {
           </aside>
 
           <Box className='w-full px-4 ml-40'>
-            <Outlet context={{ addColorCodes, setIsModalOpen }} />
+            <Outlet context={{ addColorCodes }} />
           </Box>
         </Stack>
 
