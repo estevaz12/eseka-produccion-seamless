@@ -18,8 +18,9 @@ import {
 } from '../utils/maquinasUtils';
 import { Card } from '@mui/joy';
 
-export default function MaquinasMap({ machines }) {
+export default function MaquinasMap({ room, machines }) {
   const [open, setOpened] = useState(0);
+  const groups = rooms[room];
 
   const loadingMachs = Array.from(
     { length: groups[groups.length - 1].max - groups[0].min },
@@ -29,7 +30,11 @@ export default function MaquinasMap({ machines }) {
   return (
     <>
       {groups.map((group) => (
-        <Stack direction='column' className='gap-2 even:mt-8' key={group.min}>
+        <Stack
+          direction='column'
+          className='gap-2 mt-8 first:mt-0'
+          key={group.min}
+        >
           <Typography level='h4'>{`${group.min} - ${group.max}`}</Typography>
 
           <Box className='grid gap-2 grid-cols-15'>
@@ -139,10 +144,21 @@ export default function MaquinasMap({ machines }) {
   );
 }
 
-const groups = [
-  { min: 1001, max: 1030 },
-  { min: 1031, max: 1037 },
-];
+const rooms = {
+  HOMBRE: [
+    { min: 301, max: 322 },
+    { min: 323, max: 344 },
+    { min: 345, max: 366 },
+    { min: 367, max: 388 },
+    { min: 389, max: 408 },
+    { min: 409, max: 428 },
+    { min: 429, max: 450 },
+  ],
+  SEAMLESS: [
+    { min: 1001, max: 1030 },
+    { min: 1031, max: 1037 },
+  ],
+};
 
 function importAll(r) {
   const icons = {};

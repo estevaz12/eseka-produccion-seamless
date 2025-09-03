@@ -1,4 +1,4 @@
-const getProgColor = (startDate, includeDeleted = false) => {
+const getProgColor = (room, startDate, includeDeleted = false) => {
   const fecha = startDate.format(process.env.SQL_DATE_FORMAT);
   return `
     SELECT pc.*
@@ -8,6 +8,7 @@ const getProgColor = (startDate, includeDeleted = false) => {
                       WHERE pc2.Articulo = pc.Articulo 
                             AND pc2.Talle = pc.Talle)
           AND pc.Fecha >= '${fecha}'
+          AND pc.RoomCode = '${room}'
           ${includeDeleted ? '' : 'AND pc.DocProg > 0'}
     ORDER BY pc.Articulo, pc.Talle;
   `;

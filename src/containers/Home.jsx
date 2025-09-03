@@ -16,11 +16,20 @@ let apiUrl;
 
 export default function Home() {
   apiUrl = useConfig().apiUrl;
+  // SEAMLESS, HOMBRE (ALG)
+  const [room, setRoom] = useState(
+    () => localStorage.getItem('lastRoom') || 'SEAMLESS'
+  );
+  const sector = room !== 'SEAMLESS' ? 'ALGODÓN' : room;
+
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const [newColorCodes, setNewColorCodes] = useState(() =>
     JSON.parse(localStorage.getItem('newColorCodes') || '[]')
   );
+
+  const newColorCode =
+    newColorCodes.length > 0 ? newColorCodes[newColorCodes.length - 1] : null;
 
   // using localStorage so toasts persist through refresh
   const [toasts, setToasts] = useState(() =>
@@ -59,20 +68,38 @@ export default function Home() {
   };
 
   // check for newColorCodes on load and then every half-hour
+  // fetch for both rooms
   useEffect(() => {
     let ignore = false;
-    function fetchNewColorCodes() {
-      fetch(`${apiUrl}/machines/newColorCodes`)
-        .then((res) => res.json())
-        .then((newCodes) => {
-          if (!ignore) {
-            // Whenever you update localStorage, also update state:
-            addColorCodes(newCodes);
-          }
-        })
-        .catch((err) =>
-          console.error('[CLIENT] Error fetching /machines/newColorCodes:', err)
+
+    async function fetchNewColorCodes() {
+      try {
+        const res1 = await fetch(`${apiUrl}/SEAMLESS/machines/newColorCodes`);
+        const newCodes1 = await res1.json();
+        if (!ignore) {
+          // Whenever you update localStorage, also update state:
+          addColorCodes(newCodes1);
+        }
+      } catch (err) {
+        console.error(
+          `[CLIENT] Error fetching /SEAMLESS/machines/newColorCodes:`,
+          err
         );
+      }
+
+      try {
+        const res2 = await fetch(`${apiUrl}/HOMBRE/machines/newColorCodes`);
+        const newCodes2 = await res2.json();
+        if (!ignore) {
+          // Whenever you update localStorage, also update state:
+          addColorCodes(newCodes2);
+        }
+      } catch (err) {
+        console.error(
+          `[CLIENT] Error fetching /HOMBRE/machines/newColorCodes:`,
+          err
+        );
+      }
     }
 
     // fetch and repeat every half-hour
@@ -88,6 +115,15 @@ export default function Home() {
     };
   }, []);
 
+  // reload on room change
+  useEffect(() => {
+    const lastRoom = localStorage.getItem('lastRoom');
+    if (lastRoom !== room) {
+      localStorage.setItem('lastRoom', room);
+      window.location.reload();
+    }
+  }, [room]);
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ToastsContext value={{ addToast }}>
@@ -96,22 +132,29 @@ export default function Home() {
           className='items-stretch justify-start size-full'
         >
           <aside className='fixed top-0 bottom-0 left-0 z-20 w-40 h-screen'>
-            <NavBar />
+            <NavBar room={room} setRoom={setRoom} />
           </aside>
 
           <Box className='w-full px-4 ml-40'>
-            <Outlet context={{ addColorCodes }} />
+            <Outlet
+              context={{
+                addColorCodes,
+                room,
+                docena: room === 'SEAMLESS' ? 12 : 24,
+                porcExtra: room === 'SEAMLESS' ? 1.01 : 1.02,
+              }}
+            />
           </Box>
         </Stack>
 
         {/* Modal for new Color Codes */}
-        {newColorCodes.length > 0 && (
+        {newColorCode && (
           <ModalWrapper
             title={
               <Typography>
                 Agregar código de color&nbsp;&nbsp;
                 <Typography variant='solid' color='primary'>
-                  {newColorCodes[newColorCodes.length - 1].StyleCode.styleCode}
+                  {newColorCode.StyleCode.styleCode}
                 </Typography>
               </Typography>
             }
@@ -119,26 +162,27 @@ export default function Home() {
               <Typography>
                 Se encontró el código&nbsp;
                 <Typography variant='soft'>
-                  {newColorCodes[newColorCodes.length - 1].StyleCode.color}
+                  {newColorCode.StyleCode.color}
                 </Typography>
                 &nbsp;para el art.&nbsp;
                 <Typography variant='soft'>
-                  {newColorCodes[newColorCodes.length - 1].StyleCode.articulo}
-                  {newColorCodes[newColorCodes.length - 1].StyleCode.punto
-                    ? `.${
-                        newColorCodes[newColorCodes.length - 1].StyleCode.punto
-                      }`
+                  {newColorCode.StyleCode.articulo}
+                  {newColorCode.StyleCode.punto
+                    ? `.${newColorCode.StyleCode.punto}`
                     : ''}
                 </Typography>
                 &nbsp;talle&nbsp;
                 <Typography variant='soft'>
-                  {newColorCodes[newColorCodes.length - 1].StyleCode.talle}
+                  {/* StyleCode.talle will be 1 if UNICO, but 8 in StyleCode.styleCode */}
+                  {parseInt(
+                    newColorCode.StyleCode.styleCode.substring(5, 6)
+                  ) === 8
+                    ? 'ÚNICO'
+                    : newColorCode.StyleCode.talle}
                 </Typography>
                 &nbsp;en la máq.&nbsp;
-                <Typography variant='soft'>
-                  {newColorCodes[newColorCodes.length - 1].MachCode}
-                </Typography>
-                . Por favor, víncule el color correspondiente.
+                <Typography variant='soft'>{newColorCode.MachCode}</Typography>.
+                Por favor, víncule el color correspondiente.
               </Typography>
             }
             contentClassName='w-xs'
@@ -146,7 +190,7 @@ export default function Home() {
             handleClose={() => setIsModalOpen(false)}
           >
             <NewColorCodeForm
-              newColorCode={newColorCodes[newColorCodes.length - 1]}
+              newColorCode={newColorCode}
               setNewColorCodes={setNewColorCodes}
             />
           </ModalWrapper>

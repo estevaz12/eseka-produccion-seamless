@@ -18,6 +18,7 @@ import ArticuloCol from './ArticuloCol.jsx';
 import { DatesContext } from '../../Contexts.js';
 import ProgLegend from './ProgLegend.jsx';
 import EditArtBtn from './EditArtBtn.jsx';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 
@@ -30,6 +31,7 @@ export default function ProgramadaTable({
   live = true,
 }) {
   apiUrl = useConfig().apiUrl;
+  const { room, docena, porcExtra } = useOutletContext();
 
   useEffect(() => {
     let ignore = false;
@@ -39,7 +41,7 @@ export default function ProgramadaTable({
         const params = new URLSearchParams({
           startDate,
         }).toString();
-        fetch(`${apiUrl}/programada?${params}`)
+        fetch(`${apiUrl}/${room}/programada?${params}`)
           .then((res) => res.json())
           .then((data) => {
             if (!ignore) {
@@ -47,7 +49,7 @@ export default function ProgramadaTable({
             }
           })
           .catch((err) =>
-            console.error('[CLIENT] Error fetching /programada:', err)
+            console.error(`[CLIENT] Error fetching /${room}/programada:`, err)
           );
       }
     }
@@ -96,18 +98,19 @@ export default function ProgramadaTable({
       id: 'Producido',
       label: 'Producido',
       align: 'right',
-      pdfValue: (row) => calcProducido(row),
-      pdfRender: (row) => producidoStr(row),
+      pdfValue: (row) => calcProducido(row, docena, porcExtra),
+      pdfRender: (row) => producidoStr(row, docena, porcExtra),
     },
     {
       id: 'falta',
       label: 'Falta',
       align: 'right',
-      pdfValue: (row) => calcAProducir(row) - calcProducido(row),
-      pdfRender: (row) => faltaStr(row),
+      pdfValue: (row) =>
+        calcAProducir(row) - calcProducido(row, docena, porcExtra),
+      pdfRender: (row) => faltaStr(row, docena, porcExtra),
       sortFn: (a, b, order) => {
         const faltaCalc = (row, order) => {
-          const falta = row.Docenas - row.Producido / 12 / 1.01;
+          const falta = row.Docenas - row.Producido / docena / porcExtra;
           // send to bottom if falta is negative
           if (falta <= 0) {
             return order === 'asc' ? Number.POSITIVE_INFINITY : 0;
@@ -271,9 +274,9 @@ export default function ProgramadaTable({
           />
         </td>
         {/* Producido */}
-        <td className='text-right'>{producidoStr(row)}</td>
+        <td className='text-right'>{producidoStr(row, docena, porcExtra)}</td>
         {/* Falta */}
-        <td className='text-right'>{faltaStr(row)}</td>
+        <td className='text-right'>{faltaStr(row, docena, porcExtra)}</td>
         {/* Target (un.) */}
         <td className='text-right'>
           <TargetCol row={row} faltaUnidades={faltaUnidades} />
@@ -299,7 +302,10 @@ export default function ProgramadaTable({
   const totalProducido = useMemo(() => {
     let progToUse =
       filteredProgColor.length > 0 ? filteredProgColor : progColor;
-    return progToUse.reduce((acc, row) => acc + calcProducido(row), 0);
+    return progToUse.reduce(
+      (acc, row) => acc + calcProducido(row, docena, porcExtra),
+      0
+    );
   }, [progColor, filteredProgColor]);
   const totalFalta = useMemo(
     () => totalAProducir - totalProducido,

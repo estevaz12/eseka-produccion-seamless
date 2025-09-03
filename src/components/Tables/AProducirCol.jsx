@@ -8,6 +8,7 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import { ToastsContext } from '../../Contexts.js';
 import { aProducirStr } from '../../utils/progTableUtils.js';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 
@@ -21,6 +22,7 @@ export default function AProducirCol({
   live,
 }) {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const { addToast } = useContext(ToastsContext);
   const [editProducir, setEditProducir] = useState(false);
   const [docenas, setDocenas] = useState();
@@ -66,7 +68,7 @@ export default function AProducirCol({
       const params = new URLSearchParams({
         startDate,
       }).toString();
-      const res = await fetch(`${apiUrl}/programada?${params}`);
+      const res = await fetch(`${apiUrl}/${room}/programada?${params}`);
       const data = await res.json();
 
       setProgColor(data);

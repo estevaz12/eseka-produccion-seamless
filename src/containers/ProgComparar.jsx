@@ -30,7 +30,7 @@ let apiUrl, sqlDateFormat;
 export default function ProgComparar() {
   // context
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { addColorCodes } = useOutletContext();
+  const { addColorCodes, room } = useOutletContext();
   const { addToast } = useContext(ToastsContext);
   // load, file upload and reading
   const [startDate, setStartDate] = useState();
@@ -54,7 +54,7 @@ export default function ProgComparar() {
     let ignore = false;
     if (startDate === undefined) {
       // fetch start date of current programada
-      fetch(`${apiUrl}/programada/actualDate`)
+      fetch(`${apiUrl}/${room}/programada/actualDate`)
         .then((res) => res.json())
         .then((data) => {
           if (!ignore) setStartDate(data[0].Date);
@@ -99,7 +99,7 @@ export default function ProgComparar() {
   // compare new programada to old
   function handleCompare() {
     if (programada) {
-      fetch(`${apiUrl}/programada/compare`, {
+      fetch(`${apiUrl}/${room}/programada/compare`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,11 +121,14 @@ export default function ProgComparar() {
     // colorCodes will be inserted through newColorCodes.
     // fetch newColorCodes before updating
     try {
-      const res = await fetch(`${apiUrl}/machines/newColorCodes`);
+      const res = await fetch(`${apiUrl}/${room}/machines/newColorCodes`);
       const newCodes = await res.json();
       addColorCodes(newCodes);
     } catch (err) {
-      console.error('[CLIENT] Error fetching /machines/newColorCodes:', err);
+      console.error(
+        `[CLIENT] Error fetching /${room}/machines/newColorCodes:`,
+        err
+      );
     }
 
     let prevArt = null; // to avoid duplicate fetches
@@ -220,7 +223,7 @@ export default function ProgComparar() {
     // just inserts updates
     async function insertUpdates() {
       try {
-        const res = await fetch(`${apiUrl}/programada/update`, {
+        const res = await fetch(`${apiUrl}/${room}/programada/update`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -243,7 +246,7 @@ export default function ProgComparar() {
         console.error('[CLIENT] Error fetching data:', err);
       }
 
-      fetch(`${apiUrl}/programada/total/${startDate}`)
+      fetch(`${apiUrl}/${room}/programada/total/${startDate}`)
         .then((res) => res.json())
         .then((data) => setCurrTotal(data[0].Total)) // single-record object
         .catch((err) => console.error('[CLIENT] Error fetching data:', err));
@@ -254,7 +257,7 @@ export default function ProgComparar() {
     async function insertAll() {
       if (programada) {
         try {
-          const res = await fetch(`${apiUrl}/programada/insertAll`, {
+          const res = await fetch(`${apiUrl}/${room}/programada/insertAll`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -271,7 +274,7 @@ export default function ProgComparar() {
           const data = resData.inserted;
 
           // insert programada start date to db
-          fetch(`${apiUrl}/programada/insertStartDate`, {
+          fetch(`${apiUrl}/${room}/programada/insertStartDate`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -336,7 +339,7 @@ export default function ProgComparar() {
   }, [diff, newArticuloData, programada, startDate, addToast]);
 
   function fetchNewTargets(inserted) {
-    fetch(`${apiUrl}/programada/calculateNewTargets`, {
+    fetch(`${apiUrl}/${room}/programada/calculateNewTargets`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

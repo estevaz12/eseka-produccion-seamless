@@ -1,4 +1,4 @@
-const insertProgStartDate = (data, room = 'SEAMLESS') => {
+const insertProgStartDate = (data, room) => {
   return `
     INSERT INTO SEA_PROG_LOAD_DATES (Date, Month, Year, RoomCode)
       VALUES ('${data.date}', ${data.month}, ${data.year}, '${room}');

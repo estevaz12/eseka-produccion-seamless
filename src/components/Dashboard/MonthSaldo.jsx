@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import { styled } from '@mui/joy/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
-import dayjs from 'dayjs';
 import BigNumContent from './BigNumContent.jsx';
 import { colors, getIntervalDates } from '../../utils/chartUtils.js';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 export default function MonthSaldo() {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState({ porc: '0', data: [] });
   const { monthStart, yesterday } = getIntervalDates();
@@ -18,9 +19,8 @@ export default function MonthSaldo() {
 
   useEffect(() => {
     let ignored = false;
-    const room = 'SEAMLESS';
 
-    fetch(`${apiUrl}/stats/monthSaldo/${room}`)
+    fetch(`${apiUrl}/${room}/stats/monthSaldo/`)
       .then((res) => res.json())
       .then((data) => {
         if (!ignored) {

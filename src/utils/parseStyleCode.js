@@ -3,14 +3,19 @@ const serverLog = require('./serverLog.js');
 const getArticulo = require('./queries/getArticulo.js');
 const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode.js');
 
-const parseStyleCode = async (styleCode) => {
-  styleCode = styleCode.trim().substring(0, 8);
+const parseStyleCode = async (room, styleCode) => {
+  styleCode = styleCode.substring(0, 8);
   let articulo = styleCode.substring(0, 5);
   let punto = null;
   let tipo = null;
   let talle = parseInt(styleCode.substring(5, 6));
   const color = styleCode.substring(6, 8);
   let colorId = null;
+
+  if (room === 'HOMBRE' && talle === 8) {
+    // Talle 8 = UNICO = 1
+    talle = 1;
+  }
 
   if (/^\d{5}$/.test(articulo)) {
     // articulo must be a 5-digit string

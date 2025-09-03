@@ -2,11 +2,13 @@ import Skeleton from '@mui/joy/Skeleton';
 import Typography from '@mui/joy/Typography';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 
 export default function ProgTotal({ startDate, currTotal = undefined }) {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [total, setTotal] = useState(currTotal);
 
   // get current programada total on load
@@ -17,7 +19,7 @@ export default function ProgTotal({ startDate, currTotal = undefined }) {
       if (!ignore) setTotal(currTotal);
     } else if (startDate) {
       // fetch total of current programada
-      fetch(`${apiUrl}/programada/total/${startDate}`)
+      fetch(`${apiUrl}/${room}/programada/total/${startDate}`)
         .then((res) => res.json())
         .then((data) => {
           if (!ignore) setTotal(data[0].Total);

@@ -1,4 +1,4 @@
-const getProgramada = (startDate) => {
+const getProgramada = (room, startDate) => {
   return `
     SELECT p.*
     FROM SEA_PROGRAMADA AS p
@@ -7,6 +7,7 @@ const getProgramada = (startDate) => {
                       WHERE p2.Articulo = p.Articulo 
                             AND p2.Talle = p.Talle)
           AND p.Fecha >= '${startDate}'
+          AND p.RoomCode = '${room}'
           --AND p.Docenas > 0
     ORDER BY p.Articulo, p.Talle;
   `;

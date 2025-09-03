@@ -10,10 +10,12 @@ import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 export default function ProgAnteriores() {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState();
   const [progColor, setProgColor] = useState([]);
@@ -21,7 +23,7 @@ export default function ProgAnteriores() {
 
   useEffect(() => {
     let ignore = false;
-    fetch(`${apiUrl}/programada/loadDates`)
+    fetch(`${apiUrl}/${room}/programada/loadDates`)
       .then((res) => res.json())
       .then((data) => {
         if (!ignore) setDates(data);
@@ -45,7 +47,7 @@ export default function ProgAnteriores() {
       startYear: year,
       endDate: dates[idx - 1].Date, // dates are ordered desc
     }).toString();
-    fetch(`${apiUrl}/programada?${params}`)
+    fetch(`${apiUrl}/${room}/programada?${params}`)
       .then((res) => res.json())
       .then((data) => {
         setProgColor(data);

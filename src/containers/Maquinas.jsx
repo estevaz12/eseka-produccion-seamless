@@ -12,11 +12,13 @@ import Tabs from '@mui/joy/Tabs';
 import MapTwoTone from '@mui/icons-material/MapTwoTone';
 import TableChartTwoTone from '@mui/icons-material/TableChartTwoTone';
 import MaquinasMap from '../components/MaquinasMap.jsx';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 
 export default function Maquinas() {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [machines, setMachines] = useState([]);
   const [filteredMachines, setFilteredMachines] = useState([]);
 
@@ -31,10 +33,12 @@ export default function Maquinas() {
   );
 
   const getMachines = () => {
-    fetch(`${apiUrl}/machines`)
+    fetch(`${apiUrl}/${room}/machines`)
       .then((res) => res.json())
       .then((data) => setMachines(data))
-      .catch((err) => console.error('[CLIENT] Error fetching /machines:', err));
+      .catch((err) =>
+        console.error(`[CLIENT] Error fetching /${room}/machines:`, err)
+      );
   };
 
   // get machines on load
@@ -103,6 +107,7 @@ export default function Maquinas() {
       {/* table and map */}
       <TabPanel value={0} className='p-0'>
         <MaquinasMap
+          room={room}
           machines={
             filteredMachines.length > 0 ? sortedFiltered : sortedMachines
           }
@@ -110,6 +115,7 @@ export default function Maquinas() {
       </TabPanel>
       <TabPanel value={1} className='p-0'>
         <MaquinasTable
+          room={room}
           machines={filteredMachines.length > 0 ? filteredMachines : machines}
           pdfRows={machines}
         />

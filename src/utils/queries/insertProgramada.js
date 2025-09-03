@@ -1,11 +1,6 @@
 const dayjs = require('dayjs');
 
-const insertProgramada = (
-  data,
-  status,
-  date = dayjs.tz(),
-  room = 'SEAMLESS'
-) => {
+const insertProgramada = (data, room, status, date = dayjs.tz()) => {
   const FECHA = date.format(process.env.SQL_DATE_FORMAT);
   let query = '';
 
