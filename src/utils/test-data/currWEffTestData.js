@@ -1,13 +1,25 @@
 module.exports = {
-  total: 68,
   groups: [
     {
-      GroupCode: '1001-1030',
+      GroupCode: '301-322',
+      GroupEff: 88,
+    },
+    {
+      GroupCode: '345-366',
+      GroupEff: 87,
+    },
+    {
+      GroupCode: '367-388',
+      GroupEff: 93,
+    },
+    {
+      GroupCode: '389-408',
       GroupEff: 81,
     },
     {
-      GroupCode: '1031-1037',
-      GroupEff: 54,
+      GroupCode: '409-428',
+      GroupEff: 87,
     },
   ],
+  total: 87,
 };

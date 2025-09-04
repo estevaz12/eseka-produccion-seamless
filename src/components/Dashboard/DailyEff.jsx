@@ -8,20 +8,20 @@ import {
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 import SparkLineOverflow from './SparkLineOverflow.jsx';
-import dayjs from 'dayjs';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 export default function DailyEff({ setYesterdayEff }) {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState([]);
   const { monthStart, yesterday } = getIntervalDates();
 
   useEffect(() => {
     let ignored = false;
-    const room = 'SEAMLESS';
 
-    fetch(`${apiUrl}/stats/dailyEfficiency/${room}`)
+    fetch(`${apiUrl}/${room}/stats/dailyEfficiency`)
       .then((res) => res.json())
       .then((data) => {
         if (!ignored) {
@@ -50,7 +50,7 @@ export default function DailyEff({ setYesterdayEff }) {
   }, [dataset]);
 
   const effColor =
-    avgEff >= 80 ? colors.green : avgEff >= 75 ? colors.yellow : colors.red;
+    avgEff >= 85 ? colors.green : avgEff >= 80 ? colors.yellow : colors.red;
 
   const data = dataset.map((row) => row.WorkEfficiency);
   const dataSettings = {

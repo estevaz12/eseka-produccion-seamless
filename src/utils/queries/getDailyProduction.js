@@ -1,6 +1,9 @@
 const dayjs = require('dayjs');
 
 const getDailyProduction = (room) => {
+  const docena = room === 'SEAMLESS' ? 12 : 24;
+  const porcExtra = room === 'SEAMLESS' ? 1.01 : 1.02;
+
   const monthStart = dayjs
     .tz()
     .startOf('month')
@@ -53,7 +56,7 @@ const getDailyProduction = (room) => {
                 ON a.Articulo = cc.Articulo
     )
     SELECT ProdDate,
-           CAST(ROUND((SUM(Unidades) / 12 / 1.01), 0) AS INT) AS Docenas
+           CAST(ROUND((SUM(Unidades) / ${docena} / ${porcExtra}), 0) AS INT) AS Docenas
     FROM ProdColorUngroupedByDate
     WHERE Unidades > 0
     GROUP BY ProdDate

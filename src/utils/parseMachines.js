@@ -4,7 +4,10 @@ const parseStyleCode = require('./parseStyleCode.js');
 async function parseMachines(machines) {
   await Promise.all(
     machines.map(async (m) => {
-      const parsedStyleCode = await parseStyleCode(m.StyleCode);
+      const parsedStyleCode = await parseStyleCode(
+        m.RoomCode.trim(),
+        m.StyleCode.trim()
+      );
       m.StyleCode = { ...parsedStyleCode };
     })
   );

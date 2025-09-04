@@ -254,12 +254,13 @@ const startServer = () => {
     }
   });
 
-  app.get('/machines', async (req, res) => {
-    serverLog('GET /machines');
+  app.get('/:room/machines', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /${room}/machines`);
 
     if (isPackaged) {
       try {
-        let machines = await sql.query(queries.getMachines());
+        let machines = await sql.query(queries.getMachines(room));
         machines = machines.recordset;
         machines.forEach((m) => {
           m.StyleCode = m.StyleCode.slice(0, 8);
@@ -267,19 +268,19 @@ const startServer = () => {
 
         res.json(machines);
       } catch (err) {
-        serverLog(`[ERROR] GET /machines: ${err}`);
+        serverLog(`[ERROR] GET /${room}/machines: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
       // use test data
-      serverLog('Using test data for /machines');
+      serverLog(`Using test data for /${room}/machines`);
       res.json(testData.machines);
     }
   });
 
   // get machines and parse to match with production data
-  async function getParsedMachines(producing = false) {
-    let machines = await sql.query(queries.getMachines());
+  async function getParsedMachines(room, producing = false) {
+    let machines = await sql.query(queries.getMachines(room));
     machines = machines.recordset;
     await parseMachines(machines);
 
@@ -305,30 +306,13 @@ const startServer = () => {
     return machines;
   }
 
-  app.get('/machines/producing', async (req, res) => {
-    serverLog('GET /machines/producing');
+  app.get('/:room/machines/newColorCodes', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /${room}/machines/newColorCodes`);
 
     if (isPackaged) {
       try {
-        let machines = await getParsedMachines(true);
-        res.json(machines);
-      } catch (err) {
-        serverLog(`[ERROR] GET /machines/producing: ${err}`);
-        res.status(500).json({ error: err.message });
-      }
-    } else {
-      // test data
-      serverLog('Using test data for /machines/producing');
-      res.json(testData.producing);
-    }
-  });
-
-  app.get('/machines/newColorCodes', async (req, res) => {
-    serverLog('GET /machines/newColorCodes');
-
-    if (isPackaged) {
-      try {
-        let machines = await getParsedMachines(true);
+        let machines = await getParsedMachines(room, true);
         machines = Array.from(
           new Map(
             machines
@@ -345,12 +329,12 @@ const startServer = () => {
         );
         res.json(machines);
       } catch (err) {
-        serverLog(`[ERROR] GET /machines/newColorCodes: ${err}`);
+        serverLog(`[ERROR] GET /${room}/machines/newColorCodes: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
       // test data
-      serverLog('Using test data for /machines/newColorCodes');
+      serverLog(`Using test data for /${room}/machines/newColorCodes`);
       res.json(testData.newColorCodes);
     }
   });
@@ -386,8 +370,9 @@ const startServer = () => {
     }
   });
 
-  app.get('/programada', async (req, res) => {
-    serverLog('GET /programada');
+  app.get('/:room/programada', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /${room}/programada`);
 
     if (isPackaged) {
       try {
@@ -395,9 +380,15 @@ const startServer = () => {
         const [progColor, machines] = await Promise.all([
           // get Programada with Color, month production, and docenas by art.
           sql.query(
-            queries.getProgColorTable(startDate, startMonth, startYear, endDate)
+            queries.getProgColorTable(
+              room,
+              startDate,
+              startMonth,
+              startYear,
+              endDate
+            )
           ),
-          !req.query.startMonth ? getParsedMachines(true) : null, // get Machines
+          !req.query.startMonth ? getParsedMachines(room, true) : null, // get Machines
         ]);
 
         // match machines with rows
@@ -426,29 +417,30 @@ const startServer = () => {
 
         res.json(rows);
       } catch (err) {
-        serverLog(`[ERROR] GET /programada: ${err}`);
+        serverLog(`[ERROR] GET /${room}/programada: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else if (!req.query.endMonth) {
       // test data
-      serverLog('Using test data for /programada');
+      serverLog(`Using test data for /${room}/programada`);
       res.json(testData.programada);
     } else {
       // test data for month
-      serverLog('Using test data for /programada (anterior)');
+      serverLog(`Using test data for /${room}/programada (anterior)`);
       res.json(testData.programadaAnterior);
     }
   });
 
-  app.get('/programada/actualDate', async (req, res) => {
-    serverLog('GET /programada/actualDate');
+  app.get('/:room/programada/actualDate', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /${room}/programada/actualDate`);
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getProgActualDate());
+        const result = await sql.query(queries.getProgActualDate(room));
         res.json(result.recordset);
       } catch (err) {
-        serverLog(`[ERROR] GET /programada/actualDate: ${err}`);
+        serverLog(`[ERROR] GET /${room}/programada/actualDate: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
@@ -471,54 +463,57 @@ const startServer = () => {
     }
   });
 
-  app.get('/programada/loadDates', async (req, res) => {
-    serverLog('GET /programada/loadDates');
+  app.get('/:room/programada/loadDates', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /${room}/programada/loadDates`);
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getProgLoadDates());
+        const result = await sql.query(queries.getProgLoadDates(room));
         res.json(result.recordset);
       } catch (err) {
-        serverLog(`[ERROR] GET /programada/loadDates: ${err}`);
+        serverLog(`[ERROR] GET /${room}/programada/loadDates: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
       // test data
-      serverLog('Using test data for /programada/loadDates');
+      serverLog(`Using test data for /${room}/programada/loadDates`);
       res.json(testData.loadDates);
     }
   });
 
-  app.get('/programada/total/:startDate', async (req, res) => {
-    serverLog('GET /programada/total');
-    const { startDate } = req.params;
+  app.get('/:room/programada/total/:startDate', async (req, res) => {
+    const { room, startDate } = req.params;
+    serverLog(`GET /${room}/programada/total`);
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getProgramadaTotal(startDate));
+        const result = await sql.query(
+          queries.getProgramadaTotal(room, startDate)
+        );
         res.json(result.recordset);
       } catch (err) {
-        serverLog(`[ERROR] GET /programada/total: ${err}`);
+        serverLog(`[ERROR] GET /${room}/programada/total: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
       // test data
-      serverLog('Using test data for /programada/total');
+      serverLog(`Using test data for /${room}/programada/total`);
       res.json(testData.programadaTotal);
     }
   });
 
   // stats for dashboard
-  app.get('/stats/dailyProduction/:room', async (req, res) => {
+  app.get('/:room/stats/dailyProduction', async (req, res) => {
     const { room } = req.params;
-    serverLog(`GET /stats/dailyProduction/${room}`);
+    serverLog(`GET /${room}/stats/dailyProduction`);
 
     if (isPackaged) {
       try {
         const result = await sql.query(queries.getDailyProduction(room));
         res.json(result.recordset);
       } catch (err) {
-        serverLog(`[ERROR] GET /stats/dailyProduction/${room}: ${err}`);
+        serverLog(`[ERROR] GET /${room}/stats/dailyProduction: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
@@ -528,9 +523,9 @@ const startServer = () => {
     }
   });
 
-  app.get('/stats/currentEfficiency/:room', async (req, res) => {
+  app.get('/:room/stats/currentEfficiency', async (req, res) => {
     const { room } = req.params;
-    serverLog(`GET /stats/currentEfficiency/${room}`);
+    serverLog(`GET /${room}/stats/currentEfficiency`);
 
     if (isPackaged) {
       try {
@@ -539,7 +534,7 @@ const startServer = () => {
 
         res.json(groupEffs);
       } catch (err) {
-        serverLog(`[ERROR] GET /stats/currentEfficiency/${room}: ${err}`);
+        serverLog(`[ERROR] GET /${room}/stats/currentEfficiency: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
@@ -549,9 +544,9 @@ const startServer = () => {
     }
   });
 
-  app.get('/stats/dailyEfficiency/:room', async (req, res) => {
+  app.get('/:room/stats/dailyEfficiency', async (req, res) => {
     const { room } = req.params;
-    serverLog(`GET /stats/dailyEfficiency/${room}`);
+    serverLog(`GET /${room}/stats/dailyEfficiency`);
 
     if (isPackaged) {
       try {
@@ -559,7 +554,7 @@ const startServer = () => {
 
         res.json(result.recordset);
       } catch (err) {
-        serverLog(`[ERROR] GET /stats/dailyEfficiency/${room}: ${err}`);
+        serverLog(`[ERROR] GET /${room}/stats/dailyEfficiency: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {
@@ -569,9 +564,9 @@ const startServer = () => {
     }
   });
 
-  app.get('/stats/monthSaldo/:room', async (req, res) => {
+  app.get('/:room/stats/monthSaldo', async (req, res) => {
     const { room } = req.params;
-    serverLog(`GET /stats/monthSaldo/${room}`);
+    serverLog(`GET /${room}/stats/monthSaldo`);
 
     const docenas = room === 'SEAMLESS' ? 12 : 24;
 
@@ -595,7 +590,7 @@ const startServer = () => {
 
         res.json(saldo);
       } catch (err) {
-        serverLog(`[ERROR] GET /stats/monthSaldo/${room}: ${err}`);
+        serverLog(`[ERROR] GET /${room}/stats/monthSaldo: ${err}`);
         res.status(500).json({ error: err.message });
       }
     } else {

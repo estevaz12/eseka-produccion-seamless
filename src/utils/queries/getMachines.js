@@ -1,4 +1,4 @@
-const getMachines = () => {
+const getMachines = (room) => {
   /* Machine states
   0: RUN
   1: POWER OFF
@@ -27,7 +27,7 @@ const getMachines = () => {
            WorkEfficiency,
            RoomCode
     FROM [dbNautilus].[dbo].[MACHINES]
-    WHERE RoomCode = 'SEAMLESS';
+    WHERE RoomCode = '${room}';
   `;
 };
 

@@ -4,10 +4,10 @@ function calcAProducir(row) {
   return row.Docenas / 2;
 }
 
-function calcProducido(row) {
-  if (row.Tipo === null) return row.Producido / 12 / 1.01;
-  if (row.Tipo === '#') return (row.Producido * 2) / 12 / 1.01;
-  return row.Producido / 2 / 12 / 1.01;
+function calcProducido(row, docena, porcExtra) {
+  if (row.Tipo === null) return row.Producido / docena / porcExtra;
+  if (row.Tipo === '#') return (row.Producido * 2) / docena / porcExtra;
+  return row.Producido / 2 / docena / porcExtra;
 }
 
 function calcFaltaUnidades(row) {
@@ -40,16 +40,20 @@ const colorStr = (row) => {
   }`;
 };
 
-const producidoStr = (row) => {
-  const producido = formatNum(calcProducido(row));
+const producidoStr = (row, docena, porcExtra) => {
+  const producido = formatNum(calcProducido(row, docena, porcExtra));
   return row.Tipo === null
     ? producido
-    : `${producido} (${formatNum(row.Producido / 12 / 1.01)})`;
+    : `${producido} (${formatNum(row.Producido / docena / porcExtra)})`;
 };
 
-const faltaStr = (row) => {
-  const falta = formatNum(calcAProducir(row) - calcProducido(row));
-  const faltaFisico = formatNum(row.Docenas - row.Producido / 12 / 1.01);
+const faltaStr = (row, docena, porcExtra) => {
+  const falta = formatNum(
+    calcAProducir(row) - calcProducido(row, docena, porcExtra)
+  );
+  const faltaFisico = formatNum(
+    row.Docenas - row.Producido / docena / porcExtra
+  );
   return row.Tipo == null ? falta : `${falta} (${faltaFisico})`;
 };
 

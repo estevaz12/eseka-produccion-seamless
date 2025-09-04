@@ -11,11 +11,13 @@ import ColorSelect from './ColorSelect.jsx';
 import { useConfig } from '../../ConfigContext.jsx';
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import { ErrorContext } from '../../Contexts.js';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 
 export default function ColorDistrInputs({ formData, setFormData }) {
   apiUrl = useConfig().apiUrl;
+  const { docena } = useOutletContext();
   const error = useContext(ErrorContext);
   const [colors, setColors] = useState([]);
   const [switched, setSwitched] = useState(
@@ -143,7 +145,9 @@ export default function ColorDistrInputs({ formData, setFormData }) {
                         type='number'
                         value={
                           formData.colorDistr?.[i]?.porcentaje
-                            ? Math.round(formData.colorDistr[i].porcentaje * 12)
+                            ? Math.round(
+                                formData.colorDistr[i].porcentaje * docena
+                              )
                             : 0
                         }
                         onChange={(e) =>
@@ -151,16 +155,16 @@ export default function ColorDistrInputs({ formData, setFormData }) {
                             const colorDistr = [...(prev.colorDistr || [])];
                             colorDistr[i] = {
                               ...colorDistr[i],
-                              porcentaje: Number(e.target.value) / 12,
+                              porcentaje: Number(e.target.value) / docena,
                             };
                             return { ...prev, colorDistr };
                           })
                         }
-                        slotProps={{ input: { min: 0, max: 12 } }}
+                        slotProps={{ input: { min: 0, max: docena } }}
                         className='**:text-right w-15'
                       />
                     </FormControl>
-                    <Typography>&nbsp;/&nbsp;12</Typography>
+                    <Typography>&nbsp;/&nbsp;{docena}</Typography>
                   </Stack>
                 </Stack>
               ))}
@@ -170,7 +174,7 @@ export default function ColorDistrInputs({ formData, setFormData }) {
             <FormHelperText>
               <ErrorOutline />
               {error === 'distr'
-                ? 'La suma del surtido es mayor a 12 unidades.'
+                ? `La suma del surtido es mayor a ${docena} unidades.`
                 : 'Los colores no se pueden repetir.'}
             </FormHelperText>
           )}

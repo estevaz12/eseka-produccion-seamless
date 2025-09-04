@@ -12,12 +12,14 @@ import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import DateEstimate from '../components/Dashboard/DateEstimate.jsx';
 import RequiredProd from '../components/Dashboard/RequiredProd.jsx';
+import { useOutletContext } from 'react-router';
 
 dayjs.extend(isSameOrBefore);
 
 let apiUrl;
 export default function Dashboard() {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [dailyProd, setDailyProd] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [progTotal, setProgTotal] = useState(0);
@@ -27,9 +29,8 @@ export default function Dashboard() {
   useEffect(() => {
     let ignored = false;
     let timeoutId;
-    const room = 'SEAMLESS';
 
-    fetch(`${apiUrl}/stats/dailyProduction/${room}`)
+    fetch(`${apiUrl}/${room}/stats/dailyProduction`)
       .then((res) => res.json())
       .then((data) => {
         if (!ignored) {
@@ -57,10 +58,10 @@ export default function Dashboard() {
       })
       .catch((err) => console.error('[CLIENT] Error fetching holidays:', err));
 
-    fetch(`${apiUrl}/programada/actualDate`)
+    fetch(`${apiUrl}/${room}/programada/actualDate`)
       .then((res) => res.json())
       .then((data) =>
-        fetch(`${apiUrl}/programada/total/${data[0].Date}`)
+        fetch(`${apiUrl}/${room}/programada/total/${data[0].Date}`)
           .then((res) => res.json())
           .then((data) => {
             if (!ignored) {

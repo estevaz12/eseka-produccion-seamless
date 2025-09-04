@@ -44,18 +44,6 @@ export default function ProduccionForm({ formData, setFormData, setUrl }) {
       onSubmit={(e) => handleSubmit(e)}
       className='sticky z-10 top-0 bg-[var(--joy-palette-background-body)] py-4'
     >
-      {/* <FormControl>
-          <FormLabel>Room</FormLabel>
-          <Select
-            value={formData.room}
-            onChange={(e, val) => setFormData({ ...formData, room: val })}
-          >
-            <Option value='SEAMLESS'>SEAMLESS</Option>
-            <Option value='HOMBRE'>HOMBRE</Option>
-            <Option value='MUJER'>MUJER</Option>
-          </Select>
-        </FormControl> */}
-
       <Stack direction='row' className='items-end justify-between'>
         <Stack direction='row' className='items-end gap-4'>
           <FormControl>

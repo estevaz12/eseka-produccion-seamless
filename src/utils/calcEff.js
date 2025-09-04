@@ -8,7 +8,7 @@ function calcEff(room, data) {
     const wEff =
       row.WorkEfficiency > 100 ? row.TimeEfficiency : row.WorkEfficiency;
     const groupCode =
-      room === 'SEAMLESS' ? seamlessGroups[row.MachCode] : row.GroupCode;
+      room === 'SEAMLESS' ? seamlessGroups[row.MachCode] : row.GroupCode.trim();
 
     const divisor = wEff * (row.TimeOn + row.TimeOff);
     const dividend = row.TimeOn + row.TimeOff;

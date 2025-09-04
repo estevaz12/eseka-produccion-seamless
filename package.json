@@ -1,6 +1,6 @@
 {
-  "name": "tejeduria-seamless",
-  "productName": "Tejeduría Seamless",
+  "name": "tejeduria",
+  "productName": "Tejeduría",
   "version": "1.0.0",
   "description": "An app for tracking production data.",
   "main": ".webpack/main",

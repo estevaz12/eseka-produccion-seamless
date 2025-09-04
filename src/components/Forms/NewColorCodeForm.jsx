@@ -27,9 +27,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
   apiUrl = useConfig().apiUrl;
   const { addToast } = useContext(ToastsContext);
   const [colors, setColors] = useState([]);
-  const [formData, setFormData] = useState({
-    colorCodes: [],
-  });
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -81,7 +79,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     codes.pop();
     localStorage.setItem('newColorCodes', JSON.stringify(codes));
     setNewColorCodes(codes);
-    setFormData({ colorCodes: [] });
+    setFormData({});
     setLoading(false);
 
     if (codes.length === 0) {
@@ -95,7 +93,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
     codes.pop();
     localStorage.setItem('newColorCodes', JSON.stringify(codes));
     setNewColorCodes(codes);
-    setFormData({ colorCodes: [] });
+    setFormData({});
 
     addToast({
       type: 'success',
@@ -158,9 +156,9 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
                 color='warning'
                 className='mx-0'
               >
-                PARCHES:
+                PUNTO:
               </Typography>
-              &nbsp;ingresar punto "9".
+              &nbsp;si en duda, verificar programada.
             </FormHelperText>
           </Stack>
 
@@ -207,20 +205,6 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
             </Stack>
           </FormControl>
 
-          {/* <ColorFormInputs
-        fieldName='colorCodes'
-        title='Códigos de colores'
-        label2='Código'
-        input2Key='code'
-        input2Attrs={{
-          type: 'text',
-          required: formData.colorCodes.length < 0,
-        }}
-        input2Val={newColorCode.StyleCode.color}
-        formData={formData}
-        setFormData={setFormData}
-      /> */}
-
           <Stack direction='row' className='gap-2'>
             <FormControl>
               <FormLabel>Código</FormLabel>
@@ -236,9 +220,8 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
               onChange={(color) => {
                 setFormData((prev) => ({
                   ...prev,
-                  colorCodes: [
-                    { color: color, code: newColorCode.StyleCode.color },
-                  ],
+                  color: color,
+                  code: newColorCode.StyleCode.color,
                 }));
               }}
               inheritedColors={colors}

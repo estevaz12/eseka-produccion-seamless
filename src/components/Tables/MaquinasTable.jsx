@@ -10,20 +10,21 @@ import {
   getMachState,
   getWorkEff,
   isParada,
-  isProducing,
 } from '../../utils/maquinasUtils.js';
 import { useConfig } from '../../ConfigContext.jsx';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 export default function MaquinasTable({ machines, pdfRows }) {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
+
   const [currEff, setCurrEff] = useState(null);
 
   useEffect(() => {
     let ignored = false;
-    const room = 'SEAMLESS';
 
-    fetch(`${apiUrl}/stats/currentEfficiency/${room}`)
+    fetch(`${apiUrl}/${room}/stats/currentEfficiency`)
       .then((res) => res.json())
       .then((data) => {
         if (!ignored) {

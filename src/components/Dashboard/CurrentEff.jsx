@@ -7,18 +7,18 @@ import { colors } from '../../utils/chartUtils.js';
 import Divider from '@mui/joy/Divider';
 import Stack from '@mui/joy/Stack';
 import dayjs from 'dayjs';
-import Skeleton from '@mui/joy/Skeleton';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 export default function CurrentEff({ yesterdayEff }) {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [loading, setLoading] = useState(true);
   const [dataset, setDataset] = useState({ total: 0, groups: [] });
 
   useEffect(() => {
     let ignored = false;
     let interval;
-    const room = 'SEAMLESS';
 
     fetchEff();
     // fetch every 30 seconds
@@ -30,7 +30,7 @@ export default function CurrentEff({ yesterdayEff }) {
     };
 
     function fetchEff() {
-      fetch(`${apiUrl}/stats/currentEfficiency/${room}`)
+      fetch(`${apiUrl}/${room}/stats/currentEfficiency`)
         .then((res) => res.json())
         .then((data) => {
           if (!ignored) {
@@ -80,7 +80,7 @@ export default function CurrentEff({ yesterdayEff }) {
             tickInterval: [0, 50, 60, 70, 85, 100],
             colorMap: {
               type: 'piecewise',
-              thresholds: [75, 80],
+              thresholds: [80, 85],
               colors: [colors.red, colors.yellow, colors.green],
             },
           },

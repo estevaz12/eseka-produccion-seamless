@@ -14,6 +14,7 @@ let apiUrl;
 
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
   const [startDate, setStartDate] = useState();
   const [progColor, setProgColor] = useState([]);
   const [filteredProgColor, setFilteredProgColor] = useState([]);
@@ -24,7 +25,7 @@ export default function Programada() {
 
     if (!startDate) {
       // fetch start date of current programada
-      fetch(`${apiUrl}/programada/actualDate`)
+      fetch(`${apiUrl}/${room}/programada/actualDate`)
         .then((res) => res.json())
         .then((data) => {
           if (!ignore) setStartDate(data[0].Date);
@@ -37,20 +38,20 @@ export default function Programada() {
     return () => {
       ignore = true;
     };
-  }, [startDate]);
+  }, [room, startDate]);
 
   function handleRefresh() {
     if (startDate) {
       const params = new URLSearchParams({
         startDate,
       }).toString();
-      fetch(`${apiUrl}/programada?${params}`)
+      fetch(`${apiUrl}/${room}/programada?${params}`)
         .then((res) => res.json())
         .then((data) => {
           setProgColor(data);
         })
         .catch((err) =>
-          console.error('[CLIENT] Error fetching /programada:', err)
+          console.error(`[CLIENT] Error fetching /${room}/programada:`, err)
         );
     }
   }

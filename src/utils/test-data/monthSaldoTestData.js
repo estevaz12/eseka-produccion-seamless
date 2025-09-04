@@ -1,14 +1,14 @@
 module.exports = {
-  porc: '0.69',
+  porc: '0.83',
   data: [
     {
       id: 0,
-      value: 91,
+      value: 40,
       label: 'Saldo',
     },
     {
       id: 1,
-      value: 13236,
+      value: 4753,
       label: 'Restante',
     },
   ],

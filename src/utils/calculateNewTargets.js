@@ -138,7 +138,7 @@ async function getMonthProduction(newRecord) {
     // Get the production for the month
     monthProduction = await sql.query(
       produccion(
-        'SEAMLESS',
+        newRecord.RoomCode,
         startDate,
         endDate,
         true,
@@ -188,7 +188,8 @@ function getPreviousRecord(newRecord) {
   return `
       SELECT TOP (1) *
       FROM View_Prog_Color
-      WHERE Fecha < '${newRecord.Fecha}'
+      WHERE RoomCode = '${newRecord.RoomCode}'
+            AND Fecha < '${newRecord.Fecha}'
             AND Articulo = ${newRecord.Articulo}
             AND Talle = ${newRecord.Talle}
             AND ColorId = ${newRecord.ColorId}

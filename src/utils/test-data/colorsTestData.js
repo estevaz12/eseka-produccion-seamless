@@ -6,6 +6,30 @@ module.exports = [
     WhiteText: null,
   },
   {
+    Id: 61,
+    Color: '03',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 60,
+    Color: '04',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 66,
+    Color: '92',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 54,
+    Color: 'APRICOT',
+    Hex: '#FDD49B',
+    WhiteText: null,
+  },
+  {
     Id: 17,
     Color: 'AZUL ROJO',
     Hex: '#DF2935',
@@ -14,19 +38,19 @@ module.exports = [
   {
     Id: 3,
     Color: 'BLANCO CORAZONES',
-    Hex: '#F1F1F8',
+    Hex: '#FFFFFF',
+    WhiteText: null,
+  },
+  {
+    Id: 2,
+    Color: 'CRUDO',
+    Hex: '#FDD49B',
     WhiteText: null,
   },
   {
     Id: 35,
     Color: 'CRUDO BLANCO',
-    Hex: '#F1F1F8',
-    WhiteText: null,
-  },
-  {
-    Id: 2,
-    Color: 'CRUDO CRUDO',
-    Hex: '#FDC372',
+    Hex: '#FFFFFF',
     WhiteText: null,
   },
   {
@@ -62,7 +86,7 @@ module.exports = [
   {
     Id: 43,
     Color: 'D2 BLANCO',
-    Hex: '#F1F1F8',
+    Hex: '#FFFFFF',
     WhiteText: null,
   },
   {
@@ -72,9 +96,63 @@ module.exports = [
     WhiteText: true,
   },
   {
+    Id: 55,
+    Color: 'DISEÑO 1',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 56,
+    Color: 'DISEÑO 2',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 57,
+    Color: 'DISEÑO 3',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 62,
+    Color: 'DISEÑO 4',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 59,
+    Color: 'DISEÑO 5',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 65,
+    Color: 'DISEÑO 6',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 64,
+    Color: 'DISEÑO 7',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 63,
+    Color: 'DISEÑO 8',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
+    Id: 58,
+    Color: 'DISEÑO 9',
+    Hex: null,
+    WhiteText: null,
+  },
+  {
     Id: 38,
-    Color: 'GRIS BORDO',
-    Hex: '#7B2339',
+    Color: 'GRIS BORDÓ',
+    Hex: '#8C2A3F',
     WhiteText: true,
   },
   {
@@ -98,8 +176,14 @@ module.exports = [
   {
     Id: 33,
     Color: 'GRIS MOSTAZA',
-    Hex: '#D59502',
+    Hex: '#E5AA01',
     WhiteText: null,
+  },
+  {
+    Id: 52,
+    Color: 'GRIS NEGRO',
+    Hex: '#272727',
+    WhiteText: true,
   },
   {
     Id: 34,
@@ -110,7 +194,7 @@ module.exports = [
   {
     Id: 11,
     Color: 'MELANGE AERO',
-    Hex: '#6B9AC4',
+    Hex: '#8AB1D0',
     WhiteText: null,
   },
   {
@@ -122,13 +206,13 @@ module.exports = [
   {
     Id: 19,
     Color: 'MELANGE BLANCO',
-    Hex: '#F1F1F8',
+    Hex: '#FFFFFF',
     WhiteText: null,
   },
   {
     Id: 9,
-    Color: 'MELANGE BORDO',
-    Hex: '#7B2339',
+    Color: 'MELANGE BORDÓ',
+    Hex: '#8C2A3F',
     WhiteText: true,
   },
   {
@@ -170,8 +254,14 @@ module.exports = [
   {
     Id: 10,
     Color: 'MELANGE VERDE',
-    Hex: '#7EAD4A',
+    Hex: '#68A13F',
     WhiteText: null,
+  },
+  {
+    Id: 23,
+    Color: 'NEGRO',
+    Hex: '#272727',
+    WhiteText: true,
   },
   {
     Id: 15,
@@ -182,7 +272,7 @@ module.exports = [
   {
     Id: 14,
     Color: 'NEGRO BLANCO',
-    Hex: '#F1F1F8',
+    Hex: '#FFFFFF',
     WhiteText: null,
   },
   {
@@ -204,12 +294,6 @@ module.exports = [
     WhiteText: null,
   },
   {
-    Id: 23,
-    Color: 'NEGRO NEGRO',
-    Hex: '#272727',
-    WhiteText: true,
-  },
-  {
     Id: 16,
     Color: 'NEGRO ROJO',
     Hex: '#DF2935',
@@ -222,9 +306,21 @@ module.exports = [
     WhiteText: null,
   },
   {
+    Id: 53,
+    Color: 'PETRÓLEO',
+    Hex: '#007A7A',
+    WhiteText: true,
+  },
+  {
     Id: 21,
     Color: 'POAL BLANCO',
-    Hex: '#F1F1F8',
+    Hex: '#FFFFFF',
+    WhiteText: null,
+  },
+  {
+    Id: 51,
+    Color: 'POAL CRUDO',
+    Hex: '#FDD49B',
     WhiteText: null,
   },
   {

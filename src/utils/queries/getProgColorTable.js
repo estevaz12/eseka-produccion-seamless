@@ -2,6 +2,7 @@ const dayjs = require('dayjs');
 const produccion = require('./produccion');
 
 const getProgColorTable = (
+  room,
   startDate,
   startMonth = null,
   startYear = null,
@@ -44,7 +45,7 @@ const getProgColorTable = (
 
   // get Month Production
   const monthProd = produccion(
-    'SEAMLESS',
+    room,
     prodStartDate,
     prodEndDate,
     endDate === null ? true : false,
@@ -63,16 +64,18 @@ const getProgColorTable = (
         ON p.Articulo = pc.Articulo 
            AND p.Talle = pc.Talle 
            AND p.ColorId = pc.ColorId
-    WHERE pc.Fecha = (SELECT MAX(pc2.Fecha)
-                      FROM View_Prog_Color AS pc2
-                      WHERE pc2.Articulo = pc.Articulo 
-                            AND pc2.Talle = pc.Talle
-                            ${
-                              startMonth && startYear && endDate
-                                ? `AND pc2.Fecha < '${endDate}'`
-                                : ''
-                            }
-                            )
+    WHERE pc.RoomCode = '${room}' 
+          AND pc.Fecha = (
+            SELECT MAX(pc2.Fecha)
+            FROM View_Prog_Color AS pc2
+            WHERE pc2.Articulo = pc.Articulo 
+                  AND pc2.Talle = pc.Talle
+                  ${
+                    startMonth && startYear && endDate
+                      ? `AND pc2.Fecha < '${endDate}'`
+                      : ''
+                  }
+            )
           ${
             startMonth && startYear && endDate
               ? `AND pc.Fecha >= '${startDate}' AND pc.Fecha < '${endDate}'`

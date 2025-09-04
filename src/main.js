@@ -15,7 +15,7 @@ const timezone = require('dayjs/plugin/timezone');
 // to avoid squirrel multiple app spawning
 if (require('electron-squirrel-startup')) app.quit();
 
-app.setAppUserModelId('com.squirrel.TejeduriaSeamless.TejeduriaSeamless');
+app.setAppUserModelId('com.squirrel.Tejeduria.Tejeduria');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -41,7 +41,7 @@ async function handleFileOpen() {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    title: 'Tejeduría Seamless',
+    title: 'Tejeduría',
     width: 1366,
     height: 727,
     icon: path.join(__dirname, 'assets', 'icons', 'icon.ico'),

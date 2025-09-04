@@ -17,9 +17,12 @@ import {
   isProducing,
 } from '../utils/maquinasUtils';
 import { Card } from '@mui/joy';
+import { useOutletContext } from 'react-router';
 
 export default function MaquinasMap({ machines }) {
+  const { room } = useOutletContext();
   const [open, setOpened] = useState(0);
+  const groups = rooms[room];
 
   const loadingMachs = Array.from(
     { length: groups[groups.length - 1].max - groups[0].min },
@@ -28,71 +31,85 @@ export default function MaquinasMap({ machines }) {
 
   return (
     <>
-      {groups.map((group) => (
-        <Stack direction='column' className='gap-2 even:mt-8' key={group.min}>
-          <Typography level='h4'>{`${group.min} - ${group.max}`}</Typography>
+      <Box
+        className={`${
+          room.startsWith('HOMBRE') && 'grid grid-cols-2 gap-4'
+        } pb-24 size-full`}
+      >
+        {groups.map((group) => {
+          const cols = Math.ceil((group.max - group.min + 1) / 2);
+          // console.log(cols);
 
-          <Box className='grid gap-2 grid-cols-15'>
-            {[...(machines.length === 0 ? loadingMachs : machines)].map(
-              (m) =>
-                m.MachCode >= group.min &&
-                m.MachCode <= group.max && (
-                  <Dropdown
-                    key={m.MachCode}
-                    open={open === m.MachCode}
-                    onOpenChange={(e, isOpen) =>
-                      setOpened(isOpen ? m.MachCode : 0)
-                    }
-                  >
-                    <MenuButton
-                      variant='soft'
-                      size='lg'
-                      className='p-2 font-medium'
-                    >
-                      <Stack direction='column' className='items-center gap-1'>
-                        <AspectRatio
-                          ratio='1'
-                          sx={{ width: 50 }}
-                          objectFit='contain'
-                          variant='plain'
+          return (
+            <Stack direction='column' className='gap-2' key={group.min}>
+              <Typography level='h4'>{`${group.min} - ${group.max}`}</Typography>
+
+              <Box className={`grid gap-2 ${gridColsMap[cols]}`}>
+                {[...(machines.length === 0 ? loadingMachs : machines)].map(
+                  (m) =>
+                    m.MachCode >= group.min &&
+                    m.MachCode <= group.max && (
+                      <Dropdown
+                        key={m.MachCode}
+                        open={open === m.MachCode}
+                        onOpenChange={(e, isOpen) =>
+                          setOpened(isOpen ? m.MachCode : 0)
+                        }
+                      >
+                        <MenuButton
+                          variant='soft'
+                          size='sm'
+                          className='p-2 font-medium'
                         >
-                          <Skeleton loading={machines.length === 0}>
-                            <img src={getIconFor(m)} />
-                          </Skeleton>
-                        </AspectRatio>
-                        <Typography>
-                          <Skeleton loading={machines.length === 0}>
-                            {m.MachCode}
-                          </Skeleton>
-                        </Typography>
-                      </Stack>
-                    </MenuButton>
-                    <Menu placement='right-start'>
-                      <ListItem>
-                        <Typography level='title-lg'>
-                          Máquina: {m.MachCode}
-                        </Typography>
-                      </ListItem>
-                      <ListItem>Cadena: {m.StyleCode}</ListItem>
-                      <ListItem>Prendas: {m.Pieces}</ListItem>
-                      <ListItem>Target: {m.TargetOrder}</ListItem>
-                      <ListItem>
-                        Tiempo al 100%: {getDuration(calcIdealTime(m))}
-                      </ListItem>
-                      <ListItem>
-                        Tiempo Real: {getDuration(calcRealTime(m))}
-                      </ListItem>
-                      <ListItem>
-                        Efficiencia: {getWorkEff(m) && `${getWorkEff(m)}%`}
-                      </ListItem>
-                      <ListItem>Estado: {getMachState(m).text}</ListItem>
-                    </Menu>
-                  </Dropdown>
-                )
-            )}
-          </Box>
-        </Stack>
-      ))}
+                          <Stack
+                            direction='column'
+                            className='items-center gap-1'
+                          >
+                            <AspectRatio
+                              ratio='1'
+                              sx={{ width: 35 }}
+                              objectFit='contain'
+                              variant='plain'
+                            >
+                              <Skeleton loading={machines.length === 0}>
+                                <img src={getIconFor(m)} />
+                              </Skeleton>
+                            </AspectRatio>
+                            <Typography>
+                              <Skeleton loading={machines.length === 0}>
+                                {m.MachCode}
+                              </Skeleton>
+                            </Typography>
+                          </Stack>
+                        </MenuButton>
+                        <Menu placement='right-start'>
+                          <ListItem>
+                            <Typography level='title-lg'>
+                              Máquina: {m.MachCode}
+                            </Typography>
+                          </ListItem>
+                          <ListItem>Cadena: {m.StyleCode}</ListItem>
+                          <ListItem>Prendas: {m.Pieces}</ListItem>
+                          <ListItem>Target: {m.TargetOrder}</ListItem>
+                          <ListItem>
+                            Tiempo al 100%: {getDuration(calcIdealTime(m))}
+                          </ListItem>
+                          <ListItem>
+                            Tiempo Real: {getDuration(calcRealTime(m))}
+                          </ListItem>
+                          <ListItem>
+                            Efficiencia: {getWorkEff(m) && `${getWorkEff(m)}%`}
+                          </ListItem>
+                          <ListItem>Estado: {getMachState(m).text}</ListItem>
+                        </Menu>
+                      </Dropdown>
+                    )
+                )}
+              </Box>
+            </Stack>
+          );
+        })}
+      </Box>
 
       <Card
         color='primary'
@@ -139,10 +156,27 @@ export default function MaquinasMap({ machines }) {
   );
 }
 
-const groups = [
-  { min: 1001, max: 1030 },
-  { min: 1031, max: 1037 },
-];
+const rooms = {
+  HOMBRE: [
+    { min: 389, max: 408 },
+    { min: 409, max: 428 },
+    { min: 367, max: 388 },
+    { min: 345, max: 366 },
+    { min: 301, max: 322 },
+    { min: 323, max: 344 },
+    { min: 429, max: 450 },
+  ],
+  SEAMLESS: [{ min: 1001, max: 1037 }],
+};
+
+const gridColsMap = {
+  3: 'grid-cols-3',
+  4: 'grid-cols-4',
+  10: 'grid-cols-10',
+  11: 'grid-cols-11',
+  15: 'grid-cols-15',
+  19: 'grid-cols-19',
+};
 
 function importAll(r) {
   const icons = {};

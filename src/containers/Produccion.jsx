@@ -6,15 +6,17 @@ import ProduccionForm from '../components/Forms/ProduccionForm.jsx';
 import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
 import ArticuloCol from '../components/Tables/ArticuloCol.jsx';
 import { DatesContext } from '../Contexts.js';
+import { useOutletContext } from 'react-router';
 
 let apiUrl, sqlDateFormat;
 
 export default function Produccion() {
   ({ apiUrl, sqlDateFormat } = useConfig());
+  const { room, docena } = useOutletContext();
   const [url, setUrl] = useState();
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
-    room: 'SEAMLESS',
+    room,
     startDate: dayjs.tz().startOf('month').hour(6).minute(0).second(1),
     endDate: dayjs.tz(),
     actual: true,
@@ -27,7 +29,7 @@ export default function Produccion() {
   useEffect(() => {
     let ignore = false;
     const params = new URLSearchParams({
-      room: 'SEAMLESS',
+      room,
       startDate: dayjs
         .tz()
         .startOf('month')
@@ -105,18 +107,18 @@ export default function Produccion() {
       label: 'Color',
     },
     {
+      id: 'Docenas',
+      label: 'Docenas',
+      align: 'right',
+      pdfValue: (row) => calcProducido(row) / docena,
+      pdfRender: (row) => docenasStr(row),
+    },
+    {
       id: 'Unidades',
       label: 'Unidades',
       align: 'right',
       pdfValue: (row) => calcProducido(row),
       pdfRender: (row) => unidadesStr(row),
-    },
-    {
-      id: 'Docenas',
-      label: 'Docenas',
-      align: 'right',
-      pdfValue: (row) => calcProducido(row) / 12,
-      pdfRender: (row) => docenasStr(row),
     },
   ];
 
@@ -136,8 +138,10 @@ export default function Produccion() {
   function docenasStr(row) {
     const producido = calcProducido(row);
     return row.Tipo === null
-      ? (producido / 12).toFixed(1)
-      : `${(producido / 12).toFixed(1)} (${(row.Unidades / 12).toFixed(1)})`;
+      ? (producido / docena).toFixed(1)
+      : `${(producido / docena).toFixed(1)} (${(row.Unidades / docena).toFixed(
+          1
+        )})`;
   }
 
   function renderRow(row, i, opened, handleClick) {
@@ -163,10 +167,10 @@ export default function Produccion() {
         >
           {row.Color}
         </td>
-        {/* Unidades */}
-        <td className='text-right'>{unidadesStr(row)}</td>
         {/* Docenas */}
         <td className='text-right'>{docenasStr(row)}</td>
+        {/* Unidades */}
+        <td className='text-right'>{unidadesStr(row)}</td>
       </>,
     ];
   }
@@ -177,7 +181,7 @@ export default function Produccion() {
     [data]
   );
   const totalDocenas = useMemo(
-    () => data.reduce((acc, row) => acc + calcProducido(row) / 12, 0),
+    () => data.reduce((acc, row) => acc + calcProducido(row) / docena, 0),
     [data]
   );
 
@@ -205,8 +209,8 @@ export default function Produccion() {
           initOrderBy='Articulo'
           footer={[
             'Total',
-            Math.round(totalUnidades) || '0',
             Math.round(totalDocenas) || '0',
+            Math.round(totalUnidades) || '0',
           ]}
           headerTop='top-[94px]'
         />

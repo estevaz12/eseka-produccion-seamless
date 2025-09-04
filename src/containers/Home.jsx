@@ -9,6 +9,12 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../components/ErrorFallback.jsx';
 
 export default function Home() {
+  // SEAMLESS, HOMBRE (ALG)
+  const [room, setRoom] = useState(
+    () => localStorage.getItem('lastRoom') || 'SEAMLESS'
+  );
+  const sector = room !== 'SEAMLESS' ? 'ALGODÓN' : room;
+
   // using localStorage so toasts persist through refresh
   const [toasts, setToasts] = useState(() =>
     JSON.parse(localStorage.getItem('toasts') || '[]')
@@ -28,6 +34,15 @@ export default function Home() {
     });
   };
 
+  // reload on room change
+  useEffect(() => {
+    const lastRoom = localStorage.getItem('lastRoom');
+    if (lastRoom !== room) {
+      localStorage.setItem('lastRoom', room);
+      window.location.reload();
+    }
+  }, [room]);
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ToastsContext value={{ addToast }}>
@@ -36,11 +51,17 @@ export default function Home() {
           className='items-stretch justify-start size-full'
         >
           <aside className='fixed top-0 bottom-0 left-0 z-20 w-40 h-screen'>
-            <NavBar />
+            <NavBar room={room} setRoom={setRoom} />
           </aside>
 
           <Box className='w-full px-4 ml-40'>
-            <Outlet />
+            <Outlet
+              context={{
+                room,
+                docena: room === 'SEAMLESS' ? 12 : 24,
+                porcExtra: room === 'SEAMLESS' ? 1.01 : 1.02,
+              }}
+            />
           </Box>
         </Stack>
 

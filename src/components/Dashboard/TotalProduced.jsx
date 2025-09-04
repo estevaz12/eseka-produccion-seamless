@@ -6,7 +6,6 @@ import {
   colors,
   getIntervalDates,
 } from '../../utils/chartUtils.js';
-import dayjs from 'dayjs';
 
 export default function TotalProduced({
   dataset,
