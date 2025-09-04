@@ -182,7 +182,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      let query = queries.insertArticulo(data);
+      let query = queries.insertArticulo(data.articulo, data.tipo);
       await sql.query(query);
       serverLog(query);
       res

@@ -107,18 +107,18 @@ export default function Produccion() {
       label: 'Color',
     },
     {
-      id: 'Unidades',
-      label: 'Unidades',
-      align: 'right',
-      pdfValue: (row) => calcProducido(row),
-      pdfRender: (row) => unidadesStr(row),
-    },
-    {
       id: 'Docenas',
       label: 'Docenas',
       align: 'right',
       pdfValue: (row) => calcProducido(row) / docena,
       pdfRender: (row) => docenasStr(row),
+    },
+    {
+      id: 'Unidades',
+      label: 'Unidades',
+      align: 'right',
+      pdfValue: (row) => calcProducido(row),
+      pdfRender: (row) => unidadesStr(row),
     },
   ];
 
@@ -167,10 +167,10 @@ export default function Produccion() {
         >
           {row.Color}
         </td>
-        {/* Unidades */}
-        <td className='text-right'>{unidadesStr(row)}</td>
         {/* Docenas */}
         <td className='text-right'>{docenasStr(row)}</td>
+        {/* Unidades */}
+        <td className='text-right'>{unidadesStr(row)}</td>
       </>,
     ];
   }
@@ -209,8 +209,8 @@ export default function Produccion() {
           initOrderBy='Articulo'
           footer={[
             'Total',
-            Math.round(totalUnidades) || '0',
             Math.round(totalDocenas) || '0',
+            Math.round(totalUnidades) || '0',
           ]}
           headerTop='top-[94px]'
         />

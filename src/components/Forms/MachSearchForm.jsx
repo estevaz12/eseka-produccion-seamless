@@ -17,7 +17,7 @@ export default function MachSearchForm({ machines, setFilteredMachines }) {
         // if the fields are undefined, they are set as empty strings
         const { machine = '', styleCode = '' } = formData;
         if (machine !== '') return row.MachCode === Number(machine);
-        if (styleCode !== '') return row.StyleCode.startsWith(styleCode);
+        if (styleCode !== '') return row.StyleCode.includes(styleCode);
 
         return true;
       })
