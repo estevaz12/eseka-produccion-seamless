@@ -12,10 +12,12 @@ import {
   isParada,
 } from '../../utils/maquinasUtils.js';
 import { useConfig } from '../../ConfigContext.jsx';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
-export default function MaquinasTable({ room, machines, pdfRows }) {
+export default function MaquinasTable({ machines, pdfRows }) {
   apiUrl = useConfig().apiUrl;
+  const { room } = useOutletContext();
 
   const [currEff, setCurrEff] = useState(null);
 

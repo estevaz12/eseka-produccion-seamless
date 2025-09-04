@@ -50,7 +50,7 @@ export default function DailyEff({ setYesterdayEff }) {
   }, [dataset]);
 
   const effColor =
-    avgEff >= 80 ? colors.green : avgEff >= 75 ? colors.yellow : colors.red;
+    avgEff >= 85 ? colors.green : avgEff >= 80 ? colors.yellow : colors.red;
 
   const data = dataset.map((row) => row.WorkEfficiency);
   const dataSettings = {

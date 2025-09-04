@@ -5,8 +5,10 @@ import ChartHeader from './ChartHeader.jsx';
 import Divider from '@mui/joy/Divider';
 import dayjs from 'dayjs';
 import Stack from '@mui/joy/Stack';
+import { useOutletContext } from 'react-router';
 
 export default function DailyProduction({ dataset, dailyAverage, loading }) {
+  const { room } = useOutletContext();
   // will be {Docenas: null, ProdDate: null} if no data
   const yesterdayProd = dataset[dataset.length - 1];
 
@@ -45,7 +47,7 @@ export default function DailyProduction({ dataset, dailyAverage, loading }) {
         ]}
         yAxis={[
           {
-            max: 1500,
+            max: room.startsWith('SEAMLESS') ? 1500 : 3000,
             colorMap: {
               type: 'piecewise',
               thresholds: [dailyAverage * 0.9, dailyAverage],

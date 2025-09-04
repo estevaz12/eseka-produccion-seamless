@@ -107,7 +107,6 @@ export default function Maquinas() {
       {/* table and map */}
       <TabPanel value={0} className='p-0'>
         <MaquinasMap
-          room={room}
           machines={
             filteredMachines.length > 0 ? sortedFiltered : sortedMachines
           }
@@ -115,7 +114,6 @@ export default function Maquinas() {
       </TabPanel>
       <TabPanel value={1} className='p-0'>
         <MaquinasTable
-          room={room}
           machines={filteredMachines.length > 0 ? filteredMachines : machines}
           pdfRows={machines}
         />

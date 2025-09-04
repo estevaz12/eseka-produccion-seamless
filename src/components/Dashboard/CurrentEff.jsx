@@ -80,7 +80,7 @@ export default function CurrentEff({ yesterdayEff }) {
             tickInterval: [0, 50, 60, 70, 85, 100],
             colorMap: {
               type: 'piecewise',
-              thresholds: [75, 80],
+              thresholds: [80, 85],
               colors: [colors.red, colors.yellow, colors.green],
             },
           },
