@@ -63,7 +63,7 @@ const parseStyleCode = async (room, styleCode) => {
         // assign it if talle is 9
         punto = 9;
       }
-    } else if (typeof articulo === 'string') {
+    } else if (room === 'SEAMLESS' && typeof articulo === 'string') {
       // if articulo is string, then .0 was not found, check for .1
       try {
         const res = await sql.query(getArticulo(`${articulo}.1`));

@@ -51,6 +51,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
       id: 'StyleCode',
       label: 'Cadena',
       align: 'center',
+      pdfRender: (row) => (isParada(row) ? 'PARADA' : row.StyleCode),
       sortFn: (a, b, order) => {
         let aStyleCode = a.StyleCode;
         let bStyleCode = b.StyleCode;

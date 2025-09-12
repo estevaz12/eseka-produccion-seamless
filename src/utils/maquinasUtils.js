@@ -116,7 +116,7 @@ function calcRealTime(row) {
 function getDuration(seconds) {
   return seconds === 0
     ? null
-    : dayjs.tz().add(seconds, 'seconds').format('DD/MM/YYYY HH:mm');
+    : dayjs.tz().add(seconds, 'seconds').format('DD/MM HH:mm');
 }
 
 function getDurationUnix(seconds) {
