@@ -544,7 +544,10 @@ const startServer = () => {
             }
           );
 
-          return { ...row, Machines: matchingMachines.sort() };
+          return {
+            ...row,
+            Machines: matchingMachines.sort((a, b) => a.MachCode - b.MachCode),
+          };
         });
 
         res.json(rows);
