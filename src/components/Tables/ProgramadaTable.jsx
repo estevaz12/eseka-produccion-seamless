@@ -17,6 +17,7 @@ import ArticuloCol from './ArticuloCol.jsx';
 import { DatesContext } from '../../Contexts.js';
 import ProgLegend from './ProgLegend.jsx';
 import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
+import { useOutletContext } from 'react-router';
 
 let apiUrl;
 
