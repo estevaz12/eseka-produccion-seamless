@@ -59,8 +59,8 @@ export default function MaquinasTable({ machines, pdfRows }) {
         if (isParada(a)) aStyleCode = 'PARADA';
         if (isParada(b)) bStyleCode = 'PARADA';
 
-        if (aStyleCode < bStyleCode) return -1;
-        if (aStyleCode > bStyleCode) return 1;
+        if (aStyleCode < bStyleCode) return 1;
+        if (aStyleCode > bStyleCode) return -1;
         return 0;
       },
     },
