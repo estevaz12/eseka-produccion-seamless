@@ -14,7 +14,6 @@ export default function Home() {
   const [room, setRoom] = useState(
     () => localStorage.getItem('lastRoom') || 'SEAMLESS'
   );
-  const sector = room !== 'SEAMLESS' ? 'ALGODÓN' : room;
 
   // using localStorage so toasts persist through refresh
   const [toasts, setToasts] = useState(() =>
