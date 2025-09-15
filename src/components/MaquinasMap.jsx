@@ -25,7 +25,7 @@ export default function MaquinasMap({ machines }) {
   const groups = rooms[room];
 
   const loadingMachs = Array.from(
-    { length: groups[groups.length - 1].max - groups[0].min },
+    { length: groups[groups.length - 1].max - groups[0].min + 1 },
     (_, i) => ({ MachCode: i + groups[0].min })
   );
 
@@ -38,72 +38,99 @@ export default function MaquinasMap({ machines }) {
       >
         {groups.map((group) => {
           const cols = Math.ceil((group.max - group.min + 1) / 2);
-          // console.log(cols);
+          const groupMachs = machines.filter(
+            (m) => m.MachCode >= group.min && m.MachCode <= group.max
+          );
+
+          // if (room === 'SEAMLESS') {
+          //   groupMachs.push({MachCode: group.max + 1})
+          // }
+
+          const orderedMachs = groupMachs.slice().sort((a, b) => {
+            if (group.oddFirst) {
+              if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return -1;
+              if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return 1;
+            } else {
+              // even first
+              if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return -1;
+              if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return 1;
+            }
+
+            if (group.reversed) {
+              return b.MachCode - a.MachCode;
+            } else {
+              // not reversed
+              return a.MachCode - b.MachCode;
+            }
+          });
 
           return (
             <Stack direction='column' className='gap-2' key={group.min}>
               <Typography level='h4'>{`${group.min} - ${group.max}`}</Typography>
 
               <Box className={`grid gap-2 ${gridColsMap[cols]}`}>
-                {[...(machines.length === 0 ? loadingMachs : machines)].map(
-                  (m) =>
-                    m.MachCode >= group.min &&
-                    m.MachCode <= group.max && (
-                      <Dropdown
-                        key={m.MachCode}
-                        open={open === m.MachCode}
-                        onOpenChange={(e, isOpen) =>
-                          setOpened(isOpen ? m.MachCode : 0)
-                        }
+                {[...(machines.length === 0 ? loadingMachs : orderedMachs)].map(
+                  (m) => (
+                    <Dropdown
+                      key={m.MachCode}
+                      open={open === m.MachCode}
+                      onOpenChange={(e, isOpen) =>
+                        setOpened(isOpen ? m.MachCode : 0)
+                      }
+                    >
+                      <MenuButton
+                        variant='soft'
+                        size='sm'
+                        className='p-2 font-medium'
                       >
-                        <MenuButton
-                          variant='soft'
-                          size='sm'
-                          className='p-2 font-medium'
+                        <Stack
+                          direction='column'
+                          className='items-center gap-1'
                         >
-                          <Stack
-                            direction='column'
-                            className='items-center gap-1'
+                          <AspectRatio
+                            ratio='1'
+                            sx={{ width: 35 }}
+                            objectFit='contain'
+                            variant='plain'
                           >
-                            <AspectRatio
-                              ratio='1'
-                              sx={{ width: 35 }}
-                              objectFit='contain'
-                              variant='plain'
-                            >
-                              <Skeleton loading={machines.length === 0}>
-                                <img src={getIconFor(m)} />
-                              </Skeleton>
-                            </AspectRatio>
-                            <Typography>
-                              <Skeleton loading={machines.length === 0}>
-                                {m.MachCode}
-                              </Skeleton>
-                            </Typography>
-                          </Stack>
-                        </MenuButton>
-                        <Menu placement='right-start'>
-                          <ListItem>
-                            <Typography level='title-lg'>
-                              Máquina: {m.MachCode}
-                            </Typography>
-                          </ListItem>
-                          <ListItem>Cadena: {m.StyleCode}</ListItem>
-                          <ListItem>Prendas: {m.Pieces}</ListItem>
-                          <ListItem>Target: {m.TargetOrder}</ListItem>
-                          <ListItem>
-                            Tiempo al 100%: {getDuration(calcIdealTime(m))}
-                          </ListItem>
-                          <ListItem>
-                            Tiempo Real: {getDuration(calcRealTime(m))}
-                          </ListItem>
-                          <ListItem>
-                            Efficiencia: {getWorkEff(m) && `${getWorkEff(m)}%`}
-                          </ListItem>
-                          <ListItem>Estado: {getMachState(m).text}</ListItem>
-                        </Menu>
-                      </Dropdown>
-                    )
+                            <Skeleton loading={machines.length === 0}>
+                              <img src={getIconFor(m)} />
+                            </Skeleton>
+                          </AspectRatio>
+                          <Typography>
+                            <Skeleton loading={machines.length === 0}>
+                              {m.MachCode}
+                            </Skeleton>
+                          </Typography>
+                        </Stack>
+                      </MenuButton>
+                      <Menu placement='right-start'>
+                        <ListItem>
+                          <Typography level='title-lg'>
+                            Máquina: {m.MachCode}
+                          </Typography>
+                        </ListItem>
+                        <ListItem>Cadena: {m.StyleCode}</ListItem>
+                        <ListItem>Prendas: {m.Pieces}</ListItem>
+                        <ListItem>Target: {m.TargetOrder}</ListItem>
+                        <ListItem>
+                          Tiempo al 100%: {getDuration(calcIdealTime(m))}
+                        </ListItem>
+                        <ListItem>
+                          Tiempo Real: {getDuration(calcRealTime(m))}
+                        </ListItem>
+                        <ListItem>
+                          Efficiencia: {getWorkEff(m) && `${getWorkEff(m)}%`}
+                        </ListItem>
+                        <ListItem>Estado: {getMachState(m).text}</ListItem>
+                      </Menu>
+                    </Dropdown>
+                  )
+                )}
+
+                {/* filler for seamless */}
+                {room === 'SEAMLESS' && (
+                  <Box className='col-1 row-2 size-full' />
                 )}
               </Box>
             </Stack>
@@ -158,15 +185,15 @@ export default function MaquinasMap({ machines }) {
 
 const rooms = {
   HOMBRE: [
-    { min: 389, max: 408 },
-    { min: 409, max: 428 },
-    { min: 367, max: 388 },
-    { min: 345, max: 366 },
-    { min: 301, max: 322 },
-    { min: 323, max: 344 },
-    { min: 429, max: 450 },
+    { min: 389, max: 408, oddFirst: false, reversed: false },
+    { min: 409, max: 428, oddFirst: false, reversed: false },
+    { min: 367, max: 388, oddFirst: false, reversed: true },
+    { min: 345, max: 366, oddFirst: false, reversed: true },
+    { min: 301, max: 322, oddFirst: false, reversed: false },
+    { min: 323, max: 344, oddFirst: false, reversed: false },
+    { min: 429, max: 450, oddFirst: true, reversed: false },
   ],
-  SEAMLESS: [{ min: 1001, max: 1037 }],
+  SEAMLESS: [{ min: 1001, max: 1037, oddFirst: true, reversed: true }],
 };
 
 const gridColsMap = {
