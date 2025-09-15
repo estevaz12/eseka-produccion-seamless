@@ -42,10 +42,6 @@ export default function MaquinasMap({ machines }) {
             (m) => m.MachCode >= group.min && m.MachCode <= group.max
           );
 
-          // if (room === 'SEAMLESS') {
-          //   groupMachs.push({MachCode: group.max + 1})
-          // }
-
           const orderedMachs = groupMachs.slice().sort((a, b) => {
             if (group.oddFirst) {
               if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return -1;
@@ -110,7 +106,7 @@ export default function MaquinasMap({ machines }) {
                             Máquina: {m.MachCode}
                           </Typography>
                         </ListItem>
-                        <ListItem>Cadena: {m.StyleCode}</ListItem>
+                        <ListItem>Cadena: {m.StyleCode?.styleCode}</ListItem>
                         <ListItem>Prendas: {m.Pieces}</ListItem>
                         <ListItem>Target: {m.TargetOrder}</ListItem>
                         <ListItem>

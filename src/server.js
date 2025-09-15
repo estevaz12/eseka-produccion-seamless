@@ -386,37 +386,20 @@ const startServer = () => {
     }
   });
 
-  app.get('/:room/machines', async (req, res) => {
-    const { room } = req.params;
-    serverLog(`GET /${room}/machines`);
-
-    if (isPackaged) {
-      try {
-        let machines = await sql.query(queries.getMachines(room));
-        machines = machines.recordset;
-        machines.forEach((m) => {
-          m.StyleCode = m.StyleCode.slice(0, 8);
-        });
-
-        res.json(machines);
-      } catch (err) {
-        serverLog(`[ERROR] GET /${room}/machines: ${err}`);
-        res.status(500).json({ error: err.message });
-      }
-    } else {
-      // use test data
-      serverLog(`Using test data for /${room}/machines`);
-      res.json(testData.machines);
-    }
-  });
-
   // get machines and parse to match with production data
-  async function getParsedMachines(room, producing = false) {
+  async function getParsedMachines(
+    room,
+    producing = false,
+    onlyValidCodes = true
+  ) {
     let machines = await sql.query(queries.getMachines(room));
     machines = machines.recordset;
     await parseMachines(machines);
 
-    machines = machines.filter((m) => typeof m.StyleCode.articulo !== 'string');
+    if (onlyValidCodes)
+      machines = machines.filter(
+        (m) => typeof m.StyleCode.articulo !== 'string'
+      );
 
     if (producing) {
       /* Machine states that count for production
@@ -437,6 +420,26 @@ const startServer = () => {
 
     return machines;
   }
+
+  app.get('/:room/machines', async (req, res) => {
+    const { room } = req.params;
+    serverLog(`GET /${room}/machines`);
+
+    if (isPackaged) {
+      try {
+        let machines = await getParsedMachines(room, false, false);
+
+        res.json(machines);
+      } catch (err) {
+        serverLog(`[ERROR] GET /${room}/machines: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // use test data
+      serverLog(`Using test data for /${room}/machines`);
+      res.json(testData.machines);
+    }
+  });
 
   app.get('/:room/machines/newColorCodes', async (req, res) => {
     const { room } = req.params;
