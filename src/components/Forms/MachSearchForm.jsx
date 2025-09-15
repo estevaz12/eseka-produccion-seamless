@@ -6,8 +6,10 @@ import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import IconButton from '@mui/joy/IconButton';
+import { useOutletContext } from 'react-router';
 
 export default function MachSearchForm({ machines, setFilteredMachines }) {
+  const { room } = useOutletContext();
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -15,9 +17,18 @@ export default function MachSearchForm({ machines, setFilteredMachines }) {
       // if fileds are empty, it shows all rows
       machines.filter((row) => {
         // if the fields are undefined, they are set as empty strings
-        const { machine = '', styleCode = '' } = formData;
+        const { machine = '', styleCode = '', articulo = '' } = formData;
         if (machine !== '') return row.MachCode === Number(machine);
-        if (styleCode !== '') return row.StyleCode.includes(styleCode);
+
+        if (room === 'SEAMLESS' && styleCode !== '')
+          return row.StyleCode.styleCode.includes(styleCode);
+
+        if (room === 'HOMBRE' && articulo !== '') {
+          const fullArt = Number(
+            `${row.StyleCode.articulo}.${row.StyleCode.punto}`
+          ).toFixed(2);
+          return fullArt.includes(articulo);
+        }
 
         return true;
       })
@@ -33,14 +44,16 @@ export default function MachSearchForm({ machines, setFilteredMachines }) {
     >
       <Stack direction='row' className='items-end gap-4'>
         <FormControl>
-          <FormLabel>Cadena</FormLabel>
+          <FormLabel>{room === 'SEAMLESS' ? 'Cadena' : 'Artículo'}</FormLabel>
           <Input
             type='text'
             placeholder='Buscar...'
             className='w-32'
-            onChange={(e) =>
-              setFormData({ ...formData, styleCode: e.target.value })
-            }
+            onChange={(e) => {
+              if (room === 'SEAMLESS')
+                setFormData({ ...formData, styleCode: e.target.value });
+              else setFormData({ ...formData, articulo: e.target.value });
+            }}
           />
         </FormControl>
 

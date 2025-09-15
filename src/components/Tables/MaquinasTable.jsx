@@ -47,28 +47,66 @@ export default function MaquinasTable({ machines, pdfRows }) {
       align: 'center',
       width: 'w-[9%]',
     },
-    {
-      id: 'StyleCode',
-      label: 'Cadena',
-      align: 'center',
-      pdfRender: (row) => (isParada(row) ? 'PARADA' : row.StyleCode),
-      sortFn: (a, b, order) => {
-        let aStyleCode = a.StyleCode;
-        let bStyleCode = b.StyleCode;
+    room === 'SEAMLESS'
+      ? {
+          id: 'styleCode',
+          label: 'Cadena',
+          align: 'center',
+          pdfRender: (row) =>
+            isParada(row) ? 'PARADA' : row.StyleCode.styleCode,
+          sortFn: (a, b, order) => {
+            let aStyleCode = a.StyleCode.styleCode;
+            let bStyleCode = b.StyleCode.styleCode;
 
-        if (isParada(a)) aStyleCode = 'PARADA';
-        if (isParada(b)) bStyleCode = 'PARADA';
+            if (isParada(a)) aStyleCode = 'PARADA';
+            if (isParada(b)) bStyleCode = 'PARADA';
 
-        if (aStyleCode < bStyleCode) return 1;
-        if (aStyleCode > bStyleCode) return -1;
-        return 0;
-      },
-    },
+            if (aStyleCode < bStyleCode) return 1;
+            if (aStyleCode > bStyleCode) return -1;
+            return 0;
+          },
+        }
+      : {
+          id: 'articulo',
+          label: 'Artículo',
+          width: 'w-[9%]',
+          pdfRender: (row) =>
+            isParada(row)
+              ? 'PARADA'
+              : Number(`${row.StyleCode.articulo}.${row.StyleCode.punto}`),
+          sortFn(a, b, order) {
+            let aArticulo = Number(
+              `${a.StyleCode.articulo}.${a.StyleCode.punto}`
+            );
+            let bArticulo = Number(
+              `${b.StyleCode.articulo}.${b.StyleCode.punto}`
+            );
+
+            if (isParada(a)) aArticulo = null;
+            if (isParada(b)) bArticulo = null;
+
+            if (!aArticulo) aArticulo = order === 'asc' ? Infinity : -Infinity;
+            if (!bArticulo) bArticulo = order === 'asc' ? Infinity : -Infinity;
+
+            return bArticulo - aArticulo;
+          },
+        },
+    ,
+    room === 'HOMBRE'
+      ? {
+          id: 'talle',
+          label: 'Talle',
+          align: 'center',
+          width: 'w-[6%]',
+          pdfRender: (row) => (isParada(row) ? '' : row.StyleCode.talle),
+        }
+      : null,
     {
       id: 'Pieces',
       label: 'Prendas',
       align: 'right',
       width: 'w-[8%]',
+      pdfRender: (row) => (isParada(row) ? '' : row.Pieces),
       sortFn: (a, b, order) => {
         let aPieces = a.Pieces;
         let bPieces = b.Pieces;
@@ -87,6 +125,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
       label: 'Target',
       align: 'right',
       width: 'w-[8%]',
+      pdfRender: (row) => (isParada(row) ? '' : row.TargetOrder),
       sortFn: (a, b, order) => {
         let aTargetOrder = a.TargetOrder;
         let bTargetOrder = b.TargetOrder;
@@ -186,9 +225,22 @@ export default function MaquinasTable({ machines, pdfRows }) {
         <td align='center' className='font-semibold'>
           {row.MachCode}
         </td>
-        <td align='center' className='font-semibold'>
-          {isParada(row) ? 'PARADA' : row.StyleCode}
-        </td>
+        {room === 'SEAMLESS' ? (
+          <td align='center' className='font-semibold'>
+            {isParada(row) ? 'PARADA' : row.StyleCode.styleCode}
+          </td>
+        ) : (
+          <td className='font-semibold'>
+            {isParada(row)
+              ? 'PARADA'
+              : Number(`${row.StyleCode.articulo}.${row.StyleCode.punto}`)}
+          </td>
+        )}
+        {room === 'HOMBRE' && (
+          <td align='center' className='font-semibold'>
+            {isParada(row) ? null : row.StyleCode.talle}
+          </td>
+        )}
         <td align='right'>{isParada(row) ? null : row.Pieces}</td>
         <td align='right'>{isParada(row) ? null : row.TargetOrder}</td>
         <td align='center'>{getDuration(calcIdealTime(row))}</td>
@@ -212,6 +264,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
         initOrderBy='MachCode'
         headerTop='top-[94px]'
         footer={[
+          room === 'HOMBRE', // Talle
           true, // Prendas
           true, // Target
           `Tejiendo: ${machines.filter((m) => m.State === 0).length}`, // Tiempo al 100%
