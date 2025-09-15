@@ -31,7 +31,7 @@ function getMachState(row) {
   // TODO: for later, APAGADA: 1, 56, 65535
   switch (row.State) {
     case 0:
-      machState = { rowColor: '', text: 'RUN' };
+      machState = { rowColor: '', text: 'TEJIENDO' };
       break;
     case 1:
       machState = { rowColor: 'bg-stop-off', text: 'APAGADA' };
