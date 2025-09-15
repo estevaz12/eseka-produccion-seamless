@@ -363,13 +363,13 @@ export default function ProgramadaTable({
           Math.round(totalFalta) || '0', // Total Falta
           !live && room === 'HOMBRE' ? <ProgLegend live={false} /> : true,
           !live && room === 'SEAMLESS' ? (
-            <ProgLegend live={false} />
+            <ProgLegend live={live} />
           ) : !live && room === 'HOMBRE' ? (
             false
           ) : (
             true
           ),
-          live && <ProgLegend live={false} />,
+          live && <ProgLegend live={live} />,
         ]}
         headerTop='top-[94px]'
         stripe=''

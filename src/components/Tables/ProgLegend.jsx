@@ -13,8 +13,11 @@ import ListItem from '@mui/joy/ListItem';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import Menu from '@mui/joy/Menu';
 import MenuButton from '@mui/joy/MenuButton';
+import { useOutletContext } from 'react-router';
 
 export default function ProgLegend({ live }) {
+  const { room } = useOutletContext();
+
   return (
     <Dropdown>
       <MenuButton
@@ -64,33 +67,9 @@ export default function ProgLegend({ live }) {
           </ListItemDecorator>{' '}
           Distribución pendiente
         </ListItem>
-        {live && (
+        {live && room === 'SEAMLESS' && (
           <>
             <ListDivider inset='gutter' />
-            <ListItem>
-              <ListItemDecorator>
-                <DownloadRounded fontSize='small' />
-              </ListItemDecorator>{' '}
-              Necesita descarga
-            </ListItem>
-            <ListItem>
-              <ListItemDecorator>
-                <SyncProblemRounded fontSize='small' />
-              </ListItemDecorator>{' '}
-              Reset counter
-            </ListItem>
-            <ListItem>
-              <ListItemDecorator>
-                <QuestionMarkRounded fontSize='small' />
-              </ListItemDecorator>{' '}
-              Verificar counter
-            </ListItem>
-            <ListItem>
-              <ListItemDecorator>
-                <CrisisAlertRounded fontSize='small' />
-              </ListItemDecorator>{' '}
-              Verificar target máq.
-            </ListItem>
             <ListItem>
               <ListItemDecorator>
                 <ReportRounded fontSize='small' />
