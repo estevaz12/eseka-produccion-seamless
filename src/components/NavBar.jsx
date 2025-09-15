@@ -62,8 +62,8 @@ export default function NavBar({ room, setRoom }) {
             value={room}
             onChange={(e, val) => setRoom(val)}
             className='w-full'
+            disabled
           >
-            <Option value='SEAMLESS'>Seamless</Option>
             <Option value='HOMBRE'>Algodón</Option>
           </Select>
         </ListItem>

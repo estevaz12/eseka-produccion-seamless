@@ -11,9 +11,7 @@ import ErrorFallback from '../components/ErrorFallback.jsx';
 
 export default function Home() {
   // SEAMLESS, HOMBRE (ALG)
-  const [room, setRoom] = useState(
-    () => localStorage.getItem('lastRoom') || 'SEAMLESS'
-  );
+  const [room, setRoom] = useState('HOMBRE');
 
   // using localStorage so toasts persist through refresh
   const [toasts, setToasts] = useState(() =>
