@@ -49,7 +49,9 @@ export default function Produccion() {
       .then((data) => {
         if (!ignore) setData(data);
       })
-      .catch((err) => console.log('[CLIENT] Error fetching /produccion:', err));
+      .catch((err) =>
+        console.error('[CLIENT] Error fetching /produccion:', err)
+      );
 
     return () => {
       ignore = true;
