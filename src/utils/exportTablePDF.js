@@ -31,6 +31,7 @@ function exportTablePDF(opts) {
     columns,
     rows,
     footer,
+    footnote,
     title = '',
     fileName,
     pageSize = 'A4',
@@ -211,6 +212,38 @@ function exportTablePDF(opts) {
         }
 
         y += rowHeight;
+      }
+
+      // Footnote (if any)
+      if (footnote && Array.isArray(footnote) && footnote.length > 0) {
+        // Add some vertical spacing before the footnote section
+        y += rowHeight * 2;
+
+        // Check for page break
+        if (y + rowHeight > bottomLimit) {
+          doc.addPage();
+          y = margins.top;
+        }
+
+        // Draw footnote title
+        const footnoteTitle =
+          'AVISO: No se encontraron estos artículos en la Programada';
+        doc.font(headerFont).fontSize(headerFontSize);
+        doc.text(footnoteTitle, leftX, y);
+        y += headerFontSize + 6;
+
+        // Draw header for footnote table
+        drawHeader();
+
+        // Draw each footnote row
+        for (const row of footnote) {
+          if (y + rowHeight > bottomLimit) {
+            doc.addPage();
+            y = margins.top;
+            drawHeader();
+          }
+          drawRow(row);
+        }
       }
 
       doc.end();

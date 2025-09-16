@@ -1,7 +1,7 @@
 import PrintRounded from '@mui/icons-material/PrintRounded';
 import IconButton from '@mui/joy/IconButton';
 import { useConfig } from '../../ConfigContext.jsx';
-import { useLocation } from 'react-router';
+import { useLocation, useOutletContext } from 'react-router';
 import { useContext } from 'react';
 import { DatesContext, ToastsContext } from '../../Contexts.js';
 import { buildPdfPayload } from '../../utils/pdfPayload.js';
@@ -18,6 +18,7 @@ export default function EnhancedFooter({
   const { pathname } = useLocation();
   const { addToast } = useContext(ToastsContext);
   const { startDate, endDate } = useContext(DatesContext);
+  const { room, docena, porcExtra } = useOutletContext();
 
   const getPDFOpts = () => {
     switch (pathname) {
@@ -62,6 +63,7 @@ export default function EnhancedFooter({
             .tz()
             .format('DD-MM-YYYYTHH.mm')}`,
           footerCols: ['Docenas', 'Producido', 'falta'],
+          addToProgramada: room === 'HOMBRE',
         };
     }
   };
@@ -78,7 +80,14 @@ export default function EnhancedFooter({
         columns,
         rows: parsedRows,
         footer,
-      } = buildPdfPayload(cols, selectedRows, getPDFOpts().footerCols);
+        footnote,
+      } = await buildPdfPayload(
+        cols,
+        selectedRows,
+        getPDFOpts().footerCols,
+        getPDFOpts().addToProgramada,
+        [room, startDate, docena, porcExtra]
+      );
 
       const res = await fetch(`${apiUrl}/export/pdf`, {
         method: 'POST',
@@ -89,6 +98,7 @@ export default function EnhancedFooter({
           columns,
           rows: parsedRows,
           footer: getPDFOpts().footerCols ? footer : null,
+          footnote: getPDFOpts().addToProgramada ? footnote : null,
           ...getPDFOpts(),
         }),
       });
