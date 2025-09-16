@@ -39,7 +39,7 @@ const root = createRoot(rootElement);
 
 const config = {
   apiUrl: process.env.EXPRESS_URL,
-  sqlDateFormat: 'MM-DD-YYYY HH:mm:ss',
+  sqlDateFormat: process.env.SQL_DATE_FORMAT,
 };
 
 root.render(
