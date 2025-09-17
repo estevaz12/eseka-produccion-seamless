@@ -389,7 +389,7 @@ const startServer = () => {
   // get machines and parse to match with production data
   async function getParsedMachines(
     room,
-    producing = false,
+    onlyProducing = false,
     onlyValidCodes = true
   ) {
     let machines = await sql.query(queries.getMachines(room));
@@ -401,7 +401,7 @@ const startServer = () => {
         (m) => typeof m.StyleCode.articulo !== 'string'
       );
 
-    if (producing) {
+    if (onlyProducing) {
       /* Machine states that count for production
        * 0: RUN
        * 2: STOP BUTTON
@@ -427,7 +427,16 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        let machines = await getParsedMachines(room, false, false);
+        let machines = [];
+
+        if (room !== 'ELECTRONICA')
+          machines = await getParsedMachines(room, false, false);
+        else {
+          const machsNYL = await getParsedMachines('MUJER', false, false);
+          const machsALG = await getParsedMachines('HOMBRE', false, false);
+          const machsSEA = await getParsedMachines('SEAMLESS', false, false);
+          machines = [...machsNYL, ...machsALG, ...machsSEA];
+        }
 
         res.json(machines);
       } catch (err) {

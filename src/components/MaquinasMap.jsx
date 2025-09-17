@@ -31,11 +31,7 @@ export default function MaquinasMap({ machines }) {
 
   return (
     <>
-      <Box
-        className={`${
-          room.startsWith('HOMBRE') && 'grid grid-cols-2 gap-4'
-        } pb-24 size-full`}
-      >
+      <Box className='grid grid-cols-2 gap-4 pb-24 size-full'>
         {groups.map((group) => {
           const cols = Math.ceil((group.max - group.min + 1) / 2);
           const groupMachs = machines.filter(
@@ -46,7 +42,7 @@ export default function MaquinasMap({ machines }) {
             if (group.oddFirst) {
               if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return -1;
               if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return 1;
-            } else {
+            } else if (group.oddFirst === false) {
               // even first
               if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return -1;
               if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return 1;
@@ -61,8 +57,22 @@ export default function MaquinasMap({ machines }) {
           });
 
           return (
-            <Stack direction='column' className='gap-2' key={group.min}>
-              <Typography level='h4'>{`${group.min} - ${group.max}`}</Typography>
+            <Stack
+              direction='column'
+              className={`gap-2 ${
+                !(
+                  (group.min >= 166 && group.max <= 194) ||
+                  (group.min >= 301 && group.max <= 450)
+                )
+                  ? 'col-span-2'
+                  : ''
+              }`}
+              key={group.min}
+            >
+              <Typography level='h4'>
+                {room === 'ELECTRONICA' && <>{group.room}&nbsp;&nbsp;&nbsp;</>}
+                {`${group.min} - ${group.max}`}
+              </Typography>
 
               <Box className={`grid gap-2 ${gridColsMap[cols]}`}>
                 {[...(machines.length === 0 ? loadingMachs : orderedMachs)].map(
@@ -125,7 +135,7 @@ export default function MaquinasMap({ machines }) {
                 )}
 
                 {/* filler for seamless */}
-                {room === 'SEAMLESS' && (
+                {group.min === 1001 && (
                   <Box className='col-1 row-2 size-full' />
                 )}
               </Box>
@@ -180,6 +190,14 @@ export default function MaquinasMap({ machines }) {
 }
 
 const rooms = {
+  MUJER: [
+    { min: 1, max: 45, oddFirst: null, reversed: false },
+    { min: 46, max: 89, oddFirst: null, reversed: false },
+    { min: 90, max: 128, oddFirst: null, reversed: false },
+    { min: 129, max: 165, oddFirst: null, reversed: false },
+    { min: 166, max: 174, oddFirst: null, reversed: false },
+    { min: 175, max: 194, oddFirst: null, reversed: false },
+  ],
   HOMBRE: [
     { min: 389, max: 408, oddFirst: false, reversed: false },
     { min: 409, max: 428, oddFirst: false, reversed: false },
@@ -190,15 +208,35 @@ const rooms = {
     { min: 429, max: 450, oddFirst: true, reversed: false },
   ],
   SEAMLESS: [{ min: 1001, max: 1037, oddFirst: true, reversed: true }],
+  ELECTRONICA: [
+    { min: 389, max: 408, oddFirst: false, reversed: false, room: 'ALG' },
+    { min: 409, max: 428, oddFirst: false, reversed: false, room: 'ALG' },
+    { min: 367, max: 388, oddFirst: false, reversed: true, room: 'ALG' },
+    { min: 345, max: 366, oddFirst: false, reversed: true, room: 'ALG' },
+    { min: 301, max: 322, oddFirst: false, reversed: false, room: 'ALG' },
+    { min: 323, max: 344, oddFirst: false, reversed: false, room: 'ALG' },
+    { min: 429, max: 450, oddFirst: true, reversed: false, room: 'ALG' },
+    { min: 1001, max: 1037, oddFirst: true, reversed: true, room: 'SEA' },
+    { min: 1, max: 45, oddFirst: null, reversed: false, room: 'NYL' },
+    { min: 46, max: 89, oddFirst: null, reversed: false, room: 'NYL' },
+    { min: 90, max: 128, oddFirst: null, reversed: false, room: 'NYL' },
+    { min: 129, max: 165, oddFirst: null, reversed: false, room: 'NYL' },
+    { min: 166, max: 174, oddFirst: null, reversed: false, room: 'NYL' },
+    { min: 175, max: 194, oddFirst: null, reversed: false, room: 'NYL' },
+  ],
 };
 
 const gridColsMap = {
   3: 'grid-cols-3',
   4: 'grid-cols-4',
+  5: 'grid-cols-5',
   10: 'grid-cols-10',
   11: 'grid-cols-11',
   15: 'grid-cols-15',
   19: 'grid-cols-19',
+  20: 'grid-cols-20',
+  22: 'grid-cols-22',
+  23: 'grid-cols-23',
 };
 
 function importAll(r) {

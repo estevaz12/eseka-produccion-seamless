@@ -20,7 +20,6 @@ export default function Home() {
   const [room, setRoom] = useState(
     () => localStorage.getItem('lastRoom') || 'SEAMLESS'
   );
-  const sector = room !== 'SEAMLESS' ? 'ALGODÓN' : room;
 
   const [isModalOpen, setIsModalOpen] = useState(true);
 
