@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { producidoStr } from './progTableUtils';
+import { isProducing } from './maquinasUtils';
 
 function stringifyCell(v) {
   if (v == null) return '';
@@ -100,9 +101,10 @@ function buildFooter(footerCols, cols, rows) {
 async function buildFootnote(room, startDate, docena, porcExtra) {
   const toAdd = [];
   // get all articulos produced in the month and current programada
-  const [produced, programada] = await Promise.all([
+  const [produced, programada, machines] = await Promise.all([
     getProduced(room),
     getProgramada(room, startDate),
+    getMachines(room),
   ]);
 
   if (produced.length === 0 && programada.length === 0) return toAdd;
@@ -112,6 +114,7 @@ async function buildFootnote(room, startDate, docena, porcExtra) {
     Tipo: row.Tipo,
     Talle: row.Talle,
     Color: row.Color,
+    ColorId: row.ColorId,
     Porcentaje: null,
     Docenas: null, // A Producir
     Producido: producidoStr(
@@ -132,14 +135,26 @@ async function buildFootnote(room, startDate, docena, porcExtra) {
     const notInProgramada = artProduced.filter(
       (art) =>
         !programada.some(
-          (row) =>
-            row.Articulo === art.Articulo &&
-            row.Talle === art.Talle &&
-            row.Color === art.Color
+          (prog) =>
+            prog.Articulo === art.Articulo &&
+            prog.Talle === art.Talle &&
+            prog.ColorId === art.ColorId
         )
     );
 
-    toAdd.push(...notInProgramada);
+    // check if they are being produced
+    const producingNotInProgramada = notInProgramada.filter((art) => {
+      const machine = machines.find(
+        (m) =>
+          m.StyleCode.articulo === art.Articulo &&
+          m.StyleCode.talle === art.Talle &&
+          m.StyleCode.ColorId === art.ColorId
+      );
+
+      return machine && isProducing(machine);
+    });
+
+    toAdd.push(...producingNotInProgramada);
   }
 
   return toAdd;
@@ -184,6 +199,18 @@ async function getProgramada(room, startDate) {
     data = await res.json();
   } catch (err) {
     console.error(`[CLIENT] Error fetching /${room}/programada:`, err);
+  }
+
+  return data;
+}
+
+async function getMachines(room) {
+  let data = [];
+  try {
+    const res = await fetch(`${process.env.EXPRESS_URL}/${room}/machines`);
+    data = await res.json();
+  } catch (err) {
+    console.error(`[CLIENT] Error fetching /${room}/machines:`, err);
   }
 
   return data;
