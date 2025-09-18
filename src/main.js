@@ -6,16 +6,17 @@ const {
   dialog,
   ipcMain,
   shell,
+  Notification,
 } = require('electron');
 const path = require('path');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 
+app.setAppUserModelId('Tejeduria');
+
 // to avoid squirrel multiple app spawning
 if (require('electron-squirrel-startup')) app.quit();
-
-app.setAppUserModelId('com.squirrel.Tejeduria.Tejeduria');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -114,6 +115,33 @@ app.whenReady().then(() => {
       'shell:openPath',
       async (event, path) => await shell.openPath(path)
     );
+
+    // notifications
+    ipcMain.on('notify', (event, opts) => {
+      const notif = new Notification({
+        ...opts,
+        icon: path.join(
+          __dirname,
+          'assets',
+          'images',
+          'mach_states',
+          'electronico.png'
+        ),
+      });
+
+      notif.on('click', () => {
+        // focus main window
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) {
+          if (win.isMinimized()) win.restore();
+          win.focus();
+        }
+        // close notif
+        notif.close();
+      });
+
+      notif.show();
+    });
 
     createWindow();
   }, 1000);

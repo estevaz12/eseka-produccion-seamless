@@ -24,7 +24,7 @@ export default function Toast({ toast, setToasts }) {
       color={toast.type}
       variant='soft'
       size='sm'
-      autoHideDuration={5000}
+      autoHideDuration={toast.duration !== undefined ? toast.duration : 5000}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       open={open}
       className='static ml-auto w-fit'

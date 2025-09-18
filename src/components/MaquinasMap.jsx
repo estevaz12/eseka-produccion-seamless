@@ -1,60 +1,57 @@
-import Dropdown from '@mui/joy/Dropdown';
-import ListItem from '@mui/joy/ListItem';
-import Menu from '@mui/joy/Menu';
-import MenuButton from '@mui/joy/MenuButton';
-import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
 import Skeleton from '@mui/joy/Skeleton';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
-import { useState } from 'react';
-import {
-  calcIdealTime,
-  calcRealTime,
-  getDuration,
-  getMachState,
-  getWorkEff,
-  isProducing,
-} from '../utils/maquinasUtils';
+import { useMemo, useState } from 'react';
+import { isProducing } from '../utils/maquinasUtils';
 import { Card } from '@mui/joy';
 import { useOutletContext } from 'react-router';
+import MachineInfo from './MachineInfo.jsx';
 
 export default function MaquinasMap({ machines }) {
   const { room } = useOutletContext();
   const [open, setOpened] = useState(0);
   const groups = rooms[room];
 
-  const loadingMachs = Array.from(
-    { length: groups[groups.length - 1].max - groups[0].min + 1 },
-    (_, i) => ({ MachCode: i + groups[0].min })
-  );
+  // Precompute all group data in one memo
+  const groupData = useMemo(() => {
+    return groups.map((group) => {
+      const groupMachs = machines.filter(
+        (m) => m.MachCode >= group.min && m.MachCode <= group.max
+      );
+
+      const loadingMachs = Array.from(
+        { length: group.max - group.min + 1 },
+        (_, i) => ({ MachCode: group.min + i })
+      );
+
+      const orderedMachs = [...groupMachs].sort((a, b) => {
+        if (group.oddFirst) {
+          if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return -1;
+          if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return 1;
+        } else if (group.oddFirst === false) {
+          if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return -1;
+          if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return 1;
+        }
+
+        return group.reversed
+          ? b.MachCode - a.MachCode
+          : a.MachCode - b.MachCode;
+      });
+
+      return {
+        group,
+        loadingMachs,
+        orderedMachs,
+      };
+    });
+  }, [groups, machines]);
 
   return (
     <>
       <Box className='grid grid-cols-2 gap-4 pb-24 size-full'>
-        {groups.map((group) => {
+        {groupData.map(({ group, loadingMachs, orderedMachs }) => {
           const cols = Math.ceil((group.max - group.min + 1) / 2);
-          const groupMachs = machines.filter(
-            (m) => m.MachCode >= group.min && m.MachCode <= group.max
-          );
-
-          const orderedMachs = groupMachs.slice().sort((a, b) => {
-            if (group.oddFirst) {
-              if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return -1;
-              if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return 1;
-            } else if (group.oddFirst === false) {
-              // even first
-              if (a.MachCode % 2 === 0 && b.MachCode % 2 !== 0) return -1;
-              if (a.MachCode % 2 !== 0 && b.MachCode % 2 === 0) return 1;
-            }
-
-            if (group.reversed) {
-              return b.MachCode - a.MachCode;
-            } else {
-              // not reversed
-              return a.MachCode - b.MachCode;
-            }
-          });
 
           return (
             <Stack
@@ -77,60 +74,13 @@ export default function MaquinasMap({ machines }) {
               <Box className={`grid gap-2 ${gridColsMap[cols]}`}>
                 {[...(machines.length === 0 ? loadingMachs : orderedMachs)].map(
                   (m) => (
-                    <Dropdown
+                    <MachineInfo
                       key={m.MachCode}
-                      open={open === m.MachCode}
-                      onOpenChange={(e, isOpen) =>
-                        setOpened(isOpen ? m.MachCode : 0)
-                      }
-                    >
-                      <MenuButton
-                        variant='soft'
-                        size='sm'
-                        className='p-2 font-medium'
-                      >
-                        <Stack
-                          direction='column'
-                          className='items-center gap-1'
-                        >
-                          <AspectRatio
-                            ratio='1'
-                            sx={{ width: 35 }}
-                            objectFit='contain'
-                            variant='plain'
-                          >
-                            <Skeleton loading={machines.length === 0}>
-                              <img src={getIconFor(m)} />
-                            </Skeleton>
-                          </AspectRatio>
-                          <Typography>
-                            <Skeleton loading={machines.length === 0}>
-                              {m.MachCode}
-                            </Skeleton>
-                          </Typography>
-                        </Stack>
-                      </MenuButton>
-                      <Menu placement='right-start'>
-                        <ListItem>
-                          <Typography level='title-lg'>
-                            Máquina: {m.MachCode}
-                          </Typography>
-                        </ListItem>
-                        <ListItem>Cadena: {m.StyleCode?.styleCode}</ListItem>
-                        <ListItem>Prendas: {m.Pieces}</ListItem>
-                        <ListItem>Target: {m.TargetOrder}</ListItem>
-                        <ListItem>
-                          Tiempo al 100%: {getDuration(calcIdealTime(m))}
-                        </ListItem>
-                        <ListItem>
-                          Tiempo Real: {getDuration(calcRealTime(m))}
-                        </ListItem>
-                        <ListItem>
-                          Efficiencia: {getWorkEff(m) && `${getWorkEff(m)}%`}
-                        </ListItem>
-                        <ListItem>Estado: {getMachState(m).text}</ListItem>
-                      </Menu>
-                    </Dropdown>
+                      mach={m}
+                      open={open}
+                      setOpened={setOpened}
+                      machines={machines}
+                    />
                   )
                 )}
 
@@ -238,63 +188,3 @@ const gridColsMap = {
   22: 'grid-cols-22',
   23: 'grid-cols-23',
 };
-
-function importAll(r) {
-  const icons = {};
-  r.keys().forEach((k) => {
-    const name = k.replace('./', '').replace(/\.(png|jpg|jpeg|gif|svg)$/, '');
-    icons[name] = r(k);
-  });
-  return icons;
-}
-
-// All files under ../assets/images/mach_states/*.png
-const stateIcons = importAll(
-  require.context(
-    '../assets/images/mach_states',
-    false,
-    /\.(png|jpe?g|gif|svg)$/
-  )
-);
-
-// Example: pick icon by state key on machine object (fallback to 'offline')
-function getIconFor(machine) {
-  /* Machine states
-  0: RUN
-  1: POWER OFF
-  2: STOP BUTTON
-  3: AUTOMATIC STOP
-  4: TARGET
-  5: F1 / GIRANDO
-  6: ELECTRÓNICO
-  7: MECÁNICO
-  8: PRODUCCIÓN
-  9: FALTA HILADO
-  10: FALTA REPUESTO
-  11: MUESTRA
-  12: CAMBIO DE ARTICULO
-  13: TURBINA
-  56: OFFLINE
-  65535: DESINCRONIZADA
-  */
-  const stateMapping = {
-    0: 'run',
-    1: 'power_off',
-    2: 'stop_general',
-    3: 'stop_general',
-    4: 'target',
-    5: 'f1',
-    6: 'electronico',
-    7: 'mecanico',
-    8: 'produccion',
-    9: 'falta_hilado',
-    10: 'falta_repuesto',
-    11: 'muestra',
-    12: 'cambio',
-    13: 'turbina',
-    56: 'offline',
-    65535: 'desync',
-  };
-
-  return stateIcons[stateMapping[machine.State]] || stateIcons['unknown'];
-}
