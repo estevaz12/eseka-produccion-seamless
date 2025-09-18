@@ -144,12 +144,14 @@ async function buildFootnote(room, startDate, docena, porcExtra) {
 
     // check if they are being produced
     const producingNotInProgramada = notInProgramada.filter((art) => {
-      const machine = machines.find(
-        (m) =>
-          m.StyleCode.articulo === art.Articulo &&
+      const machine = machines.find((m) => {
+        const machArt = Number(`${m.StyleCode.articulo}.${m.StyleCode.punto}`);
+        return (
+          machArt === art.Articulo &&
           m.StyleCode.talle === art.Talle &&
-          m.StyleCode.ColorId === art.ColorId
-      );
+          m.StyleCode.colorId === art.ColorId
+        );
+      });
 
       return machine && isProducing(machine);
     });
