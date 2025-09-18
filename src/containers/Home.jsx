@@ -1,11 +1,6 @@
-import { useEffect } from 'react';
 import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
-import Typography from '@mui/joy/Typography';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
-import ModalWrapper from '../components/ModalWrapper.jsx';
-import NewColorCodeForm from '../components/Forms/NewColorCodeForm.jsx';
 import { Outlet, useNavigate } from 'react-router';
 import NavBar from '../components/NavBar.jsx';
 import Toast from '../components/Toast.jsx';
@@ -14,21 +9,11 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../components/ErrorFallback.jsx';
 
 export default function Home() {
-  apiUrl = useConfig().apiUrl;
   const navigate = useNavigate();
   // SEAMLESS, HOMBRE (ALG)
   const [room, setRoom] = useState(
     () => localStorage.getItem('lastRoom') || 'SEAMLESS'
   );
-
-  const [isModalOpen, setIsModalOpen] = useState(true);
-
-  const [newColorCodes, setNewColorCodes] = useState(() =>
-    JSON.parse(localStorage.getItem('newColorCodes') || '[]')
-  );
-
-  const newColorCode =
-    newColorCodes.length > 0 ? newColorCodes[newColorCodes.length - 1] : null;
 
   // using localStorage so toasts persist through refresh
   const [toasts, setToasts] = useState(() =>
