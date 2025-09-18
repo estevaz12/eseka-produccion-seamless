@@ -20,10 +20,10 @@ export default function MachSearchForm({ machines, setFilteredMachines }) {
         const { machine = '', styleCode = '', articulo = '' } = formData;
         if (machine !== '') return row.MachCode === Number(machine);
 
-        if (room === 'SEAMLESS' && styleCode !== '')
+        if (room !== 'HOMBRE' && styleCode !== '')
           return row.StyleCode.styleCode.includes(styleCode);
 
-        if (room === 'HOMBRE' && articulo !== '') {
+        if (articulo !== '') {
           const fullArt = Number(
             `${row.StyleCode.articulo}.${row.StyleCode.punto}`
           ).toFixed(2);
@@ -44,13 +44,13 @@ export default function MachSearchForm({ machines, setFilteredMachines }) {
     >
       <Stack direction='row' className='items-end gap-4'>
         <FormControl>
-          <FormLabel>{room === 'SEAMLESS' ? 'Cadena' : 'Artículo'}</FormLabel>
+          <FormLabel>{room !== 'HOMBRE' ? 'Cadena' : 'Artículo'}</FormLabel>
           <Input
             type='text'
             placeholder='Buscar...'
             className='w-32'
             onChange={(e) => {
-              if (room === 'SEAMLESS')
+              if (room !== 'HOMBRE')
                 setFormData({ ...formData, styleCode: e.target.value });
               else setFormData({ ...formData, articulo: e.target.value });
             }}
