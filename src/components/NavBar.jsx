@@ -7,12 +7,12 @@ import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import ListSubheader from '@mui/joy/ListSubheader';
-import { NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import Option from '@mui/joy/Option';
 import Select from '@mui/joy/Select';
 import ListDivider from '@mui/joy/ListDivider';
 
-const navItems = [
+let navItems = [
   {
     title: 'Inicio',
     items: [
@@ -52,6 +52,22 @@ const navItems = [
 ];
 
 export default function NavBar({ room, setRoom }) {
+  const navigate = useNavigate();
+
+  if (room === 'ELECTRONICA')
+    navItems = [
+      {
+        title: 'Herramientas',
+        items: [
+          {
+            to: '/maquinas',
+            icon: <PrecisionManufacturingTwoTone />,
+            label: 'Máquinas',
+          },
+        ],
+      },
+    ];
+
   return (
     <nav className='h-full w-full bg-neutral-100 [&_.Mui-selected]:bg-neutral-300 [&_.MuiListItemButton-root]:not-[.Mui-selected]:hover:bg-neutral-200'>
       {/* nav list */}
@@ -60,11 +76,15 @@ export default function NavBar({ room, setRoom }) {
         <ListItem className='w-full'>
           <Select
             value={room}
-            onChange={(e, val) => setRoom(val)}
+            onChange={(e, val) => {
+              setRoom(val);
+              if (val === 'ELECTRONICA') navigate('/maquinas');
+            }}
             className='w-full'
           >
             <Option value='SEAMLESS'>Seamless</Option>
             <Option value='HOMBRE'>Algodón</Option>
+            <Option value='ELECTRONICA'>Electrónica</Option>
           </Select>
         </ListItem>
 

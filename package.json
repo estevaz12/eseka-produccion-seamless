@@ -1,6 +1,6 @@
 {
   "name": "tejeduria",
-  "productName": "Tejeduría",
+  "productName": "Tejeduria",
   "version": "1.0.0",
   "description": "An app for tracking production data.",
   "main": ".webpack/main",

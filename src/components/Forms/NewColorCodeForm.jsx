@@ -110,7 +110,7 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
       >
         <Stack direction='column' className='gap-4'>
           <Stack direction='column' className='gap-1.5'>
-            <Stack direction='row' className='items-start gap-4'>
+            <Stack direction='row' className='items-start max-w-full gap-4'>
               <FormControl>
                 <FloatingLabelInput
                   inputProps={{
@@ -136,10 +136,10 @@ export default function NewColorCodeForm({ newColorCode, setNewColorCodes }) {
                   inputProps={{
                     value: formData.punto ?? newColorCode.StyleCode.punto ?? '',
                     label: 'Punto (si aplica)',
-                    type: 'number',
-                    min: 0,
-                    max: 99,
+                    type: 'text',
+                    pattern: '^\\d{0,2}$', // match 0 to 2 digits
                     placeholder: 'Sin "."',
+                    className: 'w-full',
                     onChange: (e) =>
                       setFormData({
                         ...formData,

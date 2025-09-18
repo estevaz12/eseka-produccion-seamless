@@ -1,8 +1,12 @@
 import { useEffect } from 'react';
 import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
-import { useState } from 'react';
-import { Outlet } from 'react-router';
+import Typography from '@mui/joy/Typography';
+import { useEffect, useState } from 'react';
+import { useConfig } from '../ConfigContext.jsx';
+import ModalWrapper from '../components/ModalWrapper.jsx';
+import NewColorCodeForm from '../components/Forms/NewColorCodeForm.jsx';
+import { Outlet, useNavigate } from 'react-router';
 import NavBar from '../components/NavBar.jsx';
 import Toast from '../components/Toast.jsx';
 import { ToastsContext } from '../Contexts.js';
@@ -10,10 +14,21 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../components/ErrorFallback.jsx';
 
 export default function Home() {
+  apiUrl = useConfig().apiUrl;
+  const navigate = useNavigate();
   // SEAMLESS, HOMBRE (ALG)
   const [room, setRoom] = useState(
     () => localStorage.getItem('lastRoom') || 'SEAMLESS'
   );
+
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+  const [newColorCodes, setNewColorCodes] = useState(() =>
+    JSON.parse(localStorage.getItem('newColorCodes') || '[]')
+  );
+
+  const newColorCode =
+    newColorCodes.length > 0 ? newColorCodes[newColorCodes.length - 1] : null;
 
   // using localStorage so toasts persist through refresh
   const [toasts, setToasts] = useState(() =>
@@ -21,13 +36,28 @@ export default function Home() {
   );
 
   const addToast = (toast) => {
-    const newToast = {
-      ...toast,
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-    };
-
     setToasts((prev) => {
+      // If we're in ELECTRONICA and this is an electronico toast,
+      // check for duplicates by tag + machCode
+      if (
+        room === 'ELECTRONICA' &&
+        toast?.tag === 'electronico' &&
+        toast?.machCode != null
+      ) {
+        const exists = prev.some(
+          (t) => t.tag === 'electronico' && t.machCode === toast.machCode
+        );
+        if (exists) {
+          return prev; // skip duplicate
+        }
+      }
+
+      const newToast = {
+        ...toast,
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+      };
+
       const updated = [...prev, newToast];
       localStorage.setItem('toasts', JSON.stringify(updated));
       return updated;
@@ -40,6 +70,10 @@ export default function Home() {
     if (lastRoom !== room) {
       localStorage.setItem('lastRoom', room);
       window.location.reload();
+    } else if (room === 'ELECTRONICA') {
+      // lastRoom === room, meaning no change, initial render
+      // whenever opening app in ELECTRONICA, redirect to maquinas
+      navigate('/maquinas');
     }
   }, [room]);
 
