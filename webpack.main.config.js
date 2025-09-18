@@ -18,7 +18,13 @@ module.exports = {
   plugins: [
     new Dotenv(),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'src/assets/icons/icon.ico', to: 'assets/icons' }],
+      patterns: [
+        { from: 'src/assets/icons/icon.ico', to: 'assets/icons' },
+        {
+          from: 'src/assets/images/mach_states',
+          to: 'assets/images/mach_states',
+        },
+      ],
     }),
   ],
   output: {

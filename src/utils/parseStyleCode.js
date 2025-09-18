@@ -25,9 +25,11 @@ const parseStyleCode = async (room, styleCode) => {
       // undefined means that it is not in COLOR_CODES
       // if articulo null, then just use the styleCode
       articulo = res.recordset[0]?.Articulo ?? articulo;
-
+      // get punto from articulo string to not loose 0 before (2621.02)
       punto =
-        typeof articulo !== 'string' ? Math.round((articulo % 1) * 100) : null;
+        typeof articulo !== 'string' ? articulo.toString().split('.')[1] : null;
+      // if punto undefined, means the split did not work because it's integer
+      if (punto === undefined) punto = '00';
 
       colorId = res.recordset[0]?.Color ?? null;
 
@@ -61,14 +63,14 @@ const parseStyleCode = async (room, styleCode) => {
       if (typeof articulo === 'string') {
         // if articulo is not string it already has .9, otherwise we need to
         // assign it if talle is 9
-        punto = 9;
+        punto = '9';
       }
     } else if (room === 'SEAMLESS' && typeof articulo === 'string') {
       // if articulo is string, then .0 was not found, check for .1
       try {
         const res = await sql.query(getArticulo(`${articulo}.1`));
         articulo = res.recordset[0]?.Articulo ?? articulo;
-        punto = typeof articulo !== 'string' ? 1 : null;
+        punto = typeof articulo !== 'string' ? '1' : null;
       } catch (err) {
         serverLog(
           `[ERROR] [parseStyleCode] ${articulo}.1 not in SEA_ARTICULOS`

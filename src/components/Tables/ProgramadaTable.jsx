@@ -318,7 +318,9 @@ export default function ProgramadaTable({
         ) : null}
         {/* Maquinas */}
         {live && (
-          <td className={room === 'HOMBRE' && 'text-center'}>{machinesList}</td>
+          <td className={room === 'HOMBRE' ? 'text-center' : ''}>
+            {machinesList}
+          </td>
         )}
       </>,
     ];

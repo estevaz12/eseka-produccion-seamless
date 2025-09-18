@@ -47,7 +47,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
       align: 'center',
       width: 'w-[9%]',
     },
-    room === 'SEAMLESS'
+    room !== 'HOMBRE'
       ? {
           id: 'styleCode',
           label: 'Cadena',
@@ -225,7 +225,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
         <td align='center' className='font-semibold'>
           {row.MachCode}
         </td>
-        {room === 'SEAMLESS' ? (
+        {room !== 'HOMBRE' ? (
           <td align='center' className='font-semibold'>
             {isParada(row) ? 'PARADA' : row.StyleCode.styleCode}
           </td>
@@ -269,7 +269,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
           true, // Target
           `Tejiendo: ${machines.filter((m) => m.State === 0).length}`, // Tiempo al 100%
           `Paradas: ${machines.filter((m) => m.State !== 0).length}`, // Tiempo Actual
-          `${currEff ? `${currEff.total}%` : '...'}`, // Eff. %
+          `${currEff?.total ? `${currEff.total}%` : '...'}`, // Eff. %
           `${machines.length} máquinas`, // Estado
         ]}
         uniqueIds={['MachCode']}
