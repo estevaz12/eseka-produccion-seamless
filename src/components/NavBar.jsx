@@ -84,7 +84,6 @@ export default function NavBar({ room, setRoom }) {
             disabled
           >
             <Option value='HOMBRE'>Algodón</Option>
-            <Option value='ELECTRONICA'>Electrónica</Option>
           </Select>
         </ListItem>
 
