@@ -35,7 +35,7 @@ export default function Maquinas() {
       );
   };
 
-  // get machines on load
+  // get machines on load and room change
   useEffect(() => {
     let ignore = false;
     if (!ignore) getMachines();
@@ -48,7 +48,7 @@ export default function Maquinas() {
       ignore = true;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [room]);
 
   const sortedMachines = useMemo(
     () => [...machines].sort((a, b) => a.MachCode - b.MachCode),
@@ -198,14 +198,10 @@ function sendNotification(electronicoMachs) {
 
   // send telegram message if in working hours
   const now = dayjs.tz();
-  // Monday to Saturday
-  if (now.day() < 1 || now.day() > 6) return;
-  // After 7am
-  if (now.hour() < 7) return;
-  // Before 4pm on weekdays
-  if (now.day() !== 6 && now.hour() > 16) return;
-  // Saturday before 1pm
-  if (now.hour() > 13) return;
+  // Monday to Friday
+  if (now.day() < 1 || now.day() > 5) return;
+  // After 7am and Before 4pm
+  if (now.hour() < 7 && now.hour() > 16) return;
 
   fetch(`${process.env.BOT_API}/sendMessage`, {
     method: 'POST',
