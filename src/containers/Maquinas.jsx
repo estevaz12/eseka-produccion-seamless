@@ -15,6 +15,7 @@ import MaquinasMap from '../components/MaquinasMap.jsx';
 import { useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.js';
 import electronicoSound from '../assets/sounds/electronico.wav';
+import dayjs from 'dayjs';
 
 let apiUrl;
 
@@ -96,7 +97,7 @@ export default function Maquinas() {
         });
       });
 
-      if (!ignore) showNotification(newIds);
+      if (!ignore) sendNotification(newIds);
     }
     // Remove toasts for removed machines
     if (removedIds.length > 0) {
@@ -181,18 +182,50 @@ export default function Maquinas() {
   );
 }
 
-function showNotification(electronicoMachs) {
-  window.electronAPI.notify({
+function sendNotification(electronicoMachs) {
+  const notif = {
     title: 'ELECTRÓNICO',
-    body:
-      electronicoMachs.length === 1
-        ? `Máq. ${electronicoMachs[0]} entró en ELECTRÓNICO`
-        : `${electronicoMachs.length} máquinas entraron en ELECTRÓNICO`,
+    body: electronicoMachs
+      .map((m) => `Máq. ${m} entró en ELECTRÓNICO`)
+      .join('\n'),
     timeoutType: 'never',
-  });
+  };
+
+  window.electronAPI.notify(notif);
 
   // custom sound
   playAlertSound(3);
+
+  // send telegram message if in working hours
+  const now = dayjs.tz();
+  // Monday to Saturday
+  if (now.day() < 1 || now.day() > 6) return;
+  // After 7am
+  if (now.hour() < 7) return;
+  // Before 4pm on weekdays
+  if (now.day() !== 6 && now.hour() > 16) return;
+  // Saturday before 1pm
+  if (now.hour() > 13) return;
+
+  fetch(`${process.env.BOT_API}/sendMessage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_id: process.env.CHAT_ID,
+      text: notif.body,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) {
+        console.log('Telegram message sent');
+      } else {
+        console.error('Error sending Telegram message:', data.description);
+      }
+    })
+    .catch((err) => console.error(err));
 }
 
 function playAlertSound(times = 5, interval = 1000) {
