@@ -56,7 +56,7 @@ export default function Home() {
     const lastRoom = localStorage.getItem('lastRoom');
     if (lastRoom !== room) {
       localStorage.setItem('lastRoom', room);
-      window.location.reload();
+      if (room !== 'ELECTRONICA') window.location.reload();
     } else if (room === 'ELECTRONICA') {
       // lastRoom === room, meaning no change, initial render
       // whenever opening app in ELECTRONICA, redirect to maquinas
