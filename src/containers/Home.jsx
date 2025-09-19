@@ -23,15 +23,9 @@ export default function Home() {
   const addToast = (toast) => {
     setToasts((prev) => {
       // If we're in ELECTRONICA and this is an electronico toast,
-      // check for duplicates by tag + machCode
-      if (
-        room === 'ELECTRONICA' &&
-        toast?.tag === 'electronico' &&
-        toast?.machCode != null
-      ) {
-        const exists = prev.some(
-          (t) => t.tag === 'electronico' && t.machCode === toast.machCode
-        );
+      // check for duplicates by machCode
+      if (room === 'ELECTRONICA' && toast?.machCode !== null) {
+        const exists = prev.some((t) => t.machCode === toast.machCode);
         if (exists) {
           return prev; // skip duplicate
         }
@@ -44,6 +38,14 @@ export default function Home() {
       };
 
       const updated = [...prev, newToast];
+      localStorage.setItem('toasts', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const removeToast = (id) => {
+    setToasts((prev) => {
+      const updated = prev.filter((t) => t.id !== id);
       localStorage.setItem('toasts', JSON.stringify(updated));
       return updated;
     });
@@ -64,7 +66,7 @@ export default function Home() {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <ToastsContext value={{ addToast }}>
+      <ToastsContext value={{ addToast, removeToast }}>
         <Stack
           direction='row'
           className='items-stretch justify-start size-full'
@@ -90,7 +92,7 @@ export default function Home() {
             className='fixed bottom-2 right-2 z-[var(--joy-zIndex-snackbar)] gap-2'
           >
             {toasts.map((toast) => (
-              <Toast key={toast.id} toast={toast} setToasts={setToasts} />
+              <Toast key={toast.id} toast={toast} removeToast={removeToast} />
             ))}
           </Stack>
         )}

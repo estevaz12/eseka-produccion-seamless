@@ -5,18 +5,14 @@ import IconButton from '@mui/joy/IconButton';
 import Snackbar from '@mui/joy/Snackbar';
 import { useState } from 'react';
 
-export default function Toast({ toast, setToasts }) {
+export default function Toast({ toast, removeToast }) {
   const [open, setOpen] = useState(true);
   const startDecorator =
     toast.type === 'success' ? <CheckCircleRounded /> : <ErrorRounded />;
 
-  const removeToast = (id) => {
+  const closeToast = (id) => {
     setOpen(false);
-    setToasts((prev) => {
-      const updated = prev.filter((t) => t.id !== id);
-      localStorage.setItem('toasts', JSON.stringify(updated));
-      return updated;
-    });
+    removeToast(id);
   };
 
   return (
@@ -33,7 +29,7 @@ export default function Toast({ toast, setToasts }) {
           return;
         }
 
-        removeToast(toast.id);
+        closeToast(toast.id);
       }}
       startDecorator={startDecorator}
       endDecorator={
@@ -41,7 +37,7 @@ export default function Toast({ toast, setToasts }) {
           size='sm'
           variant='soft'
           color={toast.type}
-          onClick={() => removeToast(toast.id)}
+          onClick={() => closeToast(toast.id)}
         >
           <CloseRounded />
         </IconButton>
