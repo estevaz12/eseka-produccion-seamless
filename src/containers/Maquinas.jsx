@@ -20,7 +20,7 @@ let apiUrl;
 
 export default function Maquinas() {
   apiUrl = useConfig().apiUrl;
-  const { addToast } = useContext(ToastsContext);
+  const { addToast, removeToast } = useContext(ToastsContext);
   const { room } = useOutletContext();
   const [machines, setMachines] = useState([]);
   const [filteredMachines, setFilteredMachines] = useState([]);
@@ -75,48 +75,44 @@ export default function Maquinas() {
   useEffect(() => {
     if (room !== 'ELECTRONICA') return;
 
+    let ignore = false;
+
     const currentIds = electronicoIds;
     const lastIds = lastNotifiedIdsRef.current;
 
-    // compare arrays
-    const changed =
-      currentIds.length !== lastIds.length ||
-      currentIds.some((id, i) => id !== lastIds[i]);
+    // Find new machines
+    const newIds = currentIds.filter((id) => !lastIds.includes(id));
+    // Find removed machines
+    const removedIds = lastIds.filter((id) => !currentIds.includes(id));
 
-    if (electronicoMachs.length > 0 && changed) {
-      electronicoMachs.forEach((m) => {
+    // add toast for new machines
+    if (newIds.length > 0) {
+      newIds.forEach((id) => {
         addToast({
-          message: `Máq. ${m.MachCode} con ELECTRÓNICO`,
+          message: `Máq. ${id} con ELECTRÓNICO`,
           type: 'warning',
           duration: null,
-          tag: 'electronico',
-          machCode: m.MachCode,
+          machCode: id,
         });
       });
 
-      window.electronAPI.notify({
-        title: 'ELECTRÓNICO',
-        body: `${electronicoMachs.length} máquina${
-          electronicoMachs.length > 1 ? 's' : ''
-        }`,
-        timeoutType: 'never',
-      });
-      // custom sound
-      playAlertSound(10);
-
-      // update ref so we don't notify again until it changes
-      lastNotifiedIdsRef.current = currentIds;
+      if (!ignore) showNotification(newIds);
     }
-
-    if (electronicoMachs.length === 0 && lastIds.length > 0) {
-      // clear toasts if all are ok
+    // Remove toasts for removed machines
+    if (removedIds.length > 0) {
       const currentToasts = JSON.parse(localStorage.getItem('toasts') || '[]');
-      const filtered = currentToasts.filter((t) => t.tag !== 'electronico');
-      localStorage.setItem('toasts', JSON.stringify(filtered));
-
-      // reset ref
-      lastNotifiedIdsRef.current = [];
+      const removed = currentToasts.filter((t) =>
+        removedIds.includes(t.machCode)
+      );
+      removed.forEach((t) => removeToast(t.id));
     }
+
+    // update ref so we don't notify again until it changes
+    lastNotifiedIdsRef.current = currentIds;
+
+    return () => {
+      ignore = true;
+    };
   }, [room, electronicoIds]);
 
   return (
@@ -183,6 +179,20 @@ export default function Maquinas() {
       </TabPanel>
     </Tabs>
   );
+}
+
+function showNotification(electronicoMachs) {
+  window.electronAPI.notify({
+    title: 'ELECTRÓNICO',
+    body:
+      electronicoMachs.length === 1
+        ? `Máq. ${electronicoMachs[0]} entró en ELECTRÓNICO`
+        : `${electronicoMachs.length} máquinas entraron en ELECTRÓNICO`,
+    timeoutType: 'never',
+  });
+
+  // custom sound
+  playAlertSound(3);
 }
 
 function playAlertSound(times = 5, interval = 1000) {
