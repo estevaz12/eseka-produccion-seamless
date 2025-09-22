@@ -28,6 +28,9 @@ export default function Maquinas() {
   const { room } = useOutletContext();
   const [machines, setMachines] = useState([]);
   const [filteredMachines, setFilteredMachines] = useState([]);
+  const [defaultTab, setDefaultTab] = useState(
+    JSON.parse(localStorage.getItem('machTab')) || 0
+  );
   // Algodón, Seamless, Nylon
   const [selectedRooms, setSelectedRooms] = useState(
     JSON.parse(localStorage.getItem('selectedRooms')) || [true, true, true]
@@ -145,10 +148,14 @@ export default function Maquinas() {
   return (
     <Tabs
       aria-label='tabs'
-      defaultValue={0}
+      defaultValue={defaultTab}
       size='sm'
       sx={{ bgcolor: 'transparent' }}
       className='sticky top-0 z-10'
+      onChange={(e, value) => {
+        localStorage.setItem('machTab', JSON.stringify(value));
+        setDefaultTab(value);
+      }}
     >
       <Stack
         direction='row'
