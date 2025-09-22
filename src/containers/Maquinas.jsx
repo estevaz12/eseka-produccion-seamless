@@ -16,6 +16,9 @@ import { useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.js';
 import electronicoSound from '../assets/sounds/electronico.wav';
 import dayjs from 'dayjs';
+import Checkbox from '@mui/joy/Checkbox';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
 
 let apiUrl;
 
@@ -25,11 +28,34 @@ export default function Maquinas() {
   const { room } = useOutletContext();
   const [machines, setMachines] = useState([]);
   const [filteredMachines, setFilteredMachines] = useState([]);
+  // Algodón, Seamless, Nylon
+  const [selectedRooms, setSelectedRooms] = useState(
+    JSON.parse(localStorage.getItem('selectedRooms')) || [true, true, true]
+  );
+
+  // Update localStorage when selectedRooms changes
+  useEffect(() => {
+    localStorage.setItem('selectedRooms', JSON.stringify(selectedRooms));
+  }, [selectedRooms]);
 
   const getMachines = () => {
     fetch(`${apiUrl}/${room}/machines`)
       .then((res) => res.json())
-      .then((data) => setMachines(data))
+      .then((data) => {
+        let machs = [...data];
+
+        if (room === 'ELECTRONICA') {
+          // filter machines based on selectedRooms
+          selectedRooms.forEach((room, i) => {
+            const RoomCode =
+              i === 0 ? 'HOMBRE' : i === 1 ? 'SEAMLESS' : 'MUJER';
+            if (!room)
+              machs = machs.filter((m) => !m.RoomCode.startsWith(RoomCode));
+          });
+        }
+
+        setMachines(machs);
+      })
       .catch((err) =>
         console.error(`[CLIENT] Error fetching /${room}/machines:`, err)
       );
@@ -48,7 +74,7 @@ export default function Maquinas() {
       ignore = true;
       clearInterval(intervalId);
     };
-  }, [room]);
+  }, [room, selectedRooms]);
 
   const sortedMachines = useMemo(
     () => [...machines].sort((a, b) => a.MachCode - b.MachCode),
@@ -157,6 +183,13 @@ export default function Maquinas() {
           </Tab>
         </TabList>
 
+        {room === 'ELECTRONICA' && (
+          <RoomCheckboxes
+            selectedRooms={selectedRooms}
+            setSelectedRooms={setSelectedRooms}
+          />
+        )}
+
         {/* search inputs */}
         <MachSearchForm
           machines={machines}
@@ -170,6 +203,7 @@ export default function Maquinas() {
           machines={
             filteredMachines.length > 0 ? sortedFiltered : sortedMachines
           }
+          selectedRooms={selectedRooms}
         />
       </TabPanel>
       <TabPanel value={1} className='p-0'>
@@ -235,4 +269,34 @@ function playAlertSound(times = 5, interval = 1000) {
     }
   };
   playOnce();
+}
+
+function RoomCheckboxes({ selectedRooms, setSelectedRooms }) {
+  return (
+    <div role='group' aria-labelledby='room'>
+      <List
+        orientation='horizontal'
+        wrap
+        sx={{ '--List-gap': '8px', '--ListItem-radius': '20px' }}
+      >
+        {['Algodón', 'Seamless', 'Nylon'].map((item, i) => (
+          <ListItem key={item}>
+            <Checkbox
+              overlay
+              disableIcon
+              variant='soft'
+              label={item}
+              checked={selectedRooms[i]}
+              onChange={(e) => {
+                const newRooms = [...selectedRooms];
+                newRooms[i] = e.target.checked;
+                setSelectedRooms(newRooms);
+                // localStorage update now handled in parent useEffect
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 }
