@@ -8,7 +8,7 @@ import { Card } from '@mui/joy';
 import { useOutletContext } from 'react-router';
 import MachineInfo from './MachineInfo.jsx';
 
-export default function MaquinasMap({ machines }) {
+export default function MaquinasMap({ machines, selectedRooms }) {
   const { room } = useOutletContext();
   const [open, setOpened] = useState(0);
   const groups = rooms[room];
@@ -20,10 +20,12 @@ export default function MaquinasMap({ machines }) {
         (m) => m.MachCode >= group.min && m.MachCode <= group.max
       );
 
-      const loadingMachs = Array.from(
-        { length: group.max - group.min + 1 },
-        (_, i) => ({ MachCode: group.min + i })
-      );
+      const loadingMachs =
+        room === 'ELECTRONICA' && !selectedRooms[group.room]
+          ? []
+          : Array.from({ length: group.max - group.min + 1 }, (_, i) => ({
+              MachCode: group.min + i,
+            }));
 
       const orderedMachs = [...groupMachs].sort((a, b) => {
         if (group.oddFirst) {
@@ -53,6 +55,10 @@ export default function MaquinasMap({ machines }) {
         {groupData.map(({ group, loadingMachs, orderedMachs }) => {
           const cols = Math.ceil((group.max - group.min + 1) / 2);
 
+          // if room not selected, skip rendering
+          if (orderedMachs.length === 0 && loadingMachs.length === 0)
+            return null;
+
           return (
             <Stack
               direction='column'
@@ -67,7 +73,16 @@ export default function MaquinasMap({ machines }) {
               key={group.min}
             >
               <Typography level='h4'>
-                {room === 'ELECTRONICA' && <>{group.room}&nbsp;&nbsp;&nbsp;</>}
+                {room === 'ELECTRONICA' && (
+                  <>
+                    {group.room === 0
+                      ? 'ALG'
+                      : group.room === 1
+                      ? 'SEA'
+                      : 'NYL'}
+                    &nbsp;&nbsp;&nbsp;
+                  </>
+                )}
                 {`${group.min} - ${group.max}`}
               </Typography>
 
@@ -158,21 +173,22 @@ const rooms = {
     { min: 429, max: 450, oddFirst: true, reversed: false },
   ],
   SEAMLESS: [{ min: 1001, max: 1037, oddFirst: true, reversed: true }],
+  // room = 0: algodón, 1: seamless, 2: nylon
   ELECTRONICA: [
-    { min: 389, max: 408, oddFirst: false, reversed: false, room: 'ALG' },
-    { min: 409, max: 428, oddFirst: false, reversed: false, room: 'ALG' },
-    { min: 367, max: 388, oddFirst: false, reversed: true, room: 'ALG' },
-    { min: 345, max: 366, oddFirst: false, reversed: true, room: 'ALG' },
-    { min: 301, max: 322, oddFirst: false, reversed: false, room: 'ALG' },
-    { min: 323, max: 344, oddFirst: false, reversed: false, room: 'ALG' },
-    { min: 429, max: 450, oddFirst: true, reversed: false, room: 'ALG' },
-    { min: 1001, max: 1037, oddFirst: true, reversed: true, room: 'SEA' },
-    { min: 1, max: 45, oddFirst: null, reversed: false, room: 'NYL' },
-    { min: 46, max: 89, oddFirst: null, reversed: false, room: 'NYL' },
-    { min: 90, max: 128, oddFirst: null, reversed: false, room: 'NYL' },
-    { min: 129, max: 165, oddFirst: null, reversed: false, room: 'NYL' },
-    { min: 166, max: 174, oddFirst: null, reversed: false, room: 'NYL' },
-    { min: 175, max: 194, oddFirst: null, reversed: false, room: 'NYL' },
+    { min: 389, max: 408, oddFirst: false, reversed: false, room: 0 },
+    { min: 409, max: 428, oddFirst: false, reversed: false, room: 0 },
+    { min: 367, max: 388, oddFirst: false, reversed: true, room: 0 },
+    { min: 345, max: 366, oddFirst: false, reversed: true, room: 0 },
+    { min: 301, max: 322, oddFirst: false, reversed: false, room: 0 },
+    { min: 323, max: 344, oddFirst: false, reversed: false, room: 0 },
+    { min: 429, max: 450, oddFirst: true, reversed: false, room: 0 },
+    { min: 1001, max: 1037, oddFirst: true, reversed: true, room: 1 },
+    { min: 1, max: 45, oddFirst: null, reversed: false, room: 2 },
+    { min: 46, max: 89, oddFirst: null, reversed: false, room: 2 },
+    { min: 90, max: 128, oddFirst: null, reversed: false, room: 2 },
+    { min: 129, max: 165, oddFirst: null, reversed: false, room: 2 },
+    { min: 166, max: 174, oddFirst: null, reversed: false, room: 2 },
+    { min: 175, max: 194, oddFirst: null, reversed: false, room: 2 },
   ],
 };
 

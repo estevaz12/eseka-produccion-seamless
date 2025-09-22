@@ -98,7 +98,7 @@ app.whenReady().then(() => {
         ...details.responseHeaders,
         'Content-Security-Policy': [
           "default-src 'self'; " +
-            "connect-src 'self' http://localhost:3001/ ws://localhost:3000 https://api.argentinadatos.com; " +
+            "connect-src 'self' http://localhost:3001/ ws://localhost:3000 https://api.argentinadatos.com https://api.telegram.org;" +
             "style-src 'self' 'unsafe-inline'; " +
             "script-src 'self' 'unsafe-eval'; " +
             "img-src 'self' data: blob: file:;",

@@ -15,26 +15,56 @@ import MaquinasMap from '../components/MaquinasMap.jsx';
 import { useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.js';
 import electronicoSound from '../assets/sounds/electronico.wav';
+import dayjs from 'dayjs';
+import Checkbox from '@mui/joy/Checkbox';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
 
 let apiUrl;
 
 export default function Maquinas() {
   apiUrl = useConfig().apiUrl;
-  const { addToast } = useContext(ToastsContext);
+  const { addToast, removeToast } = useContext(ToastsContext);
   const { room } = useOutletContext();
   const [machines, setMachines] = useState([]);
   const [filteredMachines, setFilteredMachines] = useState([]);
+  const [defaultTab, setDefaultTab] = useState(
+    JSON.parse(localStorage.getItem('machTab')) || 0
+  );
+  // Algodón, Seamless, Nylon
+  const [selectedRooms, setSelectedRooms] = useState(
+    JSON.parse(localStorage.getItem('selectedRooms')) || [true, true, true]
+  );
+
+  // Update localStorage when selectedRooms changes
+  useEffect(() => {
+    localStorage.setItem('selectedRooms', JSON.stringify(selectedRooms));
+  }, [selectedRooms]);
 
   const getMachines = () => {
     fetch(`${apiUrl}/${room}/machines`)
       .then((res) => res.json())
-      .then((data) => setMachines(data))
+      .then((data) => {
+        let machs = [...data];
+
+        if (room === 'ELECTRONICA') {
+          // filter machines based on selectedRooms
+          selectedRooms.forEach((room, i) => {
+            const RoomCode =
+              i === 0 ? 'HOMBRE' : i === 1 ? 'SEAMLESS' : 'MUJER';
+            if (!room)
+              machs = machs.filter((m) => !m.RoomCode.startsWith(RoomCode));
+          });
+        }
+
+        setMachines(machs);
+      })
       .catch((err) =>
         console.error(`[CLIENT] Error fetching /${room}/machines:`, err)
       );
   };
 
-  // get machines on load
+  // get machines on load and room change
   useEffect(() => {
     let ignore = false;
     if (!ignore) getMachines();
@@ -47,7 +77,7 @@ export default function Maquinas() {
       ignore = true;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [room, selectedRooms]);
 
   const sortedMachines = useMemo(
     () => [...machines].sort((a, b) => a.MachCode - b.MachCode),
@@ -75,57 +105,57 @@ export default function Maquinas() {
   useEffect(() => {
     if (room !== 'ELECTRONICA') return;
 
+    let ignore = false;
+
     const currentIds = electronicoIds;
     const lastIds = lastNotifiedIdsRef.current;
 
-    // compare arrays
-    const changed =
-      currentIds.length !== lastIds.length ||
-      currentIds.some((id, i) => id !== lastIds[i]);
+    // Find new machines
+    const newIds = currentIds.filter((id) => !lastIds.includes(id));
+    // Find removed machines
+    const removedIds = lastIds.filter((id) => !currentIds.includes(id));
 
-    if (electronicoMachs.length > 0 && changed) {
-      electronicoMachs.forEach((m) => {
+    // add toast for new machines
+    if (newIds.length > 0) {
+      newIds.forEach((id) => {
         addToast({
-          message: `Máq. ${m.MachCode} con ELECTRÓNICO`,
+          message: `Máq. ${id} con ELECTRÓNICO`,
           type: 'warning',
           duration: null,
-          tag: 'electronico',
-          machCode: m.MachCode,
+          machCode: id,
         });
       });
 
-      window.electronAPI.notify({
-        title: 'ELECTRÓNICO',
-        body: `${electronicoMachs.length} máquina${
-          electronicoMachs.length > 1 ? 's' : ''
-        }`,
-        timeoutType: 'never',
-      });
-      // custom sound
-      playAlertSound(10);
-
-      // update ref so we don't notify again until it changes
-      lastNotifiedIdsRef.current = currentIds;
+      if (!ignore) sendNotification(newIds);
     }
-
-    if (electronicoMachs.length === 0 && lastIds.length > 0) {
-      // clear toasts if all are ok
+    // Remove toasts for removed machines
+    if (removedIds.length > 0) {
       const currentToasts = JSON.parse(localStorage.getItem('toasts') || '[]');
-      const filtered = currentToasts.filter((t) => t.tag !== 'electronico');
-      localStorage.setItem('toasts', JSON.stringify(filtered));
-
-      // reset ref
-      lastNotifiedIdsRef.current = [];
+      const removed = currentToasts.filter((t) =>
+        removedIds.includes(t.machCode)
+      );
+      removed.forEach((t) => removeToast(t.id));
     }
+
+    // update ref so we don't notify again until it changes
+    lastNotifiedIdsRef.current = currentIds;
+
+    return () => {
+      ignore = true;
+    };
   }, [room, electronicoIds]);
 
   return (
     <Tabs
       aria-label='tabs'
-      defaultValue={0}
+      defaultValue={defaultTab}
       size='sm'
       sx={{ bgcolor: 'transparent' }}
       className='sticky top-0 z-10'
+      onChange={(e, value) => {
+        localStorage.setItem('machTab', JSON.stringify(value));
+        setDefaultTab(value);
+      }}
     >
       <Stack
         direction='row'
@@ -160,6 +190,13 @@ export default function Maquinas() {
           </Tab>
         </TabList>
 
+        {room === 'ELECTRONICA' && (
+          <RoomCheckboxes
+            selectedRooms={selectedRooms}
+            setSelectedRooms={setSelectedRooms}
+          />
+        )}
+
         {/* search inputs */}
         <MachSearchForm
           machines={machines}
@@ -173,6 +210,7 @@ export default function Maquinas() {
           machines={
             filteredMachines.length > 0 ? sortedFiltered : sortedMachines
           }
+          selectedRooms={selectedRooms}
         />
       </TabPanel>
       <TabPanel value={1} className='p-0'>
@@ -183,6 +221,48 @@ export default function Maquinas() {
       </TabPanel>
     </Tabs>
   );
+}
+
+function sendNotification(electronicoMachs) {
+  const notif = {
+    title: 'ELECTRÓNICO',
+    body: electronicoMachs
+      .map((m) => `Máq. ${m} entró en ELECTRÓNICO`)
+      .join('\n'),
+    timeoutType: 'never',
+  };
+
+  window.electronAPI.notify(notif);
+
+  // custom sound
+  playAlertSound(3);
+
+  // send telegram message if in working hours
+  const now = dayjs.tz();
+  // Monday to Friday
+  if (now.day() < 1 || now.day() > 5) return;
+  // After 7am and Before 4pm
+  if (now.hour() < 7 && now.hour() > 16) return;
+
+  fetch(`${process.env.BOT_API}/sendMessage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_id: process.env.CHAT_ID,
+      text: notif.body,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) {
+        console.log('Telegram message sent');
+      } else {
+        console.error('Error sending Telegram message:', data.description);
+      }
+    })
+    .catch((err) => console.error(err));
 }
 
 function playAlertSound(times = 5, interval = 1000) {
@@ -196,4 +276,34 @@ function playAlertSound(times = 5, interval = 1000) {
     }
   };
   playOnce();
+}
+
+function RoomCheckboxes({ selectedRooms, setSelectedRooms }) {
+  return (
+    <div role='group' aria-labelledby='room'>
+      <List
+        orientation='horizontal'
+        wrap
+        sx={{ '--List-gap': '8px', '--ListItem-radius': '20px' }}
+      >
+        {['Algodón', 'Seamless', 'Nylon'].map((item, i) => (
+          <ListItem key={item}>
+            <Checkbox
+              overlay
+              disableIcon
+              variant='soft'
+              label={item}
+              checked={selectedRooms[i]}
+              onChange={(e) => {
+                const newRooms = [...selectedRooms];
+                newRooms[i] = e.target.checked;
+                setSelectedRooms(newRooms);
+                // localStorage update now handled in parent useEffect
+              }}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 }

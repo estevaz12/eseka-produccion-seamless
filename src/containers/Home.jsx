@@ -21,15 +21,9 @@ export default function Home() {
   const addToast = (toast) => {
     setToasts((prev) => {
       // If we're in ELECTRONICA and this is an electronico toast,
-      // check for duplicates by tag + machCode
-      if (
-        room === 'ELECTRONICA' &&
-        toast?.tag === 'electronico' &&
-        toast?.machCode != null
-      ) {
-        const exists = prev.some(
-          (t) => t.tag === 'electronico' && t.machCode === toast.machCode
-        );
+      // check for duplicates by machCode
+      if (room === 'ELECTRONICA' && toast?.machCode !== null) {
+        const exists = prev.some((t) => t.machCode === toast.machCode);
         if (exists) {
           return prev; // skip duplicate
         }
@@ -47,12 +41,20 @@ export default function Home() {
     });
   };
 
+  const removeToast = (id) => {
+    setToasts((prev) => {
+      const updated = prev.filter((t) => t.id !== id);
+      localStorage.setItem('toasts', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   // reload on room change
   useEffect(() => {
     const lastRoom = localStorage.getItem('lastRoom');
     if (lastRoom !== room) {
       localStorage.setItem('lastRoom', room);
-      window.location.reload();
+      if (room !== 'ELECTRONICA') window.location.reload();
     } else if (room === 'ELECTRONICA') {
       // lastRoom === room, meaning no change, initial render
       // whenever opening app in ELECTRONICA, redirect to maquinas
@@ -62,7 +64,7 @@ export default function Home() {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <ToastsContext value={{ addToast }}>
+      <ToastsContext value={{ addToast, removeToast }}>
         <Stack
           direction='row'
           className='items-stretch justify-start size-full'
@@ -88,7 +90,7 @@ export default function Home() {
             className='fixed bottom-2 right-2 z-[var(--joy-zIndex-snackbar)] gap-2'
           >
             {toasts.map((toast) => (
-              <Toast key={toast.id} toast={toast} setToasts={setToasts} />
+              <Toast key={toast.id} toast={toast} removeToast={removeToast} />
             ))}
           </Stack>
         )}
