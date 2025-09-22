@@ -20,10 +20,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/assets/icons/icon.ico', to: 'assets/icons' },
-        {
-          from: 'src/assets/images/mach_states',
-          to: 'assets/images/mach_states',
-        },
+        { from: 'src/assets/icons/electronico.ico', to: 'assets/icons' },
       ],
     }),
   ],
