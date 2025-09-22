@@ -7,6 +7,8 @@ const {
   ipcMain,
   shell,
   Notification,
+  Tray,
+  Menu,
 } = require('electron');
 const path = require('path');
 const dayjs = require('dayjs');
@@ -23,6 +25,7 @@ dayjs.extend(timezone);
 
 app.commandLine.appendSwitch('lang', 'es-419');
 
+let mainWindow;
 let serverProcess;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -41,7 +44,7 @@ async function handleFileOpen() {
 
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     title: 'Tejeduría',
     width: 1366,
     height: 727,
@@ -73,7 +76,53 @@ const createWindow = () => {
   mainWindow.on('will-resize', (event) => {
     event.preventDefault();
   });
+
+  mainWindow.on('close', (event) => {
+    if (!app.isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+
+      if (process.platform === 'win32') {
+        // Show tray notification on Windows when minimizing to tray
+        tray.displayBalloon({
+          iconType: 'info',
+          title: 'Aplicación minimizada',
+          content: 'La aplicación sigue funcionando en segundo plano.',
+        });
+      }
+    }
+  });
 };
+
+let tray;
+function createTray() {
+  const iconPath = path.join(__dirname, 'assets', 'icons', 'icon.ico');
+  tray = new Tray(iconPath);
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Abrir',
+      click: () => {
+        if (mainWindow) mainWindow.show();
+      },
+    },
+    {
+      label: 'Cerrar',
+      click: () => {
+        app.isQuitting = true;
+        if (serverProcess) serverProcess.kill();
+        app.quit();
+      },
+    },
+  ]);
+
+  tray.setToolTip('Tejeduría');
+  tray.setContextMenu(contextMenu);
+
+  tray.on('click', () => {
+    if (mainWindow) mainWindow.show();
+  });
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -120,13 +169,7 @@ app.whenReady().then(() => {
     ipcMain.on('notify', (event, opts) => {
       const notif = new Notification({
         ...opts,
-        icon: path.join(
-          __dirname,
-          'assets',
-          'images',
-          'mach_states',
-          'electronico.png'
-        ),
+        icon: path.join(__dirname, 'assets', 'icons', 'electronico.ico'),
       });
 
       notif.on('click', () => {
@@ -144,7 +187,18 @@ app.whenReady().then(() => {
     });
 
     createWindow();
+    createTray();
+
+    app.setLoginItemSettings({
+      openAtLogin: true,
+      path: process.execPath,
+      args: [],
+    });
   }, 1000);
+
+  app.on('window-all-closed', (event) => {
+    event.preventDefault();
+  });
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -153,17 +207,14 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
-});
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    serverProcess.kill();
-    app.quit();
-  }
+  // Quit when all windows are closed, except on macOS. There, it's common
+  // for applications and their menu bar to stay active until the user quits
+  // explicitly with Cmd + Q.
+  // app.on('window-all-closed', () => {
+  //   if (process.platform !== 'darwin') {
+  //     serverProcess.kill();
+  //     app.quit();
+  //   }
+  // });
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
