@@ -14,6 +14,7 @@ const path = require('path');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
+const processMonitorMessages = require('./utils/processMonitorMessages');
 
 app.setAppUserModelId('Tejeduria');
 
@@ -22,24 +23,33 @@ if (require('electron-squirrel-startup')) app.quit();
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Buenos_Aires');
 
 app.commandLine.appendSwitch('lang', 'es-419');
 
 let mainWindow;
+let tray;
 let serverProcess;
+let monitorProcess;
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
+function startServer() {
+  serverProcess = utilityProcess.fork(path.join(__dirname, 'server.js'));
+  // let the server know if on dev or prod mode
+  serverProcess.postMessage(app.isPackaged);
+  // when server sends a message
+  serverProcess.on('message', (msg) => {
+    console.log(`[${dayjs.tz().format('DD/MM/YYYY HH:mm:ss')}] ${msg}`);
+  });
 }
 
-async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    filters: [{ name: 'PDFs', extensions: ['pdf'] }],
-  });
-  if (!canceled) {
-    return filePaths[0];
-  }
+function startNServerMonitor() {
+  console.log('[MAIN] Starting NServer monitor...');
+
+  monitorProcess = utilityProcess.fork(
+    path.join(__dirname, 'nserverMonitor.js')
+  );
+
+  monitorProcess.on('message', (msg) => processMonitorMessages(msg));
 }
 
 const createWindow = () => {
@@ -94,7 +104,6 @@ const createWindow = () => {
   });
 };
 
-let tray;
 function createTray() {
   const iconPath = path.join(__dirname, 'assets', 'icons', 'icon.ico');
   tray = new Tray(iconPath);
@@ -111,6 +120,7 @@ function createTray() {
       click: () => {
         app.isQuitting = true;
         if (serverProcess) serverProcess.kill();
+        if (monitorProcess) monitorProcess.kill();
         app.quit();
       },
     },
@@ -129,17 +139,9 @@ function createTray() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // start child server process
-  serverProcess = utilityProcess.fork(path.join(__dirname, 'server.js'));
-  // let the server know if on dev or prod mode
-  serverProcess.postMessage(app.isPackaged);
-  // when server sends a message
-  serverProcess.on('message', (msg) => {
-    console.log(
-      `[${dayjs()
-        .tz('America/Buenos_Aires')
-        .format('DD/MM/YYYY HH:mm:ss')}] ${msg}`
-    );
-  });
+  startServer();
+  // start nserver monitor process
+  startNServerMonitor();
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
@@ -187,34 +189,50 @@ app.whenReady().then(() => {
     });
 
     createWindow();
-    createTray();
-
-    app.setLoginItemSettings({
-      openAtLogin: true,
-      path: process.execPath,
-      args: [],
-    });
+    if (app.isPackaged) createTray();
   }, 1000);
-
-  app.on('window-all-closed', (event) => {
-    event.preventDefault();
-  });
-
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
-
-  // Quit when all windows are closed, except on macOS. There, it's common
-  // for applications and their menu bar to stay active until the user quits
-  // explicitly with Cmd + Q.
-  // app.on('window-all-closed', () => {
-  //   if (process.platform !== 'darwin') {
-  //     serverProcess.kill();
-  //     app.quit();
-  //   }
-  // });
 });
+
+// auto-launch on login
+app.setLoginItemSettings({
+  openAtLogin: true,
+  path: process.execPath,
+  args: [],
+});
+
+app.on('window-all-closed', (event) => {
+  event.preventDefault();
+});
+
+// On OS X it's common to re-create a window in the app when the
+// dock icon is clicked and there are no other windows open.
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+app.on('before-quit', () => {
+  if (monitorProcess) monitorProcess.kill();
+  if (serverProcess) serverProcess.kill();
+});
+
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+// app.on('window-all-closed', () => {
+//   if (process.platform !== 'darwin') {
+//     serverProcess.kill();
+//     monitorProcess.kill();
+//     app.quit();
+//   }
+// });
+
+async function handleFileOpen() {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    filters: [{ name: 'PDFs', extensions: ['pdf'] }],
+  });
+  if (!canceled) {
+    return filePaths[0];
+  }
+}
