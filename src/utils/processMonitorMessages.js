@@ -14,19 +14,19 @@ const prefix = `[${now}][TASKLIST]`;
 let lastRunning = null;
 let errorNotif = null;
 
-function processMonitorMessages(msg) {
+function processMonitorMessages(msg, mainWindow) {
   if (msg.type === 'status') {
     const running = msg.running;
     // if lastRunning is null, run a first check
     if (lastRunning === null) {
-      if (!running) notifyStatus(running); // only notify if down
+      if (!running) notifyStatus(running, mainWindow); // only notify if down
 
       lastRunning = running;
     }
 
     // if there has been a change in status, notify whether it went up or down
     if (running !== lastRunning) {
-      notifyStatus(running);
+      notifyStatus(running, mainWindow);
       // update lastRunning to current running value
       lastRunning = running;
     }
@@ -40,7 +40,9 @@ function processMonitorMessages(msg) {
 
 module.exports = processMonitorMessages;
 
-function notifyStatus(running) {
+// TODO play audio
+// TODO telegram message
+function notifyStatus(running, mainWindow) {
   if (!running) {
     errorNotif = new Notification({
       title: 'NServer dejó de funcionar',
@@ -49,6 +51,10 @@ function notifyStatus(running) {
       icon: path.join(__dirname, 'assets', 'icons', 'error.ico'),
     });
     errorNotif.show();
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('play-alert-sound');
+    }
 
     console.log(`${prefix} NServer is DOWN`);
   } else {

@@ -49,7 +49,9 @@ function startNServerMonitor() {
     path.join(__dirname, 'nserverMonitor.js')
   );
 
-  monitorProcess.on('message', (msg) => processMonitorMessages(msg));
+  monitorProcess.on('message', (msg) =>
+    processMonitorMessages(msg, mainWindow)
+  );
 }
 
 const createWindow = () => {
@@ -140,8 +142,6 @@ function createTray() {
 app.whenReady().then(() => {
   // start child server process
   startServer();
-  // start nserver monitor process
-  startNServerMonitor();
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
@@ -168,7 +168,7 @@ app.whenReady().then(() => {
     );
 
     // notifications
-    ipcMain.on('notify', (event, opts) => {
+    ipcMain.on('notifyElectronico', (event, opts) => {
       const notif = new Notification({
         ...opts,
         icon: path.join(__dirname, 'assets', 'icons', 'electronico.ico'),
@@ -190,6 +190,8 @@ app.whenReady().then(() => {
 
     createWindow();
     if (app.isPackaged) createTray();
+    // start nserver monitor process
+    startNServerMonitor();
   }, 1000);
 });
 

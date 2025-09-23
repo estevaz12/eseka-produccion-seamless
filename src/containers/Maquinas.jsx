@@ -14,11 +14,11 @@ import TableChartTwoTone from '@mui/icons-material/TableChartTwoTone';
 import MaquinasMap from '../components/MaquinasMap.jsx';
 import { useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.js';
-import electronicoSound from '../assets/sounds/electronico.wav';
 import dayjs from 'dayjs';
 import Checkbox from '@mui/joy/Checkbox';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
+import { playAlertSound } from '../utils/playAlertSound.js';
 
 let apiUrl;
 
@@ -232,10 +232,10 @@ function sendNotification(electronicoMachs) {
     timeoutType: 'never',
   };
 
-  window.electronAPI.notify(notif);
+  window.electronAPI.notifyElectronico(notif);
 
   // custom sound
-  playAlertSound(3);
+  playAlertSound();
 
   // send telegram message if in working hours
   const now = dayjs.tz();
@@ -263,19 +263,6 @@ function sendNotification(electronicoMachs) {
       }
     })
     .catch((err) => console.error(err));
-}
-
-function playAlertSound(times = 5, interval = 1000) {
-  let played = 0;
-  const playOnce = () => {
-    const audio = new Audio(electronicoSound);
-    audio.play().catch((err) => console.error('Audio play error:', err));
-    played++;
-    if (played < times) {
-      setTimeout(playOnce, interval); // interval in ms between plays
-    }
-  };
-  playOnce();
 }
 
 function RoomCheckboxes({ selectedRooms, setSelectedRooms }) {

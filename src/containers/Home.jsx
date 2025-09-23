@@ -11,6 +11,7 @@ import Toast from '../components/Toast.jsx';
 import { ToastsContext } from '../Contexts.js';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../components/ErrorFallback.jsx';
+import { playAlertSound } from '../utils/playAlertSound.js';
 
 let apiUrl;
 
@@ -144,6 +145,11 @@ export default function Home() {
       navigate('/maquinas');
     }
   }, [room]);
+
+  // for alert notifications like NServer down
+  window.electronAPI.onPlayAlertSound(() => {
+    playAlertSound();
+  });
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
