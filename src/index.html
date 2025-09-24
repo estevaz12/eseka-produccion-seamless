@@ -1,24 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <title>Tejeduría</title>
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="index.css" />
   </head>
-  <body id="log">
-    <h3>NServer Monitor Logs</h3>
-    <pre id="log"></pre>
-
-    <script>
-      const logElem = document.getElementById('log');
-
-      window.electronAPI.onLog((msg) => {
-        const line =
-          typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2);
-
-        logElem.textContent += `${line}\n`;
-        logElem.scrollTop = logElem.scrollHeight; // auto scroll
-      });
-    </script>
+  <body>
+    <h1>💖 Hello World!</h1>
+    <p>Welcome to your Electron application.</p>
   </body>
 </html>
