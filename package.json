@@ -3,10 +3,8 @@
   "productName": "Tejeduria",
   "version": "1.0.0",
   "description": "An app for tracking production data.",
-  "main": ".webpack/main",
+  "main": "src/main.js",
   "scripts": {
-    "start:conc": "concurrently --kill-others -n SERVER,ELECTRON -c blue,cyan \"npm run start:server\" \"npm run start:electron\"",
-    "start:server": "node ./src/server.js",
     "start": "electron-forge start",
     "package": "electron-forge package --platform=win32",
     "make": "electron-forge make --platform=win32",
@@ -19,9 +17,11 @@
     "email": "estebanvazquez1607@gmal.com"
   },
   "license": "MIT",
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
+    "dayjs": "^1.11.13"
+  },
   "devDependencies": {
-    "@babel/core": "^7.26.10",
-    "@babel/preset-react": "^7.26.3",
     "@electron-forge/cli": "^7.8.0",
     "@electron-forge/maker-deb": "^7.8.0",
     "@electron-forge/maker-rpm": "^7.8.0",
@@ -29,40 +29,7 @@
     "@electron-forge/maker-zip": "^7.8.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.0",
     "@electron-forge/plugin-fuses": "^7.8.0",
-    "@electron-forge/plugin-webpack": "^7.8.0",
     "@electron/fuses": "^1.8.0",
-    "@vercel/webpack-asset-relocator-loader": "1.7.3",
-    "autoprefixer": "^10.4.21",
-    "babel-loader": "^10.0.0",
-    "concurrently": "^9.1.2",
-    "copy-webpack-plugin": "^13.0.1",
-    "css-loader": "^6.11.0",
-    "dotenv-webpack": "^8.1.0",
-    "electron": "35.2.0",
-    "eslint": "^8.57.1",
-    "eslint-config-react-app": "^7.0.1",
-    "node-loader": "^2.1.0",
-    "postcss": "^8.5.3",
-    "postcss-loader": "^8.1.1",
-    "react-compiler-webpack": "^0.2.0",
-    "style-loader": "^3.3.4",
-    "tailwindcss": "^4.1.4"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@fontsource/inter": "^5.2.5",
-    "@mui/icons-material": "^7.0.2",
-    "@mui/joy": "^5.0.0-beta.52",
-    "@mui/material": "^7.0.2",
-    "@mui/x-charts": "^8.10.1",
-    "@mui/x-date-pickers": "^8.1.0",
-    "@tailwindcss/postcss": "^4.1.4",
-    "dayjs": "^1.11.13",
-    "electron-squirrel-startup": "^1.0.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-error-boundary": "^6.0.0",
-    "react-router": "^7.6.2"
+    "electron": "35.2.0"
   }
 }

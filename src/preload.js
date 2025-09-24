@@ -3,6 +3,12 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  onLog: (callback) => ipcRenderer.on('monitor-log', (_, msg) => callback(msg)),
-  onPlayAlertSound: (callback) => ipcRenderer.on('play-alert-sound', callback),
+  onLog: (callback) => ipcRenderer.on('log', (_, msg) => callback(msg)),
+  onSendMessage: (callback) =>
+    ipcRenderer.on('send-message', (_, msg) => callback(msg)),
+});
+
+contextBridge.exposeInMainWorld('env', {
+  BOT_API: process.env.BOT_API,
+  CHAT_ID: process.env.CHAT_ID,
 });

@@ -11,6 +11,7 @@ const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 const processMonitorMessages = require('./utils/processMonitorMessages');
+const log = require('./utils/log');
 
 app.setAppUserModelId('Tejeduria');
 
@@ -28,19 +29,15 @@ let tray;
 let monitorProcess;
 
 function startNServerMonitor() {
-  console.log('[MAIN] Starting NServer monitor...');
+  log(mainWindow, '[MAIN] Starting NServer monitor...');
 
   monitorProcess = utilityProcess.fork(
     path.join(__dirname, 'nserverMonitor.js')
   );
 
   monitorProcess.on('message', (msg) => {
-    // send messages to renderer for logging
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('monitor-log', msg);
-    }
     // handle and notify accordingly
-    processMonitorMessages(msg, mainWindow);
+    processMonitorMessages(mainWindow, msg);
   });
 }
 
@@ -52,14 +49,14 @@ const createWindow = () => {
     height: 727,
     icon: path.join(__dirname, 'assets', 'icons', 'icon.ico'),
     webPreferences: {
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      preload: path.join(__dirname, 'preload.js'),
     },
     autoHideMenuBar: true,
     menuBarVisible: false,
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // for window.open()
   mainWindow.webContents.setWindowOpenHandler(() => ({
@@ -147,7 +144,7 @@ app.whenReady().then(() => {
   createWindow();
   if (app.isPackaged) createTray();
   // start nserver monitor process
-  startNServerMonitor();
+  setTimeout(startNServerMonitor, 1000);
 });
 
 // auto-launch on login

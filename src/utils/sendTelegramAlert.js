@@ -1,11 +1,11 @@
-function sendTelegramAlert(text) {
-  fetch(`${process.env.BOT_API}/sendMessage`, {
+function sendTelegramAlert(text, BOT_API, CHAT_ID) {
+  fetch(`${BOT_API}/sendMessage`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      chat_id: process.env.CHAT_ID,
+      chat_id: CHAT_ID,
       text,
     }),
   })
@@ -20,4 +20,4 @@ function sendTelegramAlert(text) {
     .catch((err) => console.error(err));
 }
 
-module.exports = sendTelegramAlert;
+export { sendTelegramAlert };
