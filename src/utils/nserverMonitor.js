@@ -1,6 +1,5 @@
 const { exec } = require('child_process');
 
-// TODO Nylon server
 function checkNServer() {
   // execute tasklist command to check for NServer.exe on Windows
   exec('tasklist', { windowsHide: true }, (error, stdout, stderr) => {
@@ -10,7 +9,7 @@ function checkNServer() {
       return;
     }
     // check if NServer.exe is in the list of running processes
-    const running = /\bNClient\.exe\b/i.test(stdout);
+    const running = /\bNServer\.exe\b/i.test(stdout);
     // send status message back to parent
     process.parentPort.postMessage({ type: 'status', running });
   });

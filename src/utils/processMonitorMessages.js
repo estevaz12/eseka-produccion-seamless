@@ -9,13 +9,14 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Buenos_Aires');
 
-const now = dayjs.tz().format('DD/MM/YYYY HH:mm:ss');
-const prefix = `[${now}][TASKLIST]`;
 // used to detect changes in NServer status without spamming notifications
 let lastRunning = null;
 let errorNotif = null;
 
 function processMonitorMessages(msg, mainWindow) {
+  const now = dayjs.tz().format('DD/MM/YYYY HH:mm:ss');
+  const prefix = `[${now}][TASKLIST]`;
+
   if (msg.type === 'status') {
     const running = msg.running;
     // if lastRunning is null, run a first check
@@ -43,8 +44,8 @@ module.exports = processMonitorMessages;
 
 function notifyStatus(running, mainWindow) {
   const text = running
-    ? 'NServer volvió a funcionar'
-    : 'NServer dejó de funcionar';
+    ? 'NServer de ALG/SEA volvió a funcionar'
+    : 'NServer de ALG/SEA dejó de funcionar';
 
   if (!running) {
     errorNotif = new Notification({
