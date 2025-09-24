@@ -5,5 +5,20 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Tejeduría</title>
   </head>
-  <body id="root"></body>
+  <body id="log">
+    <h3>NServer Monitor Logs</h3>
+    <pre id="log"></pre>
+
+    <script>
+      const logElem = document.getElementById('log');
+
+      window.electronAPI.onLog((msg) => {
+        const line =
+          typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2);
+
+        logElem.textContent += `${line}\n`;
+        logElem.scrollTop = logElem.scrollHeight; // auto scroll
+      });
+    </script>
+  </body>
 </html>

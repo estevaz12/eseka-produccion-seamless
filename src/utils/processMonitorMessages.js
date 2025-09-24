@@ -43,8 +43,8 @@ module.exports = processMonitorMessages;
 
 function notifyStatus(running, mainWindow) {
   const text = running
-    ? 'NServer volvió a funcionar'
-    : 'NServer dejó de funcionar';
+    ? 'NServer de NYLON volvió a funcionar'
+    : 'NServer de NYLON dejó de funcionar';
 
   if (!running) {
     errorNotif = new Notification({

@@ -52,13 +52,6 @@ module.exports = {
         },
       },
     },
-    {
-      name: '@timfish/forge-externals-plugin',
-      config: {
-        externals: ['pdfreader', 'pdfkit'],
-        includeDeps: true,
-      },
-    },
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application
     new FusesPlugin({

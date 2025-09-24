@@ -9,7 +9,6 @@ module.exports = {
    */
   entry: {
     index: './src/main.js',
-    server: './src/server.js',
     nserverMonitor: './src/utils/nserverMonitor.js',
   },
   // Put your normal webpack config below here
@@ -21,7 +20,6 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/assets/icons/icon.ico', to: 'assets/icons' },
-        { from: 'src/assets/icons/electronico.ico', to: 'assets/icons' },
         { from: 'src/assets/icons/error.ico', to: 'assets/icons' },
         { from: 'src/assets/icons/success.ico', to: 'assets/icons' },
       ],
@@ -30,9 +28,5 @@ module.exports = {
   output: {
     path: path.join(__dirname, '.webpack/main'),
     filename: '[name].js',
-  },
-  externals: {
-    pdfreader: 'commonjs2 pdfreader',
-    pdfkit: 'commonjs2 pdfkit',
-  },
+  }
 };

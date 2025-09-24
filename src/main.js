@@ -3,10 +3,6 @@ const {
   BrowserWindow,
   session,
   utilityProcess,
-  dialog,
-  ipcMain,
-  shell,
-  Notification,
   Tray,
   Menu,
 } = require('electron');
@@ -29,18 +25,7 @@ app.commandLine.appendSwitch('lang', 'es-419');
 
 let mainWindow;
 let tray;
-let serverProcess;
 let monitorProcess;
-
-function startServer() {
-  serverProcess = utilityProcess.fork(path.join(__dirname, 'server.js'));
-  // let the server know if on dev or prod mode
-  serverProcess.postMessage(app.isPackaged);
-  // when server sends a message
-  serverProcess.on('message', (msg) => {
-    console.log(`[${dayjs.tz().format('DD/MM/YYYY HH:mm:ss')}] ${msg}`);
-  });
-}
 
 function startNServerMonitor() {
   console.log('[MAIN] Starting NServer monitor...');
@@ -49,9 +34,14 @@ function startNServerMonitor() {
     path.join(__dirname, 'nserverMonitor.js')
   );
 
-  monitorProcess.on('message', (msg) =>
-    processMonitorMessages(msg, mainWindow)
-  );
+  monitorProcess.on('message', (msg) => {
+    // send messages to renderer for logging
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('monitor-log', msg);
+    }
+    // handle and notify accordingly
+    processMonitorMessages(msg, mainWindow);
+  });
 }
 
 const createWindow = () => {
@@ -121,7 +111,6 @@ function createTray() {
       label: 'Cerrar',
       click: () => {
         app.isQuitting = true;
-        if (serverProcess) serverProcess.kill();
         if (monitorProcess) monitorProcess.kill();
         app.quit();
       },
@@ -140,9 +129,6 @@ function createTray() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // start child server process
-  startServer();
-
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
@@ -158,41 +144,10 @@ app.whenReady().then(() => {
     });
   });
 
-  // wait for server to start
-  setTimeout(() => {
-    // file uploading
-    ipcMain.handle('dialog:openFile', handleFileOpen);
-    ipcMain.handle(
-      'shell:openPath',
-      async (event, path) => await shell.openPath(path)
-    );
-
-    // notifications
-    ipcMain.on('notifyElectronico', (event, opts) => {
-      const notif = new Notification({
-        ...opts,
-        icon: path.join(__dirname, 'assets', 'icons', 'electronico.ico'),
-      });
-
-      notif.on('click', () => {
-        // focus main window
-        const win = BrowserWindow.getAllWindows()[0];
-        if (win) {
-          if (win.isMinimized()) win.restore();
-          win.focus();
-        }
-        // close notif
-        notif.close();
-      });
-
-      notif.show();
-    });
-
-    createWindow();
-    if (app.isPackaged) createTray();
-    // start nserver monitor process
-    startNServerMonitor();
-  }, 1000);
+  createWindow();
+  if (app.isPackaged) createTray();
+  // start nserver monitor process
+  startNServerMonitor();
 });
 
 // auto-launch on login
@@ -216,25 +171,4 @@ app.on('activate', () => {
 
 app.on('before-quit', () => {
   if (monitorProcess) monitorProcess.kill();
-  if (serverProcess) serverProcess.kill();
 });
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-// app.on('window-all-closed', () => {
-//   if (process.platform !== 'darwin') {
-//     serverProcess.kill();
-//     monitorProcess.kill();
-//     app.quit();
-//   }
-// });
-
-async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    filters: [{ name: 'PDFs', extensions: ['pdf'] }],
-  });
-  if (!canceled) {
-    return filePaths[0];
-  }
-}
