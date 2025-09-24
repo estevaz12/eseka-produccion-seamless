@@ -1,5 +1,6 @@
 const { exec } = require('child_process');
 
+// TODO Nylon server
 function checkNServer() {
   // execute tasklist command to check for NServer.exe on Windows
   exec('tasklist', { windowsHide: true }, (error, stdout, stderr) => {

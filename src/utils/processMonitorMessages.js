@@ -3,6 +3,7 @@ const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 const { Notification } = require('electron');
 const path = require('path');
+const sendTelegramAlert = require('./sendTelegramAlert');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -40,12 +41,14 @@ function processMonitorMessages(msg, mainWindow) {
 
 module.exports = processMonitorMessages;
 
-// TODO play audio
-// TODO telegram message
 function notifyStatus(running, mainWindow) {
+  const text = running
+    ? 'NServer volvió a funcionar'
+    : 'NServer dejó de funcionar';
+
   if (!running) {
     errorNotif = new Notification({
-      title: 'NServer dejó de funcionar',
+      title: text,
       body: 'Por favor, inicie NServer para que la aplicación funcione correctamente.',
       timeoutType: 'never',
       icon: path.join(__dirname, 'assets', 'icons', 'error.ico'),
@@ -56,17 +59,19 @@ function notifyStatus(running, mainWindow) {
       mainWindow.webContents.send('play-alert-sound');
     }
 
-    console.log(`${prefix} NServer is DOWN`);
+    console.log(`${prefix} ${text}`);
   } else {
     if (errorNotif) errorNotif.close();
     errorNotif = null;
 
     new Notification({
-      title: 'NServer volvió a funcionar',
+      title: text,
       body: 'NServer se ha iniciado correctamente.',
       icon: path.join(__dirname, 'assets', 'icons', 'success.ico'),
     }).show();
 
-    console.log(`${prefix} NServer is UP`);
+    console.log(`${prefix} ${text}`);
   }
+
+  sendTelegramAlert(text + (running ? ' ✅' : ' 🚨'));
 }
