@@ -13,6 +13,10 @@ const timezone = require('dayjs/plugin/timezone');
 const processMonitorMessages = require('./utils/processMonitorMessages');
 const log = require('./utils/log');
 
+require('dotenv').config({
+  path: path.join(__dirname, '..', '.env'),
+});
+
 app.setAppUserModelId('Tejeduria');
 
 // to avoid squirrel multiple app spawning

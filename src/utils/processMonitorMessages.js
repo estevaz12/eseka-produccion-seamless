@@ -3,7 +3,6 @@ const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 const { Notification } = require('electron');
 const path = require('path');
-const sendTelegramAlert = require('./sendTelegramAlert');
 const log = require('./log');
 
 dayjs.extend(utc);
