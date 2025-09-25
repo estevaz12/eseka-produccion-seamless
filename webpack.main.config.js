@@ -29,7 +29,7 @@ module.exports = {
     filename: '[name].js',
   },
   externals: {
-    pdfreader: 'pdfreader',
-    pdfkit: 'pdfkit',
+    pdfreader: 'commonjs2 pdfreader',
+    pdfkit: 'commonjs2 pdfkit',
   },
 };

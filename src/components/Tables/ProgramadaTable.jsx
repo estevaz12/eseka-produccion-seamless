@@ -84,7 +84,7 @@ export default function ProgramadaTable({
     {
       id: 'Color',
       label: 'Color',
-      width: 'w-[18%]',
+      width: 'w-[19%]',
       pdfRender: (row) => colorStr(row),
     },
     {
@@ -148,6 +148,7 @@ export default function ProgramadaTable({
           id: 'target',
           label: 'Target (un)',
           align: 'right',
+          width: 'w-[11%]',
           pdfRender: (row) => {
             const faltaUnidades = calcFaltaUnidades(row);
             if (faltaUnidades <= 0) return 'LLEGÓ';
