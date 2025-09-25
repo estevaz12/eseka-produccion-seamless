@@ -85,7 +85,7 @@ export default function ProgramadaTable({
     {
       id: 'Color',
       label: 'Color',
-      width: 'w-[18%]',
+      width: 'w-[19%]',
       pdfRender: (row) => colorStr(row),
     },
     {
@@ -124,68 +124,29 @@ export default function ProgramadaTable({
         return bFalta - aFalta;
       },
     },
-    {
-      id: 'faltaUnidades',
-      label: 'Falta (un)',
-      align: 'right',
-      pdfRender: (row) => row.Target - row.Producido,
-      sortFn: (a, b, order) => {
-        const faltaCalc = (row, order) => {
-          const faltaUn = row.Target - row.Producido;
-          // send to bottom if falta is negative
-          if (faltaUn <= 0) {
-            return order === 'asc' ? Infinity : 0;
-          }
-          return faltaUn;
-        };
-
-        const aFaltaUn = faltaCalc(a, order);
-        const bFaltaUn = faltaCalc(b, order);
-        return bFaltaUn - aFaltaUn;
-      },
-    },
     room === 'SEAMLESS'
       ? {
-          id: 'target',
-          label: 'Target (un)',
+          id: 'faltaUnidades',
+          label: 'Falta (un)',
           align: 'right',
-          pdfRender: (row) => {
-            const faltaUnidades = calcFaltaUnidades(row);
-            if (faltaUnidades <= 0) return 'LLEGÓ';
-
-            if (row.Producido === 0 || row.Machines.length > 1)
-              return row.Target;
-
-            if (row.Machines.length <= 1)
-              return roundUpEven(
-                faltaUnidades + (row.Machines[0]?.Pieces || 0)
-              );
-          },
+          pdfRender: (row) => row.Target - row.Producido,
           sortFn: (a, b, order) => {
-            const targetCalc = (row, order) => {
+            const faltaCalc = (row, order) => {
               const faltaUn = row.Target - row.Producido;
-              // send to bottom if target was met
+              // send to bottom if falta is negative
               if (faltaUn <= 0) {
-                return order === 'asc' ? Number.POSITIVE_INFINITY : 0;
+                return order === 'asc' ? Infinity : 0;
               }
-
-              return row.Producido === 0
-                ? row.Target
-                : roundUpEven(
-                    faltaUn +
-                      row.Machines.reduce(
-                        (acc, mach) => acc + (mach.Pieces || 0),
-                        0
-                      )
-                  );
+              return faltaUn;
             };
 
-            const aTarget = targetCalc(a, order);
-            const bTarget = targetCalc(b, order);
-            return bTarget - aTarget;
+            const aFaltaUn = faltaCalc(a, order);
+            const bFaltaUn = faltaCalc(b, order);
+            return bFaltaUn - aFaltaUn;
           },
         }
-      : live && {
+      : live
+      ? {
           id: 'idealTime',
           label: 'Tiempo Min.',
           align: 'center',
@@ -223,7 +184,65 @@ export default function ProgramadaTable({
 
             return bDuration - aDuration;
           },
+        }
+      : {
+          id: 'faltaUnidades',
+          label: 'Falta (un)',
+          align: 'right',
+          pdfRender: (row) => row.Target - row.Producido,
+          sortFn: (a, b, order) => {
+            const faltaCalc = (row, order) => {
+              const faltaUn = row.Target - row.Producido;
+              // send to bottom if falta is negative
+              if (faltaUn <= 0) {
+                return order === 'asc' ? Infinity : 0;
+              }
+              return faltaUn;
+            };
+
+            const aFaltaUn = faltaCalc(a, order);
+            const bFaltaUn = faltaCalc(b, order);
+            return bFaltaUn - aFaltaUn;
+          },
         },
+    (live || room === 'SEAMLESS') && {
+      id: 'target',
+      label: 'Target (un)',
+      align: 'right',
+      width: 'w-[11%]',
+      pdfRender: (row) => {
+        const faltaUnidades = calcFaltaUnidades(row);
+        if (faltaUnidades <= 0) return 'LLEGÓ';
+
+        if (row.Producido === 0 || row.Machines.length > 1) return row.Target;
+
+        if (row.Machines.length <= 1)
+          return roundUpEven(faltaUnidades + (row.Machines[0]?.Pieces || 0));
+      },
+      sortFn: (a, b, order) => {
+        const targetCalc = (row, order) => {
+          const faltaUn = row.Target - row.Producido;
+          // send to bottom if target was met
+          if (faltaUn <= 0) {
+            return order === 'asc' ? Number.POSITIVE_INFINITY : 0;
+          }
+
+          return row.Producido === 0
+            ? row.Target
+            : roundUpEven(
+                faltaUn +
+                  row.Machines.reduce(
+                    (acc, mach) => acc + (mach.Pieces || 0),
+                    0
+                  )
+              );
+        };
+
+        const aTarget = targetCalc(a, order);
+        const bTarget = targetCalc(b, order);
+        return bTarget - aTarget;
+      },
+    },
     live && {
       id: 'machines',
       label: 'Máquinas',
@@ -323,19 +342,23 @@ export default function ProgramadaTable({
         {/* Falta */}
         <td className='text-right'>{faltaStr(row, docena, porcExtra)}</td>
         {/* Falta (un.) */}
-        <td className='text-right'>{faltaUnidades}</td>
-        {/* Target (un.) or Tiempo al 100% */}
         {room === 'SEAMLESS' ? (
-          <td className='text-right'>
-            <TargetCol row={row} faltaUnidades={faltaUnidades} />
-          </td>
+          <td className='text-right'>{faltaUnidades}</td>
         ) : live ? (
           <td className='text-center'>
             {calcIdealTime(row) === -1
               ? 'LLEGÓ'
               : getDuration(calcIdealTime(row))}
           </td>
-        ) : null}
+        ) : (
+          <td className='text-right'>{faltaUnidades}</td>
+        )}
+        {/* Target (un.) or Tiempo al 100% */}
+        {(live || room === 'SEAMLESS') && (
+          <td className='text-right'>
+            <TargetCol row={row} faltaUnidades={faltaUnidades} />
+          </td>
+        )}
         {/* Maquinas */}
         {live && (
           <td className={room === 'HOMBRE' ? 'text-center' : ''}>

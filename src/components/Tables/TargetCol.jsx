@@ -7,16 +7,19 @@ import ReportRounded from '@mui/icons-material/ReportRounded';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
+import { useOutletContext } from 'react-router';
 
-// TODO: reset counter for multiple machines and for incomplete articulos
 export default function TargetCol({ row, faltaUnidades }) {
+  const { room } = useOutletContext();
   const iconFontSize = 'small';
 
   const TargetData = ({ target, icon }) => (
     <Typography
       className='justify-end'
-      endDecorator={icon}
-      sx={{ '& .MuiTypography-endDecorator': { m: 0 } }}
+      {...(room === 'SEAMLESS' && {
+        endDecorator: icon,
+        sx: { '& .MuiTypography-endDecorator': { m: 0 } },
+      })}
     >
       {target}
     </Typography>
