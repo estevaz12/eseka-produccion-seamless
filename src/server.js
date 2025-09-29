@@ -175,6 +175,27 @@ const startServer = () => {
     }
   });
 
+  app.get('/cambios', async (req, res) => {
+    const { startDate, room } = req.query;
+    serverLog(`GET /cambios for ${startDate} ${room}`);
+
+    if (isPackaged) {
+      try {
+        const result = await sql.query(
+          queries.getCambios(dayjs.tz(startDate).format('YYYY-MM-DD'), room)
+        );
+        res.json(result.recordset);
+      } catch (err) {
+        serverLog(`[ERROR] GET /cambios for ${startDate} ${room}: ${err}`);
+        res.status(500).json({ error: err.message });
+      }
+    } else {
+      // test data
+      serverLog('Using test data for /cambios');
+      res.json(testData.cambios);
+    }
+  });
+
   app.get('/colors', async (req, res) => {
     serverLog('GET /colors');
 
@@ -222,28 +243,16 @@ const startServer = () => {
   });
 
   app.get('/historial', async (req, res) => {
-    const { articulo, talle, color, startDate, fromMonthStart, endDate } =
-      req.query;
-    serverLog(
-      `GET /historial for ${articulo} ${talle} ${color} ${startDate} ${fromMonthStart} ${endDate}`
-    );
+    serverLog(`GET /historial for ${JSON.stringify(req.query)}`);
 
     if (isPackaged) {
       try {
-        const query = queries.getProductionsMonitor(
-          articulo,
-          talle,
-          color,
-          startDate,
-          fromMonthStart,
-          endDate
-        );
-        serverLog(query);
+        const query = queries.getProductionsMonitor(req.query);
         const result = await sql.query(query);
         res.json(result.recordset);
       } catch (err) {
         serverLog(
-          `[ERROR] GET /historial for ${articulo} ${talle} ${color} ${startDate}: ${err}`
+          `[ERROR] GET /historial for ${JSON.stringify(req.query)}: ${err}`
         );
         res.status(500).json({ error: err.message });
       }

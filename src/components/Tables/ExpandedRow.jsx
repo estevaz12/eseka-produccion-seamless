@@ -4,17 +4,19 @@ import Stack from '@mui/joy/Stack';
 import Switch from '@mui/joy/Switch';
 import Table from '@mui/joy/Table';
 import Typography from '@mui/joy/Typography';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import dayjs from 'dayjs';
 import { DatesContext } from '../../Contexts.js';
 import KeyboardArrowLeftRounded from '@mui/icons-material/KeyboardArrowLeftRounded';
 import KeyboardArrowRightRounded from '@mui/icons-material/KeyboardArrowRightRounded';
 import TableSkeleton from './TableSkeleton.jsx';
+import { useLocation } from 'react-router';
 
 let apiUrl;
 export default function ExpandedRow({ numCols, row }) {
   apiUrl = useConfig().apiUrl;
+  const { pathname } = useLocation();
   const { startDate, fromMonthStart, endDate } = useContext(DatesContext);
   const [history, setHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
@@ -23,11 +25,17 @@ export default function ExpandedRow({ numCols, row }) {
   const [page, setPage] = useState(1);
   const PAGE_LENGTH = 5; // each page will have 5 rows
 
+  const searchBy = useMemo(
+    () =>
+      pathname === '/maquinas' || pathname === '/cambios'
+        ? { machCode: row.MachCode }
+        : { articulo: row.Articulo, talle: row.Talle, color: row.ColorId },
+    [pathname, row]
+  );
+
   useEffect(() => {
     const params = new URLSearchParams({
-      articulo: row.Articulo,
-      talle: row.Talle,
-      color: row.ColorId,
+      ...searchBy,
       startDate,
       fromMonthStart,
       endDate,
@@ -41,19 +49,11 @@ export default function ExpandedRow({ numCols, row }) {
       })
       .catch((err) =>
         console.error(
-          `[CLIENT] Error fetching /historial for art. ${row.Articulo} T${row.Talle} ${row.Color}:`,
+          `[CLIENT] Error fetching /historial for ${JSON.stringify(searchBy)}:`,
           err
         )
       );
-  }, [
-    row.Articulo,
-    row.Talle,
-    row.Color,
-    row.ColorId,
-    startDate,
-    fromMonthStart,
-    endDate,
-  ]);
+  }, [searchBy, startDate, fromMonthStart, endDate]);
 
   const pageStart = (currPage) => {
     return currPage * PAGE_LENGTH - (PAGE_LENGTH - 1);

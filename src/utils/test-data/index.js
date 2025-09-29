@@ -20,4 +20,5 @@ module.exports = {
   currWEff: require('./currWEffTestData.js'),
   dailyWEff: require('./dailyWEffTestData.js'),
   monthSaldo: require('./monthSaldoTestData.js'),
+  cambios: require('./cambiosTestData.js'),
 };

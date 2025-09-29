@@ -5,5 +5,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
   openPath: (path) => ipcRenderer.invoke('shell:openPath', path),
-  notify: (opts) => ipcRenderer.send('notify', opts),
+  notifyElectronico: (opts) => ipcRenderer.send('notifyElectronico', opts),
+  onPlayAlertSound: (callback) => ipcRenderer.on('play-alert-sound', callback),
 });
