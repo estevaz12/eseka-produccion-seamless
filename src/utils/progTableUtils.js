@@ -1,3 +1,5 @@
+import localizedNum from './numFormat';
+
 function calcAProducir(row) {
   if (row.Tipo === null) return row.Docenas;
   if (row.Tipo === '#') return row.Docenas * 2;
@@ -15,9 +17,11 @@ function calcFaltaUnidades(row) {
 }
 
 function formatNum(num) {
-  if (!num) return num;
-  else if (num % 1 < 0.1) return num.toFixed(); // No decimals for whole numbers
-  else return num.toFixed(1); // One decimal for non-whole numbers
+  let res = num;
+  if (!num) return res;
+  else if (num % 1 < 0.1) res = num.toFixed(); // No decimals for whole numbers
+  else res = num.toFixed(1); // One decimal for non-whole numbers
+  return localizedNum(res);
 }
 function roundUpEven(num) {
   // round up to nearest even number
@@ -30,7 +34,7 @@ const aProducirStr = (row) => {
   if (row.Tipo === null) {
     return aProducir;
   } else {
-    return `${aProducir} (${row.Docenas})`;
+    return `${aProducir} (${formatNum(row.Docenas)})`;
   }
 };
 
@@ -57,6 +61,10 @@ const faltaStr = (row, docena, porcExtra) => {
   return row.Tipo == null ? falta : `${falta} (${faltaFisico})`;
 };
 
+const footerFormat = (num) => {
+  return num ? localizedNum(Math.round(num)) : '0';
+};
+
 export {
   calcAProducir,
   calcProducido,
@@ -67,4 +75,5 @@ export {
   colorStr,
   producidoStr,
   faltaStr,
+  footerFormat,
 };

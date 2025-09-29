@@ -2,6 +2,7 @@ import BigNumContent from './BigNumContent.jsx';
 import dayjs from 'dayjs';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { Box, Stack, Typography } from '@mui/joy';
+import localizedNum from '../../utils/numFormat.js';
 
 export default function TotalEstimate({
   estimate,
@@ -15,7 +16,7 @@ export default function TotalEstimate({
       title='Producción Total Estimada'
       subtitle={<Subtitle target={progTotal} progress={progress} />}
     >
-      {estimate.toLocaleString()} doc.
+      {localizedNum(estimate)} doc.
     </BigNumContent>
   );
 }
@@ -54,7 +55,7 @@ function Subtitle({ target, progress }) {
         </Stack>
 
         <Typography level='body-sm'>
-          de {target.toLocaleString()} doc. programadas
+          de {localizedNum(target)} doc. programadas
         </Typography>
       </Stack>
     </Stack>

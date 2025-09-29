@@ -2,6 +2,7 @@ import FlagRounded from '@mui/icons-material/FlagRounded';
 import ReportRounded from '@mui/icons-material/ReportRounded';
 import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
+import localizedNum from '../../utils/numFormat';
 
 export default function TargetCol({ row, faltaUnidades }) {
   const iconFontSize = 'small';
@@ -36,7 +37,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         // no target
         return (
           <TargetData
-            target={machTarget}
+            target={localizedNum(machTarget)}
             icon={<FlagRounded fontSize={iconFontSize} />}
           />
         );
@@ -46,7 +47,7 @@ export default function TargetCol({ row, faltaUnidades }) {
       return 'LLEGÓ';
     }
 
-    return machTarget;
+    return localizedNum(machTarget);
   } else {
     return row.Machines.map((m) => {
       // if multiple machines, calculate target per machine
@@ -60,7 +61,7 @@ export default function TargetCol({ row, faltaUnidades }) {
       return (
         <TargetData
           key={m.MachCode}
-          target={`${m.MachCode} -> ${machineTarget}`}
+          target={`${m.MachCode} -> ${localizedNum(machineTarget)}`}
           icon={m.TargetOrder === 0 ? <FlagRounded fontSize='inherit' /> : null}
         />
       );

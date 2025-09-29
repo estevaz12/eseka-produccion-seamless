@@ -10,6 +10,7 @@ import RefreshBtn from '../components/RefreshBtn.jsx';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ExpandRowBtn from '../components/Tables/ExpandRowBtn.jsx';
 import Typography from '@mui/joy/Typography';
+import localizedNum from '../utils/numFormat.js';
 
 let apiUrl, sqlDateFormat;
 
@@ -138,7 +139,9 @@ export default function Cambios() {
           {row.MachCode}
         </td>
         {/* Artículo */}
-        <td className='font-semibold'>{row.Articulo}</td>
+        <td className='font-semibold'>{`${row.Articulo}${
+          row.Tipo ? row.Tipo : ''
+        }`}</td>
         {/* Talle */}
         <td align='center' className='font-semibold'>
           {row.Talle}
@@ -224,6 +227,8 @@ function calcProducido(row) {
 }
 
 function unidadesStr(row) {
-  const producido = calcProducido(row);
-  return row.Tipo === null ? producido : `${producido} (${row.Unidades})`;
+  const producido = localizedNum(calcProducido(row));
+  return row.Tipo === null
+    ? producido
+    : `${producido} (${localizedNum(row.Unidades)})`;
 }

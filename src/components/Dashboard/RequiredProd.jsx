@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import BigNumContent from './BigNumContent.jsx';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
+import localizedNum from '../../utils/numFormat.js';
 
 export default function RequiredProd({
   progTotal,
@@ -19,7 +20,7 @@ export default function RequiredProd({
       title='Doc. Diarias Requeridas'
       subtitle={<Subtitle />}
     >
-      {requiredProd.toLocaleString()} doc.
+      {localizedNum(requiredProd)} doc.
     </BigNumContent>
   );
 }

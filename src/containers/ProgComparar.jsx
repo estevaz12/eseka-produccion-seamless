@@ -23,6 +23,7 @@ import LibraryAddOutlined from '@mui/icons-material/LibraryAddOutlined';
 import RestartAltRounded from '@mui/icons-material/RestartAltRounded';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 import { ToastsContext } from '../Contexts.js';
+import localizedNum from '../utils/numFormat.js';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -347,7 +348,9 @@ export default function ProgComparar() {
       body: JSON.stringify(inserted), // inserted prog updates
     })
       .then((res) => res.json())
-      .then((data) => setNewTargets(data))
+      .then((data) =>
+        setNewTargets(data.sort((a, b) => a.StyleCode - b.StyleCode))
+      )
       .catch((err) => console.error('[CLIENT] Error fetching data:', err));
   }
 
@@ -502,7 +505,7 @@ export default function ProgComparar() {
           </IconButton>
         </Stack>
 
-        <Stack direction='row' className='items-end justify-between w-[500px]'>
+        <Stack direction='row' className='items-end justify-between w-[498px]'>
           <ProgTotal startDate={startDate} currTotal={currTotal} />
 
           {programada && !diff && !newTargets && (
@@ -577,7 +580,7 @@ export default function ProgComparar() {
           level='body-lg'
           className='max-w-fit rounded-[var(--joy-radius-sm)] py-1.5 px-4 mx-0'
         >
-          Total nuevo: {programada.total}
+          Total nuevo: {localizedNum(programada.total)}
         </Typography>
       )}
       {/* New programada table */}
@@ -676,12 +679,12 @@ export default function ProgComparar() {
             <tr key={i}>
               <td>{row.machCode}</td>
               <td>{row.styleCode}</td>
-              <td>{row.machTarget}</td>
-              <td>{row.prevProgTarget}</td>
-              <td>{row.newProgTarget}</td>
-              <td>{row.monthProduction}</td>
-              <td>{row.machPieces}</td>
-              <td>{row.sendTarget}</td>
+              <td>{localizedNum(row.machTarget)}</td>
+              <td>{localizedNum(row.prevProgTarget)}</td>
+              <td>{localizedNum(row.newProgTarget)}</td>
+              <td>{localizedNum(row.monthProduction)}</td>
+              <td>{localizedNum(row.machPieces)}</td>
+              <td>{localizedNum(row.sendTarget)}</td>
             </tr>
           ))}
         </DataTable>
@@ -710,7 +713,7 @@ function ProgRow({ row, i }) {
     <tr key={i}>
       <td>{row.articulo}</td>
       <td>{row.talle}</td>
-      <td>{row.aProducir}</td>
+      <td>{localizedNum(row.aProducir)}</td>
     </tr>
   );
 }

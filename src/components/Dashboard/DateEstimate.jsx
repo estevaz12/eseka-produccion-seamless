@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import BigNumContent from './BigNumContent.jsx';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
+import localizedNum from '../../utils/numFormat.js';
 
 export default function DateEstimate({
   totalProduced,
@@ -54,7 +55,7 @@ function Subtitle({ dailyAverage }) {
     <Stack direction='column' className='gap-2'>
       <Typography level='body-sm'>(sin sábados ni feriados)</Typography>
       <Typography level='body-sm'>
-        Produciendo {dailyAverage.toLocaleString()} doc. por día
+        Produciendo {localizedNum(dailyAverage)} doc. por día
       </Typography>
     </Stack>
   );
