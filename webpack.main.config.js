@@ -20,10 +20,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/assets/icons/icon.ico', to: 'assets/icons' },
-        {
-          from: 'src/assets/images/mach_states',
-          to: 'assets/images/mach_states',
-        },
+        { from: 'src/assets/icons/electronico.ico', to: 'assets/icons' },
       ],
     }),
   ],
@@ -32,7 +29,7 @@ module.exports = {
     filename: '[name].js',
   },
   externals: {
-    pdfreader: 'pdfreader',
-    pdfkit: 'pdfkit',
+    pdfreader: 'commonjs2 pdfreader',
+    pdfkit: 'commonjs2 pdfkit',
   },
 };

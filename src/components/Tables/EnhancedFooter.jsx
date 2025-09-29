@@ -56,6 +56,13 @@ export default function EnhancedFooter({
           title: 'Máquinas',
           fileName: `Maquinas_${dayjs.tz().format('DD-MM-YYYYTHH.mm')}`,
         };
+      case '/cambios':
+        return {
+          title: `Cambios del ${dayjs.tz(startDate).format('DD/MM/YYYY')}`,
+          orientation: 'portrait',
+          appendDateToTitle: false,
+          fileName: `Cambios_${dayjs.tz(startDate).format('DD-MM-YYYY')}`,
+        };
       default:
         return {
           title: 'Programada Actual',
@@ -122,7 +129,7 @@ export default function EnhancedFooter({
   };
 
   return (
-    <tfoot className='sticky bottom-0 z-10 font-semibold'>
+    <tfoot className='sticky bottom-0 z-10 font-semibold [&_td]:h-[50px]'>
       <tr>
         {/* Selected */}
         <td

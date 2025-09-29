@@ -20,14 +20,21 @@ if (require('electron-squirrel-startup')) app.quit();
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.tz.setDefault('America/Buenos_Aires');
 
 app.commandLine.appendSwitch('lang', 'es-419');
 
+let mainWindow;
 let serverProcess;
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
+function startServer() {
+  serverProcess = utilityProcess.fork(path.join(__dirname, 'server.js'));
+  // let the server know if on dev or prod mode
+  serverProcess.postMessage(app.isPackaged);
+  // when server sends a message
+  serverProcess.on('message', (msg) => {
+    console.log(`[${dayjs.tz().format('DD/MM/YYYY HH:mm:ss')}] ${msg}`);
+  });
 }
 
 async function handleFileOpen() {
@@ -41,7 +48,7 @@ async function handleFileOpen() {
 
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     title: 'Tejeduría',
     width: 1366,
     height: 727,
@@ -80,17 +87,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // start child server process
-  serverProcess = utilityProcess.fork(path.join(__dirname, 'server.js'));
-  // let the server know if on dev or prod mode
-  serverProcess.postMessage(app.isPackaged);
-  // when server sends a message
-  serverProcess.on('message', (msg) => {
-    console.log(
-      `[${dayjs()
-        .tz('America/Buenos_Aires')
-        .format('DD/MM/YYYY HH:mm:ss')}] ${msg}`
-    );
-  });
+  startServer();
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
@@ -117,16 +114,10 @@ app.whenReady().then(() => {
     );
 
     // notifications
-    ipcMain.on('notify', (event, opts) => {
+    ipcMain.on('notifyElectronico', (event, opts) => {
       const notif = new Notification({
         ...opts,
-        icon: path.join(
-          __dirname,
-          'assets',
-          'images',
-          'mach_states',
-          'electronico.png'
-        ),
+        icon: path.join(__dirname, 'assets', 'icons', 'electronico.ico'),
       });
 
       notif.on('click', () => {
@@ -144,26 +135,29 @@ app.whenReady().then(() => {
     });
 
     createWindow();
+
+    app.setLoginItemSettings({
+      openAtLogin: true,
+      path: process.execPath,
+      args: [],
+    });
   }, 1000);
 
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
-});
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    serverProcess.kill();
-    app.quit();
+// On OS X it's common to re-create a window in the app when the
+// dock icon is clicked and there are no other windows open.
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+  // Quit when all windows are closed, except on macOS. There, it's common
+  // for applications and their menu bar to stay active until the user quits
+  // explicitly with Cmd + Q.
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      serverProcess.kill();
+      app.quit();
+    }
+  });
+});

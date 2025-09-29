@@ -28,6 +28,7 @@ import {
 import CssBaseline from '@mui/joy/CssBaseline';
 import Dashboard from './containers/Dashboard.jsx';
 import { getChartsCustomizations } from './theme/charts.js';
+import Cambios from './containers/Cambios.jsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -100,8 +101,9 @@ export default function App() {
             <Route path='actual' element={<Programada />} />
             <Route path='anteriores' element={<ProgAnteriores />} />
           </Route>
-          <Route path='produccion' element={<Produccion />} />
           <Route path='maquinas' element={<Maquinas />} />
+          <Route path='cambios' element={<Cambios />} />
+          <Route path='produccion' element={<Produccion />} />
         </Route>
       </Routes>
     </HashRouter>
