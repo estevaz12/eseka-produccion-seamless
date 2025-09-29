@@ -1,13 +1,16 @@
 const dayjs = require('dayjs');
 
-const getProductionsMonitor = (
-  articulo,
-  talle,
-  color,
-  startDate,
-  fromMonthStart = true,
-  endDate = null
-) => {
+const getProductionsMonitor = (query) => {
+  let {
+    machCode,
+    articulo,
+    talle,
+    color,
+    startDate,
+    fromMonthStart = true,
+    endDate = null,
+  } = query || {};
+
   fromMonthStart = fromMonthStart === 'true' ? true : false;
   endDate = endDate === 'null' ? null : endDate;
   let prodStartDate, prodEndDate;
@@ -42,9 +45,13 @@ const getProductionsMonitor = (
     WHERE SUBSTRING(pm.StyleCode, 1, 8) IN (
         SELECT cc.StyleCode
         FROM SEA_COLOR_CODES AS cc
-        WHERE cc.Articulo = ${articulo} 
+        WHERE ${
+          machCode
+            ? `pm.MachCode = ${machCode}`
+            : `cc.Articulo = ${articulo} 
               AND cc.Talle = ${talle} 
-              AND cc.Color = ${color}
+              AND cc.Color = ${color}`
+        }
         )
         AND pm.DateRec BETWEEN '${prodStartDate}' AND '${prodEndDate}'
     ORDER BY DateRec DESC;

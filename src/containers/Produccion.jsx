@@ -74,7 +74,7 @@ export default function Produccion() {
                       Tipo: null,
                       Talle: null,
                       Color: null,
-                      Unidades: 0,
+                      Unidades: null,
                     },
                   ]
                 : data

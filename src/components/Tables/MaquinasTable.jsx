@@ -13,6 +13,8 @@ import {
 } from '../../utils/maquinasUtils.js';
 import { useConfig } from '../../ConfigContext.jsx';
 import { useOutletContext } from 'react-router';
+import Typography from '@mui/joy/Typography';
+import ExpandRowBtn from './ExpandRowBtn.jsx';
 
 let apiUrl;
 export default function MaquinasTable({ machines, pdfRows }) {
@@ -223,7 +225,21 @@ export default function MaquinasTable({ machines, pdfRows }) {
       machState.rowColor,
       <>
         <td align='center' className='font-semibold'>
-          {row.MachCode}
+          <Typography
+            className='relative justify-center w-full'
+            startDecorator={
+              <ExpandRowBtn isOpen={opened} handleClick={handleClick} />
+            }
+            sx={{
+              '.MuiTypography-startDecorator': {
+                m: 0,
+                position: 'absolute',
+                left: 0,
+              },
+            }}
+          >
+            {row.MachCode}
+          </Typography>
         </td>
         {room !== 'HOMBRE' ? (
           <td align='center' className='font-semibold'>
@@ -253,7 +269,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
 
   return (
     <DatesContext
-      value={{ startDate: dayjs.tz(), fromMonthStart: false, endDate: null }}
+      value={{ startDate: dayjs.tz(), fromMonthStart: true, endDate: null }}
     >
       <EnhancedTable
         cols={cols}

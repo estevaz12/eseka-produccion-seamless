@@ -4,11 +4,12 @@ import FactoryTwoTone from '@mui/icons-material/FactoryTwoTone';
 import HistoryRounded from '@mui/icons-material/HistoryRounded';
 import PrecisionManufacturingTwoTone from '@mui/icons-material/PrecisionManufacturingTwoTone';
 import TableChartTwoTone from '@mui/icons-material/TableChartTwoTone';
+import ChangeCircleTwoTone from '@mui/icons-material/ChangeCircleTwoTone';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import ListSubheader from '@mui/joy/ListSubheader';
-import { Link, NavLink, useNavigate } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import Option from '@mui/joy/Option';
 import Select from '@mui/joy/Select';
 import ListDivider from '@mui/joy/ListDivider';
@@ -47,12 +48,17 @@ let navItems = [
   {
     title: 'Herramientas',
     items: [
-      { to: '/produccion', icon: <FactoryTwoTone />, label: 'Producción' },
       {
         to: '/maquinas',
         icon: <PrecisionManufacturingTwoTone />,
         label: 'Máquinas',
       },
+      {
+        to: '/cambios',
+        icon: <ChangeCircleTwoTone />,
+        label: 'Cambios',
+      },
+      { to: '/produccion', icon: <FactoryTwoTone />, label: 'Producción' },
     ],
   },
 ];

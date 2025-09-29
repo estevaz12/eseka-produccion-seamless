@@ -44,4 +44,9 @@
   --color-chart-green: #87cc3e;
   --color-chart-yellow: #ffc000;
   --color-chart-red: #ed3140;
+
+  /* Cambios */
+  --color-turno-1: var(--color-incomplete);
+  --color-turno-2: var(--color-stop-turbina);
+  --color-turno-3: var(--color-stop-repuesto);
 }

@@ -23,6 +23,8 @@ import { getDuration, getDurationUnix } from '../../utils/maquinasUtils.js';
 
 let apiUrl;
 
+// FIXME sorting Tiempo Min. when no time but producing
+// TODO Localized formats for ALL numbers and tables
 export default function ProgramadaTable({
   startDate,
   progColor,
