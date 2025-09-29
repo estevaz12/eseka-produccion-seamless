@@ -9,6 +9,7 @@ import {
   calcProducido,
   colorStr,
   faltaStr,
+  footerFormat,
   producidoStr,
   roundUpEven,
 } from '../../utils/progTableUtils.js';
@@ -19,10 +20,10 @@ import ProgLegend from './ProgLegend.jsx';
 import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
 import { useOutletContext } from 'react-router';
 import { getDuration, getDurationUnix } from '../../utils/maquinasUtils.js';
+import localizedNum from '../../utils/numFormat.js';
 
 let apiUrl;
 
-// FIXME sorting Tiempo Min. when no time but producing
 // TODO Localized formats for ALL numbers and tables
 export default function ProgramadaTable({
   startDate,
@@ -125,69 +126,29 @@ export default function ProgramadaTable({
         return bFalta - aFalta;
       },
     },
-    {
-      id: 'faltaUnidades',
-      label: 'Falta (un)',
-      align: 'right',
-      pdfRender: (row) => row.Target - row.Producido,
-      sortFn: (a, b, order) => {
-        const faltaCalc = (row, order) => {
-          const faltaUn = row.Target - row.Producido;
-          // send to bottom if falta is negative
-          if (faltaUn <= 0) {
-            return order === 'asc' ? Infinity : 0;
-          }
-          return faltaUn;
-        };
-
-        const aFaltaUn = faltaCalc(a, order);
-        const bFaltaUn = faltaCalc(b, order);
-        return bFaltaUn - aFaltaUn;
-      },
-    },
     room === 'SEAMLESS'
       ? {
-          id: 'target',
-          label: 'Target (un)',
+          id: 'faltaUnidades',
+          label: 'Falta (un)',
           align: 'right',
-          width: 'w-[11%]',
-          pdfRender: (row) => {
-            const faltaUnidades = calcFaltaUnidades(row);
-            if (faltaUnidades <= 0) return 'LLEGÓ';
-
-            if (row.Producido === 0 || row.Machines.length > 1)
-              return row.Target;
-
-            if (row.Machines.length <= 1)
-              return roundUpEven(
-                faltaUnidades + (row.Machines[0]?.Pieces || 0)
-              );
-          },
+          pdfRender: (row) => localizedNum(row.Target - row.Producido),
           sortFn: (a, b, order) => {
-            const targetCalc = (row, order) => {
+            const faltaCalc = (row, order) => {
               const faltaUn = row.Target - row.Producido;
-              // send to bottom if target was met
+              // send to bottom if falta is negative
               if (faltaUn <= 0) {
-                return order === 'asc' ? Number.POSITIVE_INFINITY : 0;
+                return order === 'asc' ? Infinity : 0;
               }
-
-              return row.Producido === 0
-                ? row.Target
-                : roundUpEven(
-                    faltaUn +
-                      row.Machines.reduce(
-                        (acc, mach) => acc + (mach.Pieces || 0),
-                        0
-                      )
-                  );
+              return faltaUn;
             };
 
-            const aTarget = targetCalc(a, order);
-            const bTarget = targetCalc(b, order);
-            return bTarget - aTarget;
+            const aFaltaUn = faltaCalc(a, order);
+            const bFaltaUn = faltaCalc(b, order);
+            return bFaltaUn - aFaltaUn;
           },
         }
-      : live && {
+      : live
+      ? {
           id: 'idealTime',
           label: 'Tiempo Min.',
           align: 'center',
@@ -211,6 +172,20 @@ export default function ProgramadaTable({
             const aIdealTime = calcIdealTime(a);
             const bIdealTime = calcIdealTime(b);
 
+            // articulos not in production to bottom always
+            // doing this first guarantees producing items remain at the
+            // beginning
+            if (!aIdealTime && a.Machines.length === 0)
+              return order === 'asc' ? -Infinity : Infinity;
+            if (!bIdealTime && b.Machines.length === 0)
+              return order === 'asc' ? Infinity : -Infinity;
+
+            // if ideal time is 0 and is producing, place at top always
+            if (aIdealTime === 0 && a.Machines.length > 0)
+              return order === 'asc' ? 1 : -1;
+            if (bIdealTime === 0 && b.Machines.length > 0)
+              return order === 'asc' ? -1 : 1;
+
             // always place LLEGÓ at the top when asc
             // place at bottom when descending
             if (aIdealTime === -1) return order === 'asc' ? 1 : 1;
@@ -220,12 +195,71 @@ export default function ProgramadaTable({
             let aDuration = getDurationUnix(aIdealTime);
             let bDuration = getDurationUnix(bIdealTime);
 
-            if (!aDuration) aDuration = order === 'asc' ? Infinity : -Infinity;
-            if (!bDuration) bDuration = order === 'asc' ? Infinity : -Infinity;
-
             return bDuration - aDuration;
           },
+        }
+      : {
+          id: 'faltaUnidades',
+          label: 'Falta (un)',
+          align: 'right',
+          pdfRender: (row) => localizedNum(row.Target - row.Producido),
+          sortFn: (a, b, order) => {
+            const faltaCalc = (row, order) => {
+              const faltaUn = row.Target - row.Producido;
+              // send to bottom if falta is negative
+              if (faltaUn <= 0) {
+                return order === 'asc' ? Infinity : 0;
+              }
+              return faltaUn;
+            };
+
+            const aFaltaUn = faltaCalc(a, order);
+            const bFaltaUn = faltaCalc(b, order);
+            return bFaltaUn - aFaltaUn;
+          },
         },
+    (live || room === 'SEAMLESS') && {
+      id: 'target',
+      label: 'Target (un)',
+      align: 'right',
+      width: 'w-[11%]',
+      pdfRender: (row) => {
+        const faltaUnidades = calcFaltaUnidades(row);
+        if (faltaUnidades <= 0) return 'LLEGÓ';
+
+        let target;
+
+        if (row.Producido === 0 || row.Machines.length > 1) target = row.Target;
+
+        if (row.Machines.length <= 1)
+          target = roundUpEven(faltaUnidades + (row.Machines[0]?.Pieces || 0));
+
+        return localizedNum(target);
+      },
+      sortFn: (a, b, order) => {
+        const targetCalc = (row, order) => {
+          const faltaUn = row.Target - row.Producido;
+          // send to bottom if target was met
+          if (faltaUn <= 0) {
+            return order === 'asc' ? Number.POSITIVE_INFINITY : 0;
+          }
+
+          return row.Producido === 0
+            ? row.Target
+            : roundUpEven(
+                faltaUn +
+                  row.Machines.reduce(
+                    (acc, mach) => acc + (mach.Pieces || 0),
+                    0
+                  )
+              );
+        };
+
+        const aTarget = targetCalc(a, order);
+        const bTarget = targetCalc(b, order);
+        return bTarget - aTarget;
+      },
+    },
     live && {
       id: 'machines',
       label: 'Máquinas',
@@ -309,16 +343,22 @@ export default function ProgramadaTable({
         <td className='text-right'>{faltaUnidades}</td>
         {/* Target (un.) or Tiempo al 100% */}
         {room === 'SEAMLESS' ? (
-          <td className='text-right'>
-            <TargetCol row={row} faltaUnidades={faltaUnidades} />
-          </td>
+          <td className='text-right'>{localizedNum(faltaUnidades)}</td>
         ) : live ? (
           <td className='text-center'>
             {calcIdealTime(row) === -1
               ? 'LLEGÓ'
               : getDuration(calcIdealTime(row))}
           </td>
-        ) : null}
+        ) : (
+          <td className='text-right'>{localizedNum(faltaUnidades)}</td>
+        )}
+        {/* Target (un.) or Tiempo al 100% */}
+        {(live || room === 'SEAMLESS') && (
+          <td className='text-right'>
+            <TargetCol row={row} faltaUnidades={faltaUnidades} />
+          </td>
+        )}
         {/* Maquinas */}
         {live && (
           <td className={room === 'HOMBRE' ? 'text-center' : ''}>
@@ -363,10 +403,10 @@ export default function ProgramadaTable({
         initOrderBy='Articulo'
         footer={[
           'Total',
-          Math.round(totalAProducir) || '0', // Total A Producir
-          Math.round(totalProducido) || '0', // Total Producido
-          Math.round(totalFalta) || '0', // Total Falta
-          !live && room === 'HOMBRE' ? <ProgLegend live={false} /> : true,
+          footerFormat(totalAProducir), // Total A Producir
+          footerFormat(totalProducido), // Total Producido
+          footerFormat(totalFalta), // Total Falta
+          !live && room === 'HOMBRE' ? <ProgLegend live={live} /> : true,
           !live && room === 'SEAMLESS' ? (
             <ProgLegend live={live} />
           ) : !live && room === 'HOMBRE' ? (

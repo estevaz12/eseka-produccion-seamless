@@ -13,6 +13,7 @@ import {
   getMachState,
   getWorkEff,
 } from '../utils/maquinasUtils';
+import localizedNum from '../utils/numFormat';
 
 export default function MachineInfo({ mach, open, setOpened, machines }) {
   return (
@@ -43,8 +44,8 @@ export default function MachineInfo({ mach, open, setOpened, machines }) {
           <Typography level='title-lg'>Máquina: {mach.MachCode}</Typography>
         </ListItem>
         <ListItem>Cadena: {mach.StyleCode?.styleCode}</ListItem>
-        <ListItem>Prendas: {mach.Pieces}</ListItem>
-        <ListItem>Target: {mach.TargetOrder}</ListItem>
+        <ListItem>Prendas: {localizedNum(mach.Pieces)}</ListItem>
+        <ListItem>Target: {localizedNum(mach.TargetOrder)}</ListItem>
         <ListItem>Tiempo al 100%: {getDuration(calcIdealTime(mach))}</ListItem>
         <ListItem>Tiempo Real: {getDuration(calcRealTime(mach))}</ListItem>
         <ListItem>

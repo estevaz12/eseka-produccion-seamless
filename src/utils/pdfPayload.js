@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { producidoStr } from './progTableUtils';
 import { isProducing } from './maquinasUtils';
+import localizedNum from './numFormat';
 
 function stringifyCell(v) {
   if (v == null) return '';
@@ -89,7 +90,7 @@ function buildFooter(footerCols, cols, rows) {
       if (col.id === cols[2].id) {
         footer[col.id] = 'Total';
       } else if (total != null) {
-        footer[col.id] = String(Math.round(total));
+        footer[col.id] = localizedNum(Math.round(total));
       } else {
         footer[col.id] = '';
       }

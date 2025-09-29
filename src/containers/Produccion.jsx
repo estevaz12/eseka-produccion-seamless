@@ -7,6 +7,8 @@ import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
 import ArticuloCol from '../components/Tables/ArticuloCol.jsx';
 import { DatesContext } from '../Contexts.js';
 import { useOutletContext } from 'react-router';
+import { footerFormat } from '../utils/progTableUtils.js';
+import localizedNum from '../utils/numFormat.js';
 
 let apiUrl, sqlDateFormat;
 
@@ -133,16 +135,18 @@ export default function Produccion() {
   }
 
   function unidadesStr(row) {
-    const producido = calcProducido(row);
-    return row.Tipo === null ? producido : `${producido} (${row.Unidades})`;
+    const producido = localizedNum(calcProducido(row));
+    return row.Tipo === null
+      ? producido
+      : `${producido} (${localizedNum(row.Unidades)})`;
   }
 
   function docenasStr(row) {
     const producido = calcProducido(row);
     return row.Tipo === null
-      ? (producido / docena).toFixed(1)
-      : `${(producido / docena).toFixed(1)} (${(row.Unidades / docena).toFixed(
-          1
+      ? localizedNum((producido / docena).toFixed(1))
+      : `${localizedNum((producido / docena).toFixed(1))} (${localizedNum(
+          (row.Unidades / docena).toFixed(1)
         )})`;
   }
 
@@ -211,8 +215,8 @@ export default function Produccion() {
           initOrderBy='Articulo'
           footer={[
             'Total',
-            Math.round(totalDocenas) || '0',
-            Math.round(totalUnidades) || '0',
+            footerFormat(totalDocenas),
+            footerFormat(totalUnidades),
           ]}
           headerTop='top-[94px]'
         />

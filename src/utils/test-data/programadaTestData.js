@@ -1492,7 +1492,7 @@ module.exports = [
         Pieces: 550,
         TargetOrder: 1496,
         State: 0,
-        IdealCycle: 146,
+        IdealCycle: 0,
         WorkEfficiency: 87,
         RoomCode: 'SEAMLESS                      ',
       },
