@@ -340,7 +340,6 @@ export default function ProgramadaTable({
         {/* Falta */}
         <td className='text-right'>{faltaStr(row, docena, porcExtra)}</td>
         {/* Falta (un.) */}
-        <td className='text-right'>{faltaUnidades}</td>
         {/* Target (un.) or Tiempo al 100% */}
         {room === 'SEAMLESS' ? (
           <td className='text-right'>{localizedNum(faltaUnidades)}</td>
