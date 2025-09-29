@@ -6,6 +6,7 @@ import {
   colors,
   getIntervalDates,
 } from '../../utils/chartUtils.js';
+import localizedNum from '../../utils/numFormat.js';
 
 export default function TotalProduced({
   dataset,
@@ -32,7 +33,7 @@ export default function TotalProduced({
     <ChartContent loading={loading}>
       <ChartHeader
         title={'Producción Mensual'}
-        value={`${totalProduced.toLocaleString()} doc.`}
+        value={`${localizedNum(totalProduced)} doc.`}
         interval={`Del ${monthStart.format('D/M')} al ${yesterday.format(
           'D/M'
         )}`}

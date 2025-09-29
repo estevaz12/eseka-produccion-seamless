@@ -6,6 +6,7 @@ import Divider from '@mui/joy/Divider';
 import dayjs from 'dayjs';
 import Stack from '@mui/joy/Stack';
 import { useOutletContext } from 'react-router';
+import localizedNum from '../../utils/numFormat.js';
 
 export default function DailyProduction({ dataset, dailyAverage, loading }) {
   const { room } = useOutletContext();
@@ -17,7 +18,7 @@ export default function DailyProduction({ dataset, dailyAverage, loading }) {
       <Stack direction='column' className='justify-between'>
         <ChartHeader
           title='Producción Diaria'
-          value={`${dailyAverage.toLocaleString()} doc.`}
+          value={`${localizedNum(dailyAverage)} doc.`}
           interval='Promedio por día'
         />
         {!loading && yesterdayProd.Docenas && (
@@ -25,7 +26,7 @@ export default function DailyProduction({ dataset, dailyAverage, loading }) {
             <Divider />
             <ChartHeader
               title='Producido Ayer'
-              value={`${yesterdayProd.Docenas.toLocaleString()} doc.`}
+              value={`${localizedNum(yesterdayProd.Docenas)} doc.`}
               interval={dayjs
                 .tz(yesterdayProd.ProdDate)
                 .locale('es')

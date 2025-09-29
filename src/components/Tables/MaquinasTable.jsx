@@ -15,6 +15,7 @@ import { useConfig } from '../../ConfigContext.jsx';
 import { useOutletContext } from 'react-router';
 import Typography from '@mui/joy/Typography';
 import ExpandRowBtn from './ExpandRowBtn.jsx';
+import localizedNum from '../../utils/numFormat.js';
 
 let apiUrl;
 export default function MaquinasTable({ machines, pdfRows }) {
@@ -108,7 +109,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
       label: 'Prendas',
       align: 'right',
       width: 'w-[8%]',
-      pdfRender: (row) => (isParada(row) ? '' : row.Pieces),
+      pdfRender: (row) => (isParada(row) ? '' : localizedNum(row.Pieces)),
       sortFn: (a, b, order) => {
         let aPieces = a.Pieces;
         let bPieces = b.Pieces;
@@ -127,7 +128,7 @@ export default function MaquinasTable({ machines, pdfRows }) {
       label: 'Target',
       align: 'right',
       width: 'w-[8%]',
-      pdfRender: (row) => (isParada(row) ? '' : row.TargetOrder),
+      pdfRender: (row) => (isParada(row) ? '' : localizedNum(row.TargetOrder)),
       sortFn: (a, b, order) => {
         let aTargetOrder = a.TargetOrder;
         let bTargetOrder = b.TargetOrder;
@@ -257,8 +258,10 @@ export default function MaquinasTable({ machines, pdfRows }) {
             {isParada(row) ? null : row.StyleCode.talle}
           </td>
         )}
-        <td align='right'>{isParada(row) ? null : row.Pieces}</td>
-        <td align='right'>{isParada(row) ? null : row.TargetOrder}</td>
+        <td align='right'>{isParada(row) ? null : localizedNum(row.Pieces)}</td>
+        <td align='right'>
+          {isParada(row) ? null : localizedNum(row.TargetOrder)}
+        </td>
         <td align='center'>{getDuration(calcIdealTime(row))}</td>
         <td align='center'>{getDuration(calcRealTime(row))}</td>
         <td align='right'>{getWorkEff(row) && `${getWorkEff(row)}%`}</td>

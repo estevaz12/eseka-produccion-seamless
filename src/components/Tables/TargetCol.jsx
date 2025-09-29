@@ -8,6 +8,7 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
 import { useOutletContext } from 'react-router';
+import localizedNum from '../../utils/numFormat';
 
 export default function TargetCol({ row, faltaUnidades }) {
   const { room } = useOutletContext();
@@ -37,7 +38,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         // Download production record
         return (
           <TargetData
-            target={row.Target}
+            target={localizedNum(row.Target)}
             icon={<DownloadRounded fontSize={iconFontSize} />}
           />
         );
@@ -45,7 +46,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         // Reset counter
         return (
           <TargetData
-            target={machTarget}
+            target={localizedNum(machTarget)}
             icon={<SyncProblemRounded fontSize={iconFontSize} />}
           />
         );
@@ -57,7 +58,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         // verify counter
         return (
           <TargetData
-            target={machTarget}
+            target={localizedNum(machTarget)}
             icon={<QuestionMarkRounded fontSize={iconFontSize} />}
           />
         );
@@ -70,7 +71,7 @@ export default function TargetCol({ row, faltaUnidades }) {
           <TargetData
             target={
               <Stack component='span' direction='column'>
-                <Typography>{machTarget}</Typography>
+                <Typography>{localizedNum(machTarget)}</Typography>
                 <Typography>(M: {row.Machines[0].TargetOrder})</Typography>
               </Stack>
             }
@@ -89,7 +90,7 @@ export default function TargetCol({ row, faltaUnidades }) {
         // no target
         return (
           <TargetData
-            target={machTarget}
+            target={localizedNum(machTarget)}
             icon={<FlagRounded fontSize={iconFontSize} />}
           />
         );
@@ -99,7 +100,7 @@ export default function TargetCol({ row, faltaUnidades }) {
       return 'LLEGÓ';
     }
 
-    return machTarget;
+    return localizedNum(machTarget);
   } else {
     return row.Machines.map((m) => {
       // if multiple machines, calculate target per machine
@@ -113,7 +114,7 @@ export default function TargetCol({ row, faltaUnidades }) {
       return (
         <TargetData
           key={m.MachCode}
-          target={`${m.MachCode} -> ${machineTarget}`}
+          target={`${m.MachCode} -> ${localizedNum(machineTarget)}`}
           icon={
             row.Producido === 0 ? (
               <DownloadRounded fontSize='inherit' />

@@ -3,6 +3,7 @@ import Typography from '@mui/joy/Typography';
 import { useEffect, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
 import { useOutletContext } from 'react-router';
+import localizedNum from '../utils/numFormat.js';
 
 let apiUrl;
 
@@ -41,7 +42,7 @@ export default function ProgTotal({ startDate, currTotal = undefined }) {
     >
       Total actual:{' '}
       {total !== undefined ? (
-        total
+        localizedNum(total)
       ) : startDate ? (
         <Skeleton
           variant='text'
