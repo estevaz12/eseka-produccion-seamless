@@ -72,7 +72,9 @@ export default function TargetCol({ row, faltaUnidades }) {
             target={
               <Stack component='span' direction='column'>
                 <Typography>{localizedNum(machTarget)}</Typography>
-                <Typography>(M: {row.Machines[0].TargetOrder})</Typography>
+                <Typography>
+                  (M: {localizedNum(row.Machines[0].TargetOrder)})
+                </Typography>
               </Stack>
             }
             icon={<CrisisAlertRounded fontSize={iconFontSize} />}
