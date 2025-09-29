@@ -1,5 +1,3 @@
-const getMonthSaldo = require('./getMonthSaldo.js');
-
 module.exports = {
   produccion: require('./produccion.js'),
   insertProgramada: require('./insertProgramada.js'),
@@ -27,4 +25,5 @@ module.exports = {
   getCurrWEff: require('./getCurrWEff.js'),
   getDailyWEff: require('./getDailyWEff.js'),
   getMonthSaldo: require('./getMonthSaldo.js'),
+  getCambios: require('./getCambios.js'),
 };
