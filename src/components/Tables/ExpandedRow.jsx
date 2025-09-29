@@ -12,6 +12,7 @@ import KeyboardArrowLeftRounded from '@mui/icons-material/KeyboardArrowLeftRound
 import KeyboardArrowRightRounded from '@mui/icons-material/KeyboardArrowRightRounded';
 import TableSkeleton from './TableSkeleton.jsx';
 import { useLocation } from 'react-router';
+import localizedNum from '../../utils/numFormat.js';
 
 let apiUrl;
 export default function ExpandedRow({ numCols, row }) {
@@ -189,10 +190,10 @@ export default function ExpandedRow({ numCols, row }) {
                       <td>{historyRow.Shift}</td>
                       <td>{historyRow.MachCode}</td>
                       <td>{historyRow.StyleCode}</td>
-                      <td>{historyRow.Pieces}</td>
-                      <td>{historyRow.OrderPieces}</td>
-                      <td>{historyRow.TargetPieces}</td>
-                      <td>{historyRow.Discards}</td>
+                      <td>{localizedNum(historyRow.Pieces)}</td>
+                      <td>{localizedNum(historyRow.OrderPieces)}</td>
+                      <td>{localizedNum(historyRow.TargetPieces)}</td>
+                      <td>{localizedNum(historyRow.Discards)}</td>
                     </tr>
                   ))
               )}

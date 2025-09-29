@@ -6,6 +6,7 @@ import { useDrawingArea } from '@mui/x-charts/hooks';
 import BigNumContent from './BigNumContent.jsx';
 import { colors, getIntervalDates } from '../../utils/chartUtils.js';
 import { useOutletContext } from 'react-router';
+import localizedNum from '../../utils/numFormat.js';
 
 let apiUrl;
 export default function MonthSaldo() {
@@ -62,8 +63,8 @@ export default function MonthSaldo() {
             })),
             valueFormatter: (v) => {
               if (v.label === 'Saldo')
-                return (v.value / saldoWidth).toLocaleString();
-              else return v.value.toLocaleString();
+                return localizedNum(v.value / saldoWidth);
+              else return localizedNum(v.value);
             },
             highlightScope: { fade: 'global', highlight: 'item' },
             // faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
