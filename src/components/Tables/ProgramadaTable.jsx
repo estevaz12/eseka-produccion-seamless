@@ -131,7 +131,7 @@ export default function ProgramadaTable({
           id: 'faltaUnidades',
           label: 'Falta (un)',
           align: 'right',
-          pdfRender: (row) => row.Target - row.Producido,
+          pdfRender: (row) => localizedNum(row.Target - row.Producido),
           sortFn: (a, b, order) => {
             const faltaCalc = (row, order) => {
               const faltaUn = row.Target - row.Producido;
