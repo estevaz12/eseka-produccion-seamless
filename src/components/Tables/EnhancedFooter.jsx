@@ -2,7 +2,7 @@ import PrintRounded from '@mui/icons-material/PrintRounded';
 import IconButton from '@mui/joy/IconButton';
 import { useConfig } from '../../ConfigContext.jsx';
 import { useLocation, useOutletContext } from 'react-router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DatesContext, ToastsContext } from '../../Contexts.js';
 import { buildPdfPayload } from '../../utils/pdfPayload.js';
 import dayjs from 'dayjs';
@@ -20,6 +20,8 @@ export default function EnhancedFooter({
   const { startDate, endDate } = useContext(DatesContext);
   const { room, docena, porcExtra } = useOutletContext();
 
+  const [loading, setLoading] = useState(false);
+
   const getPDFOpts = () => {
     switch (pathname) {
       case '/programada/anteriores':
@@ -31,7 +33,7 @@ export default function EnhancedFooter({
           fileName: `Programada_${dayjs
             .tz(startDate)
             .startOf('month')
-            .format('DD-MM-YYYY')}`,
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
           appendDateToTitle: false,
           footerCols: ['Docenas', 'Producido', 'falta'],
         };
@@ -44,9 +46,9 @@ export default function EnhancedFooter({
             .format('DD/MM/YYYY HH:mm')}`,
           fileName: `Produccion_${dayjs
             .tz(startDate)
-            .format('DD-MM-YYYYTHH.mm')}_${dayjs
+            .format('DD-MM-YYYYTHH.mm.ss')}_${dayjs
             .tz(endDate)
-            .format('DD-MM-YYYYTHH.mm')}`,
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
           orientation: 'portrait',
           appendDateToTitle: false,
           footerCols: ['Unidades', 'Docenas'],
@@ -54,21 +56,23 @@ export default function EnhancedFooter({
       case '/maquinas':
         return {
           title: 'Máquinas',
-          fileName: `Maquinas_${dayjs.tz().format('DD-MM-YYYYTHH.mm')}`,
+          fileName: `Maquinas_${dayjs.tz().format('DD-MM-YYYYTHH.mm.ss')}`,
         };
       case '/cambios':
         return {
           title: `Cambios del ${dayjs.tz(startDate).format('DD/MM/YYYY')}`,
           orientation: 'portrait',
           appendDateToTitle: false,
-          fileName: `Cambios_${dayjs.tz(startDate).format('DD-MM-YYYY')}`,
+          fileName: `Cambios_${dayjs
+            .tz(startDate)
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
         };
       default:
         return {
           title: 'Programada Actual',
           fileName: `Programada-Actual_${dayjs
             .tz()
-            .format('DD-MM-YYYYTHH.mm')}`,
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
           footerCols: ['Docenas', 'Producido', 'falta'],
           addToProgramada: room === 'HOMBRE',
         };
@@ -80,6 +84,7 @@ export default function EnhancedFooter({
   }
 
   const handlePDFExport = async () => {
+    setLoading(true);
     try {
       const selectedRows = getSelectedRows(rows, selected);
       // Build a safe, serializable payload
@@ -126,6 +131,8 @@ export default function EnhancedFooter({
         message: 'No se pudo exportar el PDF correctamente.',
       });
     }
+
+    setLoading(false);
   };
 
   return (
@@ -140,7 +147,11 @@ export default function EnhancedFooter({
         </td>
         <td className='text-center'>
           {selected.length > 0 && (
-            <IconButton variant='soft' onClick={handlePDFExport}>
+            <IconButton
+              loading={loading}
+              variant='soft'
+              onClick={handlePDFExport}
+            >
               <PrintRounded className='text-(--joy-palette-primary-500)' />
             </IconButton>
           )}

@@ -1,7 +1,7 @@
 const getArticulo = (articulo) => {
   return `
     SELECT *
-    FROM SEA_ARTICULOS
+    FROM ARTICULOS
     WHERE Articulo = ${articulo};
   `;
 };

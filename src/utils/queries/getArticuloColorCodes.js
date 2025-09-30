@@ -1,7 +1,7 @@
 const getArticuloColorCodes = (articulo) => {
   return `
     SELECT *
-    FROM SEA_COLOR_CODES
+    FROM COLOR_CODES
     WHERE Articulo = ${articulo};
   `;
 };
