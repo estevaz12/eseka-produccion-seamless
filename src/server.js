@@ -201,7 +201,9 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(`SELECT * FROM COLORES ORDER BY Color`);
+        const result = await sql.query(
+          `SELECT * FROM APP_COLORES ORDER BY Color`
+        );
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /colors: ${err}`);
@@ -213,16 +215,6 @@ const startServer = () => {
       res.json(testData.colors);
     }
   });
-
-  async function insertColorDistrs(data) {
-    for (const row of data.colorDistr) {
-      const query = queries.insertDistr(data.articulo, data.talle, row);
-      serverLog(query);
-      await sql.query(query);
-      // Wait before next insert
-      await new Promise((resolve) => setTimeout(resolve, 1));
-    }
-  }
 
   app.post('/export/pdf', async (req, res) => {
     serverLog('POST /export/pdf');

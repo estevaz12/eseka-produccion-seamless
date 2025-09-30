@@ -73,7 +73,7 @@ const produccion = (
     `;
   }
 
-  // Match with COLOR_CODES and return a record per color
+  // Match with APP_COLOR_CODES and return a record per color
   return (
     query +
     `,ProdColorUngrouped AS (
@@ -87,11 +87,11 @@ const produccion = (
             c.WhiteText,
             p.Unidades
         FROM Produccion AS p
-            JOIN COLOR_CODES AS cc
+            JOIN APP_COLOR_CODES AS cc
                 ON p.StyleCode = cc.StyleCode
-            JOIN COLORES AS c
+            JOIN APP_COLORES AS c
                 ON c.Id = cc.Color
-            JOIN ARTICULOS AS a 
+            JOIN APP_ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
     ),
     ProdColor AS (

@@ -1,7 +1,7 @@
 const getArticulo = (articulo) => {
   return `
     SELECT *
-    FROM ARTICULOS
+    FROM APP_ARTICULOS
     WHERE Articulo = ${articulo};
   `;
 };

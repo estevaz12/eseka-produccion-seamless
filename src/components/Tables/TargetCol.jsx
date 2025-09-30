@@ -3,15 +3,19 @@ import ReportRounded from '@mui/icons-material/ReportRounded';
 import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
 import localizedNum from '../../utils/numFormat';
+import { useOutletContext } from 'react-router';
 
 export default function TargetCol({ row, faltaUnidades }) {
+  const { room } = useOutletContext();
   const iconFontSize = 'small';
 
   const TargetData = ({ target, icon }) => (
     <Typography
       className='justify-end'
-      endDecorator={icon}
-      sx={{ '& .MuiTypography-endDecorator': { m: 0 } }}
+      {...(room === 'SEAMLESS' && {
+        endDecorator: icon,
+        sx: { '& .MuiTypography-endDecorator': { m: 0 } },
+      })}
     >
       {target}
     </Typography>
