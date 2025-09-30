@@ -18,13 +18,13 @@ import ArticuloCol from './ArticuloCol.jsx';
 import { DatesContext } from '../../Contexts.js';
 import ProgLegend from './ProgLegend.jsx';
 import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
-import { useOutletContext } from 'react-router';
+import { Link, useOutletContext } from 'react-router';
 import { getDuration, getDurationUnix } from '../../utils/maquinasUtils.js';
 import localizedNum from '../../utils/numFormat.js';
+import Stack from '@mui/joy/Stack';
 
 let apiUrl;
 
-// TODO Localized formats for ALL numbers and tables
 export default function ProgramadaTable({
   startDate,
   progColor,
@@ -54,6 +54,21 @@ export default function ProgramadaTable({
           .catch((err) =>
             console.error(`[CLIENT] Error fetching /${room}/programada:`, err)
           );
+      } else if (startDate === null) {
+        // dummy item to avoid infinite loading
+        setProgColor([
+          {
+            Articulo: '',
+            Talle: null,
+            Color: '',
+            ColorId: null,
+            Porcentaje: null,
+            Docenas: null,
+            Producido: null,
+            Target: null,
+            Machines: [],
+          },
+        ]);
       }
     }
 
@@ -267,7 +282,7 @@ export default function ProgramadaTable({
       align: room === 'HOMBRE' ? 'center' : null, // left
       pdfAlign: 'center',
       pdfRender: (row) => {
-        if (row.Machines.length <= 5)
+        if (row.Machines.length <= 3)
           return row.Machines.map((m) => m.MachCode).join(', ');
         else return `${row.Machines.length} mqs.`;
       },
@@ -291,7 +306,7 @@ export default function ProgramadaTable({
     const machinesList = row.Machines.map((m) => {
       return (
         <Typography key={m.MachCode}>{`${m.MachCode} ${
-          room === 'SEAMLESS' ? `(P: ${m.Pieces})` : ''
+          room === 'SEAMLESS' ? `(P: ${localizedNum(m.Pieces)})` : ''
         }`}</Typography>
       );
     }); // display all machines with articulo
@@ -309,62 +324,98 @@ export default function ProgramadaTable({
     rowClassName = `${rowClassName} *:border-dark-accent hover:bg-row-hover`;
 
     return [
-      rowClassName,
+      startDate !== null ? rowClassName : 'hover:bg-transparent',
       // Render each cell in the row
-      <>
-        {/* Articulo */}
-        <ArticuloCol
-          row={row}
-          isOpen={opened === `${row.Articulo}-${row.Talle}-${row.ColorId}`}
-          handleRowClick={handleClick}
-          rowColor={rowClassName}
-        />
-        {/* Talle */}
-        <td className='font-semibold text-center'>{row.Talle}</td>
-        {/* Color + Porcentaje */}
-        <td
-          className='font-semibold border-x group/color'
-          style={{
-            backgroundColor: row.Hex,
-            color: row.WhiteText ? 'white' : 'black',
-          }}
-        >
-          <Typography className='relative w-fit'>{colorStr(row)}</Typography>
-        </td>
-        {/* A Producir */}
-        <td className='text-right group/prod'>
-          {row.Docenas === null ? <PendingActionsRounded /> : aProducirStr(row)}
-        </td>
-        {/* Producido */}
-        <td className='text-right'>{producidoStr(row, docena, porcExtra)}</td>
-        {/* Falta */}
-        <td className='text-right'>{faltaStr(row, docena, porcExtra)}</td>
-        {/* Falta (un.) */}
-        {/* Target (un.) or Tiempo al 100% */}
-        {room === 'SEAMLESS' ? (
-          <td className='text-right'>{localizedNum(faltaUnidades)}</td>
-        ) : live ? (
-          <td className='text-center'>
-            {calcIdealTime(row) === -1
-              ? 'LLEGÓ'
-              : getDuration(calcIdealTime(row))}
+      startDate !== null ? (
+        <>
+          {/* Articulo */}
+          <ArticuloCol
+            row={row}
+            isOpen={opened === `${row.Articulo}-${row.Talle}-${row.ColorId}`}
+            handleRowClick={handleClick}
+            rowColor={rowClassName}
+          />
+          {/* Talle */}
+          <td className='font-semibold text-center'>{row.Talle}</td>
+          {/* Color + Porcentaje */}
+          <td
+            className='font-semibold border-x group/color'
+            style={{
+              backgroundColor: row.Hex,
+              color: row.WhiteText ? 'white' : 'black',
+            }}
+          >
+            <Typography className='relative w-fit'>{colorStr(row)}</Typography>
           </td>
-        ) : (
-          <td className='text-right'>{localizedNum(faltaUnidades)}</td>
-        )}
-        {/* Target (un.) or Tiempo al 100% */}
-        {(live || room === 'SEAMLESS') && (
-          <td className='text-right'>
-            <TargetCol row={row} faltaUnidades={faltaUnidades} />
+          {/* A Producir */}
+          <td className='text-right group/prod'>
+            {row.Docenas === null ? (
+              <PendingActionsRounded />
+            ) : (
+              aProducirStr(row)
+            )}
           </td>
-        )}
-        {/* Maquinas */}
-        {live && (
-          <td className={room === 'HOMBRE' ? 'text-center' : ''}>
-            {machinesList}
+          {/* Producido */}
+          <td className='text-right'>{producidoStr(row, docena, porcExtra)}</td>
+          {/* Falta */}
+          <td className='text-right'>{faltaStr(row, docena, porcExtra)}</td>
+          {/* Falta (un.) */}
+          {/* Target (un.) or Tiempo al 100% */}
+          {room === 'SEAMLESS' ? (
+            <td className='text-right'>{localizedNum(faltaUnidades)}</td>
+          ) : live ? (
+            <td className='text-center'>
+              {calcIdealTime(row) === -1
+                ? 'LLEGÓ'
+                : getDuration(calcIdealTime(row))}
+            </td>
+          ) : (
+            <td className='text-right'>{localizedNum(faltaUnidades)}</td>
+          )}
+          {/* Target (un.) or Tiempo al 100% */}
+          {(live || room === 'SEAMLESS') && (
+            <td className='text-right'>
+              <TargetCol row={row} faltaUnidades={faltaUnidades} />
+            </td>
+          )}
+          {/* Maquinas */}
+          {live && (
+            <td className={room === 'HOMBRE' ? 'text-center' : ''}>
+              {machinesList}
+            </td>
+          )}
+        </>
+      ) : (
+        <>
+          <td colSpan={cols.length} className='**:text-center'>
+            <Stack direction='column' className='gap-4'>
+              <Typography className='font-semibold'>
+                No hay programada para el mes actual.
+              </Typography>
+              <Typography>
+                Puede ver lo que se está produciendo actualmente en{' '}
+                <Link
+                  to='/produccion'
+                  className='font-semibold underline text-primary'
+                >
+                  Producción
+                </Link>
+                .
+              </Typography>
+              <Typography>
+                Vaya a{' '}
+                <Link
+                  to='/programada/anteriores'
+                  className='font-semibold underline text-primary'
+                >
+                  Anteriores
+                </Link>{' '}
+                para ver las programadas pasadas.
+              </Typography>
+            </Stack>
           </td>
-        )}
-      </>,
+        </>
+      ),
     ];
   }
 

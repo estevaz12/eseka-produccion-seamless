@@ -73,7 +73,7 @@ const produccion = (
     `;
   }
 
-  // Match with SEA_COLOR_CODES and return a record per color
+  // Match with COLOR_CODES and return a record per color
   return (
     query +
     `,ProdColorUngrouped AS (
@@ -87,11 +87,11 @@ const produccion = (
             c.WhiteText,
             p.Unidades
         FROM Produccion AS p
-            JOIN SEA_COLOR_CODES AS cc
+            JOIN COLOR_CODES AS cc
                 ON p.StyleCode = cc.StyleCode
-            JOIN SEA_COLORES AS c
+            JOIN COLORES AS c
                 ON c.Id = cc.Color
-            JOIN SEA_ARTICULOS AS a 
+            JOIN ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
     ),
     ProdColor AS (

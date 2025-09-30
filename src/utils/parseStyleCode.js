@@ -72,9 +72,7 @@ const parseStyleCode = async (room, styleCode) => {
         articulo = res.recordset[0]?.Articulo ?? articulo;
         punto = typeof articulo !== 'string' ? '1' : null;
       } catch (err) {
-        serverLog(
-          `[ERROR] [parseStyleCode] ${articulo}.1 not in SEA_ARTICULOS`
-        );
+        serverLog(`[ERROR] [parseStyleCode] ${articulo}.1 not in ARTICULOS`);
       }
     }
 

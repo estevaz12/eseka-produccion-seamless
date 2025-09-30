@@ -14,7 +14,7 @@ let apiUrl, sqlDateFormat;
 
 export default function Produccion() {
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { room, docena } = useOutletContext();
+  const { room, docena, porcExtra } = useOutletContext();
   const [url, setUrl] = useState();
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
@@ -31,65 +31,56 @@ export default function Produccion() {
   useEffect(() => {
     let ignore = false;
     const params = new URLSearchParams({
-      room,
-      startDate: dayjs
-        .tz()
-        .startOf('month')
-        .hour(6)
-        .minute(0)
-        .second(1)
-        .format(sqlDateFormat),
-      endDate: dayjs.tz().format(sqlDateFormat),
-      actual: true,
-      articulo: '',
-      talle: '',
-      colorId: '',
+      ...formData,
+      startDate: formData.startDate.format(sqlDateFormat),
+      endDate: formData.endDate.format(sqlDateFormat),
     }).toString();
 
-    fetch(`${apiUrl}/produccion?${params}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!ignore) setData(data);
-      })
-      .catch((err) =>
-        console.error('[CLIENT] Error fetching /produccion:', err)
-      );
+    if (!ignore) setUrl(`${apiUrl}/produccion?${params}`);
 
     return () => {
       ignore = true;
     };
   }, []);
 
-  // get data on form submission
   useEffect(() => {
     let ignore = false;
-    if (url) {
+    let interval;
+
+    if (url && !ignore) {
+      // get data on form submission
+      fetchProduccion();
+
+      if (formData.actual) interval = setInterval(fetchProduccion, 30000);
+    }
+
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+    };
+
+    function fetchProduccion() {
       fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          if (!ignore)
-            setData(
-              data.length === 0
-                ? [
-                    {
-                      Articulo: 'No hay datos',
-                      Tipo: null,
-                      Talle: null,
-                      Color: null,
-                      Unidades: null,
-                    },
-                  ]
-                : data
-            );
+          setData(
+            data.length === 0
+              ? [
+                  {
+                    Articulo: 'No hay datos',
+                    Tipo: null,
+                    Talle: null,
+                    Color: null,
+                    Unidades: null,
+                  },
+                ]
+              : data
+          );
         })
         .catch((err) =>
           console.log('[CLIENT] Error fetching /produccion:', err)
         );
     }
-
-    return () => {
-      ignore = true;
-    };
   }, [url]);
 
   const cols = [
@@ -144,10 +135,10 @@ export default function Produccion() {
   function docenasStr(row) {
     const producido = calcProducido(row);
     return row.Tipo === null
-      ? localizedNum((producido / docena).toFixed(1))
-      : `${localizedNum((producido / docena).toFixed(1))} (${localizedNum(
-          (row.Unidades / docena).toFixed(1)
-        )})`;
+      ? localizedNum((producido / docena / porcExtra).toFixed(1))
+      : `${localizedNum(
+          (producido / docena / porcExtra).toFixed(1)
+        )} (${localizedNum((row.Unidades / docena / porcExtra).toFixed(1))})`;
   }
 
   function renderRow(row, i, opened, handleClick) {
@@ -187,7 +178,11 @@ export default function Produccion() {
     [data]
   );
   const totalDocenas = useMemo(
-    () => data.reduce((acc, row) => acc + calcProducido(row) / docena, 0),
+    () =>
+      data.reduce(
+        (acc, row) => acc + calcProducido(row) / docena / porcExtra,
+        0
+      ),
     [data]
   );
 

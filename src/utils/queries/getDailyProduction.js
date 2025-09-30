@@ -50,9 +50,9 @@ const getDailyProduction = (room) => {
             ELSE p.Unidades / 2
           END
         FROM ProdByDate AS p
-            JOIN SEA_COLOR_CODES AS cc
+            JOIN COLOR_CODES AS cc
                 ON p.StyleCode = cc.StyleCode
-            JOIN SEA_ARTICULOS AS a 
+            JOIN ARTICULOS AS a 
                 ON a.Articulo = cc.Articulo
     )
     SELECT ProdDate,

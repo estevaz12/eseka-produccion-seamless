@@ -1,6 +1,6 @@
 const insertColor = (data) => {
   return `
-    INSERT INTO SEA_COLORES (Color)
+    INSERT INTO COLORES (Color)
       VALUES ('${data.color}');
   `;
 };
