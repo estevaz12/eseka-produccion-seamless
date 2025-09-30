@@ -15,7 +15,6 @@ import { playAlertSound } from '../utils/playAlertSound.js';
 
 let apiUrl;
 
-// TODO: Produccion - auto update on actual
 // TODO: Cambiar nombre de BD
 export default function Home() {
   apiUrl = useConfig().apiUrl;
