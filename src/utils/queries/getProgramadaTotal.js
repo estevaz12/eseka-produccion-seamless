@@ -1,9 +1,9 @@
 const getProgramadaTotal = (room, startDate) => {
   return `
     SELECT SUM(Docenas) AS Total
-    FROM PROGRAMADA AS p
+    FROM APP_PROGRAMADA AS p
     WHERE p.Fecha = (SELECT MAX(p2.Fecha)
-          FROM PROGRAMADA AS p2
+          FROM APP_PROGRAMADA AS p2
           WHERE p2.Articulo = p.Articulo
                 AND p2.Talle = p.Talle)
           AND p.RoomCode = '${room}'

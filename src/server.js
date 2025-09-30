@@ -243,7 +243,9 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(`SELECT * FROM COLORES ORDER BY Color`);
+        const result = await sql.query(
+          `SELECT * FROM APP_COLORES ORDER BY Color`
+        );
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /colors: ${err}`);
@@ -266,7 +268,7 @@ const startServer = () => {
         serverLog(query);
         await sql.query(query);
         const result = await sql.query(
-          `SELECT TOP(1) * FROM COLORES ORDER BY Id DESC`
+          `SELECT TOP(1) * FROM APP_COLORES ORDER BY Id DESC`
         );
         res.status(201).json({
           message: `Color ${data.color} agregado con éxito.`,

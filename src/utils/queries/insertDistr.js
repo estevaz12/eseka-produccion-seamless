@@ -1,6 +1,6 @@
 const insertDistr = (articulo, talle, colorDistr) => {
   return `
-    INSERT INTO COLOR_DISTR (Articulo, Talle, Color, Porcentaje)
+    INSERT INTO APP_COLOR_DISTR (Articulo, Talle, Color, Porcentaje)
     VALUES (${articulo}, ${talle}, ${colorDistr.color}, ${
     colorDistr.porcentaje && colorDistr.porcentaje !== '0'
       ? colorDistr.porcentaje

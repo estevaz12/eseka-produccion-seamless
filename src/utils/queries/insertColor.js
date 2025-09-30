@@ -1,6 +1,6 @@
 const insertColor = (data) => {
   return `
-    INSERT INTO COLORES (Color)
+    INSERT INTO APP_COLORES (Color)
       VALUES ('${data.color}');
   `;
 };
