@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const os = require('os');
 
 /**
  * Export rows to a table PDF.
@@ -62,8 +63,9 @@ function exportTablePDF(opts) {
     value: typeof c.value === 'function' ? c.value : undefined,
   }));
 
-  const outPath = path.resolve(
-    process.cwd(),
+  // Always export to tmp folder using fileName
+  const outPath = path.join(
+    os.tmpdir(),
     `${sanitizeFileName(fileName ?? title ?? 'print')}.pdf`
   );
 

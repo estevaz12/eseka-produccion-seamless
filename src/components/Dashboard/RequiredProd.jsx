@@ -20,7 +20,7 @@ export default function RequiredProd({
       title='Doc. Diarias Requeridas'
       subtitle={<Subtitle />}
     >
-      {localizedNum(requiredProd)} doc.
+      {progTotal === 0 ? 0 : localizedNum(requiredProd)} doc.
     </BigNumContent>
   );
 }

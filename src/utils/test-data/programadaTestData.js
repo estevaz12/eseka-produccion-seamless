@@ -1,7 +1,7 @@
 module.exports = [
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1447,
     ColorDistr: 7180,
     Articulo: 4891,
@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1448,
     ColorDistr: 7181,
     Articulo: 4891,
@@ -41,7 +41,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1449,
     ColorDistr: 7182,
     Articulo: 4891,
@@ -61,7 +61,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1450,
     ColorDistr: 7183,
     Articulo: 4891,
@@ -81,7 +81,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1451,
     ColorDistr: 7186,
     Articulo: 4893,
@@ -101,7 +101,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1452,
     ColorDistr: 7187,
     Articulo: 4893,
@@ -121,7 +121,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1453,
     ColorDistr: 7189,
     Articulo: 5172,
@@ -141,7 +141,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1454,
     ColorDistr: 7190,
     Articulo: 5172,
@@ -161,7 +161,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1455,
     ColorDistr: 7191,
     Articulo: 5172,
@@ -181,7 +181,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1456,
     ColorDistr: 7192,
     Articulo: 5173,
@@ -201,7 +201,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1457,
     ColorDistr: 7194,
     Articulo: 5173,
@@ -221,7 +221,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1458,
     ColorDistr: 7195,
     Articulo: 5173,
@@ -241,7 +241,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1459,
     ColorDistr: 7196,
     Articulo: 5320,
@@ -261,7 +261,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1460,
     ColorDistr: 7198,
     Articulo: 5394,
@@ -281,7 +281,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T10:27:24.000Z',
+    Fecha: '2025-08-22T10:27:24.000Z',
     Programada: 2123,
     ColorDistr: 7199,
     Articulo: 5394,
@@ -301,7 +301,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1461,
     ColorDistr: 7204,
     Articulo: 5533,
@@ -321,7 +321,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1462,
     ColorDistr: 7205,
     Articulo: 5533,
@@ -341,7 +341,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1463,
     ColorDistr: 7214,
     Articulo: 5655,
@@ -361,7 +361,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1464,
     ColorDistr: 7215,
     Articulo: 5655,
@@ -381,7 +381,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1465,
     ColorDistr: 7216,
     Articulo: 5655,
@@ -401,7 +401,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1466,
     ColorDistr: 7217,
     Articulo: 5655,
@@ -421,7 +421,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1467,
     ColorDistr: 7218,
     Articulo: 5655,
@@ -441,7 +441,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1468,
     ColorDistr: 7222,
     Articulo: 5757,
@@ -461,7 +461,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1469,
     ColorDistr: 7223,
     Articulo: 5757,
@@ -481,7 +481,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1470,
     ColorDistr: 7224,
     Articulo: 5757,
@@ -501,7 +501,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1471,
     ColorDistr: 7235,
     Articulo: 6328,
@@ -521,7 +521,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1472,
     ColorDistr: 7236,
     Articulo: 6328,
@@ -541,7 +541,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T08:47:34.000Z',
+    Fecha: '2025-08-15T08:47:34.000Z',
     Programada: 2032,
     ColorDistr: 7824,
     Articulo: 6387,
@@ -561,7 +561,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T08:47:34.000Z',
+    Fecha: '2025-08-15T08:47:34.000Z',
     Programada: 2033,
     ColorDistr: 7825,
     Articulo: 6387,
@@ -581,7 +581,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T08:47:34.000Z',
+    Fecha: '2025-08-15T08:47:34.000Z',
     Programada: 2034,
     ColorDistr: 7826,
     Articulo: 6387,
@@ -601,7 +601,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T08:47:34.000Z',
+    Fecha: '2025-08-15T08:47:34.000Z',
     Programada: 2035,
     ColorDistr: 7919,
     Articulo: 6388,
@@ -621,7 +621,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T08:47:34.000Z',
+    Fecha: '2025-08-15T08:47:34.000Z',
     Programada: 2036,
     ColorDistr: 7920,
     Articulo: 6388,
@@ -641,7 +641,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T08:47:34.000Z',
+    Fecha: '2025-08-15T08:47:34.000Z',
     Programada: 2037,
     ColorDistr: 7921,
     Articulo: 6388,
@@ -661,7 +661,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1473,
     ColorDistr: 7259,
     Articulo: 6791,
@@ -681,7 +681,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1474,
     ColorDistr: 7261,
     Articulo: 6793,
@@ -701,7 +701,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1475,
     ColorDistr: 7269,
     Articulo: 7500,
@@ -721,7 +721,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1476,
     ColorDistr: 7270,
     Articulo: 7500,
@@ -741,7 +741,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1477,
     ColorDistr: 7271,
     Articulo: 7501,
@@ -761,7 +761,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1478,
     ColorDistr: 7273,
     Articulo: 7501,
@@ -781,7 +781,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1479,
     ColorDistr: 7277,
     Articulo: 7503,
@@ -801,7 +801,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T10:27:24.000Z',
+    Fecha: '2025-08-22T10:27:24.000Z',
     Programada: 2122,
     ColorDistr: 7279,
     Articulo: 7503,
@@ -821,7 +821,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1481,
     ColorDistr: 7281,
     Articulo: 7504,
@@ -841,7 +841,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1482,
     ColorDistr: 8274,
     Articulo: 10119,
@@ -861,7 +861,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1483,
     ColorDistr: 8275,
     Articulo: 10119,
@@ -881,7 +881,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1484,
     ColorDistr: 8276,
     Articulo: 10119,
@@ -901,7 +901,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1485,
     ColorDistr: 8277,
     Articulo: 10120,
@@ -921,7 +921,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1486,
     ColorDistr: 8278,
     Articulo: 10120,
@@ -941,7 +941,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1487,
     ColorDistr: 8279,
     Articulo: 10120,
@@ -961,7 +961,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1969,
     ColorDistr: 8516,
     Articulo: 10218,
@@ -981,7 +981,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-16T12:41:24.000Z',
+    Fecha: '2025-08-16T12:41:24.000Z',
     Programada: 2056,
     ColorDistr: 8548,
     Articulo: 10218.9,
@@ -1001,7 +1001,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1970,
     ColorDistr: 8517,
     Articulo: 10219,
@@ -1021,7 +1021,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1971,
     ColorDistr: 8518,
     Articulo: 10219,
@@ -1041,7 +1041,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-15T07:27:41.000Z',
+    Fecha: '2025-08-15T07:27:41.000Z',
     Programada: 2029,
     ColorDistr: 8540,
     Articulo: 10219.9,
@@ -1061,7 +1061,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1972,
     ColorDistr: 8519,
     Articulo: 10220,
@@ -1081,7 +1081,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1973,
     ColorDistr: 8520,
     Articulo: 10220,
@@ -1101,7 +1101,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1974,
     ColorDistr: 8521,
     Articulo: 10220,
@@ -1121,7 +1121,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1975,
     ColorDistr: 8522,
     Articulo: 10221,
@@ -1141,7 +1141,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1976,
     ColorDistr: 8523,
     Articulo: 10221,
@@ -1161,7 +1161,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1977,
     ColorDistr: 8524,
     Articulo: 10223,
@@ -1181,7 +1181,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1978,
     ColorDistr: 8525,
     Articulo: 10223,
@@ -1201,7 +1201,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1979,
     ColorDistr: 8526,
     Articulo: 10223,
@@ -1221,7 +1221,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1980,
     ColorDistr: 8527,
     Articulo: 10223,
@@ -1241,7 +1241,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-17T07:41:12.000Z',
+    Fecha: '2025-08-17T07:41:12.000Z',
     Programada: 2074,
     ColorDistr: 8543,
     Articulo: 10223.9,
@@ -1261,7 +1261,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1589,
     ColorDistr: 8107,
     Articulo: 10259,
@@ -1281,7 +1281,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1431,
     ColorDistr: 7706,
     Articulo: 11722,
@@ -1301,7 +1301,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1432,
     ColorDistr: 7707,
     Articulo: 11722,
@@ -1321,7 +1321,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1433,
     ColorDistr: 7708,
     Articulo: 11722,
@@ -1341,7 +1341,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1434,
     ColorDistr: 7709,
     Articulo: 11722,
@@ -1361,7 +1361,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1749,
     ColorDistr: 8264,
     Articulo: 11728.4,
@@ -1381,7 +1381,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1749,
     ColorDistr: 8262,
     Articulo: 11728.4,
@@ -1401,7 +1401,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1749,
     ColorDistr: 8263,
     Articulo: 11728.4,
@@ -1421,7 +1421,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1750,
     ColorDistr: 8267,
     Articulo: 11728.4,
@@ -1441,7 +1441,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1750,
     ColorDistr: 8265,
     Articulo: 11728.4,
@@ -1461,7 +1461,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1750,
     ColorDistr: 8266,
     Articulo: 11728.4,
@@ -1500,7 +1500,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1751,
     ColorDistr: 8270,
     Articulo: 11728.4,
@@ -1520,7 +1520,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1751,
     ColorDistr: 8268,
     Articulo: 11728.4,
@@ -1540,7 +1540,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1751,
     ColorDistr: 8269,
     Articulo: 11728.4,
@@ -1560,7 +1560,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1752,
     ColorDistr: 8273,
     Articulo: 11728.4,
@@ -1580,7 +1580,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1752,
     ColorDistr: 8271,
     Articulo: 11728.4,
@@ -1619,7 +1619,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1752,
     ColorDistr: 8272,
     Articulo: 11728.4,
@@ -1639,7 +1639,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:33:42.267Z',
+    Fecha: '2025-08-04T08:33:42.267Z',
     Programada: 1730,
     ColorDistr: 8381,
     Articulo: 11737,
@@ -1659,7 +1659,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:33:42.267Z',
+    Fecha: '2025-08-04T08:33:42.267Z',
     Programada: 1730,
     ColorDistr: 8383,
     Articulo: 11737,
@@ -1679,7 +1679,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:33:42.267Z',
+    Fecha: '2025-08-04T08:33:42.267Z',
     Programada: 1730,
     ColorDistr: 8385,
     Articulo: 11737,
@@ -1699,7 +1699,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:33:42.267Z',
+    Fecha: '2025-08-04T08:33:42.267Z',
     Programada: 1730,
     ColorDistr: 8382,
     Articulo: 11737,
@@ -1719,7 +1719,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:33:42.267Z',
+    Fecha: '2025-08-04T08:33:42.267Z',
     Programada: 1730,
     ColorDistr: 8384,
     Articulo: 11737,
@@ -1739,7 +1739,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:33:42.267Z',
+    Fecha: '2025-08-04T08:33:42.267Z',
     Programada: 1730,
     ColorDistr: 8386,
     Articulo: 11737,
@@ -1759,7 +1759,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:37:23.038Z',
+    Fecha: '2025-08-04T08:37:23.038Z',
     Programada: 1736,
     ColorDistr: 8363,
     Articulo: 11737,
@@ -1779,7 +1779,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:37:23.038Z',
+    Fecha: '2025-08-04T08:37:23.038Z',
     Programada: 1736,
     ColorDistr: 8365,
     Articulo: 11737,
@@ -1799,7 +1799,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:37:23.038Z',
+    Fecha: '2025-08-04T08:37:23.038Z',
     Programada: 1736,
     ColorDistr: 8367,
     Articulo: 11737,
@@ -1819,7 +1819,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:37:23.038Z',
+    Fecha: '2025-08-04T08:37:23.038Z',
     Programada: 1736,
     ColorDistr: 8364,
     Articulo: 11737,
@@ -1839,7 +1839,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:37:23.038Z',
+    Fecha: '2025-08-04T08:37:23.038Z',
     Programada: 1736,
     ColorDistr: 8366,
     Articulo: 11737,
@@ -1878,7 +1878,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:37:23.038Z',
+    Fecha: '2025-08-04T08:37:23.038Z',
     Programada: 1736,
     ColorDistr: 8368,
     Articulo: 11737,
@@ -1898,7 +1898,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:09.377Z',
+    Fecha: '2025-08-04T08:38:09.377Z',
     Programada: 1742,
     ColorDistr: 8369,
     Articulo: 11737,
@@ -1918,7 +1918,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:09.377Z',
+    Fecha: '2025-08-04T08:38:09.377Z',
     Programada: 1742,
     ColorDistr: 8371,
     Articulo: 11737,
@@ -1938,7 +1938,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:09.377Z',
+    Fecha: '2025-08-04T08:38:09.377Z',
     Programada: 1742,
     ColorDistr: 8373,
     Articulo: 11737,
@@ -1958,7 +1958,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:09.377Z',
+    Fecha: '2025-08-04T08:38:09.377Z',
     Programada: 1742,
     ColorDistr: 8370,
     Articulo: 11737,
@@ -1978,7 +1978,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:09.377Z',
+    Fecha: '2025-08-04T08:38:09.377Z',
     Programada: 1742,
     ColorDistr: 8372,
     Articulo: 11737,
@@ -1998,7 +1998,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:09.377Z',
+    Fecha: '2025-08-04T08:38:09.377Z',
     Programada: 1742,
     ColorDistr: 8374,
     Articulo: 11737,
@@ -2018,7 +2018,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:52.302Z',
+    Fecha: '2025-08-04T08:38:52.302Z',
     Programada: 1748,
     ColorDistr: 8375,
     Articulo: 11737,
@@ -2038,7 +2038,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:52.302Z',
+    Fecha: '2025-08-04T08:38:52.302Z',
     Programada: 1748,
     ColorDistr: 8377,
     Articulo: 11737,
@@ -2058,7 +2058,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:52.302Z',
+    Fecha: '2025-08-04T08:38:52.302Z',
     Programada: 1748,
     ColorDistr: 8379,
     Articulo: 11737,
@@ -2078,7 +2078,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:52.302Z',
+    Fecha: '2025-08-04T08:38:52.302Z',
     Programada: 1748,
     ColorDistr: 8376,
     Articulo: 11737,
@@ -2098,7 +2098,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:52.302Z',
+    Fecha: '2025-08-04T08:38:52.302Z',
     Programada: 1748,
     ColorDistr: 8378,
     Articulo: 11737,
@@ -2118,7 +2118,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:38:52.302Z',
+    Fecha: '2025-08-04T08:38:52.302Z',
     Programada: 1748,
     ColorDistr: 8380,
     Articulo: 11737,
@@ -2138,7 +2138,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1592,
     ColorDistr: 7763,
     Articulo: 11774,
@@ -2158,7 +2158,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1592,
     ColorDistr: 7764,
     Articulo: 11774,
@@ -2178,7 +2178,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1592,
     ColorDistr: 7765,
     Articulo: 11774,
@@ -2198,7 +2198,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1444,
     ColorDistr: 7766,
     Articulo: 11774,
@@ -2218,7 +2218,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1444,
     ColorDistr: 7767,
     Articulo: 11774,
@@ -2238,7 +2238,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1444,
     ColorDistr: 7768,
     Articulo: 11774,
@@ -2258,7 +2258,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1445,
     ColorDistr: 7769,
     Articulo: 11774,
@@ -2278,7 +2278,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1445,
     ColorDistr: 7770,
     Articulo: 11774,
@@ -2298,7 +2298,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T07:30:44.000Z',
+    Fecha: '2025-08-01T07:30:44.000Z',
     Programada: 1445,
     ColorDistr: 7771,
     Articulo: 11774,
@@ -2318,7 +2318,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:48:12.690Z',
+    Fecha: '2025-08-02T08:48:12.690Z',
     Programada: 1616,
     ColorDistr: 8349,
     Articulo: 11788,
@@ -2338,7 +2338,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:48:12.690Z',
+    Fecha: '2025-08-02T08:48:12.690Z',
     Programada: 1616,
     ColorDistr: 8347,
     Articulo: 11788,
@@ -2358,7 +2358,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:48:12.690Z',
+    Fecha: '2025-08-02T08:48:12.690Z',
     Programada: 1616,
     ColorDistr: 8348,
     Articulo: 11788,
@@ -2378,7 +2378,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:48:12.690Z',
+    Fecha: '2025-08-02T08:48:12.690Z',
     Programada: 1616,
     ColorDistr: 8346,
     Articulo: 11788,
@@ -2398,7 +2398,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1753,
     ColorDistr: 8328,
     Articulo: 11789,
@@ -2418,7 +2418,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1753,
     ColorDistr: 8330,
     Articulo: 11789,
@@ -2438,7 +2438,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1753,
     ColorDistr: 8329,
     Articulo: 11789,
@@ -2458,7 +2458,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1754,
     ColorDistr: 8325,
     Articulo: 11789,
@@ -2478,7 +2478,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1754,
     ColorDistr: 8327,
     Articulo: 11789,
@@ -2517,7 +2517,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1754,
     ColorDistr: 8326,
     Articulo: 11789,
@@ -2537,7 +2537,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T14:11:27.000Z',
+    Fecha: '2025-08-22T14:11:27.000Z',
     Programada: 2124,
     ColorDistr: 7400,
     Articulo: 11789,
@@ -2576,7 +2576,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T14:11:27.000Z',
+    Fecha: '2025-08-22T14:11:27.000Z',
     Programada: 2124,
     ColorDistr: 7402,
     Articulo: 11789,
@@ -2596,7 +2596,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T14:11:27.000Z',
+    Fecha: '2025-08-22T14:11:27.000Z',
     Programada: 2124,
     ColorDistr: 7401,
     Articulo: 11789,
@@ -2616,7 +2616,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T14:11:27.000Z',
+    Fecha: '2025-08-22T14:11:27.000Z',
     Programada: 2125,
     ColorDistr: 7403,
     Articulo: 11789,
@@ -2655,7 +2655,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T14:11:27.000Z',
+    Fecha: '2025-08-22T14:11:27.000Z',
     Programada: 2125,
     ColorDistr: 7405,
     Articulo: 11789,
@@ -2694,7 +2694,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-22T14:11:27.000Z',
+    Fecha: '2025-08-22T14:11:27.000Z',
     Programada: 2125,
     ColorDistr: 7404,
     Articulo: 11789,
@@ -2751,7 +2751,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2002,
     ColorDistr: 7412,
     Articulo: 11812,
@@ -2771,7 +2771,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2002,
     ColorDistr: 7413,
     Articulo: 11812,
@@ -2791,7 +2791,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2002,
     ColorDistr: 7414,
     Articulo: 11812,
@@ -2830,7 +2830,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2003,
     ColorDistr: 7415,
     Articulo: 11812,
@@ -2850,7 +2850,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2003,
     ColorDistr: 7416,
     Articulo: 11812,
@@ -2870,7 +2870,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2003,
     ColorDistr: 7417,
     Articulo: 11812,
@@ -2909,7 +2909,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2004,
     ColorDistr: 8339,
     Articulo: 11812,
@@ -2929,7 +2929,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2004,
     ColorDistr: 8340,
     Articulo: 11812,
@@ -2968,7 +2968,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-12T07:37:14.000Z',
+    Fecha: '2025-08-12T07:37:14.000Z',
     Programada: 2004,
     ColorDistr: 8341,
     Articulo: 11812,
@@ -2988,7 +2988,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1968,
     ColorDistr: 8342,
     Articulo: 11812,
@@ -3027,7 +3027,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1968,
     ColorDistr: 8343,
     Articulo: 11812,
@@ -3066,7 +3066,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-10T14:32:25.000Z',
+    Fecha: '2025-08-10T14:32:25.000Z',
     Programada: 1968,
     ColorDistr: 8344,
     Articulo: 11812,
@@ -3086,7 +3086,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1761,
     ColorDistr: 7428,
     Articulo: 11855,
@@ -3106,7 +3106,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1761,
     ColorDistr: 7427,
     Articulo: 11855,
@@ -3126,7 +3126,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1761,
     ColorDistr: 7429,
     Articulo: 11855,
@@ -3146,7 +3146,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1762,
     ColorDistr: 7431,
     Articulo: 11855,
@@ -3166,7 +3166,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1762,
     ColorDistr: 7430,
     Articulo: 11855,
@@ -3186,7 +3186,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1762,
     ColorDistr: 7432,
     Articulo: 11855,
@@ -3206,7 +3206,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1763,
     ColorDistr: 7434,
     Articulo: 11855,
@@ -3245,7 +3245,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1763,
     ColorDistr: 7433,
     Articulo: 11855,
@@ -3265,7 +3265,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1763,
     ColorDistr: 7435,
     Articulo: 11855,
@@ -3304,7 +3304,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1764,
     ColorDistr: 7437,
     Articulo: 11855,
@@ -3324,7 +3324,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1764,
     ColorDistr: 7436,
     Articulo: 11855,
@@ -3344,7 +3344,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T08:53:43.000Z',
+    Fecha: '2025-08-04T08:53:43.000Z',
     Programada: 1764,
     ColorDistr: 7438,
     Articulo: 11855,
@@ -3364,7 +3364,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1508,
     ColorDistr: 8281,
     Articulo: 11869,
@@ -3384,7 +3384,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1509,
     ColorDistr: 7439,
     Articulo: 11869,
@@ -3404,7 +3404,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1510,
     ColorDistr: 8282,
     Articulo: 11869,
@@ -3424,7 +3424,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1511,
     ColorDistr: 7454,
     Articulo: 11943,
@@ -3444,7 +3444,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1600,
     ColorDistr: 7455,
     Articulo: 11943,
@@ -3464,7 +3464,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1513,
     ColorDistr: 7456,
     Articulo: 11943,
@@ -3484,7 +3484,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1601,
     ColorDistr: 7457,
     Articulo: 11943,
@@ -3504,7 +3504,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1891,
     ColorDistr: 7460,
     Articulo: 12050,
@@ -3524,7 +3524,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1891,
     ColorDistr: 7461,
     Articulo: 12050,
@@ -3544,7 +3544,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1892,
     ColorDistr: 7462,
     Articulo: 12050,
@@ -3583,7 +3583,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1892,
     ColorDistr: 7463,
     Articulo: 12050,
@@ -3603,7 +3603,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1878,
     ColorDistr: 7464,
     Articulo: 12050,
@@ -3623,7 +3623,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1878,
     ColorDistr: 7465,
     Articulo: 12050,
@@ -3662,7 +3662,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1893,
     ColorDistr: 7466,
     Articulo: 12050,
@@ -3682,7 +3682,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1893,
     ColorDistr: 7467,
     Articulo: 12050,
@@ -3702,7 +3702,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1880,
     ColorDistr: 7468,
     Articulo: 12050,
@@ -3759,7 +3759,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1880,
     ColorDistr: 7469,
     Articulo: 12050,
@@ -3779,7 +3779,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1894,
     ColorDistr: 7474,
     Articulo: 12056,
@@ -3799,7 +3799,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1894,
     ColorDistr: 7475,
     Articulo: 12056,
@@ -3819,7 +3819,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1869,
     ColorDistr: 7476,
     Articulo: 12056,
@@ -3839,7 +3839,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1869,
     ColorDistr: 7477,
     Articulo: 12056,
@@ -3859,7 +3859,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1895,
     ColorDistr: 7478,
     Articulo: 12056,
@@ -3879,7 +3879,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1895,
     ColorDistr: 7479,
     Articulo: 12056,
@@ -3899,7 +3899,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1896,
     ColorDistr: 7480,
     Articulo: 12056,
@@ -3919,7 +3919,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1896,
     ColorDistr: 7481,
     Articulo: 12056,
@@ -3939,7 +3939,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-05T08:04:17.000Z',
+    Fecha: '2025-08-05T08:04:17.000Z',
     Programada: 1897,
     ColorDistr: 7483,
     Articulo: 12062,
@@ -3959,7 +3959,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1873,
     ColorDistr: 7484,
     Articulo: 12062,
@@ -4016,7 +4016,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1874,
     ColorDistr: 7485,
     Articulo: 12062,
@@ -4036,7 +4036,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-04T13:46:20.000Z',
+    Fecha: '2025-08-04T13:46:20.000Z',
     Programada: 1875,
     ColorDistr: 7486,
     Articulo: 12062,
@@ -4075,7 +4075,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1607,
     ColorDistr: 7487,
     Articulo: 12093,
@@ -4095,7 +4095,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-02T08:09:43.000Z',
+    Fecha: '2025-08-02T08:09:43.000Z',
     Programada: 1608,
     ColorDistr: 7490,
     Articulo: 12093,
@@ -4115,7 +4115,7 @@ module.exports = [
   },
   {
     RoomCode: 'SEAMLESS',
-    Fecha: '2025-09-01T12:44:59.000Z',
+    Fecha: '2025-08-01T12:44:59.000Z',
     Programada: 1530,
     ColorDistr: 7491,
     Articulo: 12093,

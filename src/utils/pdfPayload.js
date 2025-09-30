@@ -126,7 +126,20 @@ async function buildFootnote(room, startDate, docena, porcExtra) {
     falta: null,
     faltaUnidades: null,
     target: null,
-    machines: [],
+    machines: machines.filter(
+      // match machines with articulo
+      (m) => {
+        const machArticulo = m.StyleCode.punto
+          ? parseFloat(`${m.StyleCode.articulo}.${m.StyleCode.punto}`)
+          : m.StyleCode.articulo;
+
+        return (
+          machArticulo === row.Articulo &&
+          m.StyleCode.talle === row.Talle &&
+          m.StyleCode.colorId === row.ColorId
+        );
+      }
+    ),
   }));
 
   if (programada.length === 0) {
@@ -145,22 +158,24 @@ async function buildFootnote(room, startDate, docena, porcExtra) {
 
     // check if they are being produced
     const producingNotInProgramada = notInProgramada.filter((art) => {
-      const machine = machines.find((m) => {
-        const machArt = Number(`${m.StyleCode.articulo}.${m.StyleCode.punto}`);
-        return (
-          machArt === art.Articulo &&
-          m.StyleCode.talle === art.Talle &&
-          m.StyleCode.colorId === art.ColorId
-        );
-      });
-
-      return machine && isProducing(machine);
+      return art.machines.length > 0 && art.machines.some(isProducing);
     });
 
     toAdd.push(...producingNotInProgramada);
   }
 
-  return toAdd;
+  // parse machines for proper formatting
+  return toAdd.map(formatMachines);
+}
+
+function formatMachines(row) {
+  let machs = row.machines.map((m) => m.MachCode);
+  machs = machs.length <= 3 ? machs.join(', ') : `${machs.length} mqs.`;
+
+  return {
+    ...row,
+    machines: machs,
+  };
 }
 
 async function getProduced(room) {

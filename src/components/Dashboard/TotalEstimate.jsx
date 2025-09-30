@@ -14,7 +14,9 @@ export default function TotalEstimate({
     <BigNumContent
       loading={loading}
       title='Producción Total Estimada'
-      subtitle={<Subtitle target={progTotal} progress={progress} />}
+      subtitle={
+        <Subtitle target={progTotal} progress={progTotal ? progress : 0} />
+      }
     >
       {localizedNum(estimate)} doc.
     </BigNumContent>

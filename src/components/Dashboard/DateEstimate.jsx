@@ -45,7 +45,9 @@ export default function DateEstimate({
       title='Fecha Est. a la Programada'
       subtitle={<Subtitle dailyAverage={dailyAverage} />}
     >
-      {adjustedTargetDate.locale('es').format('ddd DD/MM')}
+      {progTotal === 0
+        ? '...'
+        : adjustedTargetDate.locale('es').format('ddd DD/MM')}
     </BigNumContent>
   );
 }
