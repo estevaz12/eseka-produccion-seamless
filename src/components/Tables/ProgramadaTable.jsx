@@ -292,7 +292,7 @@ export default function ProgramadaTable({
     const machinesList = row.Machines.map((m) => {
       return (
         <Typography key={m.MachCode}>{`${m.MachCode} ${
-          room === 'SEAMLESS' ? `(P: ${m.Pieces})` : ''
+          room === 'SEAMLESS' ? `(P: ${localizedNum(m.Pieces)})` : ''
         }`}</Typography>
       );
     }); // display all machines with articulo
