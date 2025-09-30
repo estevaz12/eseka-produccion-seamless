@@ -15,6 +15,9 @@ import { playAlertSound } from '../utils/playAlertSound.js';
 
 let apiUrl;
 
+// TODO: Programada table - Mach pieces localized
+// TODO: Programada actual - cuando empieza nuevo mes y no hay prog, mostrar "no hay..."
+// TODO: Cambiar nombre de BD
 export default function Home() {
   apiUrl = useConfig().apiUrl;
   const navigate = useNavigate();

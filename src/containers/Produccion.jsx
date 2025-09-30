@@ -14,7 +14,7 @@ let apiUrl, sqlDateFormat;
 
 export default function Produccion() {
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { room, docena } = useOutletContext();
+  const { room, docena, porcExtra } = useOutletContext();
   const [url, setUrl] = useState();
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({
@@ -144,10 +144,10 @@ export default function Produccion() {
   function docenasStr(row) {
     const producido = calcProducido(row);
     return row.Tipo === null
-      ? localizedNum((producido / docena).toFixed(1))
-      : `${localizedNum((producido / docena).toFixed(1))} (${localizedNum(
-          (row.Unidades / docena).toFixed(1)
-        )})`;
+      ? localizedNum((producido / docena / porcExtra).toFixed(1))
+      : `${localizedNum(
+          (producido / docena / porcExtra).toFixed(1)
+        )} (${localizedNum((row.Unidades / docena / porcExtra).toFixed(1))})`;
   }
 
   function renderRow(row, i, opened, handleClick) {
@@ -187,7 +187,11 @@ export default function Produccion() {
     [data]
   );
   const totalDocenas = useMemo(
-    () => data.reduce((acc, row) => acc + calcProducido(row) / docena, 0),
+    () =>
+      data.reduce(
+        (acc, row) => acc + calcProducido(row) / docena / porcExtra,
+        0
+      ),
     [data]
   );
 
