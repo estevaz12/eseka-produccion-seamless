@@ -283,7 +283,7 @@ export default function ProgramadaTable({
       align: room === 'HOMBRE' ? 'center' : null, // left
       pdfAlign: 'center',
       pdfRender: (row) => {
-        if (row.Machines.length <= 5)
+        if (row.Machines.length <= 3)
           return row.Machines.map((m) => m.MachCode).join(', ');
         else return `${row.Machines.length} mqs.`;
       },

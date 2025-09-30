@@ -2,7 +2,7 @@ import PrintRounded from '@mui/icons-material/PrintRounded';
 import IconButton from '@mui/joy/IconButton';
 import { useConfig } from '../../ConfigContext.jsx';
 import { useLocation, useOutletContext } from 'react-router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DatesContext, ToastsContext } from '../../Contexts.js';
 import { buildPdfPayload } from '../../utils/pdfPayload.js';
 import dayjs from 'dayjs';
@@ -19,6 +19,8 @@ export default function EnhancedFooter({
   const { addToast } = useContext(ToastsContext);
   const { startDate, endDate } = useContext(DatesContext);
   const { room, docena, porcExtra } = useOutletContext();
+
+  const [loading, setLoading] = useState(false);
 
   const getPDFOpts = () => {
     switch (pathname) {
@@ -80,6 +82,7 @@ export default function EnhancedFooter({
   }
 
   const handlePDFExport = async () => {
+    setLoading(true);
     try {
       const selectedRows = getSelectedRows(rows, selected);
       // Build a safe, serializable payload
@@ -126,6 +129,8 @@ export default function EnhancedFooter({
         message: 'No se pudo exportar el PDF correctamente.',
       });
     }
+
+    setLoading(false);
   };
 
   return (
@@ -140,7 +145,11 @@ export default function EnhancedFooter({
         </td>
         <td className='text-center'>
           {selected.length > 0 && (
-            <IconButton variant='soft' onClick={handlePDFExport}>
+            <IconButton
+              loading={loading}
+              variant='soft'
+              onClick={handlePDFExport}
+            >
               <PrintRounded className='text-(--joy-palette-primary-500)' />
             </IconButton>
           )}
