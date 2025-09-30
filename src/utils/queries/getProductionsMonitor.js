@@ -44,7 +44,7 @@ const getProductionsMonitor = (query) => {
     FROM PRODUCTIONS_MONITOR as pm
     WHERE SUBSTRING(pm.StyleCode, 1, 8) IN (
         SELECT cc.StyleCode
-        FROM SEA_COLOR_CODES AS cc
+        FROM COLOR_CODES AS cc
         WHERE ${
           machCode
             ? `pm.MachCode = ${machCode}`

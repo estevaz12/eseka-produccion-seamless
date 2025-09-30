@@ -15,7 +15,6 @@ import { playAlertSound } from '../utils/playAlertSound.js';
 
 let apiUrl;
 
-// TODO: Cambiar nombre de BD
 export default function Home() {
   apiUrl = useConfig().apiUrl;
   const navigate = useNavigate();
