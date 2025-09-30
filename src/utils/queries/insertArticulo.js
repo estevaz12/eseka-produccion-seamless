@@ -1,6 +1,6 @@
 const insertArticulo = (articulo, tipo) => {
   return `
-    INSERT INTO ARTICULOS (Articulo, Tipo)
+    INSERT INTO APP_ARTICULOS (Articulo, Tipo)
      VALUES (${articulo}, ${tipo && tipo !== '' ? `'${tipo}'` : null});\n
   `;
 };

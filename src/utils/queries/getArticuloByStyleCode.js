@@ -1,7 +1,7 @@
 const getArticuloByStyleCode = (styleCode) => {
   return `
     SELECT Articulo, Talle, Color
-    FROM COLOR_CODES
+    FROM APP_COLOR_CODES
     WHERE StyleCode = '${styleCode}';
   `;
 };

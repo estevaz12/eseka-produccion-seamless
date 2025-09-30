@@ -1,7 +1,7 @@
 const getArticuloColorDistr = (articulo) => {
   return `
     SELECT DISTINCT Talle
-    FROM COLOR_DISTR
+    FROM APP_COLOR_DISTR
     WHERE Articulo = ${articulo};
   `;
 };

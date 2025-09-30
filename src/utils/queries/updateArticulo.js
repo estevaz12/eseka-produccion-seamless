@@ -1,6 +1,6 @@
 const updateArticuloTipo = (articulo, tipo) => {
   return `
-    UPDATE ARTICULOS
+    UPDATE APP_ARTICULOS
     SET Tipo = ${!tipo || tipo === '' ? null : `'${tipo}'`}
     WHERE Articulo = ${articulo};
   `;
