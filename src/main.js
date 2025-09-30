@@ -189,9 +189,10 @@ app.whenReady().then(() => {
     });
 
     createWindow();
-    if (app.isPackaged) createTray();
-    // start nserver monitor process
-    startNServerMonitor();
+    if (app.isPackaged) {
+      createTray();
+      startNServerMonitor();
+    }
   }, 1000);
 });
 
