@@ -1,6 +1,6 @@
 const updateProgColorDoc = (data) => {
   return `
-    UPDATE PROG_COLOR
+    UPDATE APP_PROG_COLOR
       SET Docenas = ${data.docenas}
       WHERE Programada = ${data.programadaId} 
             AND ColorDistr = ${data.colorDistrId}

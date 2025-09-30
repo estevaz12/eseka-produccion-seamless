@@ -79,11 +79,11 @@ const getCambios = (startDate, room) => {
         Unidades,
         date_actual as DateRec
     FROM Cambios as c
-      JOIN COLOR_CODES AS cc
+      JOIN APP_COLOR_CODES AS cc
         ON cc.StyleCode = LEFT(c.StyleCode, 8)
-      JOIN ARTICULOS AS art
+      JOIN APP_ARTICULOS AS art
         ON art.Articulo = cc.Articulo
-      JOIN COLORES AS colors
+      JOIN APP_COLORES AS colors
         ON colors.Id = cc.Color
     WHERE rn = 1
     ORDER BY Shift, MachCode;

@@ -30,7 +30,7 @@ const insertColorCodes = async (data) => {
     query += `
       ${articuloAction}        
   
-      INSERT INTO COLOR_CODES (Articulo, Color, Code, Talle, StyleCode)
+      INSERT INTO APP_COLOR_CODES (Articulo, Color, Code, Talle, StyleCode)
         VALUES (${data.articulo}.${punto}, ${data.color}, '${data.code}', ${data.talle}, '${data.styleCode}');\n 
     `;
   } catch (err) {
