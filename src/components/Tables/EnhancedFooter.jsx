@@ -33,7 +33,7 @@ export default function EnhancedFooter({
           fileName: `Programada_${dayjs
             .tz(startDate)
             .startOf('month')
-            .format('DD-MM-YYYY')}`,
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
           appendDateToTitle: false,
           footerCols: ['Docenas', 'Producido', 'falta'],
         };
@@ -46,9 +46,9 @@ export default function EnhancedFooter({
             .format('DD/MM/YYYY HH:mm')}`,
           fileName: `Produccion_${dayjs
             .tz(startDate)
-            .format('DD-MM-YYYYTHH.mm')}_${dayjs
+            .format('DD-MM-YYYYTHH.mm.ss')}_${dayjs
             .tz(endDate)
-            .format('DD-MM-YYYYTHH.mm')}`,
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
           orientation: 'portrait',
           appendDateToTitle: false,
           footerCols: ['Unidades', 'Docenas'],
@@ -56,21 +56,23 @@ export default function EnhancedFooter({
       case '/maquinas':
         return {
           title: 'Máquinas',
-          fileName: `Maquinas_${dayjs.tz().format('DD-MM-YYYYTHH.mm')}`,
+          fileName: `Maquinas_${dayjs.tz().format('DD-MM-YYYYTHH.mm.ss')}`,
         };
       case '/cambios':
         return {
           title: `Cambios del ${dayjs.tz(startDate).format('DD/MM/YYYY')}`,
           orientation: 'portrait',
           appendDateToTitle: false,
-          fileName: `Cambios_${dayjs.tz(startDate).format('DD-MM-YYYY')}`,
+          fileName: `Cambios_${dayjs
+            .tz(startDate)
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
         };
       default:
         return {
           title: 'Programada Actual',
           fileName: `Programada-Actual_${dayjs
             .tz()
-            .format('DD-MM-YYYYTHH.mm')}`,
+            .format('DD-MM-YYYYTHH.mm.ss')}`,
           footerCols: ['Docenas', 'Producido', 'falta'],
           addToProgramada: room === 'HOMBRE',
         };
