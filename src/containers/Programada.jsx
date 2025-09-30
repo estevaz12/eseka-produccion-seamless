@@ -29,7 +29,15 @@ export default function Programada() {
       fetch(`${apiUrl}/${room}/programada/actualDate`)
         .then((res) => res.json())
         .then((data) => {
-          if (!ignore) setStartDate(data[0].Date);
+          const now = dayjs.tz();
+          const month = now.month() + 1; // month is 0-indexed in dayjs
+          const year = now.year();
+          if (!ignore) {
+            // if fetched date is not current month and year, set start date null
+            if (data[0].Month !== month || data[0].Year !== year)
+              setStartDate(null);
+            else setStartDate(data[0].Date);
+          }
         })
         .catch((err) =>
           console.error('[CLIENT] Error fetching /programada/actualDate:', err)

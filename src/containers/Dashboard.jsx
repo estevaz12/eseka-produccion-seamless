@@ -22,18 +22,18 @@ export default function Dashboard() {
   const { room } = useOutletContext();
   const [dailyProd, setDailyProd] = useState([]);
   const [holidays, setHolidays] = useState([]);
-  const [progTotal, setProgTotal] = useState(0);
+  const [progTotal, setProgTotal] = useState(null);
   const [yesterdayEff, setYesterdayEff] = useState({});
   const now = dayjs.tz();
 
   useEffect(() => {
-    let ignored = false;
+    let ignore = false;
     let timeoutId;
 
     fetch(`${apiUrl}/${room}/stats/dailyProduction`)
       .then((res) => res.json())
       .then((data) => {
-        if (!ignored) {
+        if (!ignore) {
           setDailyProd(
             data.length !== 0 ? data : [{ ProdDate: null, Docenas: null }]
           );
@@ -52,7 +52,7 @@ export default function Dashboard() {
         );
         const flat = filtered.map((d) => d.fecha);
 
-        if (!ignored) {
+        if (!ignore) {
           setHolidays(flat);
         }
       })
@@ -60,18 +60,27 @@ export default function Dashboard() {
 
     fetch(`${apiUrl}/${room}/programada/actualDate`)
       .then((res) => res.json())
-      .then((data) =>
-        fetch(`${apiUrl}/${room}/programada/total/${data[0].Date}`)
-          .then((res) => res.json())
-          .then((data) => {
-            if (!ignored) {
-              setProgTotal(data[0].Total);
-            }
-          })
-          .catch((err) =>
-            console.error('[CLIENT] Error fetching /programada/total:', err)
-          )
-      )
+      .then((data) => {
+        const month = now.month() + 1; // month is 0-indexed in dayjs
+        const year = now.year();
+
+        if (!ignore) {
+          // if fetched date is not current month and year, set start date null
+          if (data[0].Month !== month || data[0].Year !== year) setProgTotal(0);
+          else {
+            fetch(`${apiUrl}/${room}/programada/total/${data[0].Date}`)
+              .then((res) => res.json())
+              .then((data) => {
+                if (!ignore) {
+                  setProgTotal(data[0].Total);
+                }
+              })
+              .catch((err) =>
+                console.error('[CLIENT] Error fetching /programada/total:', err)
+              );
+          }
+        }
+      })
       .catch((err) =>
         console.error('[CLIENT] Error fetching /programada/actualDate:', err)
       );
@@ -87,7 +96,7 @@ export default function Dashboard() {
     timeoutId = setTimeout(() => window.location.reload(), timeRemaining);
 
     return () => {
-      ignored = true;
+      ignore = true;
       clearTimeout(timeoutId);
     };
   }, []);
@@ -135,7 +144,7 @@ export default function Dashboard() {
           progTotal={progTotal}
           progress={progress}
           loading={
-            dailyProd.length === 0 || progTotal === 0 //|| holidays.length === 0
+            dailyProd.length === 0 || progTotal === null //|| holidays.length === 0
           }
         />
       </Card>
@@ -146,7 +155,7 @@ export default function Dashboard() {
           progTotal={progTotal}
           holidays={holidays}
           loading={
-            dailyProd.length === 0 || progTotal === 0 //|| holidays.length === 0
+            dailyProd.length === 0 || progTotal === null //|| holidays.length === 0
           }
         />
       </Card>
@@ -156,7 +165,7 @@ export default function Dashboard() {
           totalProduced={totalProduced}
           workdaysLeft={workdaysLeft}
           loading={
-            dailyProd.length === 0 || progTotal === 0 //|| holidays.length === 0
+            dailyProd.length === 0 || progTotal === null //|| holidays.length === 0
           }
         />
       </Card>
