@@ -43,6 +43,8 @@ function processMonitorMessages(msg, mainWindow) {
 module.exports = processMonitorMessages;
 
 function notifyStatus(running, mainWindow) {
+  const now = dayjs.tz().format('DD/MM/YYYY HH:mm:ss');
+  const prefix = `[${now}][TASKLIST]`;
   const text = running
     ? 'NServer de ALG/SEA volvió a funcionar'
     : 'NServer de ALG/SEA dejó de funcionar';
