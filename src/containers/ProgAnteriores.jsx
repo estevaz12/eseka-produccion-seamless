@@ -26,7 +26,16 @@ export default function ProgAnteriores() {
     fetch(`${apiUrl}/${room}/programada/loadDates`)
       .then((res) => res.json())
       .then((data) => {
-        if (!ignore) setDates(data);
+        const now = dayjs.tz();
+        const currMonth = now.month() + 1;
+        const currYear = now.year();
+        const topDate = data[0];
+        let datesArr = data;
+
+        if (topDate.Month === currMonth && topDate.Year === currYear)
+          datesArr = data.slice(1);
+
+        if (!ignore) setDates(datesArr);
       })
       .catch((err) =>
         console.error('[CLIENT] Error fetching /programada/loadDates:', err)
@@ -41,11 +50,20 @@ export default function ProgAnteriores() {
     if (!val) return;
     const [date, month, year, idx] = val.split('|');
     setSelectedDate(date);
+    // if the selected date is the first one, set the end date to the start of
+    // the current month
+    // This is is needed when there is no programada for the current month
+    // Otherwise, the end date will be the same as the start date
+    const endDate =
+      dates[idx] === dates[0]
+        ? dayjs.tz().startOf('month').format()
+        : dates[idx - 1].Date;
+
     const params = new URLSearchParams({
       startDate: date,
       startMonth: month,
       startYear: year,
-      endDate: dates[idx - 1].Date, // dates are ordered desc
+      endDate: endDate,
     }).toString();
     fetch(`${apiUrl}/${room}/programada?${params}`)
       .then((res) => res.json())
@@ -68,12 +86,10 @@ export default function ProgAnteriores() {
               handleChange(val);
             }}
           >
-            {dates.slice(1).map((row, i) => (
-              // sliced array doesn't include the current programada date
-              // so we add 1 to idx value to match dates array index
+            {dates.map((row, i) => (
               <Option
                 key={i}
-                value={`${row.Date}|${row.Month}|${row.Year}|${i + 1}`}
+                value={`${row.Date}|${row.Month}|${row.Year}|${i}`}
               >
                 {`${dayjs
                   .tz()
