@@ -50,11 +50,20 @@ export default function ProgAnteriores() {
     if (!val) return;
     const [date, month, year, idx] = val.split('|');
     setSelectedDate(date);
+    // if the selected date is the first one, set the end date to the start of
+    // the current month
+    // This is is needed when there is no programada for the current month
+    // Otherwise, the end date will be the same as the start date
+    const endDate =
+      dates[idx] === dates[0]
+        ? dayjs.tz().startOf('month').format()
+        : dates[idx - 1].Date;
+
     const params = new URLSearchParams({
       startDate: date,
       startMonth: month,
       startYear: year,
-      endDate: dates[idx].Date,
+      endDate: endDate,
     }).toString();
     fetch(`${apiUrl}/${room}/programada?${params}`)
       .then((res) => res.json())
