@@ -1,29 +1,20 @@
 import Typography from '@mui/joy/Typography';
-import Button from '@mui/joy/Button';
 import Stack from '@mui/joy/Stack';
-import List from '@mui/joy/List';
-import ListItem from '@mui/joy/ListItem';
-import Card from '@mui/joy/Card';
-import IconButton from '@mui/joy/IconButton';
-import Box from '@mui/joy/Box';
-import InputFileUpload from '../components/Inputs/InputFileUpload.jsx';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.jsx';
-import DataTable from '../components/Tables/DataTable.jsx';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/Forms/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useLocation, useOutletContext } from 'react-router';
-import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
-import ProgTotal from '../components/ProgTotal.jsx';
-import ChangeCircleOutlined from '@mui/icons-material/ChangeCircleOutlined';
-import CompareArrowsRounded from '@mui/icons-material/CompareArrowsRounded';
-import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
-import LibraryAddOutlined from '@mui/icons-material/LibraryAddOutlined';
-import RestartAltRounded from '@mui/icons-material/RestartAltRounded';
-import RefreshBtn from '../components/RefreshBtn.jsx';
 import { ToastsContext } from '../Contexts.js';
 import localizedNum from '../utils/numFormat.js';
+import CompareInstructions from '../components/Compare/CompareInstructions.jsx';
+import DateTotalToolbar from '../components/Compare/DateTotalToolbar.jsx';
+import CompareToolbar from '../components/Compare/CompareToolbar.jsx';
+import FileUploadToolbar from '../components/Compare/FileUploadToolbar.jsx';
+import NewProgTable from '../components/Compare/NewProgTable.jsx';
+import DiffTable from '../components/Compare/DiffTable.jsx';
+import NewTargetsTable from '../components/Compare/NewTargetsTable.jsx';
 
 // to avoid useEffect dependency issues
 let apiUrl, sqlDateFormat;
@@ -31,19 +22,17 @@ let apiUrl, sqlDateFormat;
 export default function ProgComparar() {
   // context
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { addColorCodes, room } = useOutletContext();
+  const { room } = useOutletContext();
   const { addToast } = useContext(ToastsContext);
   // load, file upload and reading
   const [startDate, setStartDate] = useState();
   const [currTotal, setCurrTotal] = useState();
-  const [filePath, setFilePath] = useState();
   const [programada, setProgramada] = useState();
   // diff and updates
   const [diff, setDiff] = useState();
+  const [isResetting, setIsResetting] = useState(false);
   const [newArticuloData, setNewArticuloData] = useState([]);
   const [newTargets, setNewTargets] = useState();
-  // ui
-  const [openInstr, setOpenInstr] = useState(false);
   // helper refs
   const diffMounted = useRef(false);
   const loadType = useRef('');
@@ -69,153 +58,6 @@ export default function ProgComparar() {
       ignore = true;
     };
   }, [startDate]);
-
-  async function handleUpload() {
-    // Reset states before uploading a new file
-    diffMounted.current = false;
-    setProgramada();
-    setDiff();
-    setNewTargets();
-    setFilePath(await window.electronAPI.openFile());
-  }
-
-  // read programada file
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore && filePath) {
-      const params = new URLSearchParams({ path: filePath }).toString();
-      fetch(`${apiUrl}/programada/file?${params}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!ignore) setProgramada(data);
-        })
-        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
-    }
-
-    return () => {
-      ignore = true;
-    };
-  }, [filePath]);
-
-  // compare new programada to old
-  function handleCompare() {
-    if (programada) {
-      fetch(`${apiUrl}/${room}/programada/compare`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          startDate: startDate,
-          new: programada.rows,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => setDiff(data))
-        .catch((err) => console.error('[CLIENT] Error fetching data:', err));
-    }
-  }
-
-  async function handleProgramadaUpdate() {
-    // Check if articulo, color codes, and color distr exist and handle accordingly
-
-    // colorCodes will be inserted through newColorCodes.
-    // fetch newColorCodes before updating
-    try {
-      const res = await fetch(`${apiUrl}/${room}/machines/newColorCodes`);
-      const newCodes = await res.json();
-      addColorCodes(newCodes);
-    } catch (err) {
-      console.error(
-        `[CLIENT] Error fetching /${room}/machines/newColorCodes:`,
-        err
-      );
-    }
-
-    let prevArt = null; // to avoid duplicate fetches
-    let prevArtTalles = [];
-
-    // Add a dummy item to trigger processing of the final real item
-    const addedItems = [...diff.added, { articulo: null }];
-
-    for (const row of addedItems) {
-      if (prevArt === row.articulo) {
-        // same articulo, different talle
-        // gather all the talles first
-        prevArtTalles.push(row.talle);
-      } else {
-        if (prevArt !== null) {
-          // we've gathered all the talles, now we insert
-          let articulo;
-          try {
-            let res = await fetch(`${apiUrl}/articulo/${prevArt}`);
-            articulo = await res.json();
-          } catch (err) {
-            console.error('[CLIENT] Error fetching articulo:', err);
-          }
-
-          // if else to avoid making unnecessary fetches if articulo doesn't exist
-          if (!articulo || articulo.length === 0) {
-            // capture the current values
-            const artToInsert = prevArt;
-            const talles = prevArtTalles;
-            // ask for Tipo, ColorDistr
-            setNewArticuloData((prev) => [
-              ...prev,
-              {
-                articuloExists: false, // to know if an articulo insert is needed
-                articulo: artToInsert,
-                tipo: null,
-                talles,
-                colorDistr: null,
-              },
-            ]);
-          } else {
-            // If articulo exists, check if color distr exists for all talles
-            let missingTalles = [];
-            try {
-              const res = await fetch(
-                `${apiUrl}/articulo/${articulo[0].Articulo}/colorDistr`
-              );
-              const colorDistrTalles = await res.json();
-              missingTalles = prevArtTalles.filter(
-                (talle) => !colorDistrTalles.find((cd) => cd.Talle === talle)
-              );
-            } catch (err) {
-              console.error('[CLIENT] Error fetching colorDistr:', err);
-            }
-
-            // if color distr exists, don't add to newArticuloData
-            if (missingTalles.length > 0) {
-              setNewArticuloData((prev) => [
-                ...prev,
-                {
-                  articuloExists: true, // no need to insert articulo
-                  articulo: articulo[0].Articulo,
-                  tipo: articulo[0].Tipo,
-                  talles: missingTalles,
-                  colorDistr: null,
-                },
-              ]);
-            }
-          }
-        }
-
-        // Set up for next iteration (skip for dummy item)
-        if (row.articulo !== null) {
-          prevArt = row.articulo;
-          prevArtTalles = [row.talle];
-        }
-      }
-    }
-
-    // move from added to modified to trigger useEffect after inserting new articulos
-    setDiff((prev) => ({
-      ...prev,
-      modified: [...prev.modified, ...prev.added],
-      added: [],
-    }));
-  }
 
   // Insert diff updates after validating new articulos
   useEffect(() => {
@@ -316,6 +158,11 @@ export default function ProgComparar() {
       return; // skip when diff is first set to not auto-insert updates
     }
 
+    if (isResetting) {
+      setIsResetting(false);
+      return;
+    }
+
     // need to check both diff.added and newArticuloData because one could be
     // empty while the other isn't
     if (
@@ -381,314 +228,60 @@ export default function ProgComparar() {
   return (
     <Stack direction='column' className='gap-4 py-4'>
       {/* Collapsible instructions */}
-      <Card variant='soft' color='neutral' className='p-2 pl-8'>
-        <List
-          sx={{
-            '--List-insetStart': '32px',
-            '--ListItem-paddingY': '0px',
-            '--ListItem-paddingRight': '16px',
-            '--ListItem-paddingLeft': '21px',
-            '--ListItem-startActionWidth': '0px',
-            '--ListItem-startActionTranslateX': '-50%',
-          }}
-        >
-          <ListItem
-            nested
-            className='justify-center'
-            startAction={
-              <IconButton
-                variant='plain'
-                color='neutral'
-                onClick={() => setOpenInstr(!openInstr)}
-              >
-                <KeyboardArrowDownRounded
-                  sx={{
-                    transition: '0.2s',
-                    // Rotate icon depending on sort order
-                    transform: openInstr ? 'rotate(0deg)' : 'rotate(-90deg)',
-                  }}
-                />
-              </IconButton>
-            }
-          >
-            <Typography level='title-lg'>Instrucciones</Typography>
-          </ListItem>
-          {openInstr && (
-            <List marker='decimal' size='sm'>
-              <ListItem>
-                <Typography>Cargue el PDF de la programada actual.</Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>
-                  Oprima{' '}
-                  <Typography
-                    variant='solid'
-                    color='primary'
-                    className='font-bold'
-                  >
-                    Comparar
-                  </Typography>{' '}
-                  para ver los cambios.
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>
-                  Para cargar los cambios, oprima{' '}
-                  <Typography
-                    variant='solid'
-                    color='primary'
-                    className='font-bold'
-                  >
-                    Cargar cambios
-                  </Typography>
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography>
-                  Para cargar programada nueva del mes, oprima{' '}
-                  <Typography variant='solid' color='danger'>
-                    <RestartAltRounded className='pb-1' />
-                  </Typography>{' '}
-                  para resetear y luego{' '}
-                  <Typography
-                    variant='solid'
-                    color='primary'
-                    className='font-bold'
-                  >
-                    Cargar todo
-                  </Typography>
-                </Typography>
-              </ListItem>
-            </List>
-          )}
-        </List>
-      </Card>
+      <CompareInstructions />
       {/* buttons */}
-      <Stack direction='row' className='items-end justify-between gap-4'>
-        <Stack direction='row' className='items-end gap-2'>
-          <RefreshBtn
-            handleRefresh={() => window.location.reload()}
-            dangerousRefresh={!!newTargets}
-          />
-          <StyledDatePicker
-            label='Fecha de inicio'
-            value={startDate ? dayjs.tz(startDate) : null}
-            onChange={(newValue) => {
-              if (newValue) {
-                setStartDate(newValue.format(sqlDateFormat));
-                // fetchCurrTotal() runs on startDate change
-              }
-            }}
-            disabled
-            className='max-w-[150px]'
-          />
+      <Stack direction='row' className='items-end justify-between'>
+        <DateTotalToolbar
+          newTargets={newTargets}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          diff={diff}
+          setIsResetting={setIsResetting}
+          setCurrTotal={setCurrTotal}
+          currTotal={currTotal}
+        />
 
-          <IconButton
-            color='danger'
-            variant='solid'
-            disabled={
-              !(
-                diff &&
-                !(
-                  diff.added.length === 0 &&
-                  diff.modified.length === 0 &&
-                  diff.deleted.length === 0
-                )
-              ) || startDate === null
-            }
-            onClick={() => {
-              setStartDate(null);
-              setCurrTotal(0); // to trigger a re-render
-            }}
-          >
-            <RestartAltRounded />
-          </IconButton>
-        </Stack>
+        <FileUploadToolbar
+          setProgramada={setProgramada}
+          setDiff={setDiff}
+          setNewTargets={setNewTargets}
+          diffMounted={diffMounted}
+        />
+      </Stack>
 
-        <Stack direction='row' className='items-end justify-between w-[498px]'>
-          <ProgTotal startDate={startDate} currTotal={currTotal} />
-
-          {programada && !diff && !newTargets && (
-            <Button
-              onClick={handleCompare}
-              // can compare only if there is reference date
-              disabled={startDate === null}
-              startDecorator={<CompareArrowsRounded />}
-            >
-              Comparar
-            </Button>
-          )}
-
-          {diff &&
-            !(
-              diff.added.length === 0 &&
-              diff.modified.length === 0 &&
-              diff.deleted.length === 0
-            ) && (
-              <>
-                <Button
-                  onClick={() => {
-                    loadType.current = 'update';
-                    handleProgramadaUpdate();
-                  }}
-                  disabled={startDate === null}
-                  startDecorator={<ChangeCircleOutlined />}
-                >
-                  Cargar cambios
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    loadType.current = 'insert';
-                    handleProgramadaUpdate();
-                  }}
-                  disabled={startDate !== null}
-                  startDecorator={<LibraryAddOutlined />}
-                >
-                  Cargar todo
-                </Button>
-              </>
-            )}
-        </Stack>
-
-        <Stack direction='row' className='gap-2'>
+      {programada && (
+        <Stack direction='row' className='items-center gap-4'>
+          {/* New total */}
           <Typography
             variant='outlined'
-            color='neutral'
-            noWrap
-            className={`rounded-[var(--joy-radius-sm)] w-40 py-1.5 px-4 mx-0 ${
-              !filePath && 'text-[var(--joy-palette-neutral-400)]'
-            }`}
+            color='warning'
+            level='body-lg'
+            className='max-w-fit rounded-[var(--joy-radius-sm)] py-1.5 px-4 mx-0'
           >
-            {filePath
-              ? filePath.slice(
-                  Math.max(
-                    filePath.lastIndexOf('/'),
-                    filePath.lastIndexOf('\\')
-                  )
-                )
-              : 'Programada.pdf'}
+            Total nuevo: {localizedNum(programada.total)}
           </Typography>
-          <InputFileUpload onClick={handleUpload} />
+
+          <CompareToolbar
+            programada={programada}
+            diff={diff}
+            setDiff={setDiff}
+            newTargets={newTargets}
+            startDate={startDate}
+            loadType={loadType}
+            setNewArticuloData={setNewArticuloData}
+          />
         </Stack>
-      </Stack>
-      {/* data */}
-      {programada && (
-        <Typography
-          variant='outlined'
-          color='warning'
-          level='body-lg'
-          className='max-w-fit rounded-[var(--joy-radius-sm)] py-1.5 px-4 mx-0'
-        >
-          Total nuevo: {localizedNum(programada.total)}
-        </Typography>
       )}
+
       {/* New programada table */}
       {programada && !diff && !newTargets && (
-        <DataTable cols={['Artículo', 'Talle', 'A Producir']}>
-          {programada.rows.map((row, i) => (
-            <ProgRow key={i} row={row} />
-          ))}
-        </DataTable>
+        <NewProgTable programada={programada} />
       )}
 
       {/* diff table */}
-      {diff &&
-        (() => {
-          const maxLen = Math.max(
-            diff.added.length,
-            diff.modified.length,
-            diff.deleted.length
-          );
-          const pad = (arr) => {
-            if (arr.length < maxLen) {
-              return arr.concat(
-                Array.from({ length: maxLen - arr.length }, () => ({
-                  articulo: '',
-                  talle: '',
-                  aProducir: '',
-                }))
-              );
-            } else {
-              return arr;
-            }
-          };
+      {diff && <DiffTable diff={diff} />}
 
-          const added = pad(diff.added);
-          const modified = pad(diff.modified);
-          const deleted = pad(diff.deleted);
-
-          return (
-            <Stack
-              direction='row'
-              className='items-start justify-between gap-4'
-            >
-              <Box className='overflow-auto max-h-[440px]'>
-                <DataTable
-                  cols={['Artículo', 'Talle', 'A Producir']}
-                  titleHeader='Agregado'
-                  titleHeaderColor='bg-[var(--joy-palette-success-softBg)]'
-                >
-                  {added.map((row, i) => (
-                    <ProgRow key={i} row={row} />
-                  ))}
-                </DataTable>
-              </Box>
-
-              <Box className='overflow-auto max-h-[440px]'>
-                <DataTable
-                  cols={['Articulo', 'Talle', 'A Producir']}
-                  titleHeader='Modificado'
-                  titleHeaderColor='bg-[var(--joy-palette-warning-softBg)]'
-                >
-                  {modified.map((row, i) => (
-                    <ProgRow key={i} row={row} />
-                  ))}
-                </DataTable>
-              </Box>
-
-              <Box className='overflow-auto max-h-[440px]'>
-                <DataTable
-                  cols={['Articulo', 'Talle', 'A Producir']}
-                  titleHeader='Eliminado'
-                  titleHeaderColor='bg-[var(--joy-palette-danger-softBg)]'
-                >
-                  {deleted.map((row, i) => (
-                    <ProgRow key={i} row={row} />
-                  ))}
-                </DataTable>
-              </Box>
-            </Stack>
-          );
-        })()}
-
-      {newTargets && (
-        <DataTable
-          cols={[
-            'Máquina',
-            'StyleCode',
-            'MachTarget',
-            'ProgTarget Previo',
-            'ProgTarget Nuevo',
-            'Producción Mes',
-            'MachPieces',
-            'Enviar Target',
-          ]}
-        >
-          {newTargets.map((row, i) => (
-            <tr key={i}>
-              <td>{row.machCode}</td>
-              <td>{row.styleCode}</td>
-              <td>{localizedNum(row.machTarget)}</td>
-              <td>{localizedNum(row.prevProgTarget)}</td>
-              <td>{localizedNum(row.newProgTarget)}</td>
-              <td>{localizedNum(row.monthProduction)}</td>
-              <td>{localizedNum(row.machPieces)}</td>
-              <td>{localizedNum(row.sendTarget)}</td>
-            </tr>
-          ))}
-        </DataTable>
-      )}
+      {newTargets && <NewTargetsTable newTargets={newTargets} />}
 
       {/* render one Modal at a time */}
       {newArticuloData.length > 0 && (
@@ -705,15 +298,5 @@ export default function ProgComparar() {
         </ModalWrapper>
       )}
     </Stack>
-  );
-}
-
-function ProgRow({ row, i }) {
-  return (
-    <tr key={i}>
-      <td>{row.articulo}</td>
-      <td>{row.talle}</td>
-      <td>{localizedNum(row.aProducir)}</td>
-    </tr>
   );
 }
