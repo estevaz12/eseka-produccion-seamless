@@ -11,33 +11,23 @@ export default function DateEstimate({
   holidays,
   loading,
 }) {
-  const now = dayjs.tz();
-
+  // includes today
   const daysToTarget = !dailyAverage
     ? 0
-    : Math.max(0, Math.ceil((progTotal - totalProduced) / dailyAverage) - 1);
+    : Math.max(0, Math.ceil((progTotal - totalProduced) / dailyAverage));
 
-  let workdaysToTarget = daysToTarget;
-  let current = now.clone();
-  for (let i = 0; i < daysToTarget; i++) {
+  let workdayCount = 0;
+  let current = dayjs.tz().hour(6).minute(0).second(0);
+  while (workdayCount < daysToTarget) {
     const day = current.day(); // 0: Sunday, 1: Monday, ..., 6: Saturday
     const currFmt = current.format('YYYY-MM-DD');
     const isHoliday = holidays.includes(currFmt);
-    // add one extra day if it is not a working day
-    if (day === 0 || day === 6 || isHoliday) workdaysToTarget++;
-    current = current.add(1, 'day');
+    const isWorkday = day !== 0 && day !== 6 && !isHoliday;
+    if (isWorkday) workdayCount++;
+    if (workdayCount < daysToTarget) current = current.add(1, 'day');
   }
 
-  const targetDate = now.add(workdaysToTarget, 'day');
-  // Ensure targetDate is a workday (not weekend or holiday)
-  let adjustedTargetDate = targetDate.clone();
-  while (
-    adjustedTargetDate.day() === 0 || // Sunday
-    adjustedTargetDate.day() === 6 || // Saturday
-    holidays.includes(adjustedTargetDate.format('YYYY-MM-DD'))
-  ) {
-    adjustedTargetDate = adjustedTargetDate.add(1, 'day');
-  }
+  const adjustedTargetDate = current;
 
   return (
     <BigNumContent
