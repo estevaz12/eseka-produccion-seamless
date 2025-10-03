@@ -1,1 +1,1 @@
-module.exports = [{ Total: 24835 }];
+module.exports = [{ Total: 17051 }];
