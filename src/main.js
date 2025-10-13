@@ -21,6 +21,22 @@ app.setAppUserModelId('Tejeduria');
 // to avoid squirrel multiple app spawning
 if (require('electron-squirrel-startup')) app.quit();
 
+// Ensure single instance: if a second instance is launched (e.g. user clicks taskbar/shortcut),
+// focus the existing window instead of creating a new one.
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, argv, workingDirectory) => {
+    // Someone tried to run a second instance, focus the main window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.focus();
+    }
+  });
+}
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Buenos_Aires');
