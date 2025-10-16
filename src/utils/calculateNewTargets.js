@@ -1,9 +1,9 @@
 const sql = require('mssql');
-const produccion = require('./queries/produccion.js');
+const { runProduccion } = require('./queries/produccion.js');
 const dayjs = require('dayjs');
 const serverLog = require('./serverLog.js');
 
-const calculateNewTargets = async (progUpdates, machines) => {
+const calculateNewTargets = async (pool, progUpdates, machines) => {
   // serverLog(JSON.stringify(machines, null, 2));
 
   // Look through inserted articulos in MACHINES
@@ -123,7 +123,7 @@ const calculateNewTargets = async (progUpdates, machines) => {
 
 module.exports = calculateNewTargets;
 
-async function getMonthProduction(newRecord) {
+async function getMonthProduction(pool, newRecord) {
   const startDate = dayjs
     .tz()
     .startOf('month')
@@ -136,16 +136,15 @@ async function getMonthProduction(newRecord) {
 
   try {
     // Get the production for the month
-    monthProduction = await sql.query(
-      produccion(
-        newRecord.RoomCode,
-        startDate,
-        endDate,
-        true,
-        newRecord.Articulo,
-        newRecord.Talle,
-        newRecord.ColorId
-      )
+    monthProduction = await runProduccion(
+      pool,
+      newRecord.RoomCode,
+      startDate,
+      endDate,
+      true,
+      newRecord.Articulo,
+      newRecord.Talle,
+      newRecord.ColorId
     );
 
     monthProduction = monthProduction.recordset;
@@ -166,11 +165,11 @@ async function getMonthProduction(newRecord) {
   return monthProduction;
 }
 
-async function getPrevProgramada(newRecord) {
+async function getPrevProgramada(pool, newRecord) {
   let previousRecord;
 
   try {
-    previousRecord = await sql.query(getPreviousRecord(newRecord));
+    previousRecord = await getPreviousRecord(pool, newRecord);
     previousRecord = previousRecord.recordset[0];
     serverLog(
       `Previous record for ${newRecord.Articulo} ${newRecord.Talle} ${
@@ -184,15 +183,21 @@ async function getPrevProgramada(newRecord) {
   return previousRecord;
 }
 
-function getPreviousRecord(newRecord) {
-  return `
+function getPreviousRecord(pool, newRecord) {
+  return pool
+    .request()
+    .input('room', sql.NVarChar(10), newRecord.RoomCode)
+    .input('fecha', sql.VarChar, newRecord.Fecha)
+    .input('articulo', sql.Numeric(7, 2), Number(newRecord.Articulo))
+    .input('talle', sql.TinyInt, Number(newRecord.Talle))
+    .input('colorId', sql.SmallInt, Number(newRecord.ColorId)).query(`
       SELECT TOP (1) *
       FROM View_Prog_Color
-      WHERE RoomCode = '${newRecord.RoomCode}'
-            AND Fecha < '${newRecord.Fecha}'
-            AND Articulo = ${newRecord.Articulo}
-            AND Talle = ${newRecord.Talle}
-            AND ColorId = ${newRecord.ColorId}
+      WHERE RoomCode = @room
+            AND Fecha < @fecha
+            AND Articulo = @articulo
+            AND Talle = @talle
+            AND ColorId = @colorId
       ORDER BY Fecha DESC;
-    `;
+    `);
 }

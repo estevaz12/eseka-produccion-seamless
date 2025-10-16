@@ -1,4 +1,6 @@
-const getMachines = (room) => {
+const sql = require('mssql');
+
+const getMachines = async (pool, room) => {
   /* Machine states
   0: RUN
   1: POWER OFF
@@ -17,7 +19,7 @@ const getMachines = (room) => {
   56: OFFLINE
   65535: DESINCRONIZADA
   */
-  return `
+  return pool.request().input('room', sql.Char(30), room).query(`
     SELECT MachCode, 
            StyleCode, 
            Pieces, 
@@ -28,7 +30,7 @@ const getMachines = (room) => {
            RoomCode
     FROM [dbNautilus].[dbo].[MACHINES]
     WHERE RoomCode = '${room}';
-  `;
+  `);
 };
 
 module.exports = getMachines;

@@ -52,10 +52,11 @@ const config = {
 };
 
 const startServer = () => {
+  let pool;
   if (isPackaged) {
     (async () => {
       try {
-        await sql.connect(config.db);
+        pool = await sql.connect(config.db);
         serverLog('Connected to database');
       } catch (err) {
         serverLog(`[ERROR] Error connecting to database: ${err}`);
@@ -78,7 +79,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getArticulo(articulo));
+        const result = await queries.getArticulo(pool, articulo);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /articulo/${articulo}: ${err}`);
@@ -97,7 +98,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getArticuloColorDistr(articulo));
+        const result = await queries.getArticuloColorDistr(pool, articulo);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /articulo/${articulo}/colorDistr: ${err}`);
@@ -116,7 +117,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getArticuloColorCodes(articulo));
+        const result = await queries.getArticuloColorCodes(pool, articulo);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /articulo/${articulo}/colorCodes: ${err}`);
@@ -135,9 +136,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(
-          queries.getCurrArtColorDistr(articulo, null)
-        );
+        const result = await queries.getCurrArtColorDistr(pool, articulo, null);
         res.json(result.recordset);
       } catch (err) {
         serverLog(
@@ -158,8 +157,10 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(
-          queries.getCurrArtColorDistr(articulo, talle)
+        const result = await queries.getCurrArtColorDistr(
+          pool,
+          articulo,
+          talle
         );
         res.json(result.recordset);
       } catch (err) {
@@ -182,9 +183,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      let query = queries.insertArticulo(data.articulo, data.tipo);
-      await sql.query(query);
-      serverLog(query);
+      await queries.insertArticulo(pool, data.articulo, data.tipo);
       res
         .status(200)
         .json({ message: `Art. ${data.articulo} agregado con éxito.` });
@@ -202,9 +201,7 @@ const startServer = () => {
     const { articulo, tipo } = req.body;
 
     try {
-      const query = queries.updateArticuloTipo(articulo, tipo);
-      serverLog(query);
-      await sql.query(query);
+      await queries.updateArticuloTipo(pool, articulo, tipo);
       res
         .status(200)
         .json({ message: `Tipo del art. ${articulo} modificado con éxito.` });
@@ -223,8 +220,10 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(
-          queries.getCambios(dayjs.tz(startDate).format('YYYY-MM-DD'), room)
+        const result = await queries.getCambios(
+          pool,
+          dayjs.tz(startDate).format('YYYY-MM-DD'),
+          room
         );
         res.json(result.recordset);
       } catch (err) {
@@ -264,9 +263,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const query = queries.insertColor(data);
-        serverLog(query);
-        await sql.query(query);
+        await queries.insertColor(pool, data);
         const result = await sql.query(
           `SELECT TOP(1) * FROM APP_COLORES ORDER BY Id DESC`
         );
@@ -293,9 +290,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      const query = await queries.insertColorCodes(data);
-      serverLog(query);
-      await sql.query(query);
+      await queries.insertColorCodes(pool, data);
       res
         .status(201)
         .json({ message: `Código ${data.styleCode} agregado con éxito.` });
@@ -308,11 +303,9 @@ const startServer = () => {
     }
   });
 
-  async function insertColorDistrs(data) {
+  async function insertColorDistrs(pool, data) {
     for (const row of data.colorDistr) {
-      const query = queries.insertDistr(data.articulo, data.talle, row);
-      serverLog(query);
-      await sql.query(query);
+      await queries.insertDistr(pool, data.articulo, data.talle, row);
       // Wait before next insert
       await new Promise((resolve) => setTimeout(resolve, 1));
     }
@@ -323,7 +316,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      await insertColorDistrs(data);
+      await insertColorDistrs(pool, data);
 
       res.status(201).json({
         message: `Distribución para el art. ${data.articulo} T${data.talle} agregada con éxito.`,
@@ -343,7 +336,7 @@ const startServer = () => {
 
     try {
       for (const talle of talles) {
-        await insertColorDistrs({ articulo, talle, colorDistr });
+        await insertColorDistrs(pool, { articulo, talle, colorDistr });
       }
 
       res.status(201).json({
@@ -379,8 +372,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const query = queries.getProductionsMonitor(req.query);
-        const result = await sql.query(query);
+        const result = await queries.getProductionsMonitor(pool, req.query);
         res.json(result.recordset);
       } catch (err) {
         serverLog(
@@ -397,13 +389,14 @@ const startServer = () => {
 
   // get machines and parse to match with production data
   async function getParsedMachines(
+    pool,
     room,
     onlyProducing = false,
     onlyValidCodes = true
   ) {
-    let machines = await sql.query(queries.getMachines(room));
+    let machines = await queries.getMachines(pool, room);
     machines = machines.recordset;
-    await parseMachines(machines);
+    await parseMachines(pool, machines);
 
     if (onlyValidCodes)
       machines = machines.filter(
@@ -439,11 +432,21 @@ const startServer = () => {
         let machines = [];
 
         if (room !== 'ELECTRONICA')
-          machines = await getParsedMachines(room, false, false);
+          machines = await getParsedMachines(pool, room, false, false);
         else {
-          const machsNYL = await getParsedMachines('MUJER', false, false);
-          const machsALG = await getParsedMachines('HOMBRE', false, false);
-          const machsSEA = await getParsedMachines('SEAMLESS', false, false);
+          const machsNYL = await getParsedMachines(pool, 'MUJER', false, false);
+          const machsALG = await getParsedMachines(
+            pool,
+            'HOMBRE',
+            false,
+            false
+          );
+          const machsSEA = await getParsedMachines(
+            pool,
+            'SEAMLESS',
+            false,
+            false
+          );
           machines = [...machsNYL, ...machsALG, ...machsSEA];
         }
 
@@ -465,7 +468,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        let machines = await getParsedMachines(room, true);
+        let machines = await getParsedMachines(pool, room, true);
         machines = Array.from(
           new Map(
             machines
@@ -500,16 +503,15 @@ const startServer = () => {
       try {
         const { room, startDate, endDate, actual, articulo, talle, colorId } =
           req.query;
-        const result = await sql.query(
-          queries.produccion(
-            room,
-            startDate,
-            endDate,
-            actual,
-            articulo,
-            talle,
-            colorId
-          )
+        const result = await queries.runProduccion(
+          pool,
+          room,
+          startDate,
+          endDate,
+          actual,
+          articulo,
+          talle,
+          colorId
         );
         res.json(result.recordset);
       } catch (err) {
@@ -532,16 +534,15 @@ const startServer = () => {
         const { startDate, startMonth, startYear, endDate } = req.query;
         const [progColor, machines] = await Promise.all([
           // get Programada with Color, month production, and docenas by art.
-          sql.query(
-            queries.getProgColorTable(
-              room,
-              startDate,
-              startMonth,
-              startYear,
-              endDate
-            )
+          queries.getProgColorTable(
+            pool,
+            room,
+            startDate,
+            startMonth,
+            startYear,
+            endDate
           ),
-          !req.query.startMonth ? getParsedMachines(room, true) : null, // get Machines
+          !req.query.startMonth ? getParsedMachines(pool, room, true) : null, // get Machines
         ]);
 
         // match machines with rows
@@ -593,7 +594,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getProgActualDate(room));
+        const result = await queries.getProgActualDate(pool, room);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /${room}/programada/actualDate: ${err}`);
@@ -613,8 +614,8 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const machines = await getParsedMachines(room, true);
-        const targets = await calculateNewTargets(progUpdates, machines);
+        const machines = await getParsedMachines(pool, room, true);
+        const targets = await calculateNewTargets(pool, progUpdates, machines);
 
         res.json(targets);
       } catch (err) {
@@ -637,12 +638,13 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const currProg = await sql.query(
-          queries.getProgramada(room, data.startDate)
+        const currProg = await queries.getProgramada(
+          pool,
+          room,
+          data.startDate
         );
         const diff = compareProgramada(currProg.recordset, data.new);
         res.json(diff);
-        // const result = await sql.query(query);
       } catch (err) {
         serverLog(`[ERROR] POST /${room}/programada/compare: ${err}`);
         res.status(500).json({ error: err.message });
@@ -675,10 +677,10 @@ const startServer = () => {
     if (isPackaged) {
       try {
         const now = dayjs.tz();
-        await sql.query(queries.insertProgramada(data, room, 'inserted', now));
+        await queries.insertProgramada(pool, data, room, 'inserted', now);
         serverLog(`POST /${room}/programada/insertAll - SUCCESS`);
         // return inserted rows to calculate new targets
-        const result = await sql.query(queries.getProgColor(room, now));
+        const result = await queries.getProgColor(pool, room, now);
         res.status(201).json({
           message: `Programada nueva cargada con éxito.`,
           inserted: result.recordset,
@@ -703,7 +705,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        await sql.query(queries.insertProgStartDate(data, room));
+        await queries.insertProgStartDate(pool, data, room);
         serverLog(`POST /${room}/programada/insertStartDate - SUCCESS`);
         res.status(200).json({
           message: `Fecha de inicio de programada cargada con éxito.`,
@@ -727,7 +729,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getProgLoadDates(room));
+        const result = await queries.getProgLoadDates(pool, room);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /${room}/programada/loadDates: ${err}`);
@@ -746,9 +748,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(
-          queries.getProgramadaTotal(room, startDate)
-        );
+        const result = await queries.getProgramadaTotal(pool, room, startDate);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /${room}/programada/total: ${err}`);
@@ -769,11 +769,11 @@ const startServer = () => {
     if (isPackaged) {
       try {
         const now = dayjs.tz();
-        await sql.query(queries.updateProgramada(room, data, now));
+        await queries.updateProgramada(pool, room, data, now);
         serverLog(`POST /${room}/programada/update - SUCCESS`);
         // return inserted rows to calculate new targets
         // include deleted articulos to stop machines
-        const result = await sql.query(queries.getProgColor(room, now, true));
+        const result = await queries.getProgColor(pool, room, now, true);
         res.status(201).json({
           message: `Cambios cargados con éxito.`,
           inserted: result.recordset,
@@ -797,7 +797,7 @@ const startServer = () => {
     const data = req.body;
 
     try {
-      await sql.query(queries.updateProgColorDoc(data));
+      await queries.updateProgColorDoc(pool, data);
       serverLog('POST /programada/updateDocenas - SUCCESS');
       res.status(201).json({
         message: `Docenas agregadas con éxito para el art. ${data.articulo} T${data.talle} ${data.color}.`,
@@ -818,7 +818,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getDailyProduction(room));
+        const result = await queries.getDailyProduction(pool, room);
         res.json(result.recordset);
       } catch (err) {
         serverLog(`[ERROR] GET /${room}/stats/dailyProduction: ${err}`);
@@ -858,7 +858,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getDailyWEff(room));
+        const result = await queries.getDailyWEff(pool, room);
 
         res.json(result.recordset);
       } catch (err) {
@@ -880,7 +880,7 @@ const startServer = () => {
 
     if (isPackaged) {
       try {
-        const result = await sql.query(queries.getMonthSaldo(room));
+        const result = await queries.getMonthSaldo(pool, room);
         const row = result.recordset[0]; // single-record
         // prep data for chart
         const porc = ((row.Saldo / (row.Pieces + row.Saldo)) * 100).toFixed(2);
