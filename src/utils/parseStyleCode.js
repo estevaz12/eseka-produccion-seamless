@@ -3,7 +3,7 @@ const serverLog = require('./serverLog.js');
 const getArticulo = require('./queries/getArticulo.js');
 const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode.js');
 
-const parseStyleCode = async (room, styleCode) => {
+const parseStyleCode = async (pool, room, styleCode) => {
   styleCode = styleCode.substring(0, 8);
   let articulo = styleCode.substring(0, 5);
   let punto = null;
@@ -20,7 +20,7 @@ const parseStyleCode = async (room, styleCode) => {
   if (/^\d{5}$/.test(articulo)) {
     // articulo must be a 5-digit string
     try {
-      const res = await sql.query(getArticuloByStyleCode(styleCode));
+      const res = await getArticuloByStyleCode(pool, styleCode);
       // will be undefined if not there
       // undefined means that it is not in COLOR_CODES
       // if articulo null, then just use the styleCode
@@ -68,7 +68,7 @@ const parseStyleCode = async (room, styleCode) => {
     } else if (room === 'SEAMLESS' && typeof articulo === 'string') {
       // if articulo is string, then .0 was not found, check for .1
       try {
-        const res = await sql.query(getArticulo(`${articulo}.1`));
+        const res = await getArticulo(pool, `${articulo}.1`);
         articulo = res.recordset[0]?.Articulo ?? articulo;
         punto = typeof articulo !== 'string' ? '1' : null;
       } catch (err) {
@@ -79,8 +79,9 @@ const parseStyleCode = async (room, styleCode) => {
     }
 
     try {
-      const res = await sql.query(
-        getArticulo(punto ? `${parseInt(articulo)}.${punto}` : articulo)
+      const res = await getArticulo(
+        pool,
+        punto ? `${parseInt(articulo)}.${punto}` : articulo
       );
       tipo = res.recordset[0]?.Tipo ?? null;
     } catch (err) {

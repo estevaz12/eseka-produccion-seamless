@@ -1,10 +1,11 @@
 const parseStyleCode = require('./parseStyleCode.js');
 
 // Machines: [{MachCode, StyleCode: {styleCode, articulo, talle, color, colorId}, ...}]
-async function parseMachines(machines) {
+async function parseMachines(pool, machines) {
   await Promise.all(
     machines.map(async (m) => {
       const parsedStyleCode = await parseStyleCode(
+        pool,
         m.RoomCode.trim(),
         m.StyleCode.trim()
       );

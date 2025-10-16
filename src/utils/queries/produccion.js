@@ -1,4 +1,7 @@
-const produccion = (
+const dayjs = require('dayjs');
+const sql = require('mssql');
+
+const buildProduccion = (
   room,
   startDate,
   endDate,
@@ -15,19 +18,44 @@ const produccion = (
   talle = `${talle}`;
   colorId = `${colorId}`;
 
-  let query;
+  let baseCTE;
+  const request = { text: null, params: [] };
   const precise = articulo.includes('.');
   let whereClause = '';
   // Build dynamic WHERE clause based on talle, colorId, and precise/articulo
   const conditions = [];
+
   if (precise) {
-    conditions.push(`Articulo = ${articulo}`);
+    conditions.push(`Articulo = @articulo`);
+    request.params.push({
+      name: 'articulo',
+      type: sql.Numeric(7, 2),
+      value: Number(articulo),
+    });
+  } else {
+    request.params.push({
+      name: 'articulo',
+      type: sql.VarChar(8),
+      value: `%${articulo}%`,
+    });
   }
+
   if (talle.length > 0) {
-    conditions.push(`Talle = ${talle}`);
+    conditions.push(`Talle = @talle`);
+    request.params.push({
+      name: 'talle',
+      type: sql.TinyInt,
+      value: Number(talle),
+    });
   }
+
   if (colorId.length > 0) {
-    conditions.push(`ColorId = ${colorId}`);
+    conditions.push(`ColorId = @colorId`);
+    request.params.push({
+      name: 'colorId',
+      type: sql.SmallInt,
+      value: Number(colorId),
+    });
   }
 
   if (conditions.length > 0) {
@@ -36,7 +64,7 @@ const produccion = (
 
   if (actual) {
     // JOIN with MACHINES for live data
-    query = `
+    baseCTE = `
     WITH Produccion AS (
         SELECT 
             -- Use the first 8 characters of the StyleCode.
@@ -46,37 +74,35 @@ const produccion = (
         FULL JOIN (
             SELECT StyleCode, SUM(Lastpieces) AS LastpiecesSum
             FROM Machines
-            WHERE RoomCode = '${room}'
+            WHERE RoomCode = @room
             GROUP BY StyleCode
         ) m 
         ON pm.StyleCode = m.StyleCode
         WHERE 
-            pm.RoomCode = '${room}'
-            AND pm.DateRec BETWEEN '${startDate}' AND '${endDate}'
-            ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE '%${articulo}%'` : ''}
+            pm.RoomCode = @room
+            AND pm.DateRec BETWEEN @prodStartDate AND @prodEndDate
+            ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE @articulo` : ''}
         GROUP BY COALESCE(pm.StyleCode, m.StyleCode)
-    )
-    `;
+    )`;
   } else {
     // only PRODUCTIONS_MONITOR
-    query = `
+    baseCTE = `
       WITH Produccion AS (
         SELECT 
             LEFT(pm.StyleCode, 8) AS StyleCode,
             SUM(pm.Pieces) AS Unidades
         FROM PRODUCTIONS_MONITOR pm
-        WHERE pm.RoomCode = '${room}'
-            AND pm.DateRec BETWEEN '${startDate}' AND '${endDate}'
-            ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE '%${articulo}%'` : ''}
+        WHERE pm.RoomCode = @room
+            AND pm.DateRec BETWEEN @prodStartDate AND @prodEndDate
+            ${!precise ? `AND LEFT(pm.StyleCode, 8) LIKE @articulo` : ''}
         GROUP BY pm.StyleCode
-      )
-    `;
+      )`;
   }
 
   // Match with APP_COLOR_CODES and return a record per color
-  return (
-    query +
-    `,ProdColorUngrouped AS (
+  request.text = `
+    ${baseCTE}
+    ,ProdColorUngrouped AS (
         SELECT 
             cc.Articulo, 
             a.Tipo,
@@ -95,12 +121,18 @@ const produccion = (
                 ON a.Articulo = cc.Articulo
     ),
     ProdColor AS (
-        SELECT Articulo, Tipo, Talle, Color, ColorId, Hex, WhiteText, SUM(Unidades) AS Unidades
+        SELECT Articulo, 
+               Tipo, 
+               Talle, 
+               Color, 
+               ColorId, 
+               Hex, 
+               WhiteText, 
+               SUM(Unidades) AS Unidades
         FROM ProdColorUngrouped
         WHERE Unidades > 0 ${whereClause}
         GROUP BY Articulo, Tipo, Talle, Color, ColorId, Hex, WhiteText
-    )
-    ${
+    )${
       showResults
         ? `
       SELECT *
@@ -108,9 +140,33 @@ const produccion = (
       ORDER BY Articulo, Talle, Color;
       `
         : ''
-    }
-    `
-  );
+    }`;
+
+  request.params = [
+    ...request.params,
+    { name: 'room', type: sql.Char(30), value: room },
+    {
+      name: 'prodStartDate',
+      type: sql.VarChar,
+      value: startDate,
+    },
+    {
+      name: 'prodEndDate',
+      type: sql.VarChar,
+      value: endDate,
+    },
+  ];
+
+  return request;
 };
 
-module.exports = produccion;
+const runProduccion = async (pool, ...args) => {
+  const { text, params } = buildProduccion(...args);
+  const request = pool.request();
+  for (const p of params) {
+    request.input(p.name, p.type, p.value);
+  }
+  return request.query(text);
+};
+
+module.exports = { buildProduccion, runProduccion };

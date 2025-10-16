@@ -1,7 +1,10 @@
+const sql = require('mssql');
 const dayjs = require('dayjs');
-const produccion = require('./produccion');
+const { buildProduccion } = require('./produccion');
+const serverLog = require('../serverLog');
 
-const getProgColorTable = (
+const getProgColorTable = async (
+  pool,
   room,
   startDate,
   startMonth = null,
@@ -44,19 +47,18 @@ const getProgColorTable = (
   }
 
   // get Month Production
-  const monthProd = produccion(
+  const { text: monthProd, params: prodParams } = buildProduccion(
     room,
     prodStartDate,
     prodEndDate,
-    endDate === null ? true : false,
-    '',
-    '',
-    '',
-    false
+    endDate === null ? true : false, // actual
+    '', // articulo
+    '', // talle
+    '', // color
+    false // showResults
   );
 
-  // monthProd query already has WITH clause
-  return `
+  const query = `
     ${monthProd}
     SELECT pc.*, COALESCE(p.Unidades, 0) AS Producido
     FROM View_Prog_Color AS pc
@@ -64,7 +66,7 @@ const getProgColorTable = (
         ON p.Articulo = pc.Articulo 
            AND p.Talle = pc.Talle 
            AND p.ColorId = pc.ColorId
-    WHERE pc.RoomCode = '${room}' 
+    WHERE pc.RoomCode = @room 
           AND pc.Fecha = (
             SELECT MAX(pc2.Fecha)
             FROM View_Prog_Color AS pc2
@@ -72,18 +74,47 @@ const getProgColorTable = (
                   AND pc2.Talle = pc.Talle
                   ${
                     startMonth && startYear && endDate
-                      ? `AND pc2.Fecha < '${endDate}'`
+                      ? `AND pc2.Fecha < @endDate`
                       : ''
-                  }
-            )
+                  })
           ${
             startMonth && startYear && endDate
-              ? `AND pc.Fecha >= '${startDate}' AND pc.Fecha < '${endDate}'`
-              : `AND pc.Fecha >= '${startDate}'`
+              ? `AND pc.Fecha >= @startDate AND pc.Fecha < @endDate`
+              : `AND pc.Fecha >= @startDate`
           } 
           AND pc.DocProg > 0
     ORDER BY pc.Articulo, pc.Talle, pc.Porcentaje DESC, pc.Color;
   `;
+
+  const params = [
+    ...prodParams,
+    {
+      name: 'startDate',
+      type: sql.VarChar,
+      value: startDate,
+    },
+  ];
+
+  if (startMonth && startYear && endDate) {
+    params.push({
+      name: 'endDate',
+      type: sql.VarChar,
+      value: endDate,
+    });
+  }
+
+  return runQuery(pool, { text: query, params });
 };
 
 module.exports = getProgColorTable;
+
+async function runQuery(pool, { text, params }) {
+  const request = pool.request();
+  for (const p of params) {
+    if (p.value !== undefined && p.value !== null && p.value !== '') {
+      request.input(p.name, p.type, p.value);
+    }
+  }
+
+  return request.query(text);
+}

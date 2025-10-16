@@ -1,6 +1,7 @@
+const sql = require('mssql');
 const dayjs = require('dayjs');
 
-const getDailyProduction = (room) => {
+const getDailyProduction = async (pool, room) => {
   const docena = room === 'SEAMLESS' ? 12 : 24;
   const porcExtra = room === 'SEAMLESS' ? 1.01 : 1.02;
 
@@ -28,15 +29,21 @@ const getDailyProduction = (room) => {
     END, CAST(DateRec AS DATE))
   `;
 
-  return `
+  return pool
+    .request()
+    .input('room', sql.Char(30), room)
+    .input('monthStart', sql.VarChar, monthStart)
+    .input('yesterday', sql.VarChar, yesterday)
+    .input('docena', sql.Int, Number(docena))
+    .input('porcExtra', sql.Float, Number(porcExtra)).query(`
     WITH ProdByDate AS (
       SELECT 
         LEFT(StyleCode, 8) AS StyleCode,
         ${sixToSix} AS ProdDate,
         SUM(Pieces) AS Unidades
       FROM PRODUCTIONS_MONITOR
-      WHERE RoomCode = '${room}'
-        AND DateRec BETWEEN '${monthStart}' AND '${yesterday}'
+      WHERE RoomCode = @room
+        AND DateRec BETWEEN @monthStart AND @yesterday
         AND StyleCode <> ''
       GROUP BY LEFT(StyleCode, 8), ${sixToSix}
     )
@@ -56,12 +63,12 @@ const getDailyProduction = (room) => {
                 ON a.Articulo = cc.Articulo
     )
     SELECT ProdDate,
-           CAST(ROUND((SUM(Unidades) / ${docena} / ${porcExtra}), 0) AS INT) AS Docenas
+           CAST(ROUND((SUM(Unidades) / @docena / @porcExtra), 0) AS INT) AS Docenas
     FROM ProdColorUngroupedByDate
     WHERE Unidades > 0
     GROUP BY ProdDate
     ORDER BY ProdDate
-  `;
+  `);
 };
 
 module.exports = getDailyProduction;
