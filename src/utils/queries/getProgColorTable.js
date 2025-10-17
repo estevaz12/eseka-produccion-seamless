@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const dayjs = require('dayjs');
 const { buildProduccion } = require('./produccion');
-const serverLog = require('../serverLog');
+const { runQuery } = require('../queryUtils');
 
 const getProgColorTable = async (
   pool,
@@ -103,18 +103,7 @@ const getProgColorTable = async (
     });
   }
 
-  return runQuery(pool, { text: query, params });
+  return runQuery(pool, { query, params });
 };
 
 module.exports = getProgColorTable;
-
-async function runQuery(pool, { text, params }) {
-  const request = pool.request();
-  for (const p of params) {
-    if (p.value !== undefined && p.value !== null && p.value !== '') {
-      request.input(p.name, p.type, p.value);
-    }
-  }
-
-  return request.query(text);
-}
