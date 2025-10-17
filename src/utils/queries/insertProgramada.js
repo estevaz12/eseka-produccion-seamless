@@ -1,5 +1,6 @@
 const sql = require('mssql');
 const dayjs = require('dayjs');
+const { runQuery } = require('../queryUtils');
 
 const insertProgramada = async (
   pool,
@@ -10,34 +11,44 @@ const insertProgramada = async (
 ) => {
   const FECHA = date.format(process.env.SQL_DATE_FORMAT);
 
-  const request = pool.request();
+  const request = { query: '', params: [] };
 
   data.forEach((row, i) => {
-    request
-      .input(`fecha${i}`, sql.VarChar, FECHA)
-      .input(`articulo${i}`, sql.Numeric(7, 2), Number(row.articulo))
-      .input(`talle${i}`, sql.TinyInt, Number(row.talle))
-      .input(
-        `aProducir${i}`,
-        sql.SmallInt,
-        status === 'inserted' ? Number(row.aProducir) : 0
-      )
-      .input(`room${i}`, sql.NVarChar(10), room);
+    request.query += `
+      INSERT INTO APP_PROGRAMADA (Fecha, Articulo, Talle, Docenas, RoomCode)
+        VALUES (@fecha${i}, @articulo${i}, @talle${i}, @aProducir${i}, @room${i});
+    `;
+
+    request.params.push(
+      {
+        name: `fecha${i}`,
+        type: sql.VarChar,
+        value: FECHA,
+      },
+      {
+        name: `articulo${i}`,
+        type: sql.Numeric(7, 2),
+        value: Number(row.articulo),
+      },
+      {
+        name: `talle${i}`,
+        type: sql.TinyInt,
+        value: Number(row.talle),
+      },
+      {
+        name: `aProducir${i}`,
+        type: sql.SmallInt,
+        value: status === 'inserted' ? Number(row.aProducir) : 0,
+      },
+      {
+        name: `room${i}`,
+        type: sql.NVarChar(10),
+        value: room,
+      }
+    );
   });
 
-  // Build a multi-row insert
-  const values = data
-    .map(
-      (_, i) =>
-        `(@fecha${i}, @articulo${i}, @talle${i}, @aProducir${i}, @room${i})`
-    )
-    .join(',\n');
-
-  const query = `
-    INSERT INTO APP_PROGRAMADA (Fecha, Articulo, Talle, Docenas, RoomCode)
-      VALUES ${values};`;
-
-  return request.query(query);
+  return runQuery(pool, request);
 };
 
 module.exports = insertProgramada;

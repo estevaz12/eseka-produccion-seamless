@@ -1,15 +1,17 @@
-function logQuery(text, params) {
+const serverLog = require('./serverLog');
+
+function logQuery(query, params) {
   serverLog('=== SQL QUERY ===');
-  serverLog(text.trim());
+  serverLog(query.trim());
   serverLog('=== PARAMETERS ===');
   for (const p of params) {
     serverLog(`@${p.name} = ${JSON.stringify(p.value)} (${p.type.name})`);
   }
 }
 
-async function runQuery(pool, { text, params }) {
+async function runQuery(pool, { query, params }, log = false) {
   // Log before execution
-  logQuery(text, params);
+  if (log) logQuery(query, params);
 
   const request = pool.request();
   for (const p of params) {
@@ -18,7 +20,7 @@ async function runQuery(pool, { text, params }) {
     }
   }
 
-  return request.query(text);
+  return request.query(query);
 }
 
 module.exports = {

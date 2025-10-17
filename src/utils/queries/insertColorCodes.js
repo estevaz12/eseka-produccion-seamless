@@ -1,8 +1,6 @@
 const sql = require('mssql');
-const updateArticuloTipo = require('./updateArticulo');
 const serverLog = require('../serverLog');
 const getArticulo = require('./getArticulo');
-const insertArticulo = require('./insertArticulo');
 
 const insertColorCodes = async (pool, data) => {
   let query = '';
