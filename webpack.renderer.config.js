@@ -1,5 +1,6 @@
 const rules = require('./webpack.rules');
 const Dotenv = require('dotenv-webpack');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 rules.push({
   test: /\.css$/,
@@ -14,5 +15,5 @@ module.exports = {
   module: {
     rules,
   },
-  plugins: [new Dotenv()],
+  plugins: [new Dotenv(), new ForkTsCheckerWebpackPlugin()],
 };

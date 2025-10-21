@@ -1,6 +1,7 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   /**
@@ -21,6 +22,7 @@ module.exports = {
   },
   plugins: [
     new Dotenv(),
+    new ForkTsCheckerWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/assets/icons/icon.ico', to: 'assets/icons' },

@@ -7,9 +7,9 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "start:server": "node ./src/server.js",
-    "start": "electron-forge start",
-    "package": "electron-forge package --platform=win32",
-    "make": "electron-forge make --platform=win32",
+    "start": "npm run type-check && electron-forge start",
+    "package": "npm run type-check && electron-forge package --platform=win32",
+    "make": "npm run type-check && electron-forge make --platform=win32",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
@@ -38,7 +38,6 @@
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
-    "concurrently": "^9.1.2",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^6.11.0",
     "dotenv-webpack": "^8.1.0",
