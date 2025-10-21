@@ -40,6 +40,18 @@ module.exports = [
     ],
   },
   {
+    test: /\.tsx?$/,
+    exclude: /node_modules/,
+    use: [
+      {
+        loader: 'ts-loader', 
+        options: {
+          transpileOnly: true
+        }
+      }
+    ]
+  },
+  {
     test: /\.(png|jpe?g|gif|svg)$/i,
     type: 'asset/resource',
     generator: {

@@ -5,7 +5,7 @@
   "description": "An app for tracking production data.",
   "main": ".webpack/main",
   "scripts": {
-    "start:conc": "concurrently --kill-others -n SERVER,ELECTRON -c blue,cyan \"npm run start:server\" \"npm run start:electron\"",
+    "type-check": "tsc --noEmit",
     "start:server": "node ./src/server.js",
     "start": "electron-forge start",
     "package": "electron-forge package --platform=win32",
@@ -32,6 +32,9 @@
     "@electron-forge/plugin-webpack": "^7.8.0",
     "@electron/fuses": "^1.8.0",
     "@timfish/forge-externals-plugin": "^0.2.1",
+    "@types/node": "^24.9.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
@@ -42,12 +45,15 @@
     "electron": "35.2.0",
     "eslint": "^8.57.1",
     "eslint-config-react-app": "^7.0.1",
+    "fork-ts-checker-webpack-plugin": "^9.1.0",
     "node-loader": "^2.1.0",
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
     "react-compiler-webpack": "^0.2.0",
     "style-loader": "^3.3.4",
-    "tailwindcss": "^4.1.4"
+    "tailwindcss": "^4.1.4",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
