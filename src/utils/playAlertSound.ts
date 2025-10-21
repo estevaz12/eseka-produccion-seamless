@@ -1,6 +1,6 @@
-import alertBeep from '../assets/sounds/alert-beep.wav';
+const alertBeep = require('../assets/sounds/alert-beep.wav');
 
-function playAlertSound(times = 3, interval = 1000) {
+function playAlertSound(times: number = 3, interval: number = 1000) {
   let played = 0;
   const playOnce = () => {
     const audio = new Audio(alertBeep);
@@ -13,4 +13,4 @@ function playAlertSound(times = 3, interval = 1000) {
   playOnce();
 }
 
-export { playAlertSound };
+module.exports = playAlertSound;

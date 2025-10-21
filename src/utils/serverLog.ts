@@ -1,4 +1,4 @@
-const serverLog = (msg) => {
+const serverLog = (msg: string) => {
   process.parentPort.postMessage(msg);
   // console.log(msg);
 };

@@ -5,9 +5,12 @@ const colors = {
   yellow: '#ffc000',
   red: '#ed3140',
   gray: '#decccc',
-};
+} as const;
 
-function dateFormatter(date, context) {
+function dateFormatter(
+  date: string,
+  context: { location: 'tick' | 'tooltip' }
+) {
   const dateObj = !date ? dayjs.tz() : dayjs.tz(date);
   const dateLoc = dateObj.locale('es');
   return context.location === 'tick'

@@ -1,5 +1,4 @@
 // TODO: api docs
-// FIXME - sql injections
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');

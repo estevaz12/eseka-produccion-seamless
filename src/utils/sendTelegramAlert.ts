@@ -1,4 +1,4 @@
-function sendTelegramAlert(text) {
+function sendTelegramAlert(text: string) {
   fetch(`${process.env.BOT_API}/sendMessage`, {
     method: 'POST',
     headers: {
