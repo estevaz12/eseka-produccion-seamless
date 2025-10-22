@@ -24,7 +24,7 @@ export interface Machine {
 
 export interface Produccion {
   Articulo: number;
-  Tipo: number;
+  Tipo: string | null;
   Talle: number;
   Color: string;
   ColorId: number;
@@ -57,6 +57,7 @@ export interface ProgColor {
   Porcentaje: number;
   Docenas: number;
   Unidades: number;
+  Producido: number;
   Target: number;
   DocProg: number;
 }
