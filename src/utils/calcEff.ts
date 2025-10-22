@@ -1,13 +1,19 @@
-function calcEff(room, data) {
+import { IRecordSet } from 'mssql';
+import { CurrEffData, Room } from '../types';
+
+function calcEff(
+  room: Room,
+  data: IRecordSet<CurrEffData>
+): { groups: Group[]; total: number } {
   // filter by room first
   const roomData = data.filter((row) => row.RoomCode.startsWith(room));
   // then calculate efficiency by group
   let totalDivisor = 0;
   let totalDividend = 0;
-  let groups = roomData.reduce((acc, row) => {
+  let groupsObj = roomData.reduce(function (acc, row) {
     const wEff =
       row.WorkEfficiency > 100 ? row.TimeEfficiency : row.WorkEfficiency;
-    const groupCode =
+    const groupCode: string =
       room === 'SEAMLESS' ? seamlessGroups[row.MachCode] : row.GroupCode.trim();
 
     const divisor = wEff * (row.TimeOn + row.TimeOff);
@@ -29,8 +35,8 @@ function calcEff(room, data) {
     return acc;
   }, {});
 
-  groups = Object.keys(groups).map((groupCode) => {
-    const { divisor, dividend } = groups[groupCode];
+  const groups = Object.keys(groupsObj).map((groupCode) => {
+    const { divisor, dividend } = groupsObj[groupCode];
 
     if (dividend > 0) {
       // calculate total room efficiency
@@ -42,12 +48,19 @@ function calcEff(room, data) {
   });
 
   return {
-    groups: groups.sort((a, b) => a.GroupCode.localeCompare(b.GroupCode)),
+    groups: groups.sort((a: Group, b: Group) =>
+      a.GroupCode.localeCompare(b.GroupCode)
+    ),
     total: Math.round(totalDivisor / totalDividend),
   };
 }
 
 module.exports = calcEff;
+
+interface Group {
+  GroupCode: string;
+  GroupEff: number;
+}
 
 const seamlessGroups = {
   1001: '1001-1030',
