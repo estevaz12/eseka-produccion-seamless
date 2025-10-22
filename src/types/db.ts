@@ -11,6 +11,17 @@ export interface CurrEffData {
   [key: string]: any;
 }
 
+export interface Maquina {
+  MachCode: number;
+  StyleCode: string;
+  Pieces: number;
+  TargetOrder: number;
+  State: number;
+  IdealCycle: number;
+  WorkEfficiency: number;
+  RoomCode: string;
+}
+
 export interface Programada {
   Id: number;
   Fecha: string;

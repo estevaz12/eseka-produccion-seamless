@@ -1,13 +1,36 @@
+import { Dayjs } from 'dayjs';
+import { Maquina } from '../types';
+
 const dayjs = require('dayjs');
 
-function getWorkEff(row) {
+function getWorkEff(row: Maquina): number | null {
   return row.WorkEfficiency === 0 || !isProducing(row)
     ? null
     : row.WorkEfficiency;
 }
 
-function getMachState(row) {
-  let machState;
+interface MachStateStyle {
+  rowColor: string;
+  text:
+    | 'TEJIENDO'
+    | 'APAGADA'
+    | 'STOP TARGET'
+    | 'GIRANDO'
+    | 'ELECTRÓNICO'
+    | 'MECÁNICO'
+    | 'STOP PRODUCCIÓN'
+    | 'FALTA HILADO'
+    | 'FALTA REPUESTO'
+    | 'MUESTRA'
+    | 'CAMBIO'
+    | 'TURBINA'
+    | 'OFFLINE'
+    | 'DESINCRONIZADA'
+    | 'STOP GENERAL';
+}
+
+function getMachState(row: Maquina) {
+  let machState: MachStateStyle;
 
   /* Machine states
   0: RUN
@@ -28,7 +51,6 @@ function getMachState(row) {
   65535: DESINCRONIZADA
   */
   // styleCode will have PARADA: 1, 8, 11, 13, 56, 65535
-  // TODO: for later, APAGADA: 1, 56, 65535
   switch (row.State) {
     case 0:
       machState = { rowColor: '', text: 'TEJIENDO' };
@@ -89,15 +111,15 @@ function getMachState(row) {
   return machState;
 }
 
-function isProducing(row) {
+function isProducing(row: Maquina) {
   return [0, 2, 3, 5].includes(row.State);
 }
 
-function isParada(row) {
+function isParada(row: Maquina) {
   return [1, 8, 11, 13, 56, 65535].includes(row.State);
 }
 
-function calcIdealTime(row) {
+function calcIdealTime(row: Maquina) {
   if (!isProducing(row) || row.TargetOrder === 0 || row.WorkEfficiency === 0)
     return 0;
 
@@ -105,7 +127,7 @@ function calcIdealTime(row) {
   return idealTime;
 }
 
-function calcRealTime(row) {
+function calcRealTime(row: Maquina) {
   if (!isProducing(row) || row.TargetOrder === 0 || row.WorkEfficiency === 0)
     return 0;
 
@@ -113,13 +135,13 @@ function calcRealTime(row) {
   return actualTime;
 }
 
-function getDuration(seconds) {
+function getDuration(seconds: number): string | null {
   return seconds === 0
     ? null
     : dayjs.tz().add(seconds, 'seconds').format('DD/MM HH:mm');
 }
 
-function getDurationUnix(seconds) {
+function getDurationUnix(seconds: number): number | null {
   return seconds === 0 ? null : dayjs.tz().add(seconds, 'seconds').valueOf();
 }
 
