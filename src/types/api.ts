@@ -1,4 +1,4 @@
-import { Machine, Room } from './db';
+import { Machine, ProgColor, Room } from './db';
 
 export interface MachineParsed extends Machine {
   StyleCode: StyleCode;
@@ -22,4 +22,8 @@ export interface ProduccionParams {
   articulo: string;
   talle: string;
   colorId: string;
+}
+
+export interface ProgColorTable extends ProgColor {
+  Machines: MachineParsed[];
 }

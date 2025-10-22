@@ -1,11 +1,25 @@
-const sql = require('mssql');
-const { runProduccion } = require('./queries/produccion.js');
-const dayjs = require('dayjs');
-const serverLog = require('./serverLog.js');
+import sql, { ConnectionPool } from 'mssql';
+import { runProduccion } from './queries/produccion.js';
+import dayjs from 'dayjs';
+import serverLog from './serverLog.js';
+import { MachineParsed, Produccion, ProgColor } from '../types';
 
-const calculateNewTargets = async (pool, progUpdates, machines) => {
-  // serverLog(JSON.stringify(machines, null, 2));
+interface NewTarget {
+  machCode: number;
+  styleCode: string;
+  machTarget: number;
+  prevProgTarget: number;
+  newProgTarget: number;
+  monthProduction: number;
+  machPieces: number;
+  sendTarget: number | string;
+}
 
+const calculateNewTargets = async (
+  pool: ConnectionPool,
+  progUpdates: ProgColor[],
+  machines: MachineParsed[]
+) => {
   // Look through inserted articulos in MACHINES
   // Use Promise.all to run concurrently
   const newTargets = await Promise.all(
@@ -31,14 +45,14 @@ const calculateNewTargets = async (pool, progUpdates, machines) => {
       // if any machines are found
       if (targetMachines.length > 0) {
         const [previousRecord, monthProduction] = await Promise.all([
-          getPrevProgramada(newRecord), // get the previous record in programada
-          getMonthProduction(newRecord), // get month production
+          getPrevProgramada(pool, newRecord), // get the previous record in programada
+          getMonthProduction(pool, newRecord), // get month production
         ]);
 
         // Use Promise.all to run concurrently
         return Promise.all(
           targetMachines.map(async (machine) => {
-            let newTargetObj = {
+            let newTargetObj: NewTarget = {
               machCode: machine.MachCode,
               styleCode: machine.StyleCode.styleCode,
               machTarget: machine.TargetOrder,
@@ -46,6 +60,7 @@ const calculateNewTargets = async (pool, progUpdates, machines) => {
               newProgTarget: newRecord.Target,
               monthProduction: monthProduction,
               machPieces: machine.Pieces,
+              sendTarget: 0,
             };
 
             if (newRecord.Target - monthProduction <= 0) {
@@ -123,7 +138,7 @@ const calculateNewTargets = async (pool, progUpdates, machines) => {
 
 module.exports = calculateNewTargets;
 
-async function getMonthProduction(pool, newRecord) {
+async function getMonthProduction(pool: ConnectionPool, newRecord: ProgColor) {
   const startDate = dayjs
     .tz()
     .startOf('month')
@@ -136,7 +151,7 @@ async function getMonthProduction(pool, newRecord) {
 
   try {
     // Get the production for the month
-    monthProduction = await runProduccion(
+    const res = await runProduccion(
       pool,
       newRecord.RoomCode,
       startDate,
@@ -146,12 +161,10 @@ async function getMonthProduction(pool, newRecord) {
       newRecord.Talle,
       newRecord.ColorId
     );
-
-    monthProduction = monthProduction.recordset;
+    const data: Produccion = res.recordset;
 
     // The articulo might not be in the production table
-    monthProduction =
-      monthProduction.length === 0 ? 0 : monthProduction[0].Unidades;
+    monthProduction = data.length === 0 ? 0 : data[0].Unidades;
 
     serverLog(
       `Month production for ${newRecord.Articulo} ${newRecord.Talle} ${
@@ -165,12 +178,12 @@ async function getMonthProduction(pool, newRecord) {
   return monthProduction;
 }
 
-async function getPrevProgramada(pool, newRecord) {
-  let previousRecord;
+async function getPrevProgramada(pool: ConnectionPool, newRecord: ProgColor) {
+  let previousRecord: ProgColor;
 
   try {
-    previousRecord = await getPreviousRecord(pool, newRecord);
-    previousRecord = previousRecord.recordset[0];
+    const result = await getPreviousRecord(pool, newRecord);
+    previousRecord = result.recordset[0];
     serverLog(
       `Previous record for ${newRecord.Articulo} ${newRecord.Talle} ${
         newRecord.Color
@@ -183,7 +196,7 @@ async function getPrevProgramada(pool, newRecord) {
   return previousRecord;
 }
 
-function getPreviousRecord(pool, newRecord) {
+function getPreviousRecord(pool: ConnectionPool, newRecord: ProgColor) {
   return pool
     .request()
     .input('room', sql.NVarChar(10), newRecord.RoomCode)

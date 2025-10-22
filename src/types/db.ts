@@ -37,6 +37,7 @@ export interface Produccion {
   readonly Hex: string;
   readonly WhiteText: boolean;
   readonly Unidades: number;
+  [keys: string]: any;
 }
 
 export interface Programada {

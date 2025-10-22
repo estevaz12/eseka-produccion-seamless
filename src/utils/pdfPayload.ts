@@ -7,7 +7,7 @@ import {
   MachineParsed,
   Produccion,
   ProduccionParams,
-  ProgColor,
+  ProgColorTable,
   Room,
 } from '../types';
 
@@ -239,7 +239,7 @@ async function getProduced(room: Room) {
 }
 
 async function getProgramada(room: Room, startDate: string) {
-  let data: ProgColor[] = [];
+  let data: ProgColorTable[] = [];
   try {
     const params = new URLSearchParams({
       startDate,

@@ -1,4 +1,4 @@
-import { ProgColor } from '../types';
+import { ProgColorTable } from '../types';
 import localizedNum from './numFormat';
 
 interface PartialProgColor {
@@ -6,9 +6,9 @@ interface PartialProgColor {
   Producido: number;
 }
 
-type ProgColorData = ProgColor | PartialProgColor;
+type ProgColorData = ProgColorTable | PartialProgColor;
 
-function calcAProducir(row: ProgColor) {
+function calcAProducir(row: ProgColorTable) {
   if (row.Tipo === null) return row.Docenas;
   if (row.Tipo === '#') return row.Docenas * 2;
   return row.Docenas / 2;
@@ -20,7 +20,7 @@ function calcProducido(row: ProgColorData, docena: number, porcExtra: number) {
   return row.Producido / 2 / docena / porcExtra;
 }
 
-function calcFaltaUnidades(row: ProgColor) {
+function calcFaltaUnidades(row: ProgColorTable) {
   return row.Target - row.Producido;
 }
 
@@ -39,7 +39,7 @@ function roundUpEven(num: number) {
   return num % 2 === 0 ? num : num + 1;
 }
 
-const aProducirStr = (row: ProgColor) => {
+const aProducirStr = (row: ProgColorTable) => {
   const aProducir = formatNum(calcAProducir(row));
   if (row.Tipo === null) {
     return aProducir;
@@ -48,7 +48,7 @@ const aProducirStr = (row: ProgColor) => {
   }
 };
 
-const colorStr = (row: ProgColor) => {
+const colorStr = (row: ProgColorTable) => {
   return `${row.Color} ${
     row.Porcentaje && row.Porcentaje < 100 ? `(${row.Porcentaje}%)` : ''
   }`;
@@ -65,7 +65,7 @@ const producidoStr = (
     : `${producido} (${formatNum(row.Producido / docena / porcExtra)})`;
 };
 
-const faltaStr = (row: ProgColor, docena: number, porcExtra: number) => {
+const faltaStr = (row: ProgColorTable, docena: number, porcExtra: number) => {
   const falta = formatNum(
     calcAProducir(row) - calcProducido(row, docena, porcExtra)
   );
