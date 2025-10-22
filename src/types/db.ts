@@ -1,63 +1,78 @@
+import {
+  ISqlTypeFactoryWithLength,
+  ISqlTypeFactoryWithNoParams,
+  ISqlTypeFactoryWithPrecisionScale,
+} from 'mssql';
+
 export type Room = 'HOMBRE' | 'SEAMLESS' | 'MUJER';
 
 export interface CurrEffData {
-  RoomCode: string;
-  GroupCode: string;
-  MachCode: number;
-  TimeOn: number;
-  TimeOff: number;
-  WorkEfficiency: number;
-  TimeEfficiency: number;
-  [key: string]: any;
+  readonly RoomCode: string;
+  readonly GroupCode: string;
+  readonly MachCode: number;
+  readonly TimeOn: number;
+  readonly TimeOff: number;
+  readonly WorkEfficiency: number;
+  readonly TimeEfficiency: number;
+  readonly [key: string]: any;
 }
 
 export interface Machine {
-  MachCode: number;
-  StyleCode: string | object;
-  Pieces: number;
-  TargetOrder: number;
-  State: number;
-  IdealCycle: number;
-  WorkEfficiency: number;
-  RoomCode: string;
+  readonly MachCode: number;
+  readonly StyleCode: string | object;
+  readonly Pieces: number;
+  readonly TargetOrder: number;
+  readonly State: number;
+  readonly IdealCycle: number;
+  readonly WorkEfficiency: number;
+  readonly RoomCode: string;
 }
 
 export interface Produccion {
-  Articulo: number;
-  Tipo: string | null;
-  Talle: number;
-  Color: string;
-  ColorId: number;
-  Hex: string;
-  WhiteText: boolean;
-  Unidades: number;
+  readonly Articulo: number;
+  readonly Tipo: string | null;
+  readonly Talle: number;
+  readonly Color: string;
+  readonly ColorId: number;
+  readonly Hex: string;
+  readonly WhiteText: boolean;
+  readonly Unidades: number;
 }
 
 export interface Programada {
-  Id: number;
-  Fecha: string;
-  Articulo: number;
-  Talle: number;
-  Docenas: number;
-  RoomCode: string;
+  readonly Id: number;
+  readonly Fecha: string;
+  readonly Articulo: number;
+  readonly Talle: number;
+  readonly Docenas: number;
+  readonly RoomCode: string;
 }
 
 export interface ProgColor {
-  RoomCode: string;
-  Fecha: string;
-  Programada: number;
-  ColorDistr: number;
-  Articulo: number;
-  Tipo: string | null;
-  Talle: number;
-  Color: string;
-  ColorId: number;
-  Hex: string;
-  WhiteText: boolean;
-  Porcentaje: number;
-  Docenas: number;
-  Unidades: number;
-  Producido: number;
-  Target: number;
-  DocProg: number;
+  readonly RoomCode: string;
+  readonly Fecha: string;
+  readonly Programada: number;
+  readonly ColorDistr: number;
+  readonly Articulo: number;
+  readonly Tipo: string | null;
+  readonly Talle: number;
+  readonly Color: string;
+  readonly ColorId: number;
+  readonly Hex: string;
+  readonly WhiteText: boolean;
+  readonly Porcentaje: number;
+  readonly Docenas: number;
+  readonly Unidades: number;
+  readonly Producido: number;
+  readonly Target: number;
+  readonly DocProg: number;
+}
+
+export interface SQLQueryParam {
+  name: string;
+  type:
+    | ISqlTypeFactoryWithLength
+    | ISqlTypeFactoryWithNoParams
+    | ISqlTypeFactoryWithPrecisionScale;
+  value: string | number;
 }

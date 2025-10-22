@@ -1,6 +1,8 @@
-const serverLog = require('./serverLog');
+import { ConnectionPool } from 'mssql';
+import { SQLQueryParam } from '../types';
+import serverLog from './serverLog';
 
-function logQuery(query, params) {
+function logQuery(query: string, params: SQLQueryParam[]) {
   serverLog('=== SQL QUERY ===');
   serverLog(query.trim());
   serverLog('=== PARAMETERS ===');
@@ -9,7 +11,16 @@ function logQuery(query, params) {
   }
 }
 
-async function runQuery(pool, { query, params }, log = false) {
+interface QueryOptions {
+  query: string;
+  params: SQLQueryParam[];
+}
+
+async function runQuery(
+  pool: ConnectionPool,
+  { query, params }: QueryOptions,
+  log = false
+) {
   // Log before execution
   if (log) logQuery(query, params);
 
@@ -23,7 +34,4 @@ async function runQuery(pool, { query, params }, log = false) {
   return request.query(query);
 }
 
-module.exports = {
-  logQuery,
-  runQuery,
-};
+export { logQuery, runQuery };

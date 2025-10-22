@@ -1,6 +1,4 @@
-const serverLog = (msg: string) => {
+export default function serverLog(msg: string) {
   process.parentPort.postMessage(msg);
   // console.log(msg);
-};
-
-module.exports = serverLog;
+}
