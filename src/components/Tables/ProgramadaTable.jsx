@@ -164,76 +164,76 @@ export default function ProgramadaTable({
           },
         }
       : live
-      ? {
-          id: 'idealTime',
-          label: 'Tiempo Min.',
-          align: 'center',
-          width: 'w-[12%]',
-          pdfRender: (row) => {
-            if (!live) return '';
+        ? {
+            id: 'idealTime',
+            label: 'Tiempo Min.',
+            align: 'center',
+            width: 'w-[12%]',
+            pdfRender: (row) => {
+              if (!live) return '';
 
-            const idealTime = calcIdealTime(row);
-            switch (idealTime) {
-              case 0:
-                return '';
-              case -1:
-                return 'LLEGÓ';
-              default:
-                return getDuration(idealTime);
-            }
-          },
-          sortFn: (a, b, order) => {
-            if (!live) return 0;
-
-            const aIdealTime = calcIdealTime(a);
-            const bIdealTime = calcIdealTime(b);
-
-            // articulos not in production to bottom always
-            // doing this first guarantees producing items remain at the
-            // beginning
-            if (!aIdealTime && a.Machines.length === 0)
-              return order === 'asc' ? -Infinity : Infinity;
-            if (!bIdealTime && b.Machines.length === 0)
-              return order === 'asc' ? Infinity : -Infinity;
-
-            // if ideal time is 0 and is producing, place at top always
-            if (aIdealTime === 0 && a.Machines.length > 0)
-              return order === 'asc' ? 1 : -1;
-            if (bIdealTime === 0 && b.Machines.length > 0)
-              return order === 'asc' ? -1 : 1;
-
-            // always place LLEGÓ at the top when asc
-            // place at bottom when descending
-            if (aIdealTime === -1) return order === 'asc' ? 1 : 1;
-            if (bIdealTime === -1) return order === 'asc' ? -1 : -1;
-
-            // if not LLEGÓ, sort by ideal time duration
-            let aDuration = getDurationUnix(aIdealTime);
-            let bDuration = getDurationUnix(bIdealTime);
-
-            return bDuration - aDuration;
-          },
-        }
-      : {
-          id: 'faltaUnidades',
-          label: 'Falta (un)',
-          align: 'right',
-          pdfRender: (row) => localizedNum(row.Target - row.Producido),
-          sortFn: (a, b, order) => {
-            const faltaCalc = (row, order) => {
-              const faltaUn = row.Target - row.Producido;
-              // send to bottom if falta is negative
-              if (faltaUn <= 0) {
-                return order === 'asc' ? Infinity : 0;
+              const idealTime = calcIdealTime(row);
+              switch (idealTime) {
+                case 0:
+                  return '';
+                case -1:
+                  return 'LLEGÓ';
+                default:
+                  return getDuration(idealTime);
               }
-              return faltaUn;
-            };
+            },
+            sortFn: (a, b, order) => {
+              if (!live) return 0;
 
-            const aFaltaUn = faltaCalc(a, order);
-            const bFaltaUn = faltaCalc(b, order);
-            return bFaltaUn - aFaltaUn;
+              const aIdealTime = calcIdealTime(a);
+              const bIdealTime = calcIdealTime(b);
+
+              // articulos not in production to bottom always
+              // doing this first guarantees producing items remain at the
+              // beginning
+              if (!aIdealTime && a.Machines.length === 0)
+                return order === 'asc' ? -Infinity : Infinity;
+              if (!bIdealTime && b.Machines.length === 0)
+                return order === 'asc' ? Infinity : -Infinity;
+
+              // if ideal time is 0 and is producing, place at top always
+              if (aIdealTime === 0 && a.Machines.length > 0)
+                return order === 'asc' ? 1 : -1;
+              if (bIdealTime === 0 && b.Machines.length > 0)
+                return order === 'asc' ? -1 : 1;
+
+              // always place LLEGÓ at the top when asc
+              // place at bottom when descending
+              if (aIdealTime === -1) return order === 'asc' ? 1 : 1;
+              if (bIdealTime === -1) return order === 'asc' ? -1 : -1;
+
+              // if not LLEGÓ, sort by ideal time duration
+              let aDuration = getDurationUnix(aIdealTime);
+              let bDuration = getDurationUnix(bIdealTime);
+
+              return bDuration - aDuration;
+            },
+          }
+        : {
+            id: 'faltaUnidades',
+            label: 'Falta (un)',
+            align: 'right',
+            pdfRender: (row) => localizedNum(row.Target - row.Producido),
+            sortFn: (a, b, order) => {
+              const faltaCalc = (row, order) => {
+                const faltaUn = row.Target - row.Producido;
+                // send to bottom if falta is negative
+                if (faltaUn <= 0) {
+                  return order === 'asc' ? Infinity : 0;
+                }
+                return faltaUn;
+              };
+
+              const aFaltaUn = faltaCalc(a, order);
+              const bFaltaUn = faltaCalc(b, order);
+              return bFaltaUn - aFaltaUn;
+            },
           },
-        },
     (live || room === 'SEAMLESS') && {
       id: 'target',
       label: 'Target (un)',
@@ -315,8 +315,10 @@ export default function ProgramadaTable({
     let rowClassName = 'bg-todo';
     if (!row.Docenas && row.Docenas !== 0)
       rowClassName = ''; // NO TIENE DISTR, FALTA ASIGNAR
-    else if (row.Machines.length > 0) rowClassName = 'bg-making'; // TEJIENDO
-    else if (faltaUnidades <= 0) rowClassName = 'bg-done'; // LLEGÓ
+    else if (row.Machines.length > 0)
+      rowClassName = 'bg-making'; // TEJIENDO
+    else if (faltaUnidades <= 0)
+      rowClassName = 'bg-done'; // LLEGÓ
     else if (row.Machines.length === 0 && faltaUnidades <= 24)
       rowClassName = 'bg-almost-done'; // CASI LLEGÓ - Menos de dos docena
     else if (row.Machines.length === 0 && faltaUnidades < row.Target)

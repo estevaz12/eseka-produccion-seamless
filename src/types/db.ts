@@ -11,15 +11,26 @@ export interface CurrEffData {
   [key: string]: any;
 }
 
-export interface Maquina {
+export interface Machine {
   MachCode: number;
-  StyleCode: string;
+  StyleCode: string | object;
   Pieces: number;
   TargetOrder: number;
   State: number;
   IdealCycle: number;
   WorkEfficiency: number;
   RoomCode: string;
+}
+
+export interface Produccion {
+  Articulo: number;
+  Tipo: number;
+  Talle: number;
+  Color: string;
+  ColorId: number;
+  Hex: string;
+  WhiteText: boolean;
+  Unidades: number;
 }
 
 export interface Programada {
@@ -29,4 +40,23 @@ export interface Programada {
   Talle: number;
   Docenas: number;
   RoomCode: string;
+}
+
+export interface ProgColor {
+  RoomCode: string;
+  Fecha: string;
+  Programada: number;
+  ColorDistr: number;
+  Articulo: number;
+  Tipo: string | null;
+  Talle: number;
+  Color: string;
+  ColorId: number;
+  Hex: string;
+  WhiteText: boolean;
+  Porcentaje: number;
+  Docenas: number;
+  Unidades: number;
+  Target: number;
+  DocProg: number;
 }

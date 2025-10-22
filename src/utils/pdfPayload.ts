@@ -2,8 +2,18 @@ import dayjs from 'dayjs';
 import { producidoStr } from './progTableUtils';
 import { isProducing } from './maquinasUtils';
 import localizedNum from './numFormat';
+import {
+  Cols,
+  MachineParsed,
+  Produccion,
+  ProduccionParams,
+  ProgColor,
+  Room,
+} from '../types';
 
-function stringifyCell(v) {
+type TableRow = object;
+
+function stringifyCell(v: any): string {
   if (v == null) return '';
   if (typeof v === 'number') return String(v);
   if (typeof v === 'string') return v;
@@ -12,12 +22,14 @@ function stringifyCell(v) {
   return String(v);
 }
 
+type FootnoteTuple = [Room, string, number, number];
+
 export async function buildPdfPayload(
-  cols,
-  rows,
-  footerCols,
-  addToProgramada,
-  footnoteData
+  cols: Cols[],
+  rows: TableRow[],
+  footerCols: string[],
+  addToProgramada: boolean,
+  footnoteData: FootnoteTuple
 ) {
   const cleanCols = prepCols(cols);
 
@@ -32,7 +44,7 @@ export async function buildPdfPayload(
   return { columns: cleanCols, rows: parsedRows, footer, footnote };
 }
 
-function prepCols(cols) {
+function prepCols(cols: Cols[]) {
   return cols.map((c) => ({
     id: c.id,
     label: c.label ?? String(c.id ?? ''),
@@ -40,11 +52,11 @@ function prepCols(cols) {
   }));
 }
 
-function parseRows(rows, cols) {
+function parseRows(rows: TableRow[], cols: Cols[]) {
   return rows.map((row) => {
-    const out = {};
+    const out: TableRow = {};
     for (const col of cols) {
-      let val;
+      let val: string | number;
       if (typeof col.pdfRender === 'function') {
         val = col.pdfRender(row);
       } else {
@@ -58,18 +70,26 @@ function parseRows(rows, cols) {
   });
 }
 
-function buildFooter(footerCols, cols, rows) {
-  const footer = footerCols ? {} : null;
+type FooterRow = object;
+
+function buildFooter(
+  footerCols: string[],
+  cols: Cols[],
+  rows: TableRow[]
+): FooterRow {
+  const footer: FooterRow | null = footerCols ? {} : null;
+
   if (footer) {
     for (const col of cols) {
       const isFooterCol = footerCols.includes(col.id);
-      const isNumeric = (val) => typeof val === 'number' || !isNaN(Number(val));
+      const isNumeric = (val: number | string) =>
+        typeof val === 'number' || !isNaN(Number(val));
 
-      let total = null;
+      let total: number | null = null;
 
       if (isFooterCol) {
         const rawValues = rows.map((row) => {
-          const val =
+          const val: string | number =
             typeof col.pdfValue === 'function'
               ? col.pdfValue(row)
               : row[col.id];
@@ -96,11 +116,17 @@ function buildFooter(footerCols, cols, rows) {
       }
     }
   }
+
   return footer;
 }
 
-async function buildFootnote(room, startDate, docena, porcExtra) {
-  const toAdd = [];
+async function buildFootnote(
+  room: Room,
+  startDate: string,
+  docena: number,
+  porcExtra: number
+): Promise<TableRow> {
+  const toAdd: TableRow[] = [];
   // get all articulos produced in the month and current programada
   const [produced, programada, machines] = await Promise.all([
     getProduced(room),
@@ -168,20 +194,26 @@ async function buildFootnote(room, startDate, docena, porcExtra) {
   return toAdd.map(formatMachines);
 }
 
-function formatMachines(row) {
-  let machs = row.machines.map((m) => m.MachCode);
-  machs = machs.length <= 3 ? machs.join(', ') : `${machs.length} mqs.`;
+interface RowMachines {
+  machines: MachineParsed[];
+  [key: string]: any;
+}
+
+function formatMachines(row: RowMachines) {
+  const machs = row.machines.map((m) => m.MachCode);
+  const machsStr =
+    machs.length <= 3 ? machs.join(', ') : `${machs.length} mqs.`;
 
   return {
     ...row,
-    machines: machs,
+    machines: machsStr,
   };
 }
 
-async function getProduced(room) {
-  let data = [];
+async function getProduced(room: Room) {
+  let data: Produccion[] = [];
   try {
-    const params = new URLSearchParams({
+    const paramsObj: ProduccionParams = {
       room,
       startDate: dayjs
         .tz()
@@ -195,7 +227,8 @@ async function getProduced(room) {
       articulo: '',
       talle: '',
       colorId: '',
-    }).toString();
+    };
+    const params = new URLSearchParams(...Object.entries(paramsObj)).toString();
     const res = await fetch(`${process.env.EXPRESS_URL}/produccion?${params}`);
     data = await res.json();
   } catch (err) {
@@ -205,8 +238,8 @@ async function getProduced(room) {
   return data;
 }
 
-async function getProgramada(room, startDate) {
-  let data = [];
+async function getProgramada(room: Room, startDate: string) {
+  let data: ProgColor[] = [];
   try {
     const params = new URLSearchParams({
       startDate,
@@ -222,8 +255,8 @@ async function getProgramada(room, startDate) {
   return data;
 }
 
-async function getMachines(room) {
-  let data = [];
+async function getMachines(room: Room) {
+  let data: MachineParsed[] = [];
   try {
     const res = await fetch(`${process.env.EXPRESS_URL}/${room}/machines`);
     data = await res.json();

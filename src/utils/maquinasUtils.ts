@@ -1,9 +1,8 @@
-import { Dayjs } from 'dayjs';
-import { Maquina } from '../types';
+import { MachineParsed } from '../types';
 
 const dayjs = require('dayjs');
 
-function getWorkEff(row: Maquina): number | null {
+function getWorkEff(row: MachineParsed): number | null {
   return row.WorkEfficiency === 0 || !isProducing(row)
     ? null
     : row.WorkEfficiency;
@@ -29,7 +28,7 @@ interface MachStateStyle {
     | 'STOP GENERAL';
 }
 
-function getMachState(row: Maquina) {
+function getMachState(row: MachineParsed) {
   let machState: MachStateStyle;
 
   /* Machine states
@@ -111,15 +110,15 @@ function getMachState(row: Maquina) {
   return machState;
 }
 
-function isProducing(row: Maquina) {
+function isProducing(row: MachineParsed) {
   return [0, 2, 3, 5].includes(row.State);
 }
 
-function isParada(row: Maquina) {
+function isParada(row: MachineParsed) {
   return [1, 8, 11, 13, 56, 65535].includes(row.State);
 }
 
-function calcIdealTime(row: Maquina) {
+function calcIdealTime(row: MachineParsed) {
   if (!isProducing(row) || row.TargetOrder === 0 || row.WorkEfficiency === 0)
     return 0;
 
@@ -127,7 +126,7 @@ function calcIdealTime(row: Maquina) {
   return idealTime;
 }
 
-function calcRealTime(row: Maquina) {
+function calcRealTime(row: MachineParsed) {
   if (!isProducing(row) || row.TargetOrder === 0 || row.WorkEfficiency === 0)
     return 0;
 
@@ -145,7 +144,7 @@ function getDurationUnix(seconds: number): number | null {
   return seconds === 0 ? null : dayjs.tz().add(seconds, 'seconds').valueOf();
 }
 
-module.exports = {
+export {
   getWorkEff,
   getMachState,
   isProducing,
