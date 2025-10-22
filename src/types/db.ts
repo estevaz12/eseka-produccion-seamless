@@ -10,3 +10,12 @@ export interface CurrEffData {
   TimeEfficiency: number;
   [key: string]: any;
 }
+
+export interface Programada {
+  Id: number;
+  Fecha: string;
+  Articulo: number;
+  Talle: number;
+  Docenas: number;
+  RoomCode: string;
+}

@@ -1,9 +1,16 @@
-// oldProg: Id, Fecha, Articulo, Talle, Docenas
+import { Programada } from '../types';
+
 // newProg: articulo, talle, aProducir
-const compareProgramada = (oldProg, newProg) => {
-  const added = [];
-  const modified = [];
-  const deleted = [];
+interface NewProgramada {
+  articulo: number;
+  talle: number;
+  aProducir: number;
+}
+
+const compareProgramada = (oldProg: Programada[], newProg: NewProgramada[]) => {
+  const added: NewProgramada[] = [];
+  const modified: NewProgramada[] = [];
+  const deleted: NewProgramada[] = [];
 
   for (const newRow of newProg) {
     const found = oldProg.find(
