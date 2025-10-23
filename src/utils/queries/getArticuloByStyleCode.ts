@@ -2,12 +2,16 @@ import sql from 'mssql';
 import type { ConnectionPool, IResult } from 'mssql';
 import type { ColorCode } from '../../types';
 
+type ColorCodeATC = Promise<
+  IResult<Pick<ColorCode, 'Articulo' | 'Talle' | 'Color'>>
+>;
+
 async function getArticuloByStyleCode(
   pool: ConnectionPool,
   styleCode: string
-): Promise<IResult<ColorCode>> {
+): ColorCodeATC {
   return pool.request().input('styleCode', sql.Char(8), styleCode).query(`
-    SELECT *
+    SELECT Articulo, Talle, Color
     FROM APP_COLOR_CODES
     WHERE StyleCode = @styleCode;
   `);

@@ -19,6 +19,15 @@ export interface ColorCode {
   readonly StyleCode: string;
 }
 
+export interface ColorDistr {
+  readonly Id: number;
+  readonly Vigencia: string;
+  readonly Articulo: number;
+  readonly Talle: number;
+  readonly Color: number;
+  readonly Porcentaje: number;
+}
+
 export interface CurrEffData {
   readonly RoomCode: string;
   readonly GroupCode: string;
