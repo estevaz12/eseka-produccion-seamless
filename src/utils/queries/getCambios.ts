@@ -1,7 +1,14 @@
-const dayjs = require('dayjs');
-const sql = require('mssql');
+import sql from 'mssql';
+import type { ConnectionPool, IResult } from 'mssql';
+import type { Room } from '../../types';
 
-const getCambios = async (pool, startDate, room) => {
+type Cambios = Promise<IResult<any>>;
+
+async function getCambios(
+  pool: ConnectionPool,
+  startDate: string,
+  room: Room
+): Cambios {
   return pool
     .request()
     .input('roomCode', sql.Char(30), room)
@@ -94,6 +101,6 @@ const getCambios = async (pool, startDate, room) => {
     WHERE rn = 1
     ORDER BY Shift, MachCode;
   `);
-};
+}
 
-module.exports = getCambios;
+export default getCambios;

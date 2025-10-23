@@ -3,7 +3,8 @@ const { buildProduccion, runProduccion } = require('./produccion');
 module.exports = {
   getArticulo: require('./getArticulo.ts').default,
   getArticuloColorCodes: require('./getArticuloColorCodes.ts').default,
-  getArticuloColorDistr: require('./getArticuloColorDistr.js').default,
+  getArticuloColorDistr: require('./getArticuloColorDistr.ts').default,
+  getCambios: require('./getCambios.ts').default,
   buildProduccion,
   runProduccion,
   insertProgramada: require('./insertProgramada.js'),
@@ -28,5 +29,4 @@ module.exports = {
   getCurrWEff: require('./getCurrWEff.js'),
   getDailyWEff: require('./getDailyWEff.js'),
   getMonthSaldo: require('./getMonthSaldo.js'),
-  getCambios: require('./getCambios.js'),
 };
