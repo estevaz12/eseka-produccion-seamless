@@ -1,16 +1,21 @@
-const sql = require('mssql');
-const serverLog = require('./serverLog.ts');
-const getArticulo = require('./queries/getArticulo');
-const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode');
+import serverLog from './serverLog';
+import getArticulo from './queries/getArticulo.js';
+import getArticuloByStyleCode from './queries/getArticuloByStyleCode.js';
+import type { ConnectionPool } from 'mssql';
+import type { Room, StyleCode } from '../types';
 
-const parseStyleCode = async (pool, room, styleCode) => {
+async function parseStyleCode(
+  pool: ConnectionPool,
+  room: Room,
+  styleCode: string
+): Promise<StyleCode> {
   styleCode = styleCode.substring(0, 8);
-  let articulo = styleCode.substring(0, 5);
-  let punto = null;
-  let tipo = null;
+  let articulo: string | number = styleCode.substring(0, 5);
+  let punto: string = null;
+  let tipo: string = null;
   let talle = parseInt(styleCode.substring(5, 6));
   const color = styleCode.substring(6, 8);
-  let colorId = null;
+  let colorId: number = null;
 
   if (room === 'HOMBRE' && talle === 8) {
     // Talle 8 = UNICO = 1
@@ -81,7 +86,9 @@ const parseStyleCode = async (pool, room, styleCode) => {
     try {
       const res = await getArticulo(
         pool,
-        punto ? `${parseInt(articulo)}.${punto}` : articulo
+        punto
+          ? `${typeof articulo === 'string' ? parseInt(articulo) : articulo}.${punto}`
+          : articulo
       );
       tipo = res.recordset[0]?.Tipo ?? null;
     } catch (err) {
@@ -102,7 +109,7 @@ const parseStyleCode = async (pool, room, styleCode) => {
     return {
       styleCode,
       // need to clear punto for proper form entry
-      articulo: parseInt(articulo),
+      articulo: typeof articulo === 'string' ? parseInt(articulo) : articulo,
       punto,
       tipo,
       talle,
@@ -120,6 +127,6 @@ const parseStyleCode = async (pool, room, styleCode) => {
       colorId: null,
     };
   }
-};
+}
 
-module.exports = parseStyleCode;
+export default parseStyleCode;

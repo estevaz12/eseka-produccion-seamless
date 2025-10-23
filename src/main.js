@@ -238,6 +238,7 @@ app.on('activate', () => {
 app.on('before-quit', () => {
   if (monitorProcess) monitorProcess.kill();
   if (serverProcess) serverProcess.kill();
+  if (!app.isPackaged && mainWindow) mainWindow.webContents.closeDevTools();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

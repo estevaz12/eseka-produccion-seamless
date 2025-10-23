@@ -1,12 +1,19 @@
 import { Machine, ProgColor, Room } from './db';
 
-export interface MachineParsed extends Machine {
+export interface MachineParsed {
+  readonly MachCode: number;
   readonly StyleCode: StyleCode;
+  readonly Pieces: number;
+  readonly TargetOrder: number;
+  readonly State: number;
+  readonly IdealCycle: number;
+  readonly WorkEfficiency: number;
+  readonly RoomCode: string;
 }
 
 export interface StyleCode {
   readonly styleCode: string;
-  readonly articulo: number;
+  readonly articulo: number | string;
   readonly punto: string;
   readonly tipo: string | null;
   readonly talle: number;

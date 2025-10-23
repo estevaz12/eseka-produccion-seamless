@@ -10,7 +10,7 @@ const serverLog = require('./utils/serverLog.ts').default;
 const processPDF = require('./utils/processPDF').default;
 const compareProgramada = require('./utils/compareProgramada.ts').default;
 const calculateNewTargets = require('./utils/calculateNewTargets.ts').default;
-const parseMachines = require('./utils/parseMachines');
+const parseMachines = require('./utils/parseMachines.ts').default;
 const exportTablePDF = require('./utils/exportTablePDF.ts').default;
 const calcEff = require('./utils/calcEff.ts').default;
 // Queries
@@ -395,7 +395,7 @@ const startServer = () => {
   ) {
     let machines = await queries.getMachines(pool, room);
     machines = machines.recordset;
-    await parseMachines(pool, machines);
+    machines = await parseMachines(pool, machines);
 
     if (onlyValidCodes)
       machines = machines.filter(

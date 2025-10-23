@@ -19,7 +19,7 @@ export interface CurrEffData {
 
 export interface Machine {
   readonly MachCode: number;
-  readonly StyleCode: string | object;
+  readonly StyleCode: string;
   readonly Pieces: number;
   readonly TargetOrder: number;
   readonly State: number;
