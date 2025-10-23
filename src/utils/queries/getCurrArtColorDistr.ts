@@ -1,6 +1,14 @@
-const sql = require('mssql');
+import sql from 'mssql';
+import type { ConnectionPool, IResult } from 'mssql';
+import { ColorDistr } from '../../types';
 
-const getCurrArtColorDistr = async (pool, articulo, talle) => {
+type ColorDistrs = Promise<IResult<ColorDistr>>;
+
+async function getCurrArtColorDistr(
+  pool: ConnectionPool,
+  articulo: number,
+  talle: number
+): ColorDistrs {
   return pool
     .request()
     .input('articulo', sql.Numeric(7, 2), Number(articulo))
@@ -15,6 +23,6 @@ const getCurrArtColorDistr = async (pool, articulo, talle) => {
                                 ${talle ? `AND cd2.Talle = cd1.Talle` : ''})
       ORDER BY cd1.Porcentaje DESC;
     `);
-};
+}
 
-module.exports = getCurrArtColorDistr;
+export default getCurrArtColorDistr;
