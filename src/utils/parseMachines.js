@@ -1,4 +1,4 @@
-const parseStyleCode = require('./parseStyleCode.js');
+const parseStyleCode = require('./parseStyleCode');
 
 // Machines: [{MachCode, StyleCode: {styleCode, articulo, talle, color, colorId}, ...}]
 async function parseMachines(pool, machines) {

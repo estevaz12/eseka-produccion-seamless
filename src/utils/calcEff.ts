@@ -1,5 +1,5 @@
-import { IRecordSet } from 'mssql';
-import { CurrEffData, Room } from '../types';
+import type { IRecordSet } from 'mssql';
+import type { CurrEffData, Room } from '../types';
 
 function calcEff(
   room: Room,
@@ -55,7 +55,7 @@ function calcEff(
   };
 }
 
-module.exports = calcEff;
+export default calcEff;
 
 interface Group {
   GroupCode: string;

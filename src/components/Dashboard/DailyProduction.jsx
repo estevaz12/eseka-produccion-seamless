@@ -6,7 +6,7 @@ import Divider from '@mui/joy/Divider';
 import dayjs from 'dayjs';
 import Stack from '@mui/joy/Stack';
 import { useOutletContext } from 'react-router';
-import localizedNum from '../../utils/numFormat.js';
+import { localizedNum } from '../../utils/numFormat';
 
 export default function DailyProduction({ dataset, dailyAverage, loading }) {
   const { room } = useOutletContext();

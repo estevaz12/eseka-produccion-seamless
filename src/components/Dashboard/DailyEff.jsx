@@ -4,7 +4,7 @@ import {
   dateFormatter,
   colors,
   getIntervalDates,
-} from '../../utils/chartUtils.js';
+} from '../../utils/chartUtils';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 import SparkLineOverflow from './SparkLineOverflow.jsx';

@@ -12,7 +12,7 @@ import KeyboardArrowLeftRounded from '@mui/icons-material/KeyboardArrowLeftRound
 import KeyboardArrowRightRounded from '@mui/icons-material/KeyboardArrowRightRounded';
 import TableSkeleton from './TableSkeleton.jsx';
 import { useLocation } from 'react-router';
-import localizedNum from '../../utils/numFormat.js';
+import { localizedNum } from '../../utils/numFormat';
 
 let apiUrl;
 export default function ExpandedRow({ numCols, row }) {

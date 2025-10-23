@@ -13,7 +13,7 @@ import {
   getMachState,
   getWorkEff,
 } from '../utils/maquinasUtils';
-import localizedNum from '../utils/numFormat';
+import { localizedNum } from '../utils/numFormat';
 
 export default function MachineInfo({ mach, open, setOpened, machines }) {
   return (

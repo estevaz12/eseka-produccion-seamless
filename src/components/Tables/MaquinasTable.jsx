@@ -10,12 +10,12 @@ import {
   getMachState,
   getWorkEff,
   isParada,
-} from '../../utils/maquinasUtils.js';
+} from '../../utils/maquinasUtils';
 import { useConfig } from '../../ConfigContext.jsx';
 import { useOutletContext } from 'react-router';
 import Typography from '@mui/joy/Typography';
 import ExpandRowBtn from './ExpandRowBtn.jsx';
-import localizedNum from '../../utils/numFormat.js';
+import { localizedNum } from '../../utils/numFormat';
 
 let apiUrl;
 export default function MaquinasTable({ machines, pdfRows }) {

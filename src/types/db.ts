@@ -37,7 +37,7 @@ export interface Produccion {
   readonly Hex: string;
   readonly WhiteText: boolean;
   readonly Unidades: number;
-  [keys: string]: any;
+  readonly [keys: string]: any;
 }
 
 export interface Programada {
@@ -70,10 +70,10 @@ export interface ProgColor {
 }
 
 export interface SQLQueryParam {
-  name: string;
-  type:
+  readonly name: string;
+  readonly type:
     | ISqlTypeFactoryWithLength
     | ISqlTypeFactoryWithNoParams
     | ISqlTypeFactoryWithPrecisionScale;
-  value: string | number;
+  readonly value: string | number;
 }

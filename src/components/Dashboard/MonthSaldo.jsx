@@ -4,9 +4,9 @@ import { useConfig } from '../../ConfigContext.jsx';
 import { styled } from '@mui/joy/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import BigNumContent from './BigNumContent.jsx';
-import { colors, getIntervalDates } from '../../utils/chartUtils.js';
+import { colors, getIntervalDates } from '../../utils/chartUtils';
 import { useOutletContext } from 'react-router';
-import localizedNum from '../../utils/numFormat.js';
+import { localizedNum } from '../../utils/numFormat';
 
 let apiUrl;
 export default function MonthSaldo() {

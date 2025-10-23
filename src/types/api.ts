@@ -1,17 +1,17 @@
 import { Machine, ProgColor, Room } from './db';
 
 export interface MachineParsed extends Machine {
-  StyleCode: StyleCode;
+  readonly StyleCode: StyleCode;
 }
 
 export interface StyleCode {
-  styleCode: string;
-  articulo: number;
-  punto: string;
-  tipo: string | null;
-  talle: number;
-  color: string;
-  colorId: number;
+  readonly styleCode: string;
+  readonly articulo: number;
+  readonly punto: string;
+  readonly tipo: string | null;
+  readonly talle: number;
+  readonly color: string;
+  readonly colorId: number;
 }
 
 export interface ProduccionParams {
@@ -25,5 +25,5 @@ export interface ProduccionParams {
 }
 
 export interface ProgColorTable extends ProgColor {
-  Machines: MachineParsed[];
+  readonly Machines: MachineParsed[];
 }

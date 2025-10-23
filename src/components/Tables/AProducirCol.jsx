@@ -7,7 +7,7 @@ import Button from '@mui/joy/Button';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import { ToastsContext } from '../../Contexts.js';
-import { aProducirStr } from '../../utils/progTableUtils.js';
+import { aProducirStr } from '../../utils/progTableUtils';
 import { useOutletContext } from 'react-router';
 
 let apiUrl;

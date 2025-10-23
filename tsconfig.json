@@ -12,6 +12,7 @@
     "checkJs": false,
     "resolveJsonModule": true,
     "rootDir": "src",
+    "allowImportingTsExtensions": true,
     "noEmit": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true

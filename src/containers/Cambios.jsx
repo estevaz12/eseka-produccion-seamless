@@ -10,7 +10,7 @@ import RefreshBtn from '../components/RefreshBtn.jsx';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ExpandRowBtn from '../components/Tables/ExpandRowBtn.jsx';
 import Typography from '@mui/joy/Typography';
-import localizedNum from '../utils/numFormat.js';
+import { localizedNum } from '../utils/numFormat';
 
 let apiUrl, sqlDateFormat;
 
@@ -222,8 +222,8 @@ function calcProducido(row) {
   return row.Tipo === null
     ? row.Unidades
     : row.Tipo === '#'
-    ? row.Unidades * 2
-    : row.Unidades / 2;
+      ? row.Unidades * 2
+      : row.Unidades / 2;
 }
 
 function unidadesStr(row) {

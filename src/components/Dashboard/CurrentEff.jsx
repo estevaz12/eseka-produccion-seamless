@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useConfig } from '../../ConfigContext.jsx';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
-import { colors } from '../../utils/chartUtils.js';
+import { colors } from '../../utils/chartUtils';
 import Divider from '@mui/joy/Divider';
 import Stack from '@mui/joy/Stack';
 import dayjs from 'dayjs';

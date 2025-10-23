@@ -4,7 +4,7 @@ import { useConfig } from '../../ConfigContext.jsx';
 import { useLocation, useOutletContext } from 'react-router';
 import { useContext, useState } from 'react';
 import { DatesContext, ToastsContext } from '../../Contexts.js';
-import { buildPdfPayload } from '../../utils/pdfPayload.js';
+import { buildPdfPayload } from '../../utils/pdfPayload';
 import dayjs from 'dayjs';
 
 export default function EnhancedFooter({

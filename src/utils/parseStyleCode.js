@@ -1,7 +1,7 @@
 const sql = require('mssql');
-const serverLog = require('./serverLog.js');
-const getArticulo = require('./queries/getArticulo.js');
-const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode.js');
+const serverLog = require('./serverLog.ts');
+const getArticulo = require('./queries/getArticulo');
+const getArticuloByStyleCode = require('./queries/getArticuloByStyleCode');
 
 const parseStyleCode = async (pool, room, styleCode) => {
   styleCode = styleCode.substring(0, 8);
@@ -34,7 +34,7 @@ const parseStyleCode = async (pool, room, styleCode) => {
       colorId = res.recordset[0]?.Color ?? null;
 
       // if 9, preserve it for PARCHE processing
-      talle = talle !== 9 ? res.recordset[0]?.Talle ?? talle : talle;
+      talle = talle !== 9 ? (res.recordset[0]?.Talle ?? talle) : talle;
     } catch (err) {
       serverLog(
         `[ERROR] [parseStyleCode] StyleCode not in COLOR_CODES: ${styleCode}`

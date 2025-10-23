@@ -1,8 +1,9 @@
-import sql, { ConnectionPool } from 'mssql';
+import sql from 'mssql';
 import { runProduccion } from './queries/produccion.js';
 import dayjs from 'dayjs';
-import serverLog from './serverLog.js';
-import { MachineParsed, Produccion, ProgColor } from '../types';
+import serverLog from './serverLog.ts';
+import type { ConnectionPool } from 'mssql';
+import type { MachineParsed, Produccion, ProgColor } from '../types';
 
 interface NewTarget {
   machCode: number;
@@ -136,7 +137,7 @@ const calculateNewTargets = async (
   return newTargets.flat();
 };
 
-module.exports = calculateNewTargets;
+export default calculateNewTargets;
 
 async function getMonthProduction(pool: ConnectionPool, newRecord: ProgColor) {
   const startDate = dayjs

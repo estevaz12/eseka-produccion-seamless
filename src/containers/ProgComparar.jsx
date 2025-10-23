@@ -7,7 +7,7 @@ import NewArticuloForm from '../components/Forms/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useLocation, useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.js';
-import localizedNum from '../utils/numFormat.js';
+import { localizedNum } from '../utils/numFormat';
 import CompareInstructions from '../components/Compare/CompareInstructions.jsx';
 import DateTotalToolbar from '../components/Compare/DateTotalToolbar.jsx';
 import CompareToolbar from '../components/Compare/CompareToolbar.jsx';

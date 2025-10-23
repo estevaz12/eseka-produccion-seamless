@@ -1,17 +1,18 @@
 import dayjs from 'dayjs';
 import { producidoStr } from './progTableUtils';
 import { isProducing } from './maquinasUtils';
-import localizedNum from './numFormat';
-import {
-  Cols,
+import { localizedNum } from './numFormat';
+import type {
+  FooterRow,
   MachineParsed,
+  PDFCol,
   Produccion,
   ProduccionParams,
   ProgColorTable,
   Room,
+  TableCol,
+  TableRow,
 } from '../types';
-
-type TableRow = object;
 
 function stringifyCell(v: any): string {
   if (v == null) return '';
@@ -25,7 +26,7 @@ function stringifyCell(v: any): string {
 type FootnoteTuple = [Room, string, number, number];
 
 export async function buildPdfPayload(
-  cols: Cols[],
+  cols: TableCol[],
   rows: TableRow[],
   footerCols: string[],
   addToProgramada: boolean,
@@ -44,7 +45,7 @@ export async function buildPdfPayload(
   return { columns: cleanCols, rows: parsedRows, footer, footnote };
 }
 
-function prepCols(cols: Cols[]) {
+function prepCols(cols: TableCol[]): PDFCol[] {
   return cols.map((c) => ({
     id: c.id,
     label: c.label ?? String(c.id ?? ''),
@@ -52,7 +53,7 @@ function prepCols(cols: Cols[]) {
   }));
 }
 
-function parseRows(rows: TableRow[], cols: Cols[]) {
+function parseRows(rows: TableRow[], cols: TableCol[]) {
   return rows.map((row) => {
     const out: TableRow = {};
     for (const col of cols) {
@@ -70,11 +71,9 @@ function parseRows(rows: TableRow[], cols: Cols[]) {
   });
 }
 
-type FooterRow = object;
-
 function buildFooter(
   footerCols: string[],
-  cols: Cols[],
+  cols: TableCol[],
   rows: TableRow[]
 ): FooterRow {
   const footer: FooterRow | null = footerCols ? {} : null;
@@ -195,8 +194,8 @@ async function buildFootnote(
 }
 
 interface RowMachines {
-  machines: MachineParsed[];
-  [key: string]: any;
+  readonly machines: MachineParsed[];
+  readonly [key: string]: any;
 }
 
 function formatMachines(row: RowMachines) {

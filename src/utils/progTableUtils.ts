@@ -1,9 +1,9 @@
-import { ProgColorTable } from '../types';
-import localizedNum from './numFormat';
+import type { ProgColorTable } from '../types';
+import { localizedNum } from './numFormat';
 
 interface PartialProgColor {
-  Tipo: string | null;
-  Producido: number;
+  readonly Tipo: string | null;
+  readonly Producido: number;
 }
 
 type ProgColorData = ProgColorTable | PartialProgColor;

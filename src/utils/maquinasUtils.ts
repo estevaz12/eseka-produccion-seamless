@@ -1,6 +1,5 @@
-import { MachineParsed } from '../types';
-
-const dayjs = require('dayjs');
+import type { MachineParsed } from '../types';
+import dayjs from 'dayjs';
 
 function getWorkEff(row: MachineParsed): number | null {
   return row.WorkEfficiency === 0 || !isProducing(row)
@@ -10,7 +9,7 @@ function getWorkEff(row: MachineParsed): number | null {
 
 interface MachStateStyle {
   rowColor: string;
-  text:
+  readonly text:
     | 'TEJIENDO'
     | 'APAGADA'
     | 'STOP TARGET'

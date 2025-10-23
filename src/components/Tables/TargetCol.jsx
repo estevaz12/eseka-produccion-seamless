@@ -8,7 +8,7 @@ import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import { roundUpEven } from '../../utils/progTableUtils';
 import { useOutletContext } from 'react-router';
-import localizedNum from '../../utils/numFormat';
+import { localizedNum } from '../../utils/numFormat';
 
 export default function TargetCol({ row, faltaUnidades }) {
   const { room } = useOutletContext();

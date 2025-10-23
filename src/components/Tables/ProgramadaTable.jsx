@@ -12,7 +12,7 @@ import {
   footerFormat,
   producidoStr,
   roundUpEven,
-} from '../../utils/progTableUtils.js';
+} from '../../utils/progTableUtils';
 import AProducirCol from './AProducirCol.jsx';
 import EnhancedTable from './EnhancedTable.jsx';
 import ArticuloCol from './ArticuloCol.jsx';
@@ -20,8 +20,8 @@ import { DatesContext } from '../../Contexts.js';
 import ProgLegend from './ProgLegend.jsx';
 import EditArtBtn from './EditArtBtn.jsx';
 import { Link, useOutletContext } from 'react-router';
-import { getDuration, getDurationUnix } from '../../utils/maquinasUtils.js';
-import localizedNum from '../../utils/numFormat.js';
+import { getDuration, getDurationUnix } from '../../utils/maquinasUtils';
+import { localizedNum } from '../../utils/numFormat';
 import Stack from '@mui/joy/Stack';
 
 let apiUrl;

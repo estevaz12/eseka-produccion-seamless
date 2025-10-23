@@ -5,8 +5,8 @@ import {
   dateFormatter,
   colors,
   getIntervalDates,
-} from '../../utils/chartUtils.js';
-import localizedNum from '../../utils/numFormat.js';
+} from '../../utils/chartUtils';
+import { localizedNum } from '../../utils/numFormat';
 
 export default function TotalProduced({
   dataset,

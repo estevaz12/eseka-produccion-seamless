@@ -1,10 +1,10 @@
-import { Programada } from '../types';
+import type { Programada } from '../types';
 
 // newProg: articulo, talle, aProducir
 interface NewProgramada {
-  articulo: number;
-  talle: number;
-  aProducir: number;
+  readonly articulo: number;
+  readonly talle: number;
+  readonly aProducir: number;
 }
 
 const compareProgramada = (oldProg: Programada[], newProg: NewProgramada[]) => {
@@ -37,4 +37,4 @@ const compareProgramada = (oldProg: Programada[], newProg: NewProgramada[]) => {
   return { added, modified, deleted };
 };
 
-module.exports = compareProgramada;
+export default compareProgramada;

@@ -1,6 +1,6 @@
-import { ConnectionPool } from 'mssql';
-import { SQLQueryParam } from '../types';
-import serverLog from './serverLog';
+import type { ConnectionPool } from 'mssql';
+import type { SQLQueryParam } from '../types';
+import serverLog from './serverLog.ts';
 
 function logQuery(query: string, params: SQLQueryParam[]) {
   serverLog('=== SQL QUERY ===');
@@ -12,8 +12,8 @@ function logQuery(query: string, params: SQLQueryParam[]) {
 }
 
 interface QueryOptions {
-  query: string;
-  params: SQLQueryParam[];
+  readonly query: string;
+  readonly params: SQLQueryParam[];
 }
 
 async function runQuery(

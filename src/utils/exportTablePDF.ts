@@ -1,7 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const PDFDocument = require('pdfkit');
-const os = require('os');
+import fs from 'fs';
+import path from 'path';
+import PDFDocument from 'pdfkit';
+import os from 'os';
+import type { FooterRow, PDFCol, TableRow } from '../types';
 
 /**
  * Export rows to a table PDF.
@@ -27,7 +28,36 @@ const os = require('os');
  * @param {boolean} [opts.appendDateToTitle=true]
  * @returns {Promise<string>} Resolves to output file path.
  */
-function exportTablePDF(opts) {
+interface PDFOpts {
+  readonly columns: PDFCol[];
+  readonly rows: TableRow[];
+  readonly footer: FooterRow;
+  readonly footnote: TableRow;
+  readonly title: string;
+  readonly fileName: string;
+  readonly pageSize: 'A4' | 'LETTER' | [number, number];
+  readonly orientation: 'landscape' | 'portrait';
+  readonly margins: MarginOpts;
+  readonly rowHeight: number;
+  readonly cellPadding: number;
+  readonly font: string;
+  readonly headerFont: string;
+  readonly fontSize: number;
+  readonly headerFontSize: number;
+  readonly titleFontSize: number;
+  readonly appendDateToTitle: boolean;
+}
+
+interface MarginOpts {
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly left: number;
+}
+
+type alignment = 'left' | 'center' | 'right';
+
+function exportTablePDF(opts: PDFOpts) {
   const {
     columns,
     rows,
@@ -46,7 +76,7 @@ function exportTablePDF(opts) {
     headerFontSize = 10,
     titleFontSize = 14,
     appendDateToTitle = true,
-  } = opts || {};
+  }: PDFOpts = opts;
   const firstColExtraPadding = 20;
 
   if (!Array.isArray(columns) || columns.length === 0) {
@@ -55,13 +85,6 @@ function exportTablePDF(opts) {
   if (!Array.isArray(rows)) {
     return Promise.reject(new Error('rows must be an array'));
   }
-
-  const cols = columns.map((c) => ({
-    id: c.id,
-    label: c.label ?? String(c.id ?? ''),
-    align: c.align || 'left',
-    value: typeof c.value === 'function' ? c.value : undefined,
-  }));
 
   // Always export to tmp folder using fileName
   const outPath = path.join(
@@ -103,7 +126,7 @@ function exportTablePDF(opts) {
 
       // Column widths (auto-fit with padding, scaled to table)
       const colWidths = autoColWidths(doc, {
-        cols,
+        columns,
         rows,
         tableWidth,
         cellPadding,
@@ -121,10 +144,10 @@ function exportTablePDF(opts) {
         // Header text centered
         doc.font(headerFont).fontSize(headerFontSize);
         let x = leftX;
-        for (let i = 0; i < cols.length; i++) {
-          const label = cols[i].label || '';
+        for (let i = 0; i < columns.length; i++) {
+          const label = columns[i].label || '';
           const w = colWidths[i];
-          const align = cols[i].align || 'left';
+          const align: alignment = columns[i].align || 'left';
           const ty = y + (rowHeight - headerFontSize) / 2;
           const cPad =
             i === 0 ? cellPadding + firstColExtraPadding : cellPadding;
@@ -134,7 +157,7 @@ function exportTablePDF(opts) {
         y += rowHeight;
       };
 
-      const drawRow = (row) => {
+      const drawRow = (row: TableRow) => {
         // Bottom separator
         doc
           .moveTo(leftX, y + rowHeight)
@@ -143,10 +166,10 @@ function exportTablePDF(opts) {
 
         doc.font(font).fontSize(fontSize);
         let x = leftX;
-        for (let i = 0; i < cols.length; i++) {
-          const col = cols[i];
+        for (let i = 0; i < columns.length; i++) {
+          const col = columns[i];
           const w = colWidths[i];
-          const raw = col.value ? col.value(row) : getByPath(row, col.id);
+          const raw = row[col.id];
           const s = stringifyCell(raw);
           const maxInner = Math.max(0, w - 2 * cellPadding);
           const fitted = fitTextToWidth(doc, s, maxInner);
@@ -195,8 +218,8 @@ function exportTablePDF(opts) {
         doc.font(activeFont).fontSize(activeFontSize);
 
         let x = leftX;
-        for (let i = 0; i < cols.length; i++) {
-          const col = cols[i];
+        for (let i = 0; i < columns.length; i++) {
+          const col = columns[i];
           const w = colWidths[i];
           const raw = footer[col.id] ?? '';
           const s = stringifyCell(raw);
@@ -250,7 +273,18 @@ function exportTablePDF(opts) {
 
       doc.end();
     } catch (err) {
-      doc.destroy();
+      // Ensure the PDF doc is ended and the underlying stream is closed.
+      // Use a safe end() call and destroy the writable stream to avoid leaking the file descriptor.
+      try {
+        doc.end();
+      } catch {
+        // ignore if ending the doc fails
+      }
+
+      // Destroy the stream (Node Writable) and reject
+      if (typeof stream.destroy === 'function') {
+        stream.destroy(err as Error);
+      }
       return reject(err);
     }
 
@@ -267,7 +301,7 @@ function exportTablePDF(opts) {
  * @param {string} s - The file name to sanitize
  * @return {string} The sanitized file name
  */
-function sanitizeFileName(s) {
+function sanitizeFileName(s: string) {
   return String(s)
     .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_')
     .slice(0, 180);
@@ -280,27 +314,10 @@ function sanitizeFileName(s) {
  */
 function formatNow() {
   const d = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
+  const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(
     d.getHours()
   )}:${pad(d.getMinutes())}`;
-}
-
-/**
- * Gets a value from an object by traversing a path.
- * The path is a string of property names separated by dots.
- * If the path is empty, returns an empty string.
- * If the object is null or undefined, returns an empty string.
- * If the path is not traversable, returns undefined.
- * @param {object} obj - The object to traverse
- * @param {string} path - The path to traverse
- * @return {*} The value at the path, or an empty string if not traversable
- */
-function getByPath(obj, path) {
-  if (!path) return '';
-  if (obj == null) return '';
-  if (path.indexOf('.') === -1) return obj[path];
-  return path.split('.').reduce((acc, k) => (acc ? acc[k] : undefined), obj);
 }
 
 /**
@@ -319,7 +336,7 @@ function getByPath(obj, path) {
  * @param {*} v - The value to stringify
  * @return {string} The string representation of the value
  */
-function stringifyCell(v) {
+function stringifyCell(v: any): string {
   if (v == null) return '';
   if (typeof v === 'number') return String(v);
   if (typeof v === 'string') return v;
@@ -352,7 +369,12 @@ function stringifyCell(v) {
  * @returns {string} The fitted text, truncated with ellipsis if necessary.
  */
 
-function fitTextToWidth(doc, text, maxWidth, ellipsis = '…') {
+function fitTextToWidth(
+  doc: PDFKit.PDFDocument,
+  text: string,
+  maxWidth: number,
+  ellipsis: string = '…'
+) {
   if (!text) return '';
   const fullW = doc.widthOfString(text);
   if (fullW <= maxWidth) return text;
@@ -385,7 +407,14 @@ function fitTextToWidth(doc, text, maxWidth, ellipsis = '…') {
  * @param {number} [cellPadding=6] - The horizontal padding inside the cell.
  * @returns {number} The x-coordinate of the text string, aligned within the cell.
  */
-function alignedX(doc, text, x, width, align = 'left', cellPadding = 6) {
+function alignedX(
+  doc: PDFKit.PDFDocument,
+  text: string,
+  x: number,
+  width: number,
+  align: alignment = 'left',
+  cellPadding: number = 6
+) {
   const textW = doc.widthOfString(text || '');
   if (align === 'right') return x + width - cellPadding - textW;
   if (align === 'center') return x + (width - textW) / 2;
@@ -406,13 +435,13 @@ function alignedX(doc, text, x, width, align = 'left', cellPadding = 6) {
  * @param {number} [cellPadding=6] - The horizontal padding inside the cell.
  */
 function drawAlignedText(
-  doc,
-  text,
-  x,
-  y,
-  width,
-  align = 'left',
-  cellPadding = 6
+  doc: PDFKit.PDFDocument,
+  text: string,
+  x: number,
+  y: number,
+  width: number,
+  align: alignment = 'left',
+  cellPadding: number = 6
 ) {
   const tx = alignedX(doc, text, x, width, align, cellPadding);
   doc.text(text || '', tx, y, { lineBreak: false });
@@ -434,9 +463,20 @@ function drawAlignedText(
  *
  * @returns {Array<number>} An array of column widths.
  */
-function autoColWidths(doc, cfg) {
+interface TableCfg {
+  columns: PDFCol[];
+  rows: TableRow[];
+  tableWidth: number;
+  cellPadding: number;
+  font: string;
+  headerFont: string;
+  fontSize: number;
+  headerFontSize: number;
+}
+
+function autoColWidths(doc: PDFKit.PDFDocument, cfg: TableCfg) {
   const {
-    cols,
+    columns,
     rows,
     tableWidth,
     cellPadding,
@@ -446,13 +486,13 @@ function autoColWidths(doc, cfg) {
     headerFontSize,
   } = cfg;
 
-  const n = cols.length;
-  const widths = new Array(n).fill(0);
+  const n = columns.length;
+  const widths = new Array<number>(n).fill(0);
 
   // Header widths
   doc.font(headerFont).fontSize(headerFontSize);
   for (let i = 0; i < n; i++) {
-    const w = doc.widthOfString(cols[i].label || '') + 2 * cellPadding;
+    const w = doc.widthOfString(columns[i].label || '') + 2 * cellPadding;
     widths[i] = Math.max(widths[i], w);
   }
 
@@ -460,8 +500,8 @@ function autoColWidths(doc, cfg) {
   doc.font(font).fontSize(fontSize);
   for (const row of rows) {
     for (let i = 0; i < n; i++) {
-      const col = cols[i];
-      const raw = col.value ? col.value(row) : getByPath(row, col.id);
+      const col = columns[i];
+      const raw = row[col.id];
       const s = stringifyCell(raw);
       const w = doc.widthOfString(s) + 2 * cellPadding;
       if (w > widths[i]) widths[i] = w;
@@ -477,4 +517,4 @@ function autoColWidths(doc, cfg) {
   return widths;
 }
 
-module.exports = exportTablePDF;
+export default exportTablePDF;

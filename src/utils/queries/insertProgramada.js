@@ -1,6 +1,6 @@
 const sql = require('mssql');
 const dayjs = require('dayjs');
-const { runQuery } = require('../queryUtils');
+const { runQuery } = require('../queryUtils.ts');
 
 const insertProgramada = async (
   pool,

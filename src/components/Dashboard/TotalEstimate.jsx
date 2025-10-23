@@ -2,7 +2,7 @@ import BigNumContent from './BigNumContent.jsx';
 import dayjs from 'dayjs';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { Box, Stack, Typography } from '@mui/joy';
-import localizedNum from '../../utils/numFormat.js';
+import { localizedNum } from '../../utils/numFormat';
 
 export default function TotalEstimate({
   estimate,
@@ -29,8 +29,8 @@ function Subtitle({ target, progress }) {
     progress >= 100
       ? 'text-chart-green'
       : progress > 95
-      ? 'text-chart-yellow'
-      : 'text-chart-red';
+        ? 'text-chart-yellow'
+        : 'text-chart-red';
 
   return (
     <Stack direction='column' className='gap-2'>

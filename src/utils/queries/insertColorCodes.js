@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const serverLog = require('../serverLog');
+const serverLog = require('../serverLog.ts');
 const getArticulo = require('./getArticulo');
 
 const insertColorCodes = async (pool, data) => {

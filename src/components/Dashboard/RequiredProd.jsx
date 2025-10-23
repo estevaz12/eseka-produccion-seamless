@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import BigNumContent from './BigNumContent.jsx';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
-import localizedNum from '../../utils/numFormat.js';
+import { localizedNum } from '../../utils/numFormat';
 
 export default function RequiredProd({
   progTotal,

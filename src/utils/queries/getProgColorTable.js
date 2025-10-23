@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const dayjs = require('dayjs');
 const { buildProduccion } = require('./produccion');
-const { runQuery } = require('../queryUtils');
+const { runQuery } = require('../queryUtils.ts');
 
 const getProgColorTable = async (
   pool,

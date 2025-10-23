@@ -6,13 +6,13 @@ const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 // Utils
-const serverLog = require('./utils/serverLog.js');
-const processPDF = require('./utils/processPDF.js');
-const compareProgramada = require('./utils/compareProgramada.js');
-const calculateNewTargets = require('./utils/calculateNewTargets.js');
-const parseMachines = require('./utils/parseMachines.js');
-const exportTablePDF = require('./utils/exportTablePDF.js');
-const calcEff = require('./utils/calcEff.js');
+const serverLog = require('./utils/serverLog.ts').default;
+const processPDF = require('./utils/processPDF');
+const compareProgramada = require('./utils/compareProgramada.ts').default;
+const calculateNewTargets = require('./utils/calculateNewTargets.ts').default;
+const parseMachines = require('./utils/parseMachines');
+const exportTablePDF = require('./utils/exportTablePDF.ts').default;
+const calcEff = require('./utils/calcEff.ts').default;
 // Queries
 const queries = require('./utils/queries');
 // test data

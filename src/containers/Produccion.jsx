@@ -7,8 +7,8 @@ import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
 import ArticuloCol from '../components/Tables/ArticuloCol.jsx';
 import { DatesContext } from '../Contexts.js';
 import { useOutletContext } from 'react-router';
-import { footerFormat } from '../utils/progTableUtils.js';
-import localizedNum from '../utils/numFormat.js';
+import { footerFormat } from '../utils/progTableUtils';
+import { localizedNum } from '../utils/numFormat';
 
 let apiUrl, sqlDateFormat;
 
@@ -121,8 +121,8 @@ export default function Produccion() {
     return row.Tipo === null
       ? row.Unidades
       : row.Tipo === '#'
-      ? row.Unidades * 2
-      : row.Unidades / 2;
+        ? row.Unidades * 2
+        : row.Unidades / 2;
   }
 
   function unidadesStr(row) {

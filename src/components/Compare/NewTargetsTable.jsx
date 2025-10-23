@@ -1,4 +1,4 @@
-import localizedNum from '../../utils/numFormat';
+import { localizedNum } from '../../utils/numFormat';
 import DataTable from '../Tables/DataTable.jsx';
 
 export default function NewTargetsTable({ newTargets }) {

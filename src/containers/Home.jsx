@@ -11,7 +11,7 @@ import Toast from '../components/Toast.jsx';
 import { ToastsContext } from '../Contexts.js';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../components/ErrorFallback.jsx';
-import { playAlertSound } from '../utils/playAlertSound.js';
+import { playAlertSound } from '../utils/playAlertSound';
 
 let apiUrl;
 
@@ -123,9 +123,12 @@ export default function Home() {
     // fetch and repeat every half-hour
     fetchNewColorCodes();
 
-    const intervalId = setInterval(() => {
-      fetchNewColorCodes();
-    }, 0.5 * 3600 * 1000); // update every half-hour
+    const intervalId = setInterval(
+      () => {
+        fetchNewColorCodes();
+      },
+      0.5 * 3600 * 1000
+    ); // update every half-hour
 
     return () => {
       clearInterval(intervalId);
