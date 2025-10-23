@@ -11,6 +11,11 @@ export interface Articulo {
   readonly Tipo: string | null;
 }
 
+export interface Color {
+  readonly Id: number;
+  readonly Color: string;
+}
+
 export interface ColorCode {
   readonly Articulo: number;
   readonly Talle: number;
