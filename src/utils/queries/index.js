@@ -2,6 +2,7 @@ const { buildProduccion, runProduccion } = require('./produccion');
 
 module.exports = {
   getArticulo: require('./getArticulo.ts').default,
+  getArticuloColorCodes: require('./getArticuloColorCodes.ts').default,
   buildProduccion,
   runProduccion,
   insertProgramada: require('./insertProgramada.js'),
@@ -13,7 +14,6 @@ module.exports = {
   insertColorCodes: require('./insertColorCodes.js'),
   insertDistr: require('./insertDistr.js'),
   getArticuloColorDistr: require('./getArticuloColorDistr.js'),
-  getArticuloColorCodes: require('./getArticuloColorCodes.js'),
   insertArticulo: require('./insertArticulo.js'),
   getProgColorTable: require('./getProgColorTable.js'),
   updateProgColorDoc: require('./updateProgColorDoc.js'),
