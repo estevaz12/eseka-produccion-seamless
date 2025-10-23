@@ -20,4 +20,4 @@ function sendTelegramAlert(text: string) {
     .catch((err) => console.error(err));
 }
 
-module.exports = sendTelegramAlert;
+export default sendTelegramAlert;

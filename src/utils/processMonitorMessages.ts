@@ -1,19 +1,29 @@
-const dayjs = require('dayjs');
-const utc = require('dayjs/plugin/utc');
-const timezone = require('dayjs/plugin/timezone');
-const { Notification } = require('electron');
-const path = require('path');
-const sendTelegramAlert = require('./sendTelegramAlert');
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import { BrowserWindow, Notification } from 'electron';
+import path from 'path';
+import sendTelegramAlert from './sendTelegramAlert';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Buenos_Aires');
 
-// used to detect changes in NServer status without spamming notifications
-let lastRunning = null;
-let errorNotif = null;
+interface NServerMonitorMsg {
+  type: 'status' | 'error';
+  running?: boolean;
+  error?: string;
+  message?: string;
+}
 
-function processMonitorMessages(msg, mainWindow) {
+// used to detect changes in NServer status without spamming notifications
+let lastRunning: boolean = null;
+let errorNotif: Notification = null;
+
+function processMonitorMessages(
+  msg: NServerMonitorMsg,
+  mainWindow: BrowserWindow
+) {
   const now = dayjs.tz().format('DD/MM/YYYY HH:mm:ss');
   const prefix = `[${now}][TASKLIST]`;
 
@@ -40,9 +50,9 @@ function processMonitorMessages(msg, mainWindow) {
   }
 }
 
-module.exports = processMonitorMessages;
+export default processMonitorMessages;
 
-function notifyStatus(running, mainWindow) {
+function notifyStatus(running: boolean, mainWindow: BrowserWindow) {
   const now = dayjs.tz().format('DD/MM/YYYY HH:mm:ss');
   const prefix = `[${now}][TASKLIST]`;
   const text = running

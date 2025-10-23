@@ -14,7 +14,8 @@ const path = require('path');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
-const processMonitorMessages = require('./utils/processMonitorMessages');
+const processMonitorMessages =
+  require('./utils/processMonitorMessages.ts').default;
 
 app.setAppUserModelId('Tejeduria');
 
