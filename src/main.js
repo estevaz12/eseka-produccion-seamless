@@ -89,6 +89,8 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  if (!app.isPackaged) mainWindow.webContents.openDevTools();
+
   // for window.open()
   mainWindow.webContents.setWindowOpenHandler(() => ({
     action: 'allow',

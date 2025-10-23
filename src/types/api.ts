@@ -14,6 +14,12 @@ export interface StyleCode {
   readonly colorId: number;
 }
 
+export interface PDFProgRow {
+  readonly articulo: number;
+  readonly talle: number;
+  readonly aProducir: number;
+}
+
 export interface ProduccionParams {
   room: Room;
   startDate: string;

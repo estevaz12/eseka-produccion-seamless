@@ -227,7 +227,9 @@ async function getProduced(room: Room) {
       talle: '',
       colorId: '',
     };
-    const params = new URLSearchParams(...Object.entries(paramsObj)).toString();
+    const params = new URLSearchParams(
+      Object.entries(paramsObj) as Array<[string, string]>
+    ).toString();
     const res = await fetch(`${process.env.EXPRESS_URL}/produccion?${params}`);
     data = await res.json();
   } catch (err) {

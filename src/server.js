@@ -7,7 +7,7 @@ const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 // Utils
 const serverLog = require('./utils/serverLog.ts').default;
-const processPDF = require('./utils/processPDF');
+const processPDF = require('./utils/processPDF').default;
 const compareProgramada = require('./utils/compareProgramada.ts').default;
 const calculateNewTargets = require('./utils/calculateNewTargets.ts').default;
 const parseMachines = require('./utils/parseMachines');

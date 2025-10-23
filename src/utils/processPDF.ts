@@ -1,8 +1,14 @@
-const { PdfReader, TableParser } = require('pdfreader');
+import { Item, PdfReader, TableParser } from 'pdfreader';
+import type { PDFProgRow } from '../types';
 
-const processPDF = async (path) => {
+interface PDFData {
+  total: number;
+  rows: PDFProgRow[];
+}
+
+const processPDF = async (path: string) => {
   return new Promise((resolve, reject) => {
-    const data = { total: 0, rows: [] };
+    const data: PDFData = { total: 0, rows: [] };
     // Create a TableParser instance (to store extracted rows)
     var table = new TableParser();
     // Minimum `y` coordinate for filtering out metadata
@@ -81,8 +87,9 @@ const processPDF = async (path) => {
         if (!item) resolve(data);
       } else if (item.text) {
         // Only process text that is part of the table (skip metadata).
-        if (item.text && parseFloat(item.y) >= minY) {
-          table.processItem(item, columnQuantitizer(item));
+        const it: any = item;
+        if (it.text && parseFloat(String(it.y)) >= minY) {
+          table.processItem(it, columnQuantitizer(it));
         }
       }
     });
@@ -90,7 +97,7 @@ const processPDF = async (path) => {
 };
 
 // processPDF().then((data) => console.log(JSON.stringify(data, null, 2)));
-module.exports = processPDF;
+export default processPDF;
 
 /**
  * Determines which column a text item belongs to,
@@ -111,7 +118,7 @@ const columnQuantitizer = (item) => {
   return 5; // Falta
 };
 
-const printTable = (table) => {
+const printTable = (table: TableParser) => {
   // Define table dimensions (6 columns)
   const nCols = 6;
 
@@ -122,7 +129,7 @@ const printTable = (table) => {
 };
 
 // Formats the final table matrix for printing.
-const renderMatrix = (matrix, nCols, cellPadding) =>
+const renderMatrix = (matrix: Item[][][], nCols: number, cellPadding: number) =>
   (matrix || [])
     .map(
       (row, y) =>
@@ -136,14 +143,15 @@ const renderMatrix = (matrix, nCols, cellPadding) =>
     .join('\n');
 
 // Ensures each row has exactly `nCols` columns.
-const padColumns = (array, nb) =>
-  Array.apply(null, { length: nb }).map((val, i) => array[i] || []);
+const padColumns = (array: Item[][], nb: number): Item[][] =>
+  Array.from({ length: nb }, (_, i) => array[i] || []);
 
 // Combines fragmented text items into a complete entry.
-const mergeCells = (cells) => (cells || []).map((cell) => cell.text).join('');
+const mergeCells = (cells: { text?: string }[]) =>
+  (cells || []).map((cell) => cell.text ?? '').join('');
 
 // Pads each cell for neat alignment.
-const formatMergedCell = (mergedCell, cellPadding) => {
+const formatMergedCell = (mergedCell: string, cellPadding: number) => {
   // Polyfill for `padEnd()` if not available (older JS versions)
   if (!String.prototype.padEnd) {
     String.prototype.padEnd = function padEnd(targetLength, padString) {
