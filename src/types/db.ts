@@ -6,6 +6,19 @@ import {
 
 export type Room = 'HOMBRE' | 'SEAMLESS' | 'MUJER';
 
+export interface Articulo {
+  readonly Articulo: number;
+  readonly Tipo: string | null;
+}
+
+export interface ColorCode {
+  readonly Articulo: number;
+  readonly Talle: number;
+  readonly Color: number;
+  readonly Code: string;
+  readonly StyleCode: string;
+}
+
 export interface CurrEffData {
   readonly RoomCode: string;
   readonly GroupCode: string;

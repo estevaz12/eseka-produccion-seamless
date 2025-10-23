@@ -1,6 +1,7 @@
 const { buildProduccion, runProduccion } = require('./produccion');
 
 module.exports = {
+  getArticulo: require('./getArticulo.ts').default,
   buildProduccion,
   runProduccion,
   insertProgramada: require('./insertProgramada.js'),
@@ -11,7 +12,6 @@ module.exports = {
   getMachines: require('./getMachines.js'),
   insertColorCodes: require('./insertColorCodes.js'),
   insertDistr: require('./insertDistr.js'),
-  getArticulo: require('./getArticulo.js'),
   getArticuloColorDistr: require('./getArticuloColorDistr.js'),
   getArticuloColorCodes: require('./getArticuloColorCodes.js'),
   insertArticulo: require('./insertArticulo.js'),

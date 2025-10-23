@@ -11,7 +11,7 @@ module.exports = {
   entry: {
     index: './src/main.js',
     server: './src/server.js',
-    nserverMonitor: './src/utils/nserverMonitor.js',
+    nserverMonitor: './src/utils/nserverMonitor.ts',
   },
   // Put your normal webpack config below here
   resolve: {

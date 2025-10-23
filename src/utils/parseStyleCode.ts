@@ -1,6 +1,6 @@
 import serverLog from './serverLog';
-import getArticulo from './queries/getArticulo.js';
-import getArticuloByStyleCode from './queries/getArticuloByStyleCode.js';
+import getArticulo from './queries/getArticulo';
+import getArticuloByStyleCode from './queries/getArticuloByStyleCode';
 import type { ConnectionPool } from 'mssql';
 import type { Room, StyleCode } from '../types';
 
