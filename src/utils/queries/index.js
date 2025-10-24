@@ -6,6 +6,7 @@ module.exports = {
   getArticuloColorDistr: require('./getArticuloColorDistr.ts').default,
   getCambios: require('./getCambios.ts').default,
   getCurrArtColorDistr: require('./getCurrArtColorDistr.ts').default,
+  getCurrWEff: require('./getCurrWEff.ts').default,
   buildProduccion,
   runProduccion,
   insertProgramada: require('./insertProgramada.js'),
@@ -26,7 +27,6 @@ module.exports = {
   updateArticuloTipo: require('./updateArticulo.js'),
   getProductionsMonitor: require('./getProductionsMonitor.js'),
   getDailyProduction: require('./getDailyProduction.js'),
-  getCurrWEff: require('./getCurrWEff.js'),
   getDailyWEff: require('./getDailyWEff.js'),
   getMonthSaldo: require('./getMonthSaldo.js'),
 };

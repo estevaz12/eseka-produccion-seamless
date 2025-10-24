@@ -6,4 +6,4 @@ const getCurrWEff = () => {
   `;
 };
 
-module.exports = getCurrWEff;
+export default getCurrWEff;
