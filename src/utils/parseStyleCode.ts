@@ -87,7 +87,7 @@ async function parseStyleCode(
       const res = await getArticulo(
         pool,
         punto
-          ? `${typeof articulo === 'string' ? parseInt(articulo) : articulo}.${punto}`
+          ? `${typeof articulo === 'string' ? parseInt(articulo) : Math.floor(articulo)}.${punto}`
           : articulo
       );
       tipo = res.recordset[0]?.Tipo ?? null;
@@ -109,7 +109,10 @@ async function parseStyleCode(
     return {
       styleCode,
       // need to clear punto for proper form entry
-      articulo: typeof articulo === 'string' ? parseInt(articulo) : articulo,
+      articulo:
+        typeof articulo === 'string'
+          ? parseInt(articulo)
+          : Math.floor(articulo),
       punto,
       tipo,
       talle,
