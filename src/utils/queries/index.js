@@ -8,6 +8,7 @@ module.exports = {
   getCurrArtColorDistr: require('./getCurrArtColorDistr.ts').default,
   getCurrWEff: require('./getCurrWEff.ts').default,
   getDailyProduction: require('./getDailyProduction.ts').default,
+  getDailyWEff: require('./getDailyWEff.ts').default,
   buildProduccion,
   runProduccion,
   insertProgramada: require('./insertProgramada.js'),
@@ -27,6 +28,5 @@ module.exports = {
   insertProgStartDate: require('./insertProgStartDate.js'),
   updateArticuloTipo: require('./updateArticulo.js'),
   getProductionsMonitor: require('./getProductionsMonitor.js'),
-  getDailyWEff: require('./getDailyWEff.js'),
   getMonthSaldo: require('./getMonthSaldo.js'),
 };
