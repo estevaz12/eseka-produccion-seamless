@@ -1,7 +1,14 @@
-const dayjs = require('dayjs');
-const sql = require('mssql');
+import type { ConnectionPool, IResult } from 'mssql';
+import type { Room } from '../../types';
+import sql from 'mssql';
 
-const getProgramadaTotal = async (pool, room, startDate) => {
+type ProgramadaTotal = Promise<IResult<{ Total: number }>>;
+
+async function getProgramadaTotal(
+  pool: ConnectionPool,
+  room: Room,
+  startDate: string
+): ProgramadaTotal {
   return pool
     .request()
     .input('room', sql.NVarChar(10), room)
@@ -16,6 +23,6 @@ const getProgramadaTotal = async (pool, room, startDate) => {
       AND p.Fecha >= @startDate
       AND p.Docenas > 0;
   `);
-};
+}
 
-module.exports = getProgramadaTotal;
+export default getProgramadaTotal;

@@ -1,6 +1,10 @@
-const sql = require('mssql');
+import sql from 'mssql';
+import type { ConnectionPool, IResult } from 'mssql';
+import type { Machine, Room } from '../../types';
 
-const getMachines = async (pool, room) => {
+type Machines = Promise<IResult<Machine>>;
+
+async function getMachines(pool: ConnectionPool, room: Room): Machines {
   /* Machine states
   0: RUN
   1: POWER OFF
@@ -31,6 +35,6 @@ const getMachines = async (pool, room) => {
     FROM [dbNautilus].[dbo].[MACHINES]
     WHERE RoomCode = '${room}';
   `);
-};
+}
 
-module.exports = getMachines;
+export default getMachines;

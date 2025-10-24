@@ -1,7 +1,11 @@
-const sql = require('mssql');
-const dayjs = require('dayjs');
+import sql from 'mssql';
+import dayjs from 'dayjs';
+import type { ConnectionPool, IResult } from 'mssql';
+import type { Room } from '../../types';
 
-const getMonthSaldo = async (pool, room) => {
+type MonthSaldo = Promise<IResult<{ Saldo: number; Pieces: number }>>;
+
+async function getMonthSaldo(pool: ConnectionPool, room: Room): MonthSaldo {
   const roomLower = room.toLowerCase();
   const roomFirstCap = roomLower.charAt(0).toUpperCase() + roomLower.slice(1);
 
@@ -29,6 +33,6 @@ const getMonthSaldo = async (pool, room) => {
     FROM View_ProdMon_TcMin_${roomFirstCap}
     WHERE DefCode <> 101 AND (DateRec BETWEEN @monthStart AND @yesterday)
   `);
-};
+}
 
-module.exports = getMonthSaldo;
+export default getMonthSaldo;

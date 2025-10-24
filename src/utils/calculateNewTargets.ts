@@ -1,9 +1,9 @@
 import sql from 'mssql';
-import { runProduccion } from './queries/produccion.js';
+import { runProduccion } from './queries/produccion.ts';
 import dayjs from 'dayjs';
 import serverLog from './serverLog.ts';
 import type { ConnectionPool } from 'mssql';
-import type { MachineParsed, Produccion, ProgColor } from '../types';
+import type { MachineParsed, Produccion, ProgColor, Room } from '../types';
 
 interface NewTarget {
   machCode: number;
@@ -154,7 +154,7 @@ async function getMonthProduction(pool: ConnectionPool, newRecord: ProgColor) {
     // Get the production for the month
     const res = await runProduccion(
       pool,
-      newRecord.RoomCode,
+      newRecord.RoomCode as Room,
       startDate,
       endDate,
       true,
@@ -162,7 +162,7 @@ async function getMonthProduction(pool: ConnectionPool, newRecord: ProgColor) {
       newRecord.Talle,
       newRecord.ColorId
     );
-    const data: Produccion = res.recordset;
+    const data: Produccion[] = res.recordset;
 
     // The articulo might not be in the production table
     monthProduction = data.length === 0 ? 0 : data[0].Unidades;

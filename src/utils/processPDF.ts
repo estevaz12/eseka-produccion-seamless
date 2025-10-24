@@ -1,4 +1,5 @@
-import { Item, PdfReader, TableParser } from 'pdfreader';
+import { PdfReader, TableParser } from 'pdfreader';
+import type { Item } from 'pdfreader';
 import type { PDFProgRow } from '../types';
 
 interface PDFData {

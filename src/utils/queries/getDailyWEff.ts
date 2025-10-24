@@ -2,7 +2,9 @@ import sql from 'mssql';
 import type { Room } from '../../types';
 import type { ConnectionPool, IResult } from 'mssql';
 
-type DailyWEff = Promise<IResult<any>>;
+type DailyWEff = Promise<
+  IResult<{ ProdDate: string; RoomCode: string; WorkEfficiency: number }>
+>;
 
 async function getDailyWEff(pool: ConnectionPool, room: Room): DailyWEff {
   return pool.request().input('room', sql.Char(30), room).query(`

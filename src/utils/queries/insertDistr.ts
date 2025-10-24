@@ -1,6 +1,15 @@
-const sql = require('mssql');
+import type { ConnectionPool, IResult } from 'mssql';
+import type { ColorDistrData } from '../../types';
+import sql from 'mssql';
 
-const insertDistr = async (pool, articulo, talle, colorDistr) => {
+type DistrInsert = Promise<IResult<any>>;
+
+async function insertDistr(
+  pool: ConnectionPool,
+  articulo: number,
+  talle: number,
+  colorDistr: ColorDistrData
+): DistrInsert {
   return pool
     .request()
     .input('articulo', sql.Numeric(7, 2), Number(articulo))
@@ -16,6 +25,6 @@ const insertDistr = async (pool, articulo, talle, colorDistr) => {
     INSERT INTO APP_COLOR_DISTR (Articulo, Talle, Color, Porcentaje)
     VALUES (@articulo, @talle, @color, @porcentaje);\n
   `);
-};
+}
 
-module.exports = insertDistr;
+export default insertDistr;

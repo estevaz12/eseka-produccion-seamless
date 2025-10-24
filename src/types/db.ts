@@ -1,7 +1,7 @@
 import {
-  ISqlTypeFactoryWithLength,
   ISqlTypeFactoryWithNoParams,
-  ISqlTypeFactoryWithPrecisionScale,
+  ISqlTypeWithLength,
+  ISqlTypeWithPrecisionScale,
 } from 'mssql';
 
 export type Room = 'HOMBRE' | 'SEAMLESS' | 'MUJER';
@@ -67,6 +67,17 @@ export interface Produccion {
   readonly [keys: string]: any;
 }
 
+export interface ProductionsMonitorRow {
+  readonly DateRec: string;
+  readonly Shift: number;
+  readonly MachCode: number;
+  readonly StyleCode: string;
+  readonly Pieces: number;
+  readonly OrderPieces: number;
+  readonly TargetPieces: number;
+  readonly Discards: number;
+}
+
 export interface Programada {
   readonly Id: number;
   readonly Fecha: string;
@@ -96,11 +107,23 @@ export interface ProgColor {
   readonly DocProg: number;
 }
 
+export interface ProgLoadDate {
+  readonly Date: string;
+  readonly Month: number;
+  readonly Year: number;
+  readonly RoomCode: string;
+}
+
+export interface SQLQueryOpts {
+  query: string;
+  params: SQLQueryParam[];
+}
+
 export interface SQLQueryParam {
   readonly name: string;
   readonly type:
-    | ISqlTypeFactoryWithLength
     | ISqlTypeFactoryWithNoParams
-    | ISqlTypeFactoryWithPrecisionScale;
+    | ISqlTypeWithLength
+    | ISqlTypeWithPrecisionScale;
   readonly value: string | number;
 }

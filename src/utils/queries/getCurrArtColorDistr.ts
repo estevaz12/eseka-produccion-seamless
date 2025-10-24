@@ -1,6 +1,6 @@
 import sql from 'mssql';
 import type { ConnectionPool, IResult } from 'mssql';
-import { ColorDistr } from '../../types';
+import type { ColorDistr } from '../../types';
 
 type ColorDistrs = Promise<IResult<ColorDistr>>;
 

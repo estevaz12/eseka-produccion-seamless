@@ -1,5 +1,5 @@
 import type { ConnectionPool } from 'mssql';
-import type { SQLQueryParam } from '../types';
+import type { SQLQueryOpts, SQLQueryParam } from '../types';
 import serverLog from './serverLog.ts';
 
 function logQuery(query: string, params: SQLQueryParam[]) {
@@ -7,18 +7,13 @@ function logQuery(query: string, params: SQLQueryParam[]) {
   serverLog(query.trim());
   serverLog('=== PARAMETERS ===');
   for (const p of params) {
-    serverLog(`@${p.name} = ${JSON.stringify(p.value)} (${p.type.name})`);
+    serverLog(`@${p.name} = ${JSON.stringify(p.value)} (${p.type})`);
   }
-}
-
-interface QueryOptions {
-  readonly query: string;
-  readonly params: SQLQueryParam[];
 }
 
 async function runQuery(
   pool: ConnectionPool,
-  { query, params }: QueryOptions,
+  { query, params }: SQLQueryOpts,
   log = false
 ) {
   // Log before execution

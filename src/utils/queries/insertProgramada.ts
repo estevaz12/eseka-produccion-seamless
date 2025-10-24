@@ -1,17 +1,22 @@
-const sql = require('mssql');
-const dayjs = require('dayjs');
-const { runQuery } = require('../queryUtils.ts');
+import type { ConnectionPool, IResult } from 'mssql';
+import type { PDFProgRow, Room, SQLQueryOpts } from '../../types';
+import type { Dayjs } from 'dayjs';
+import sql from 'mssql';
+import dayjs from 'dayjs';
+import { runQuery } from '../queryUtils.ts';
 
-const insertProgramada = async (
-  pool,
-  data,
-  room,
-  status,
-  date = dayjs.tz()
-) => {
+type ProgramadaInsert = Promise<IResult<any>>;
+
+async function insertProgramada(
+  pool: ConnectionPool,
+  data: PDFProgRow[],
+  room: Room,
+  status: 'inserted' | 'deleted',
+  date: Dayjs = dayjs.tz()
+): ProgramadaInsert {
   const FECHA = date.format(process.env.SQL_DATE_FORMAT);
 
-  const request = { query: '', params: [] };
+  const request: SQLQueryOpts = { query: '', params: [] };
 
   data.forEach((row, i) => {
     request.query += `
@@ -49,6 +54,6 @@ const insertProgramada = async (
   });
 
   return runQuery(pool, request);
-};
+}
 
-module.exports = insertProgramada;
+export default insertProgramada;

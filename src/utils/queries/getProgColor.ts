@@ -1,7 +1,16 @@
-const dayjs = require('dayjs');
-const sql = require('mssql');
+import type { ConnectionPool, IResult } from 'mssql';
+import type { ProgColor, Room } from '../../types';
+import type { Dayjs } from 'dayjs';
+import sql from 'mssql';
 
-const getProgColor = async (pool, room, startDate, includeDeleted = false) => {
+type ProgColors = Promise<IResult<ProgColor>>;
+
+async function getProgColor(
+  pool: ConnectionPool,
+  room: Room,
+  startDate: Dayjs,
+  includeDeleted: boolean = false
+): ProgColors {
   const fecha = startDate.format(process.env.SQL_DATE_FORMAT);
   return pool
     .request()
@@ -18,6 +27,6 @@ const getProgColor = async (pool, room, startDate, includeDeleted = false) => {
           ${includeDeleted ? '' : 'AND pc.DocProg > 0'}
     ORDER BY pc.Articulo, pc.Talle;
   `);
-};
+}
 
-module.exports = getProgColor;
+export default getProgColor;

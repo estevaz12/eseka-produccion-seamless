@@ -1,7 +1,24 @@
-const sql = require('mssql');
-const dayjs = require('dayjs');
+import sql from 'mssql';
+import dayjs from 'dayjs';
+import type { ConnectionPool, IResult } from 'mssql';
+import type { ProductionsMonitorRow } from '../../types';
 
-const getProductionsMonitor = async (pool, query) => {
+type ProductionsMonitor = Promise<IResult<ProductionsMonitorRow>>;
+
+interface PMQueryParams {
+  machCode: number;
+  articulo: number;
+  talle: number;
+  color: number;
+  startDate: string;
+  fromMonthStart: boolean | 'true' | 'false';
+  endDate: string | null;
+}
+
+async function getProductionsMonitor(
+  pool: ConnectionPool,
+  query: PMQueryParams
+): ProductionsMonitor {
   let {
     machCode,
     articulo,
@@ -14,7 +31,7 @@ const getProductionsMonitor = async (pool, query) => {
 
   fromMonthStart = fromMonthStart === 'true' ? true : false;
   endDate = endDate === 'null' ? null : endDate;
-  let prodStartDate, prodEndDate;
+  let prodStartDate: string, prodEndDate: string;
 
   // month starts first day of month at 6am + 1 second
   prodStartDate = fromMonthStart
@@ -64,6 +81,6 @@ const getProductionsMonitor = async (pool, query) => {
         AND pm.DateRec BETWEEN @prodStartDate AND @prodEndDate
     ORDER BY DateRec DESC;
   `);
-};
+}
 
-module.exports = getProductionsMonitor;
+export default getProductionsMonitor;

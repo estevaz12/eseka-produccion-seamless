@@ -1,16 +1,32 @@
-const dayjs = require('dayjs');
-const sql = require('mssql');
+import type { ConnectionPool, IResult } from 'mssql';
+import type { Produccion, Room, SQLQueryOpts } from '../../types';
+import sql from 'mssql';
 
-const buildProduccion = (
-  room,
-  startDate,
-  endDate,
-  actual,
-  articulo,
-  talle,
-  colorId,
-  showResults = true
-) => {
+type ProduccionRes = Promise<IResult<Produccion>>;
+
+type buildArgs = [
+  room: Room,
+  startDate: string,
+  endDate: string,
+  actual: boolean | 'true' | 'false',
+  articulo: number | string,
+  talle: number | string,
+  colorId: number | string,
+  showResults?: boolean,
+];
+
+function buildProduccion(
+  ...[
+    room,
+    startDate,
+    endDate,
+    actual,
+    articulo,
+    talle,
+    colorId,
+    showResults = true,
+  ]: buildArgs
+): SQLQueryOpts {
   if (typeof actual === 'string') {
     actual = actual === 'true' ? true : false;
   }
@@ -18,12 +34,12 @@ const buildProduccion = (
   talle = `${talle}`;
   colorId = `${colorId}`;
 
-  let baseCTE;
-  const request = { text: null, params: [] };
+  let baseCTE: string;
+  const request: SQLQueryOpts = { query: null, params: [] };
   const precise = articulo.includes('.');
   let whereClause = '';
   // Build dynamic WHERE clause based on talle, colorId, and precise/articulo
-  const conditions = [];
+  const conditions: string[] = [];
 
   if (precise) {
     conditions.push(`Articulo = @articulo`);
@@ -100,7 +116,7 @@ const buildProduccion = (
   }
 
   // Match with APP_COLOR_CODES and return a record per color
-  request.text = `
+  request.query = `
     ${baseCTE}
     ,ProdColorUngrouped AS (
         SELECT 
@@ -158,15 +174,18 @@ const buildProduccion = (
   ];
 
   return request;
-};
+}
 
-const runProduccion = async (pool, ...args) => {
-  const { text, params } = buildProduccion(...args);
+async function runProduccion(
+  pool: ConnectionPool,
+  ...args: buildArgs
+): ProduccionRes {
+  const { query, params } = buildProduccion(...args);
   const request = pool.request();
   for (const p of params) {
     request.input(p.name, p.type, p.value);
   }
-  return request.query(text);
-};
+  return request.query(query);
+}
 
-module.exports = { buildProduccion, runProduccion };
+export { buildProduccion, runProduccion };

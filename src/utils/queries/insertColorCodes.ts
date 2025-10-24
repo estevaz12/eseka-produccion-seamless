@@ -1,18 +1,25 @@
-const sql = require('mssql');
-const serverLog = require('../serverLog.ts');
-const getArticulo = require('./getArticulo');
+import sql from 'mssql';
+import serverLog from '../serverLog.ts';
+import getArticulo from './getArticulo.ts';
+import type { ConnectionPool, IResult } from 'mssql';
+import type { Articulo, ColorCodeData } from '../../types';
 
-const insertColorCodes = async (pool, data) => {
+type ColorCodeInsert = Promise<IResult<any>>;
+
+async function insertColorCodes(
+  pool: ConnectionPool,
+  data: ColorCodeData
+): ColorCodeInsert {
   let query = '';
   // For proper parsing and comparing
   const punto = !data.punto || data.punto === '' ? 0 : data.punto;
   const tipo = !data.tipo || data.tipo === '' ? null : data.tipo;
 
-  let articulo = [];
+  let articulo: Articulo[] = [];
   try {
     // Check if articulo exists
-    articulo = await getArticulo(pool, `${data.articulo}.${punto}`);
-    articulo = articulo.recordset;
+    const res = await getArticulo(pool, `${data.articulo}.${punto}`);
+    articulo = res.recordset;
 
     let articuloAction = '';
     if (articulo.length === 0) {
@@ -49,6 +56,6 @@ const insertColorCodes = async (pool, data) => {
     .input('talle', sql.TinyInt, Number(data.talle))
     .input('styleCode', sql.Char(8), data.styleCode)
     .query(query);
-};
+}
 
-module.exports = insertColorCodes;
+export default insertColorCodes;

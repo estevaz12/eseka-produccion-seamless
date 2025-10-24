@@ -7,19 +7,19 @@ const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 // Utils
 const serverLog = require('./utils/serverLog.ts').default;
-const processPDF = require('./utils/processPDF').default;
+const processPDF = require('./utils/processPDF.ts').default;
 const compareProgramada = require('./utils/compareProgramada.ts').default;
 const calculateNewTargets = require('./utils/calculateNewTargets.ts').default;
 const parseMachines = require('./utils/parseMachines.ts').default;
 const exportTablePDF = require('./utils/exportTablePDF.ts').default;
 const calcEff = require('./utils/calcEff.ts').default;
 // Queries
-const queries = require('./utils/queries');
+const queries = require('./utils/queries/index.ts');
 // test data
 const testData = require('./utils/test-data');
 
 // Environment
-let isPackaged; //= false;
+let isPackaged; // = false;
 // once main sends a message to server
 process.parentPort.once('message', (e) => {
   isPackaged = e.data;

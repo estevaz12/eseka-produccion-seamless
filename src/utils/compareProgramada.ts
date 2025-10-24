@@ -1,16 +1,13 @@
-import type { Programada } from '../types';
+import type { CompareProgData, PDFProgRow, Programada } from '../types';
 
 // newProg: articulo, talle, aProducir
-interface NewProgramada {
-  readonly articulo: number;
-  readonly talle: number;
-  readonly aProducir: number;
-}
-
-const compareProgramada = (oldProg: Programada[], newProg: NewProgramada[]) => {
-  const added: NewProgramada[] = [];
-  const modified: NewProgramada[] = [];
-  const deleted: NewProgramada[] = [];
+function compareProgramada(
+  oldProg: Programada[],
+  newProg: PDFProgRow[]
+): CompareProgData {
+  const added: PDFProgRow[] = [];
+  const modified: PDFProgRow[] = [];
+  const deleted: PDFProgRow[] = [];
 
   for (const newRow of newProg) {
     const found = oldProg.find(
@@ -35,6 +32,6 @@ const compareProgramada = (oldProg: Programada[], newProg: NewProgramada[]) => {
   }
 
   return { added, modified, deleted };
-};
+}
 
 export default compareProgramada;

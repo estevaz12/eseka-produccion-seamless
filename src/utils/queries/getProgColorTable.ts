@@ -1,17 +1,21 @@
-const sql = require('mssql');
-const dayjs = require('dayjs');
-const { buildProduccion } = require('./produccion');
-const { runQuery } = require('../queryUtils.ts');
+import sql from 'mssql';
+import dayjs from 'dayjs';
+import { buildProduccion } from './produccion.ts';
+import { runQuery } from '../queryUtils.ts';
+import type { ConnectionPool, IResult } from 'mssql';
+import type { ProgColorTable, Room } from '../../types';
 
-const getProgColorTable = async (
-  pool,
-  room,
-  startDate,
-  startMonth = null,
-  startYear = null,
-  endDate = null
-) => {
-  let prodStartDate, prodEndDate;
+type ProgColorTableRows = Promise<IResult<ProgColorTable>>;
+
+async function getProgColorTable(
+  pool: ConnectionPool,
+  room: Room,
+  startDate: string,
+  startMonth: number = null,
+  startYear: number = null,
+  endDate: string = null
+): ProgColorTableRows {
+  let prodStartDate: string, prodEndDate: string;
   if (startMonth && startYear) {
     // month starts first day of month at 6am + 1 second
     prodStartDate = dayjs
@@ -47,7 +51,7 @@ const getProgColorTable = async (
   }
 
   // get Month Production
-  const { text: monthProd, params: prodParams } = buildProduccion(
+  const { query: monthProd, params: prodParams } = buildProduccion(
     room,
     prodStartDate,
     prodEndDate,
@@ -104,6 +108,6 @@ const getProgColorTable = async (
   }
 
   return runQuery(pool, { query, params });
-};
+}
 
-module.exports = getProgColorTable;
+export default getProgColorTable;

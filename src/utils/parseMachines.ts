@@ -1,6 +1,6 @@
 import type { ConnectionPool } from 'mssql';
 import type { Machine, MachineParsed, Room } from '../types';
-import parseStyleCode from './parseStyleCode';
+import parseStyleCode from './parseStyleCode.ts';
 
 // Machines: [{MachCode, StyleCode: {styleCode, articulo, talle, color, colorId}, ...}]
 async function parseMachines(pool: ConnectionPool, machines: Machine[]) {

@@ -1,6 +1,13 @@
-const sql = require('mssql');
+import type { ConnectionPool, IResult } from 'mssql';
+import type { ProgColorDocData } from '../../types';
+import sql from 'mssql';
 
-const updateProgColorDoc = async (pool, data) => {
+type ProgColorDocUpdate = Promise<IResult<any>>;
+
+async function updateProgColorDoc(
+  pool: ConnectionPool,
+  data: ProgColorDocData
+): ProgColorDocUpdate {
   return pool
     .request()
     .input('docenas', sql.Decimal(7, 2), Number(data.docenas))
@@ -11,6 +18,6 @@ const updateProgColorDoc = async (pool, data) => {
       WHERE Programada = @programadaId 
             AND ColorDistr = @colorDistrId
     ;`);
-};
+}
 
-module.exports = updateProgColorDoc;
+export default updateProgColorDoc;

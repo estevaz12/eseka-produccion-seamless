@@ -1,4 +1,25 @@
-import { Machine, ProgColor, Room } from './db';
+import { ProgColor, Room } from './db';
+
+export interface ColorCodeData {
+  articulo: number;
+  punto: string;
+  tipo: string | null;
+  talle: number;
+  styleCode: string;
+  color: number;
+  code: string;
+}
+
+export interface ColorDistrData {
+  color: number;
+  porcentaje: number | string; // floats get converted to strings
+}
+
+export interface CompareProgData {
+  added: PDFProgRow[];
+  modified: PDFProgRow[];
+  deleted: PDFProgRow[];
+}
 
 export interface MachineParsed {
   readonly MachCode: number;
@@ -37,6 +58,19 @@ export interface ProduccionParams {
   colorId: string;
 }
 
+export interface ProgColorDocData {
+  programadaId: number;
+  colorDistrId: number;
+  docenas: number;
+}
+
 export interface ProgColorTable extends ProgColor {
+  readonly Producido: number;
   readonly Machines: MachineParsed[];
+}
+
+export interface ProgStartDateData {
+  date: string;
+  month: number;
+  year: number;
 }
