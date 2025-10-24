@@ -1,7 +1,14 @@
-const sql = require('mssql');
-const dayjs = require('dayjs');
+import sql from 'mssql';
+import dayjs from 'dayjs';
+import type { Room } from '../../types';
+import type { ConnectionPool, IResult } from 'mssql';
 
-const getDailyProduction = async (pool, room) => {
+type DailyProduction = Promise<IResult<any>>;
+
+async function getDailyProduction(
+  pool: ConnectionPool,
+  room: Room
+): DailyProduction {
   const docena = room === 'SEAMLESS' ? 12 : 24;
   const porcExtra = room === 'SEAMLESS' ? 1.01 : 1.02;
 
@@ -69,6 +76,6 @@ const getDailyProduction = async (pool, room) => {
     GROUP BY ProdDate
     ORDER BY ProdDate
   `);
-};
+}
 
-module.exports = getDailyProduction;
+export default getDailyProduction;
