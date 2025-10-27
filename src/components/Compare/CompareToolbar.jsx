@@ -5,6 +5,24 @@ import Stack from '@mui/joy/Stack';
 import ChangeCircleOutlined from '@mui/icons-material/ChangeCircleOutlined';
 import CompareArrowsRounded from '@mui/icons-material/CompareArrowsRounded';
 import LibraryAddOutlined from '@mui/icons-material/LibraryAddOutlined';
+// import {
+//   CompareLoadType,
+//   CompareProgData,
+//   NewArticuloData,
+//   NewTarget,
+//   PDFProgRow,
+//   SetStateType,
+// } from '../../types';
+
+// interface CompareToolbarProps {
+//   programada: PDFProgRow[];
+//   diff: CompareProgData;
+//   setDiff: SetStateType<CompareProgData>;
+//   newTargets: NewTarget[];
+//   startDate: string;
+//   loadType: CompareLoadType;
+//   setNewArticuloData: SetStateType<NewArticuloData[]>;
+// }
 
 export default function CompareToolbar({
   programada,

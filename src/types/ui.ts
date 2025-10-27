@@ -1,7 +1,12 @@
 import { Dayjs } from 'dayjs';
+import { Dispatch, RefObject, SetStateAction } from 'react';
+import { MachineParsed } from './api';
+import { Room } from './db';
 
+export type CompareLoadType = RefObject<'update' | 'insert'>;
 export type FooterRow = object;
 export type TableRow = object;
+export type SetStateType<T> = Dispatch<SetStateAction<T>>;
 
 export interface ConfigContextType {
   readonly apiUrl: string;
@@ -12,6 +17,19 @@ export interface DatesContexType {
   startDate: Dayjs;
   fromMonthStart: boolean;
   endDate: Dayjs | null;
+}
+
+export interface NotifOpts {
+  title: string;
+  body: string;
+  timeoutType: 'default' | 'never';
+}
+
+export interface OutletContextType {
+  readonly addColorCodes: (newCodes: MachineParsed[]) => void;
+  readonly room: Room;
+  readonly docena: 12 | 24;
+  readonly porcExtra: 1.01 | 1.02;
 }
 
 export interface PDFCol {
@@ -32,14 +50,16 @@ export interface TableCol {
   readonly sortFn?: (a: object, b: object, order: 'asc' | 'desc') => number;
 }
 
-export interface Toast {
+export interface ToastsContextType {
+  addToast: (toast: ToastType) => void;
+  removeToast: (id: string) => void;
+}
+
+export interface ToastType {
+  readonly id: string;
+  readonly timestamp: number;
   type: 'danger' | 'success' | 'warning';
   message: string;
   duration?: number | null;
   machCode?: number;
-}
-
-export interface ToastsContextType {
-  addToast: (toast: Toast) => void;
-  removeToast: (toast: Toast) => void;
 }

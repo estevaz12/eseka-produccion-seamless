@@ -11,21 +11,22 @@ import Toast from '../components/Toast.jsx';
 import { ToastsContext } from '../Contexts.ts';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../components/ErrorFallback.jsx';
-import { playAlertSound } from '../utils/playAlertSound';
+import playAlertSound from '../utils/playAlertSound';
+import { MachineParsed, OutletContextType, Room, ToastType } from '../types';
 
-let apiUrl;
+let apiUrl: string;
 
 export default function Home() {
   apiUrl = useConfig().apiUrl;
   const navigate = useNavigate();
   // SEAMLESS, HOMBRE (ALG)
-  const [room, setRoom] = useState(
-    () => localStorage.getItem('lastRoom') || 'SEAMLESS'
+  const [room, setRoom] = useState<Room>(
+    () => (localStorage.getItem('lastRoom') as Room) || 'SEAMLESS'
   );
 
   const [isModalOpen, setIsModalOpen] = useState(true);
 
-  const [newColorCodes, setNewColorCodes] = useState(() =>
+  const [newColorCodes, setNewColorCodes] = useState<MachineParsed[]>(() =>
     JSON.parse(localStorage.getItem('newColorCodes') || '[]')
   );
 
@@ -33,12 +34,14 @@ export default function Home() {
     newColorCodes.length > 0 ? newColorCodes[newColorCodes.length - 1] : null;
 
   // using localStorage so toasts persist through refresh
-  const [toasts, setToasts] = useState(() =>
+  const [toasts, setToasts] = useState<ToastType[]>(() =>
     JSON.parse(localStorage.getItem('toasts') || '[]')
   );
 
-  function addColorCodes(newCodes) {
-    const currCodes = JSON.parse(localStorage.getItem('newColorCodes') || '[]');
+  function addColorCodes(newCodes: MachineParsed[]) {
+    const currCodes: MachineParsed[] = JSON.parse(
+      localStorage.getItem('newColorCodes') || '[]'
+    );
     // Make sure codes in localStorage are unique. Otherwise, the same
     // codes will be added every hour
     const uniqueNewCodes = newCodes.filter(
@@ -54,7 +57,7 @@ export default function Home() {
     if (updatedCodes.length > 0) setIsModalOpen(true);
   }
 
-  const addToast = (toast) => {
+  const addToast = (toast: ToastType) => {
     setToasts((prev) => {
       // If we're in ELECTRONICA and this is an electronico toast,
       // check for duplicates by machCode
@@ -65,7 +68,7 @@ export default function Home() {
         }
       }
 
-      const newToast = {
+      const newToast: ToastType = {
         ...toast,
         id: crypto.randomUUID(),
         timestamp: Date.now(),
@@ -77,7 +80,7 @@ export default function Home() {
     });
   };
 
-  const removeToast = (id) => {
+  const removeToast = (id: string) => {
     setToasts((prev) => {
       const updated = prev.filter((t) => t.id !== id);
       localStorage.setItem('toasts', JSON.stringify(updated));
@@ -93,7 +96,7 @@ export default function Home() {
     async function fetchNewColorCodes() {
       try {
         const res1 = await fetch(`${apiUrl}/SEAMLESS/machines/newColorCodes`);
-        const newCodes1 = await res1.json();
+        const newCodes1: MachineParsed[] = await res1.json();
         if (!ignore) {
           // Whenever you update localStorage, also update state:
           addColorCodes(newCodes1);
@@ -107,7 +110,7 @@ export default function Home() {
 
       try {
         const res2 = await fetch(`${apiUrl}/HOMBRE/machines/newColorCodes`);
-        const newCodes2 = await res2.json();
+        const newCodes2: MachineParsed[] = await res2.json();
         if (!ignore) {
           // Whenever you update localStorage, also update state:
           addColorCodes(newCodes2);
@@ -138,7 +141,7 @@ export default function Home() {
 
   // reload on room change
   useEffect(() => {
-    const lastRoom = localStorage.getItem('lastRoom');
+    const lastRoom: Room = localStorage.getItem('lastRoom') as Room;
     if (lastRoom !== room) {
       localStorage.setItem('lastRoom', room);
       if (room !== 'ELECTRONICA') window.location.reload();
@@ -154,6 +157,13 @@ export default function Home() {
     playAlertSound();
   });
 
+  const outletContext: OutletContextType = {
+    addColorCodes,
+    room,
+    docena: room === 'SEAMLESS' ? 12 : 24,
+    porcExtra: room === 'SEAMLESS' ? 1.01 : 1.02,
+  };
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ToastsContext value={{ addToast, removeToast }}>
@@ -166,14 +176,7 @@ export default function Home() {
           </aside>
 
           <Box className='w-full px-4 ml-40'>
-            <Outlet
-              context={{
-                addColorCodes,
-                room,
-                docena: room === 'SEAMLESS' ? 12 : 24,
-                porcExtra: room === 'SEAMLESS' ? 1.01 : 1.02,
-              }}
-            />
+            <Outlet context={outletContext} />
           </Box>
         </Stack>
 
@@ -229,7 +232,7 @@ export default function Home() {
         {toasts.length > 0 && (
           <Stack
             direction='column'
-            className='fixed bottom-2 right-2 z-[var(--joy-zIndex-snackbar)] gap-2'
+            className='fixed bottom-2 right-2 z-(--joy-zIndex-snackbar) gap-2'
           >
             {toasts.map((toast) => (
               <Toast key={toast.id} toast={toast} removeToast={removeToast} />

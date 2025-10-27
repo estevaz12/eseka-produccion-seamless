@@ -13,4 +13,4 @@ function playAlertSound(times: number = 3, interval: number = 1000) {
   playOnce();
 }
 
-module.exports = playAlertSound;
+export default playAlertSound;

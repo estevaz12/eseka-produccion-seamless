@@ -42,6 +42,25 @@ export interface StyleCode {
   readonly colorId: number;
 }
 
+export interface NewArticulo {
+  articuloExists: boolean;
+  articulo: number;
+  tipo: string | null;
+  talles: number[];
+  colorDistr: ColorDistrData[];
+}
+
+export interface NewTarget {
+  machCode: number;
+  styleCode: string;
+  machTarget: number;
+  prevProgTarget: number;
+  newProgTarget: number;
+  monthProduction: number;
+  machPieces: number;
+  sendTarget: number | string;
+}
+
 export interface PDFProgRow {
   readonly articulo: number;
   readonly talle: number;

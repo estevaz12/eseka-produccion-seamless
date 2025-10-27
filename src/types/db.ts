@@ -4,7 +4,7 @@ import {
   ISqlTypeWithPrecisionScale,
 } from 'mssql';
 
-export type Room = 'HOMBRE' | 'SEAMLESS' | 'MUJER';
+export type Room = 'HOMBRE' | 'SEAMLESS' | 'MUJER' | 'ELECTRONICA';
 
 export interface Articulo {
   readonly Articulo: number;

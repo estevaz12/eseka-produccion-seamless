@@ -7,7 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
 import { ConfigProvider } from './ConfigContext.tsx';
 import { HashRouter, Route, Routes } from 'react-router';
-import Home from './containers/Home.jsx';
+import Home from './containers/Home.tsx';
 import Produccion from './containers/Produccion.jsx';
 import Programada from './containers/Programada.jsx';
 import ProgComparar from './containers/ProgComparar.jsx';

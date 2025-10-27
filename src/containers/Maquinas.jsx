@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import Checkbox from '@mui/joy/Checkbox';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
-import { playAlertSound } from '../utils/playAlertSound';
+import playAlertSound from '../utils/playAlertSound';
 import sendTelegramAlert from '../utils/sendTelegramAlert';
 
 let apiUrl;

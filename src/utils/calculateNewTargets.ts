@@ -3,18 +3,13 @@ import { runProduccion } from './queries/produccion.ts';
 import dayjs from 'dayjs';
 import serverLog from './serverLog.ts';
 import type { ConnectionPool } from 'mssql';
-import type { MachineParsed, Produccion, ProgColor, Room } from '../types';
-
-interface NewTarget {
-  machCode: number;
-  styleCode: string;
-  machTarget: number;
-  prevProgTarget: number;
-  newProgTarget: number;
-  monthProduction: number;
-  machPieces: number;
-  sendTarget: number | string;
-}
+import type {
+  MachineParsed,
+  NewTarget,
+  Produccion,
+  ProgColor,
+  Room,
+} from '../types';
 
 const calculateNewTargets = async (
   pool: ConnectionPool,

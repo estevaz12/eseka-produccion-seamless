@@ -8,7 +8,7 @@ import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useLocation, useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.ts';
 import { localizedNum } from '../utils/numFormat';
-import CompareInstructions from '../components/Compare/CompareInstructions.jsx';
+import CompareInstructions from '../components/Compare/CompareInstructions.tsx';
 import DateTotalToolbar from '../components/Compare/DateTotalToolbar.jsx';
 import CompareToolbar from '../components/Compare/CompareToolbar.jsx';
 import FileUploadToolbar from '../components/Compare/FileUploadToolbar.jsx';
