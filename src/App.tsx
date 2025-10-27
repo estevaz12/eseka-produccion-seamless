@@ -30,6 +30,7 @@ import CssBaseline from '@mui/joy/CssBaseline';
 import Dashboard from './containers/Dashboard.jsx';
 import { getChartsCustomizations } from './theme/charts.js';
 import Cambios from './containers/Cambios.jsx';
+import { ConfigContextType } from './types';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -38,7 +39,7 @@ dayjs.tz.setDefault('America/Buenos_Aires');
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
-const config = {
+const config: ConfigContextType = {
   apiUrl: process.env.EXPRESS_URL,
   sqlDateFormat: process.env.SQL_DATE_FORMAT,
 };
@@ -49,12 +50,12 @@ root.render(
   </AppProviders>
 );
 
-function AppProviders({ children }) {
+function AppProviders({ children }: { children: React.ReactNode }) {
   let joyTheme = useJoyTheme();
 
   const materialTheme = createTheme({
-    typography: { fontFamily: joyTheme.vars.fontFamily },
-    components: getChartsCustomizations(joyTheme),
+    typography: { fontFamily: String(joyTheme.vars.fontFamily) },
+    components: getChartsCustomizations(joyTheme) as any,
   });
 
   joyTheme = extendTheme({

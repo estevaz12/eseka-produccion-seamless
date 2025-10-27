@@ -1,9 +1,5 @@
 import React, { createContext, useContext } from 'react';
-
-interface ConfigContextType {
-  readonly apiUrl: string;
-  readonly sqlDateFormat: string;
-}
+import { ConfigContextType } from './types';
 
 interface ConfigContextProps {
   children: React.ReactNode;

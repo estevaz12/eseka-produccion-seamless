@@ -1,5 +1,18 @@
+import { Dayjs } from 'dayjs';
+
 export type FooterRow = object;
 export type TableRow = object;
+
+export interface ConfigContextType {
+  readonly apiUrl: string;
+  readonly sqlDateFormat: string;
+}
+
+export interface DatesContexType {
+  startDate: Dayjs;
+  fromMonthStart: boolean;
+  endDate: Dayjs | null;
+}
 
 export interface PDFCol {
   readonly id: string;
@@ -24,4 +37,9 @@ export interface Toast {
   message: string;
   duration?: number | null;
   machCode?: number;
+}
+
+export interface ToastsContextType {
+  addToast: (toast: Toast) => void;
+  removeToast: (toast: Toast) => void;
 }

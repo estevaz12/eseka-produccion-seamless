@@ -30,4 +30,4 @@ import './styles/global.css';
 import '@fontsource/inter';
 
 // Add this to the end of the existing file
-import './App.jsx';
+import './App.tsx';
