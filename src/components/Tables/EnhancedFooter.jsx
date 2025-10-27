@@ -1,9 +1,9 @@
 import PrintRounded from '@mui/icons-material/PrintRounded';
 import IconButton from '@mui/joy/IconButton';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import { useLocation, useOutletContext } from 'react-router';
 import { useContext, useState } from 'react';
-import { DatesContext, ToastsContext } from '../../Contexts.js';
+import { DatesContext, ToastsContext } from '../../Contexts.ts';
 import { buildPdfPayload } from '../../utils/pdfPayload';
 import dayjs from 'dayjs';
 

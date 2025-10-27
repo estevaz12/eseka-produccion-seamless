@@ -1,11 +1,11 @@
 import Box from '@mui/joy/Box';
 import dayjs from 'dayjs';
 import { useState, useEffect, useMemo } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import ProduccionForm from '../components/Forms/ProduccionForm.jsx';
 import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
 import ArticuloCol from '../components/Tables/ArticuloCol.jsx';
-import { DatesContext } from '../Contexts.js';
+import { DatesContext } from '../Contexts.ts';
 import { useOutletContext } from 'react-router';
 import { footerFormat } from '../utils/progTableUtils';
 import { localizedNum } from '../utils/numFormat';

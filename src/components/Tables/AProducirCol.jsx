@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
 import Edit from '@mui/icons-material/Edit';
 import Button from '@mui/joy/Button';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
-import { ToastsContext } from '../../Contexts.js';
+import { ToastsContext } from '../../Contexts.ts';
 import { aProducirStr } from '../../utils/progTableUtils';
 import { useOutletContext } from 'react-router';
 

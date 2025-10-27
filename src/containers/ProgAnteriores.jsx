@@ -7,7 +7,7 @@ import Stack from '@mui/joy/Stack';
 import ProgramadaTable from '../components/Tables/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/Forms/ProgSearchForm.jsx';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { useOutletContext } from 'react-router';

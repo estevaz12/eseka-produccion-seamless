@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import Button from '@mui/joy/Button';
 import Stack from '@mui/joy/Stack';
 import ChangeCircleOutlined from '@mui/icons-material/ChangeCircleOutlined';

@@ -2,7 +2,7 @@ import Edit from '@mui/icons-material/Edit';
 import { useState } from 'react';
 import EditArticuloForm from '../Forms/EditArticuloForm.jsx';
 import ModalWrapper from '../ModalWrapper.jsx';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 
 export default function EditArtBtn({ articulo, tipo, talle }) {
   const apiUrl = useConfig().apiUrl;

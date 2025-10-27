@@ -1,7 +1,7 @@
 import Skeleton from '@mui/joy/Skeleton';
 import Typography from '@mui/joy/Typography';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import { useOutletContext } from 'react-router';
 import { localizedNum } from '../utils/numFormat';
 

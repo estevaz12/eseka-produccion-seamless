@@ -7,11 +7,11 @@ import FormHelperText from '@mui/joy/FormHelperText';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import Stack from '@mui/joy/Stack';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
-import { ErrorContext } from '../../Contexts.js';
+import { ErrorContext } from '../../Contexts.ts';
 import SaveOutlined from '@mui/icons-material/SaveOutlined';
-import { ToastsContext } from '../../Contexts.js';
+import { ToastsContext } from '../../Contexts.ts';
 
 export default function EditArticuloForm({ articuloData }) {
   const { apiUrl } = useConfig();

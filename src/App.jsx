@@ -5,7 +5,7 @@ import GlobalStyles from '@mui/joy/GlobalStyles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
-import { ConfigProvider } from './ConfigContext.jsx';
+import { ConfigProvider } from './ConfigContext.tsx';
 import { HashRouter, Route, Routes } from 'react-router';
 import Home from './containers/Home.jsx';
 import Produccion from './containers/Produccion.jsx';

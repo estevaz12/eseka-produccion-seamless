@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import Typography from '@mui/joy/Typography';
 import TargetCol from './TargetCol.jsx';
 import {
@@ -16,7 +16,7 @@ import {
 import AProducirCol from './AProducirCol.jsx';
 import EnhancedTable from './EnhancedTable.jsx';
 import ArticuloCol from './ArticuloCol.jsx';
-import { DatesContext } from '../../Contexts.js';
+import { DatesContext } from '../../Contexts.ts';
 import ProgLegend from './ProgLegend.jsx';
 import EditArtBtn from './EditArtBtn.jsx';
 import { Link, useOutletContext } from 'react-router';

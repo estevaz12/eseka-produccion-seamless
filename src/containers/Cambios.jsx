@@ -1,8 +1,8 @@
 import { useOutletContext } from 'react-router';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
-import { DatesContext } from '../Contexts.js';
+import { DatesContext } from '../Contexts.ts';
 import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
 import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';

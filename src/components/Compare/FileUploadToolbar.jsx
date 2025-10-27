@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 import InputFileUpload from '../Inputs/InputFileUpload.jsx';

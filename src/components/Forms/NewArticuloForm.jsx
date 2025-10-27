@@ -7,11 +7,11 @@ import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import Stack from '@mui/joy/Stack';
 import { useContext, useState } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import ColorDistrInputs from '../Inputs/ColorDistrInputs.jsx';
-import { ErrorContext } from '../../Contexts.js';
+import { ErrorContext } from '../../Contexts.ts';
 import AddRounded from '@mui/icons-material/AddRounded';
-import { ToastsContext } from '../../Contexts.js';
+import { ToastsContext } from '../../Contexts.ts';
 
 export default function NewArticuloForm({
   newArticuloData,

@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import ChartContent from './ChartContent.jsx';
 import ChartHeader from './ChartHeader.jsx';
 import { colors } from '../../utils/chartUtils';

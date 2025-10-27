@@ -1,6 +1,6 @@
 import { PieChart } from '@mui/x-charts';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import { styled } from '@mui/joy/styles';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import BigNumContent from './BigNumContent.jsx';

@@ -3,7 +3,7 @@ import Card from '@mui/joy/Card';
 import DailyProduction from '../components/Dashboard/DailyProduction.jsx';
 import TotalProduced from '../components/Dashboard/TotalProduced.jsx';
 import { useEffect, useMemo, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import CurrentEff from '../components/Dashboard/CurrentEff.jsx';
 import DailyEff from '../components/Dashboard/DailyEff.jsx';
 import MonthSaldo from '../components/Dashboard/MonthSaldo.jsx';

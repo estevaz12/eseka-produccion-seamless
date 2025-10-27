@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import Stack from '@mui/joy/Stack';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 import MaquinasTable from '../components/Tables/MaquinasTable.jsx';
@@ -13,7 +13,7 @@ import MapTwoTone from '@mui/icons-material/MapTwoTone';
 import TableChartTwoTone from '@mui/icons-material/TableChartTwoTone';
 import MaquinasMap from '../components/MaquinasMap.jsx';
 import { useOutletContext } from 'react-router';
-import { ToastsContext } from '../Contexts.js';
+import { ToastsContext } from '../Contexts.ts';
 import dayjs from 'dayjs';
 import Checkbox from '@mui/joy/Checkbox';
 import List from '@mui/joy/List';

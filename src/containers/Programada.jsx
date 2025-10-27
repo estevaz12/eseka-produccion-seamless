@@ -1,7 +1,7 @@
 import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
 import { useEffect, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import ProgramadaTable from '../components/Tables/ProgramadaTable.jsx';
 import ProgSearchForm from '../components/Forms/ProgSearchForm.jsx';
 import dayjs from 'dayjs';

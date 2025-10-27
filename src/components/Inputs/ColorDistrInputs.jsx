@@ -8,9 +8,9 @@ import FormHelperText from '@mui/joy/FormHelperText';
 import Checkbox from '@mui/joy/Checkbox';
 import { useContext, useEffect, useState } from 'react';
 import ColorSelect from './ColorSelect.jsx';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
-import { ErrorContext } from '../../Contexts.js';
+import { ErrorContext } from '../../Contexts.ts';
 import { useOutletContext } from 'react-router';
 
 let apiUrl;

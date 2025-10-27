@@ -1,12 +1,12 @@
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { useConfig } from '../ConfigContext.jsx';
+import { useConfig } from '../ConfigContext.tsx';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/Forms/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useLocation, useOutletContext } from 'react-router';
-import { ToastsContext } from '../Contexts.js';
+import { ToastsContext } from '../Contexts.ts';
 import { localizedNum } from '../utils/numFormat';
 import CompareInstructions from '../components/Compare/CompareInstructions.jsx';
 import DateTotalToolbar from '../components/Compare/DateTotalToolbar.jsx';

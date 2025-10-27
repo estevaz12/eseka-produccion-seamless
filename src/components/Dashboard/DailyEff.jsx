@@ -1,4 +1,4 @@
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import { useEffect, useMemo, useState } from 'react';
 import {
   dateFormatter,

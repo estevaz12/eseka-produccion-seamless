@@ -8,8 +8,8 @@ import ListDivider from '@mui/joy/ListDivider';
 import ListItem from '@mui/joy/ListItem';
 import Option from '@mui/joy/Option';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { useConfig } from '../../ConfigContext.jsx';
-import { ToastsContext } from '../../Contexts.js';
+import { useConfig } from '../../ConfigContext.tsx';
+import { ToastsContext } from '../../Contexts.ts';
 
 export default function AddColorBtn({
   setSelectVal,

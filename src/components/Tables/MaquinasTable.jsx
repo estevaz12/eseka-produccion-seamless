@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import EnhancedTable from './EnhancedTable.jsx';
-import { DatesContext } from '../../Contexts.js';
+import { DatesContext } from '../../Contexts.ts';
 import dayjs from 'dayjs';
 import {
   calcIdealTime,
@@ -11,7 +11,7 @@ import {
   getWorkEff,
   isParada,
 } from '../../utils/maquinasUtils';
-import { useConfig } from '../../ConfigContext.jsx';
+import { useConfig } from '../../ConfigContext.tsx';
 import { useOutletContext } from 'react-router';
 import Typography from '@mui/joy/Typography';
 import ExpandRowBtn from './ExpandRowBtn.jsx';

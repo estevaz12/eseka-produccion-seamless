@@ -1,6 +1,12 @@
 export type FooterRow = object;
 export type TableRow = object;
 
+export interface PDFCol {
+  readonly id: string;
+  readonly label: string;
+  readonly align: 'left' | 'center' | 'right';
+}
+
 export interface TableCol {
   readonly id: string;
   readonly label: string;
@@ -13,8 +19,9 @@ export interface TableCol {
   readonly sortFn?: (a: object, b: object, order: 'asc' | 'desc') => number;
 }
 
-export interface PDFCol {
-  readonly id: string;
-  readonly label: string;
-  readonly align: 'left' | 'center' | 'right';
+export interface Toast {
+  type: 'danger' | 'success' | 'warning';
+  message: string;
+  duration?: number | null;
+  machCode?: number;
 }
