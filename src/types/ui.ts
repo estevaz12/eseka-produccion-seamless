@@ -1,10 +1,17 @@
 import { Dayjs } from 'dayjs';
-import { Dispatch, RefObject, SetStateAction } from 'react';
+import { Dispatch, JSX, SetStateAction } from 'react';
 import { MachineParsed } from './api';
 import { Room } from './db';
 
-export type CompareLoadType = RefObject<'update' | 'insert'>;
+export type CompareLoadType = 'update' | 'insert';
 export type FooterRow = object;
+export type RenderRowArgs<T> = [
+  row: T,
+  i: number,
+  opened: string,
+  handleClick: () => void,
+];
+export type RenderRowTuple = [string | null, JSX.Element];
 export type TableRow = object;
 export type SetStateType<T> = Dispatch<SetStateAction<T>>;
 
@@ -56,8 +63,8 @@ export interface ToastsContextType {
 }
 
 export interface ToastType {
-  readonly id: string;
-  readonly timestamp: number;
+  readonly id?: string;
+  readonly timestamp?: number;
   type: 'danger' | 'success' | 'warning';
   message: string;
   duration?: number | null;

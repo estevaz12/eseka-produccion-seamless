@@ -10,7 +10,7 @@ export default function ModalWrapper({
   title,
   content,
   children,
-  isOpen,
+  isOpen = undefined,
   handleClose,
   contentClassName = '',
 }) {

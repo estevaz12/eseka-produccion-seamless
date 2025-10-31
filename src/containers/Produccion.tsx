@@ -7,16 +7,23 @@ import EnhancedTable from '../components/Tables/EnhancedTable.jsx';
 import ArticuloCol from '../components/Tables/ArticuloCol.jsx';
 import { DatesContext } from '../Contexts.ts';
 import { useOutletContext } from 'react-router';
-import { footerFormat } from '../utils/progTableUtils';
-import { localizedNum } from '../utils/numFormat';
+import { footerFormat } from '../utils/progTableUtils.ts';
+import { localizedNum } from '../utils/numFormat.ts';
+import {
+  OutletContextType,
+  ProduccionRow,
+  RenderRowArgs,
+  RenderRowTuple,
+  TableCol,
+} from '../types';
 
-let apiUrl, sqlDateFormat;
+let apiUrl: string, sqlDateFormat: string;
 
 export default function Produccion() {
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { room, docena, porcExtra } = useOutletContext();
-  const [url, setUrl] = useState();
-  const [data, setData] = useState([]);
+  const { room, docena, porcExtra } = useOutletContext<OutletContextType>();
+  const [url, setUrl] = useState<string>();
+  const [data, setData] = useState<ProduccionRow[]>([]);
   const [formData, setFormData] = useState({
     room,
     startDate: dayjs.tz().startOf('month').hour(6).minute(0).second(1),
@@ -30,11 +37,14 @@ export default function Produccion() {
   // get all on load
   useEffect(() => {
     let ignore = false;
-    const params = new URLSearchParams({
+    const paramsObj = {
       ...formData,
       startDate: formData.startDate.format(sqlDateFormat),
       endDate: formData.endDate.format(sqlDateFormat),
-    }).toString();
+    };
+    const params = new URLSearchParams(
+      Object.entries(paramsObj) as Array<[string, string]>
+    ).toString();
 
     if (!ignore) setUrl(`${apiUrl}/produccion?${params}`);
 
@@ -45,7 +55,7 @@ export default function Produccion() {
 
   useEffect(() => {
     let ignore = false;
-    let interval;
+    let interval: NodeJS.Timeout;
 
     if (url && !ignore) {
       // get data on form submission
@@ -83,14 +93,15 @@ export default function Produccion() {
     }
   }, [url]);
 
-  const cols = [
+  const cols: TableCol[] = [
     {
       id: 'Articulo',
       label: 'Artículo',
       align: 'right',
       labelWidth: 'min-w-16',
       pdfAlign: 'left',
-      pdfRender: (row) => `${row.Articulo}${row.Tipo ? row.Tipo : ''}`,
+      pdfRender: (row: ProduccionRow) =>
+        `${row.Articulo}${row.Tipo ? row.Tipo : ''}`,
     },
     {
       id: 'Talle',
@@ -105,19 +116,19 @@ export default function Produccion() {
       id: 'Docenas',
       label: 'Docenas',
       align: 'right',
-      pdfValue: (row) => calcProducido(row) / docena,
-      pdfRender: (row) => docenasStr(row),
+      pdfValue: (row: ProduccionRow) => calcProducido(row) / docena,
+      pdfRender: (row: ProduccionRow) => docenasStr(row),
     },
     {
       id: 'Unidades',
       label: 'Unidades',
       align: 'right',
-      pdfValue: (row) => calcProducido(row),
-      pdfRender: (row) => unidadesStr(row),
+      pdfValue: (row: ProduccionRow) => calcProducido(row),
+      pdfRender: (row: ProduccionRow) => unidadesStr(row),
     },
   ];
 
-  function calcProducido(row) {
+  function calcProducido(row: ProduccionRow) {
     return row.Tipo === null
       ? row.Unidades
       : row.Tipo === '#'
@@ -125,23 +136,26 @@ export default function Produccion() {
         : row.Unidades / 2;
   }
 
-  function unidadesStr(row) {
+  function unidadesStr(row: ProduccionRow) {
     const producido = localizedNum(calcProducido(row));
     return row.Tipo === null
       ? producido
       : `${producido} (${localizedNum(row.Unidades)})`;
   }
 
-  function docenasStr(row) {
+  function docenasStr(row: ProduccionRow) {
     const producido = calcProducido(row);
+    const producidoDiv = Number((producido / docena / porcExtra).toFixed(1));
+    const unidadesDiv = Number((row.Unidades / docena / porcExtra).toFixed(1));
+
     return row.Tipo === null
-      ? localizedNum((producido / docena / porcExtra).toFixed(1))
-      : `${localizedNum(
-          (producido / docena / porcExtra).toFixed(1)
-        )} (${localizedNum((row.Unidades / docena / porcExtra).toFixed(1))})`;
+      ? localizedNum(producidoDiv)
+      : `${localizedNum(producidoDiv)} (${localizedNum(unidadesDiv)})`;
   }
 
-  function renderRow(row, i, opened, handleClick) {
+  function renderRow(
+    ...[row, i, opened, handleClick]: RenderRowArgs<ProduccionRow>
+  ): RenderRowTuple {
     return [
       null, // rowClassName
       <>
@@ -149,7 +163,6 @@ export default function Produccion() {
         <ArticuloCol
           row={row}
           isOpen={opened === `${row.Articulo}-${row.Talle}-${row.ColorId}`}
-          editable={false}
           handleRowClick={handleClick}
         />
         {/* Talle */}

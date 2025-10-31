@@ -1,13 +1,13 @@
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { RefObject, useContext, useEffect, useRef, useState } from 'react';
 import { useConfig } from '../ConfigContext.tsx';
 import dayjs from 'dayjs';
 import NewArticuloForm from '../components/Forms/NewArticuloForm.jsx';
 import ModalWrapper from '../components/ModalWrapper.jsx';
 import { useLocation, useOutletContext } from 'react-router';
 import { ToastsContext } from '../Contexts.ts';
-import { localizedNum } from '../utils/numFormat';
+import { localizedNum } from '../utils/numFormat.ts';
 import CompareInstructions from '../components/Compare/CompareInstructions.tsx';
 import DateTotalToolbar from '../components/Compare/DateTotalToolbar.jsx';
 import CompareToolbar from '../components/Compare/CompareToolbar.jsx';
@@ -15,28 +15,38 @@ import FileUploadToolbar from '../components/Compare/FileUploadToolbar.jsx';
 import NewProgTable from '../components/Compare/NewProgTable.jsx';
 import DiffTable from '../components/Compare/DiffTable.jsx';
 import NewTargetsTable from '../components/Compare/NewTargetsTable.jsx';
+import {
+  CompareLoadType,
+  CompareProgData,
+  NewArticulo,
+  NewTarget,
+  OutletContextType,
+  PDFData,
+  ProgColor,
+  ToastsContextType,
+} from '../types';
 
 // to avoid useEffect dependency issues
-let apiUrl, sqlDateFormat;
+let apiUrl: string, sqlDateFormat: string;
 
 export default function ProgComparar() {
   // context
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { room } = useOutletContext();
-  const { addToast } = useContext(ToastsContext);
+  const { room } = useOutletContext<OutletContextType>();
+  const { addToast } = useContext<ToastsContextType>(ToastsContext);
   // load, file upload and reading
-  const [startDate, setStartDate] = useState();
-  const [currTotal, setCurrTotal] = useState();
-  const [programada, setProgramada] = useState();
+  const [startDate, setStartDate] = useState<string>();
+  const [currTotal, setCurrTotal] = useState<number>();
+  const [programada, setProgramada] = useState<PDFData>();
   // diff and updates
-  const [diff, setDiff] = useState();
+  const [diff, setDiff] = useState<CompareProgData | null>(null);
   const [isResetting, setIsResetting] = useState(false);
-  const [newArticuloData, setNewArticuloData] = useState([]);
-  const [newTargets, setNewTargets] = useState();
+  const [newArticuloData, setNewArticuloData] = useState<NewArticulo[]>([]);
+  const [newTargets, setNewTargets] = useState<NewTarget[]>();
   // helper refs
   const diffMounted = useRef(false);
-  const loadType = useRef('');
-  const intervalRef = useRef();
+  const loadType = useRef<CompareLoadType | ''>('');
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   useIntervalCleanup(intervalRef);
 
   // get current programada total on load
@@ -80,7 +90,7 @@ export default function ProgComparar() {
           message: resData.message,
         });
 
-        const data = resData.inserted;
+        const data: ProgColor[] = resData.inserted;
         fetchNewTargets(data);
         intervalRef.current = setInterval(() => {
           fetchNewTargets(data);
@@ -114,7 +124,7 @@ export default function ProgComparar() {
             message: resData.message,
           });
 
-          const data = resData.inserted;
+          const data: ProgColor[] = resData.inserted;
 
           // insert programada start date to db
           fetch(`${apiUrl}/${room}/programada/insertStartDate`, {
@@ -178,7 +188,7 @@ export default function ProgComparar() {
         insertAll();
       }
 
-      setDiff();
+      setDiff(null);
     }
 
     return () => {
@@ -186,7 +196,7 @@ export default function ProgComparar() {
     };
   }, [diff, newArticuloData, programada, startDate, addToast]);
 
-  function fetchNewTargets(inserted) {
+  function fetchNewTargets(inserted: ProgColor[]) {
     fetch(`${apiUrl}/${room}/programada/calculateNewTargets`, {
       method: 'POST',
       headers: {
@@ -195,13 +205,15 @@ export default function ProgComparar() {
       body: JSON.stringify(inserted), // inserted prog updates
     })
       .then((res) => res.json())
-      .then((data) =>
-        setNewTargets(data.sort((a, b) => a.StyleCode - b.StyleCode))
+      .then((data: NewTarget[]) =>
+        setNewTargets(
+          data.sort((a, b) => a.styleCode.localeCompare(b.styleCode))
+        )
       )
       .catch((err) => console.error('[CLIENT] Error fetching data:', err));
   }
 
-  function useIntervalCleanup(intervalRef) {
+  function useIntervalCleanup(intervalRef: RefObject<NodeJS.Timeout>) {
     const { pathname } = useLocation();
 
     useEffect(() => {
@@ -256,7 +268,7 @@ export default function ProgComparar() {
             variant='outlined'
             color='warning'
             level='body-lg'
-            className='max-w-fit rounded-[var(--joy-radius-sm)] py-1.5 px-4 mx-0'
+            className='max-w-fit rounded-(--joy-radius-sm) py-1.5 px-4 mx-0'
           >
             Total nuevo: {localizedNum(programada.total)}
           </Typography>

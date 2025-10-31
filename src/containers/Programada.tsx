@@ -9,16 +9,19 @@ import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ProgTotal from '../components/ProgTotal.jsx';
 import RefreshBtn from '../components/RefreshBtn.jsx';
 import { useOutletContext } from 'react-router';
+import { OutletContextType, ProgColorTable } from '../types';
 
 // to avoid useEffect dependency issues
-let apiUrl;
+let apiUrl: string;
 
 export default function Programada() {
   apiUrl = useConfig().apiUrl;
-  const { addColorCodes, room } = useOutletContext();
-  const [startDate, setStartDate] = useState();
-  const [progColor, setProgColor] = useState([]);
-  const [filteredProgColor, setFilteredProgColor] = useState([]);
+  const { addColorCodes, room } = useOutletContext<OutletContextType>();
+  const [startDate, setStartDate] = useState<string>();
+  const [progColor, setProgColor] = useState<ProgColorTable[]>([]);
+  const [filteredProgColor, setFilteredProgColor] = useState<ProgColorTable[]>(
+    []
+  );
 
   // get current programada total on load
   useEffect(() => {
@@ -82,7 +85,7 @@ export default function Programada() {
     <Box>
       <Stack
         direction='row'
-        className='sticky z-10 items-end justify-between gap-4 top-0 bg-[var(--joy-palette-background-body)] py-4'
+        className='sticky z-10 items-end justify-between gap-4 top-0 bg-(--joy-palette-background-body) py-4'
       >
         <Stack direction='row' className='items-end gap-4'>
           <RefreshBtn handleRefresh={handleRefresh} />

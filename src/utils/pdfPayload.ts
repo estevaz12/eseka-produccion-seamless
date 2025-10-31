@@ -6,8 +6,7 @@ import type {
   FooterRow,
   MachineParsed,
   PDFCol,
-  Produccion,
-  ProduccionParams,
+  ProduccionRow,
   ProgColorTable,
   Room,
   TableCol,
@@ -210,9 +209,9 @@ function formatMachines(row: RowMachines) {
 }
 
 async function getProduced(room: Room) {
-  let data: Produccion[] = [];
+  let data: ProduccionRow[] = [];
   try {
-    const paramsObj: ProduccionParams = {
+    const paramsObj = {
       room,
       startDate: dayjs
         .tz()

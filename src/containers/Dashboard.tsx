@@ -13,22 +13,24 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import DateEstimate from '../components/Dashboard/DateEstimate.jsx';
 import RequiredProd from '../components/Dashboard/RequiredProd.jsx';
 import { useOutletContext } from 'react-router';
+import { DailyProd, DailyWEff, Holiday, OutletContextType } from '../types';
 
 dayjs.extend(isSameOrBefore);
 
-let apiUrl;
+let apiUrl: string;
+
 export default function Dashboard() {
   apiUrl = useConfig().apiUrl;
-  const { room } = useOutletContext();
-  const [dailyProd, setDailyProd] = useState([]);
-  const [holidays, setHolidays] = useState([]);
-  const [progTotal, setProgTotal] = useState(null);
-  const [yesterdayEff, setYesterdayEff] = useState({});
+  const { room } = useOutletContext<OutletContextType>();
+  const [dailyProd, setDailyProd] = useState<DailyProd[]>([]);
+  const [holidays, setHolidays] = useState<string[]>([]);
+  const [progTotal, setProgTotal] = useState<number>(null);
+  const [yesterdayEff, setYesterdayEff] = useState<DailyWEff | {}>({});
   const now = dayjs.tz();
 
   useEffect(() => {
     let ignore = false;
-    let timeoutId;
+    let timeoutId: NodeJS.Timeout;
 
     fetch(`${apiUrl}/${room}/stats/dailyProduction`)
       .then((res) => res.json())
@@ -47,10 +49,10 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         const filtered = data.filter(
-          (d) =>
+          (d: Holiday) =>
             dayjs.tz(d.fecha).month() === now.month() && d.tipo !== 'puente'
         );
-        const flat = filtered.map((d) => d.fecha);
+        const flat = filtered.map((d: Holiday) => d.fecha);
 
         if (!ignore) {
           setHolidays(flat);

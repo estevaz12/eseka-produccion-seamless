@@ -7,15 +7,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
 import { ConfigProvider } from './ConfigContext.tsx';
 import { HashRouter, Route, Routes } from 'react-router';
-import Home from './containers/Home.tsx';
-import Produccion from './containers/Produccion.jsx';
-import Programada from './containers/Programada.jsx';
-import ProgComparar from './containers/ProgComparar.jsx';
-import ProgAnteriores from './containers/ProgAnteriores.jsx';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import Maquinas from './containers/Maquinas.jsx';
 import {
   useTheme as useJoyTheme,
   extendTheme,
@@ -27,9 +21,15 @@ import {
   THEME_ID as MATERIAL_THEME_ID,
 } from '@mui/material/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
-import Dashboard from './containers/Dashboard.jsx';
 import { getChartsCustomizations } from './theme/charts.js';
-import Cambios from './containers/Cambios.jsx';
+import Home from './containers/Home.tsx';
+import Produccion from './containers/Produccion.tsx';
+import Programada from './containers/Programada.tsx';
+import ProgComparar from './containers/ProgComparar.tsx';
+import ProgAnteriores from './containers/ProgAnteriores.tsx';
+import Maquinas from './containers/Maquinas.tsx';
+import Dashboard from './containers/Dashboard.tsx';
+import Cambios from './containers/Cambios.tsx';
 import { ConfigContextType } from './types';
 
 dayjs.extend(utc);

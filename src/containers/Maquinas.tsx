@@ -18,22 +18,31 @@ import dayjs from 'dayjs';
 import Checkbox from '@mui/joy/Checkbox';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
-import playAlertSound from '../utils/playAlertSound';
-import sendTelegramAlert from '../utils/sendTelegramAlert';
+import playAlertSound from '../utils/playAlertSound.ts';
+import sendTelegramAlert from '../utils/sendTelegramAlert.ts';
+import {
+  MachineParsed,
+  NotifOpts,
+  OutletContextType,
+  SetStateType,
+  ToastsContextType,
+  ToastType,
+} from '../types';
 
-let apiUrl;
+let apiUrl: string;
 
 export default function Maquinas() {
   apiUrl = useConfig().apiUrl;
-  const { addToast, removeToast } = useContext(ToastsContext);
-  const { room } = useOutletContext();
-  const [machines, setMachines] = useState([]);
-  const [filteredMachines, setFilteredMachines] = useState([]);
-  const [defaultTab, setDefaultTab] = useState(
+  const { addToast, removeToast } =
+    useContext<ToastsContextType>(ToastsContext);
+  const { room } = useOutletContext<OutletContextType>();
+  const [machines, setMachines] = useState<MachineParsed[]>([]);
+  const [filteredMachines, setFilteredMachines] = useState<MachineParsed[]>([]);
+  const [defaultTab, setDefaultTab] = useState<number>(
     JSON.parse(localStorage.getItem('machTab')) || 0
   );
   // Algodón, Seamless, Nylon
-  const [selectedRooms, setSelectedRooms] = useState(
+  const [selectedRooms, setSelectedRooms] = useState<boolean[]>(
     JSON.parse(localStorage.getItem('selectedRooms')) || [true, true, true]
   );
 
@@ -45,7 +54,7 @@ export default function Maquinas() {
   const getMachines = () => {
     fetch(`${apiUrl}/${room}/machines`)
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: MachineParsed[]) => {
         let machs = [...data];
 
         if (room === 'ELECTRONICA') {
@@ -100,7 +109,7 @@ export default function Maquinas() {
     [electronicoMachs]
   );
 
-  const lastNotifiedIdsRef = useRef([]);
+  const lastNotifiedIdsRef = useRef<number[]>([]);
 
   // when there is a mach with electronico stop, send toast
   useEffect(() => {
@@ -131,7 +140,9 @@ export default function Maquinas() {
     }
     // Remove toasts for removed machines
     if (removedIds.length > 0) {
-      const currentToasts = JSON.parse(localStorage.getItem('toasts') || '[]');
+      const currentToasts: ToastType[] = JSON.parse(
+        localStorage.getItem('toasts') || '[]'
+      );
       const removed = currentToasts.filter((t) =>
         removedIds.includes(t.machCode)
       );
@@ -153,14 +164,14 @@ export default function Maquinas() {
       size='sm'
       sx={{ bgcolor: 'transparent' }}
       className='sticky top-0 z-10'
-      onChange={(e, value) => {
+      onChange={(e, value: number) => {
         localStorage.setItem('machTab', JSON.stringify(value));
         setDefaultTab(value);
       }}
     >
       <Stack
         direction='row'
-        className='sticky top-0 z-10 items-end justify-between gap-4 bg-[var(--joy-palette-background-body)] py-4'
+        className='sticky top-0 z-10 items-end justify-between gap-4 bg-(--joy-palette-background-body) py-4'
       >
         <RefreshBtn handleRefresh={getMachines} />
 
@@ -224,8 +235,8 @@ export default function Maquinas() {
   );
 }
 
-function sendNotification(electronicoMachs) {
-  const notif = {
+function sendNotification(electronicoMachs: number[]) {
+  const notif: NotifOpts = {
     title: 'ELECTRÓNICO',
     body: electronicoMachs
       .map((m) => `Máq. ${m} entró en ELECTRÓNICO`)
@@ -248,7 +259,15 @@ function sendNotification(electronicoMachs) {
   sendTelegramAlert(notif.body + ' ⚠️');
 }
 
-function RoomCheckboxes({ selectedRooms, setSelectedRooms }) {
+interface RoomCheckboxesProps {
+  selectedRooms: boolean[];
+  setSelectedRooms: SetStateType<boolean[]>;
+}
+
+function RoomCheckboxes({
+  selectedRooms,
+  setSelectedRooms,
+}: RoomCheckboxesProps) {
   return (
     <div role='group' aria-labelledby='room'>
       <List

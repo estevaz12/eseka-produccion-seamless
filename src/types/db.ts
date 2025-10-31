@@ -11,6 +11,20 @@ export interface Articulo {
   readonly Tipo: string | null;
 }
 
+export interface Cambio {
+  readonly Shift: number;
+  readonly MachCode: number;
+  readonly Articulo: number;
+  readonly Tipo: string | null;
+  readonly Talle: number;
+  readonly ColorId: number;
+  readonly Color: string;
+  readonly Hex: string;
+  readonly WhiteText: boolean;
+  readonly Unidades: number;
+  readonly DateRec: string;
+}
+
 export interface Color {
   readonly Id: number;
   readonly Color: string;
@@ -44,6 +58,17 @@ export interface CurrEffData {
   readonly [key: string]: any;
 }
 
+export interface DailyProd {
+  readonly ProdDate: string;
+  readonly Docenas: number;
+}
+
+export interface DailyWEff {
+  readonly ProdDate: string;
+  readonly RoomCode: Room;
+  readonly WorkEfficiency: number;
+}
+
 export interface Machine {
   readonly MachCode: number;
   readonly StyleCode: string;
@@ -55,7 +80,7 @@ export interface Machine {
   readonly RoomCode: string;
 }
 
-export interface Produccion {
+export interface ProduccionRow {
   readonly Articulo: number;
   readonly Tipo: string | null;
   readonly Talle: number;

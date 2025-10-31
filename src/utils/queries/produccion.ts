@@ -1,8 +1,8 @@
 import type { ConnectionPool, IResult } from 'mssql';
-import type { Produccion, Room, SQLQueryOpts } from '../../types';
+import type { ProduccionRow, Room, SQLQueryOpts } from '../../types';
 import sql from 'mssql';
 
-type ProduccionRes = Promise<IResult<Produccion>>;
+type Produccion = Promise<IResult<ProduccionRow>>;
 
 type buildArgs = [
   room: Room,
@@ -179,7 +179,7 @@ function buildProduccion(
 async function runProduccion(
   pool: ConnectionPool,
   ...args: buildArgs
-): ProduccionRes {
+): Produccion {
   const { query, params } = buildProduccion(...args);
   const request = pool.request();
   for (const p of params) {

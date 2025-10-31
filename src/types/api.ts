@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { ProgColor, Room } from './db';
 
 export interface ColorCodeData {
@@ -19,6 +20,12 @@ export interface CompareProgData {
   added: PDFProgRow[];
   modified: PDFProgRow[];
   deleted: PDFProgRow[];
+}
+
+export interface Holiday {
+  readonly fecha: string;
+  readonly tipo: string;
+  readonly [key: string]: any;
 }
 
 export interface MachineParsed {
@@ -61,20 +68,15 @@ export interface NewTarget {
   sendTarget: number | string;
 }
 
+export interface PDFData {
+  total: number;
+  rows: PDFProgRow[];
+}
+
 export interface PDFProgRow {
   readonly articulo: number;
   readonly talle: number;
   readonly aProducir: number;
-}
-
-export interface ProduccionParams {
-  room: Room;
-  startDate: string;
-  endDate: string;
-  actual: boolean;
-  articulo: string;
-  talle: string;
-  colorId: string;
 }
 
 export interface ProgColorDocData {

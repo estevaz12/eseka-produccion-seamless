@@ -1,12 +1,10 @@
 import sql from 'mssql';
-import type { Room } from '../../types';
+import type { DailyWEff, Room } from '../../types';
 import type { ConnectionPool, IResult } from 'mssql';
 
-type DailyWEff = Promise<
-  IResult<{ ProdDate: string; RoomCode: string; WorkEfficiency: number }>
->;
+type DailyWEffRes = Promise<IResult<DailyWEff>>;
 
-async function getDailyWEff(pool: ConnectionPool, room: Room): DailyWEff {
+async function getDailyWEff(pool: ConnectionPool, room: Room): DailyWEffRes {
   return pool.request().input('room', sql.Char(30), room).query(`
       SELECT ProdDate, RoomCode, WorkEfficiency 
       FROM WEff_Diario

@@ -6,7 +6,7 @@ import type { ConnectionPool } from 'mssql';
 import type {
   MachineParsed,
   NewTarget,
-  Produccion,
+  ProduccionRow,
   ProgColor,
   Room,
 } from '../types';
@@ -157,7 +157,7 @@ async function getMonthProduction(pool: ConnectionPool, newRecord: ProgColor) {
       newRecord.Talle,
       newRecord.ColorId
     );
-    const data: Produccion[] = res.recordset;
+    const data: ProduccionRow[] = res.recordset;
 
     // The articulo might not be in the production table
     monthProduction = data.length === 0 ? 0 : data[0].Unidades;

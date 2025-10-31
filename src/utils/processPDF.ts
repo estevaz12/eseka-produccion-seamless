@@ -1,11 +1,6 @@
 import { PdfReader, TableParser } from 'pdfreader';
 import type { Item } from 'pdfreader';
-import type { PDFProgRow } from '../types';
-
-interface PDFData {
-  total: number;
-  rows: PDFProgRow[];
-}
+import type { PDFData } from '../types';
 
 const processPDF = async (path: string) => {
   return new Promise((resolve, reject) => {

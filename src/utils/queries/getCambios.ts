@@ -1,8 +1,8 @@
 import sql from 'mssql';
 import type { ConnectionPool, IResult } from 'mssql';
-import type { Room } from '../../types';
+import type { Cambio, Room } from '../../types';
 
-type Cambios = Promise<IResult<any>>;
+type Cambios = Promise<IResult<Cambio>>;
 
 async function getCambios(
   pool: ConnectionPool,

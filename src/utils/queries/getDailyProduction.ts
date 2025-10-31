@@ -1,9 +1,9 @@
 import sql from 'mssql';
 import dayjs from 'dayjs';
-import type { Room } from '../../types';
+import type { DailyProd, Room } from '../../types';
 import type { ConnectionPool, IResult } from 'mssql';
 
-type DailyProduction = Promise<IResult<{ ProdDate: string; Docenas: number }>>;
+type DailyProduction = Promise<IResult<DailyProd>>;
 
 async function getDailyProduction(
   pool: ConnectionPool,

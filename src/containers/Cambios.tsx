@@ -10,18 +10,24 @@ import RefreshBtn from '../components/RefreshBtn.jsx';
 import { StyledDatePicker } from '../components/Inputs/StyledPickers.jsx';
 import ExpandRowBtn from '../components/Tables/ExpandRowBtn.jsx';
 import Typography from '@mui/joy/Typography';
-import { localizedNum } from '../utils/numFormat';
+import { localizedNum } from '../utils/numFormat.ts';
+import {
+  Cambio,
+  OutletContextType,
+  RenderRowArgs,
+  RenderRowTuple,
+  TableCol,
+} from '../types';
 
-let apiUrl, sqlDateFormat;
+let apiUrl: string, sqlDateFormat: string;
 
 export default function Cambios() {
   ({ apiUrl, sqlDateFormat } = useConfig());
-  const { room } = useOutletContext();
+  const { room } = useOutletContext<OutletContextType>();
   const [startDate, setStartDate] = useState(
     dayjs.tz().hour(6).minute(0).second(0)
   );
-  const [data, setData] = useState([]);
-  const [url, setUrl] = useState();
+  const [data, setData] = useState<Cambio[]>([]);
 
   useEffect(() => {
     let ignore = false;
@@ -34,7 +40,7 @@ export default function Cambios() {
     };
   }, [startDate]);
 
-  const cols = [
+  const cols: TableCol[] = [
     {
       id: 'Shift',
       label: 'Turno',
@@ -51,7 +57,7 @@ export default function Cambios() {
       id: 'Articulo',
       label: 'Artículo',
       width: 'w-[9%]',
-      pdfRender: (row) => `${row.Articulo}${row.Tipo ? row.Tipo : ''}`,
+      pdfRender: (row: Cambio) => `${row.Articulo}${row.Tipo ? row.Tipo : ''}`,
     },
     {
       id: 'Talle',
@@ -67,14 +73,14 @@ export default function Cambios() {
       id: 'Unidades',
       label: 'Unidades',
       align: 'right',
-      pdfValue: (row) => calcProducido(row),
-      pdfRender: (row) => unidadesStr(row),
+      pdfValue: (row: Cambio) => calcProducido(row),
+      pdfRender: (row: Cambio) => unidadesStr(row),
     },
     {
       id: 'DateRec',
       label: 'Fecha',
       align: 'center',
-      pdfRender: (row) => dayjs.tz(row.DateRec).format('DD/MM HH:mm'),
+      pdfRender: (row: Cambio) => dayjs.tz(row.DateRec).format('DD/MM HH:mm'),
     },
   ];
 
@@ -105,7 +111,9 @@ export default function Cambios() {
       .catch((err) => console.error('[CLIENT] Error fetching /cambios:', err));
   }
 
-  function renderRow(row, i, opened, handleClick) {
+  function renderRow(
+    ...[row, i, opened, handleClick]: RenderRowArgs<Cambio>
+  ): RenderRowTuple {
     let rowClassName = '';
     if (row.Shift === 1) rowClassName = 'bg-turno-1';
     else if (row.Shift === 2) rowClassName = 'bg-turno-2';
@@ -164,7 +172,7 @@ export default function Cambios() {
     ];
   }
 
-  const countChangesPerShift = useMemo(() => {
+  const countChangesPerShift: ShiftChanges | {} = useMemo(() => {
     return data.reduce((acc, row) => {
       const shift = row.Shift;
       acc[shift] = (acc[shift] || 0) + 1;
@@ -176,14 +184,14 @@ export default function Cambios() {
     <Box>
       <Stack
         direction='row'
-        className='sticky z-10 items-end gap-4 top-0 bg-[var(--joy-palette-background-body)] py-4'
+        className='sticky z-10 items-end gap-4 top-0 bg-(--joy-palette-background-body) py-4'
       >
         <RefreshBtn handleRefresh={fetchCambios} />
 
         <StyledDatePicker
           label='Fecha'
           value={startDate}
-          onChange={(newDate) => setStartDate(newDate)}
+          onChange={(newDate: dayjs.Dayjs) => setStartDate(newDate)}
           disableFuture
         />
       </Stack>
@@ -218,7 +226,13 @@ export default function Cambios() {
   );
 }
 
-function calcProducido(row) {
+interface ShiftChanges {
+  1: number;
+  2: number;
+  3: number;
+}
+
+function calcProducido(row: Cambio) {
   return row.Tipo === null
     ? row.Unidades
     : row.Tipo === '#'
@@ -226,7 +240,7 @@ function calcProducido(row) {
       : row.Unidades / 2;
 }
 
-function unidadesStr(row) {
+function unidadesStr(row: Cambio) {
   const producido = localizedNum(calcProducido(row));
   return row.Tipo === null
     ? producido
