@@ -377,7 +377,7 @@ export default function ProgramadaTable({
           <td className='text-right'>{producidoStr(row, docena, porcExtra)}</td>
           {/* Falta */}
           <td className='text-right'>{faltaStr(row, docena, porcExtra)}</td>
-          {/* Falta (un.) */}
+          {/* Falta (un.) or Tiempo al 100% */}
           {room === 'SEAMLESS' ? (
             <td className='text-right'>{localizedNum(faltaUnidades)}</td>
           ) : live ? (
@@ -389,7 +389,7 @@ export default function ProgramadaTable({
           ) : (
             <td className='text-right'>{localizedNum(faltaUnidades)}</td>
           )}
-          {/* Target (un.) or Tiempo al 100% */}
+          {/* Target (un.) */}
           {(live || room === 'SEAMLESS') && (
             <td className='text-right'>
               <TargetCol row={row} faltaUnidades={faltaUnidades} />
