@@ -17,10 +17,8 @@ export default function TargetCol({ row, faltaUnidades }) {
   const TargetData = ({ target, icon }) => (
     <Typography
       className='justify-end'
-      {...(room === 'SEAMLESS' && {
-        endDecorator: icon,
-        sx: { '& .MuiTypography-endDecorator': { m: 0 } },
-      })}
+      endDecorator={icon}
+      sx={{ '& .MuiTypography-endDecorator': { m: 0 } }}
     >
       {target}
     </Typography>

@@ -307,7 +307,7 @@ const startServer = () => {
     for (const row of data.colorDistr) {
       await queries.insertDistr(pool, data.articulo, data.talle, row);
       // Wait before next insert
-      await new Promise((resolve) => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 10));
     }
   }
 
