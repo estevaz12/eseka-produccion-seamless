@@ -1,5 +1,8 @@
+const { buildProduccion, runProduccion } = require('./produccion');
+
 module.exports = {
-  produccion: require('./produccion.js'),
+  buildProduccion,
+  runProduccion,
   insertProgramada: require('./insertProgramada.js'),
   getProgramada: require('./getProgramada.js'),
   updateProgramada: require('./updateProgramada.js'),

@@ -1,14 +1,11 @@
 const insertProgramada = require('./insertProgramada');
 
 // data = {added[Objects], modified[Objects], deleted[Objects]}
-const updateProgramada = (room, data, date) => {
-  let query = '';
+const updateProgramada = async (pool, room, data, date) => {
   // data.added should technically be empty, but in case it isn't
-  query += insertProgramada(data.added, room, 'inserted', date);
-  query += insertProgramada(data.modified, room, 'inserted', date);
-  query += insertProgramada(data.deleted, room, 'deleted', date);
-
-  return query;
+  await insertProgramada(pool, data.added, room, 'inserted', date);
+  await insertProgramada(pool, data.modified, room, 'inserted', date);
+  await insertProgramada(pool, data.deleted, room, 'deleted', date);
 };
 
 module.exports = updateProgramada;
