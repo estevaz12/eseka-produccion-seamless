@@ -40,19 +40,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create .env file
+        run: |
+          echo "DB_SERVER=${{ secrets.DB_SERVER }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "EXPRESS_URL=${{ secrets.EXPRESS_URL }}" >> .env
+          echo "SQL_DATE_FORMAT=${{ secrets.SQL_DATE_FORMAT }}" >> .env
+          echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" >> .env
+          echo "BOT_API=${{ secrets.BOT_API }}" >> .env
+          echo "CHAT_ID=${{ secrets.CHAT_ID }}" >> .env
+
       - name: Package Electron app (Windows)
         run: npm run make
-        env:
-          DB_SERVER: ${{secrets.DB_SERVER}}
-          DB_PORT: ${{secrets.DB_PORT}}
-          DB_NAME: ${{secrets.DB_NAME}}
-          DB_USERNAME: ${{secrets.DB_USERNAME}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          EXPRESS_URL: ${{secrets.EXPRESS_URL}}
-          SQL_DATE_FORMAT: ${{secrets.SQL_DATE_FORMAT}}
-          BOT_TOKEN: ${{secrets.BOT_TOKEN}}
-          BOT_API: ${{secrets.BOT_API}}
-          CHAT_ID: ${{secrets.CHAT_ID}}
 
       - name: Upload packaged app
         uses: actions/upload-artifact@v4
