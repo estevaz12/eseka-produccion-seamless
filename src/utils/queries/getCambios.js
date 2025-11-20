@@ -1,8 +1,14 @@
-const getCambios = (startDate, room) => {
-  return `
-    DECLARE @room CHAR(30) = '${room}';
+const dayjs = require('dayjs');
+const sql = require('mssql');
 
-    DECLARE @fechaInicio DATE = '${startDate}';
+const getCambios = async (pool, startDate, room) => {
+  return pool
+    .request()
+    .input('roomCode', sql.Char(30), room)
+    .input('startDate', sql.VarChar, startDate).query(`
+    DECLARE @room CHAR(30) = @roomCode;
+
+    DECLARE @fechaInicio DATE = @startDate;
 
     DECLARE @fechaFin DATE = DATEADD(day, 1, @fechaInicio);
 
@@ -87,7 +93,7 @@ const getCambios = (startDate, room) => {
         ON colors.Id = cc.Color
     WHERE rn = 1
     ORDER BY Shift, MachCode;
-  `;
+  `);
 };
 
 module.exports = getCambios;
