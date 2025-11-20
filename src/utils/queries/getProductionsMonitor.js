@@ -1,6 +1,7 @@
+const sql = require('mssql');
 const dayjs = require('dayjs');
 
-const getProductionsMonitor = (query) => {
+const getProductionsMonitor = async (pool, query) => {
   let {
     machCode,
     articulo,
@@ -38,7 +39,14 @@ const getProductionsMonitor = (query) => {
         .second(0)
         .format(process.env.SQL_DATE_FORMAT);
 
-  return `
+  return pool
+    .request()
+    .input('machCode', sql.Int, Number(machCode))
+    .input('articulo', sql.Numeric(7, 2), Number(articulo))
+    .input('talle', sql.TinyInt, Number(talle))
+    .input('color', sql.SmallInt, Number(color))
+    .input('prodStartDate', sql.VarChar, prodStartDate)
+    .input('prodEndDate', sql.VarChar, prodEndDate).query(`
     SELECT pm.DateRec, pm.Shift, pm.MachCode, pm.StyleCode, pm.Pieces, 
             pm.OrderPieces, pm.TargetPieces, pm.Discards
     FROM PRODUCTIONS_MONITOR as pm
@@ -47,15 +55,15 @@ const getProductionsMonitor = (query) => {
         FROM APP_COLOR_CODES AS cc
         WHERE ${
           machCode
-            ? `pm.MachCode = ${machCode}`
-            : `cc.Articulo = ${articulo} 
-              AND cc.Talle = ${talle} 
-              AND cc.Color = ${color}`
+            ? `pm.MachCode = @machCode`
+            : `cc.Articulo = @articulo 
+              AND cc.Talle = @talle 
+              AND cc.Color = @color`
         }
         )
-        AND pm.DateRec BETWEEN '${prodStartDate}' AND '${prodEndDate}'
+        AND pm.DateRec BETWEEN @prodStartDate AND @prodEndDate
     ORDER BY DateRec DESC;
-  `;
+  `);
 };
 
 module.exports = getProductionsMonitor;
