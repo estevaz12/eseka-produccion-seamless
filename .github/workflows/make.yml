@@ -2,9 +2,23 @@ name: Package CI (Windows only)
 
 on:
   push:
-    branches: [ "main", "read-only", "alg-read-only", "sea-read-only", "nylon-server-monitor" ]
+    branches:
+      [
+        'main',
+        'read-only',
+        'alg-read-only',
+        'sea-read-only',
+        'nylon-server-monitor',
+      ]
   pull_request:
-    branches: [ "main", "read-only", "alg-read-only", "sea-read-only", "nylon-server-monitor" ]
+    branches:
+      [
+        'main',
+        'read-only',
+        'alg-read-only',
+        'sea-read-only',
+        'nylon-server-monitor',
+      ]
 
 jobs:
   build-windows:
@@ -28,10 +42,21 @@ jobs:
 
       - name: Package Electron app (Windows)
         run: npm run make
+        env:
+          DB_SERVER: ${{secrets.DB_SERVER}}
+          DB_PORT: ${{secrets.DB_PORT}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          EXPRESS_URL: ${{secrets.EXPRESS_URL}}
+          SQL_DATE_FORMAT: ${{secrets.SQL_DATE_FORMAT}}
+          BOT_TOKEN: ${{secrets.BOT_TOKEN}}
+          BOT_API: ${{secrets.BOT_API}}
+          CHAT_ID: ${{secrets.CHAT_ID}}
 
       - name: Upload packaged app
         uses: actions/upload-artifact@v4
         with:
           name: Tejeduria-${{ github.ref_name }}
           path: out/**
-          retention_days: 3
+          retention-days: 3
