@@ -1,0 +1,80 @@
+name: Package CI (Windows only)
+
+on:
+  push:
+    branches:
+      - main
+      - read-only
+      - alg-read-only
+      - sea-read-only
+      - nylon-server-monitor
+  pull_request:
+    branches:
+      - main
+      - read-only
+      - alg-read-only
+      - sea-read-only
+      - nylon-server-monitor
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file
+        run: |
+          echo "DB_SERVER=${{ secrets.DB_SERVER }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "EXPRESS_URL=${{ secrets.EXPRESS_URL }}" >> .env
+          echo "SQL_DATE_FORMAT=${{ secrets.SQL_DATE_FORMAT }}" >> .env
+          echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" >> .env
+          echo "BOT_API=${{ secrets.BOT_API }}" >> .env
+          echo "CHAT_ID=${{ secrets.CHAT_ID }}" >> .env
+
+      - name: Package Electron app (Windows)
+        run: npm run make
+
+      - name: Zip out directory
+        run: Compress-Archive -Path out\* -DestinationPath Tejeduria-${{ github.ref_name }}.zip
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Tejeduria-${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload zipped out dir to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Tejeduria-${{ github.ref_name }}.zip
+          asset_name: Tejeduria-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
