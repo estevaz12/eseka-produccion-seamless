@@ -16,6 +16,9 @@ on:
       - sea-read-only
       - nylon-server-monitor
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
